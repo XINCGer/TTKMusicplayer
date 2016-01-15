@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<TTKMusicPlayer>
+    <music>
+        <playMode value="2"/>
+        <playVolume value="100"/>
+    </music>
+    <settings>
+        <enhancedMusic value="0"/>
+        <language value="0"/>
+        <autoPlay value="false"/>
+        <closeEvent value="true"/>
+        <lastPlayIndex value="1">0,-1</lastPlayIndex>
+        <closeNetwork value="0"/>
+        <fileAssociation value="0"/>
+    </settings>
+    <backgroundSkin>
+        <bgTheme value="theme21"/>
+        <bgTransparent value="99"/>
+        <bgListTransparent value="49"/>
+    </backgroundSkin>
+    <inlineLrc>
+        <showInlineLrc value="true"/>
+        <lrcColor value="8"/>
+        <lrcSize value="17"/>
+        <lrcFamily value="0"/>
+        <lrcType value="3"/>
+        <lrcTransparent value="99"/>
+        <lrcFgColor value="251,255,6"/>
+        <lrcBgColor value="255,255,255"/>
+    </inlineLrc>
+    <desktopLrc>
+        <showDesktopLrc value="false"/>
+        <lrcDColor value="8"/>
+        <lrcDSize value="36"/>
+        <lrcDFamily value="0"/>
+        <lrcDType value="3"/>
+        <lrcDTransparent value="99"/>
+        <lrcDFgColor value="255,191,62"/>
+        <lrcDBgColor value="76,255,91"/>
+        <lrcDLocked value="0"/>
+        <lrcDGeometry value="180,434,1066,200"/>
+    </desktopLrc>
+    <equalizer>
+        <equalizerEnale value="0"/>
+        <equalizerIndex value="5"/>
+        <sEqualizerIndex value="0"/>
+        <equalizerValue value="0,-6,6,6,3,2,-2,-5,-6,-8,-8"/>
+    </equalizer>
+    <timeSettings>
+        <timeAutoIndex value="2"/>
+        <timeAutoPlay value="1"/>
+        <timeAutoPlayHour value="20"/>
+        <timeAutoPlaySecond value="45"/>
+        <timeAutoPlayRepeat value="0"/>
+        <timeAutoPlayItemIndex value="0"/>
+        <timeAutoPlaySongIndex value="3"/>
+        <timeAutoStop value="1"/>
+        <timeAutoStopHour value="15"/>
+        <timeAutoStopSecond value="38"/>
+        <timeAutoStopRepeat value="0"/>
+        <timeAutoShutdown value="1"/>
+        <timeAutoShutdownHour value="1"/>
+        <timeAutoShutdownSecond value="54"/>
+        <timeAutoShutdownRepeat value="0"/>
+    </timeSettings>
+    <downloads>
+        <downloadMusicPath value=""/>
+        <downloadLrcPath value=""/>
+        <downloadCacheLimit value="0"/>
+        <downloadCacheSize value="0"/>
+        <downloadLimit value="0"/>
+        <downloadServer value="4"/>
+        <downloadDLoadLimit value="100"/>
+        <downloadULoadLimit value="100"/>
+    </downloads>
+</TTKMusicPlayer>
