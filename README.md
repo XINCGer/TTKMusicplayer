@@ -1,5 +1,5 @@
-# QMusicPlayer
-The music player plugin for run
+# TTKMusicplayer
+The TTKMusicplayer plugin for run
 
 ## Details on folders
 
