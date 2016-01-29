@@ -39,7 +39,9 @@ HEADERS += \
     recycler_p.h \
     qmmpplugincache_p.h \
     channelmap.h \
-    channelconverter_p.h
+    channelconverter_p.h \
+    tagreadandwrite.h
+
 SOURCES += recycler.cpp \
     decoder.cpp \
     output.cpp \
@@ -71,7 +73,9 @@ SOURCES += recycler.cpp \
     qmmpplugincache.cpp \
     channelmap.cpp \
     channelconverter.cpp \
-    volume.cpp
+    volume.cpp \
+    tagreadandwrite.cpp
+
 FORMS +=
 unix:TARGET = ../../lib/qmmp
 win32:TARGET = ../../../bin/qmmp
@@ -118,15 +122,17 @@ unix {
         visualfactory.h \
         visual.h \
         volume.h \
-        channelmap.h
+        channelmap.h \
+        tagreadandwrite.h
 
     devel.path = /include/qmmp
     INSTALLS += target \
         devel
     DESTDIR = .
 }
-INCLUDEPATH += ./
-
+INCLUDEPATH += ./ \
+               ../../../extra/gcc/libtaglib/include
+LIBS += -L../../../extra/gcc/libtaglib/lib -ltag.dll
 
 unix {
     CONFIG += create_pc create_prl no_install_prl
