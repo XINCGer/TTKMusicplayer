@@ -76,25 +76,25 @@ bool TagReadAndWrite::writeMusicTag(MusicTag tag, const QString &value)
     switch(tag)
     {
         case TAG_TITLE:
-            tags->setTitle(value.toStdString());
+            tags->setTitle(value.toLocal8Bit().constData());
             break;
         case TAG_ARTIST:
-            tags->setArtist(value.toStdString());
+            tags->setArtist(value.toLocal8Bit().constData());
             break;
         case TAG_ALBUM:
-            tags->setAlbum(value.toStdString());
+            tags->setAlbum(value.toLocal8Bit().constData());
             break;
         case TAG_YEAR:
             tags->setYear(value.toInt());
             break;
         case TAG_COMMENT:
-            tags->setComment(value.toStdString());
+            tags->setComment(value.toLocal8Bit().constData());
             break;
         case TAG_TRACK:
             tags->setTrack(value.toInt());
             break;
         case TAG_GENRE:
-            tags->setGenre(value.toStdString());
+            tags->setGenre(value.toLocal8Bit().constData());
             break;
         default: break;
     }
