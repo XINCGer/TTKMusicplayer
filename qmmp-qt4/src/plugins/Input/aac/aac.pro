@@ -15,13 +15,26 @@ CONFIG += warn_on \
     plugin \
     link_pkgconfig
 TEMPLATE = lib
-QMAKE_LIBDIR += ../../../../lib
-LIBS += -lqmmp \
-    -lfaad \
-    -L/usr/lib \
-    -I/usr/include
-PKGCONFIG += taglib
 
+win32:{
+  QMAKE_LIBDIR += ../../../../bin
+  gcc{
+      INCLUDEPATH += $$EXTRA_PREFIX/libfaad2/include \
+                     $$EXTRA_PREFIX/libtaglib/include
+      LIBS += -L$$EXTRA_PREFIX/libfaad2/lib -lfaad \
+              -L$$EXTRA_PREFIX/libtaglib/lib -ltag.dll \
+              -lqmmp0
+  }
+}
+unix:{
+    QMAKE_LIBDIR += ../../../../lib
+    LIBS += -lqmmp \
+        -lfaad \
+        -L/usr/lib \
+        -I/usr/include
+
+    PKGCONFIG += taglib
+}
 
 isEmpty(LIB_DIR):LIB_DIR = /lib
 target.path = $$LIB_DIR/qmmp/Input

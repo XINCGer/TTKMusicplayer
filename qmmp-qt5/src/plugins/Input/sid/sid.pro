@@ -20,8 +20,6 @@ CONFIG += warn_on \
           link_pkgconfig
 TEMPLATE = lib
 
-RESOURCES = translations/translations.qrc
-
 unix{
     isEmpty (LIB_DIR):LIB_DIR = /lib
     target.path = $$LIB_DIR/qmmp/Input
@@ -37,9 +35,9 @@ win32 {
     QMAKE_LIBDIR += ../../../../bin
 
     gcc{
-        INCLUDEPATH += D:/Qt/Workspace/qmmp_all/gcc/libsidplayfp/include
+        INCLUDEPATH += $$EXTRA_PREFIX/libsidplayfp/include
 
-        LIBS += -LD:/Qt/Workspace/qmmp_all/gcc/libsidplayfp/lib -lsidplayfp.dll \
+        LIBS += -L$$EXTRA_PREFIX/libsidplayfp/lib -lsidplayfp.dll \
                 -lqmmp1
     }
 #    LIBS += -lqmmp0 -lsidplayfp.dll

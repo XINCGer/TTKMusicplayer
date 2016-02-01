@@ -23,8 +23,6 @@ CONFIG += warn_on \
 TEMPLATE = lib
 QMAKE_LIBDIR += ../../../../lib
 
-RESOURCES = translations/translations.qrc
-
 
 unix {
     isEmpty (LIB_DIR):LIB_DIR = /lib
@@ -40,5 +38,14 @@ win32 {
     HEADERS += ../../../../src/qmmp/metadatamodel.h \
                ../../../../src/qmmp/decoderfactory.h
     QMAKE_LIBDIR += ../../../../bin
-    LIBS += -lqmmp0 -lopusfile -lopus -ltag.dll -lm
+
+    gcc{
+        INCLUDEPATH += $$EXTRA_PREFIX/libopusfile/include \
+                       $$EXTRA_PREFIX/libogg/include \
+                       $$EXTRA_PREFIX/libtaglib/include
+        LIBS += -L$$EXTRA_PREFIX/libopusfile/lib -lopusfile -lopus \
+                -L$$EXTRA_PREFIX/libtaglib/lib -ltag.dll \
+                -lqmmp0 -lm
+    }
+#    LIBS += -lqmmp0 -lopusfile -lopus -ltag.dll -lm
 }

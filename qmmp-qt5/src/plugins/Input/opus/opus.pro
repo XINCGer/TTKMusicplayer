@@ -17,9 +17,6 @@ CONFIG += warn_on \
 TEMPLATE = lib
 QMAKE_LIBDIR += ../../../../lib
 
-RESOURCES = translations/translations.qrc
-
-
 unix {
     isEmpty (LIB_DIR):LIB_DIR = /lib
     target.path = $$LIB_DIR/qmmp/Input
@@ -36,11 +33,11 @@ win32 {
     QMAKE_LIBDIR += ../../../../bin
 
     gcc{
-        INCLUDEPATH += D:/Qt/Workspace/qmmp_all/gcc/libopusfile/include \
-                       D:/Qt/Workspace/qmmp_all/gcc/libogg/include \
-                       D:/Qt/Workspace/qmmp_all/gcc/libtaglib/include
-        LIBS += -LD:/Qt/Workspace/qmmp_all/gcc/libopusfile/lib -lopusfile -lopus \
-                -LD:/Qt/Workspace/qmmp_all/gcc/libtaglib/lib -ltag.dll \
+        INCLUDEPATH += $$EXTRA_PREFIX/libopusfile/include \
+                       $$EXTRA_PREFIX/libogg/include \
+                       $$EXTRA_PREFIX/libtaglib/include
+        LIBS += -L$$EXTRA_PREFIX/libopusfile/lib -lopusfile -lopus \
+                -L$$EXTRA_PREFIX/libtaglib/lib -ltag.dll \
                 -lqmmp1 -lm
     }
 #    LIBS += -lqmmp0 -lopusfile -lopus -ltag.dll -lm

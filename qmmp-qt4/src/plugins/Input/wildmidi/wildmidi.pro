@@ -14,12 +14,22 @@ INCLUDEPATH += ../../../
 CONFIG += warn_on \
     plugin
 TEMPLATE = lib
-QMAKE_LIBDIR += ../../../../lib
-LIBS += -lqmmp \
-    -L/usr/lib \
-    -I/usr/include \
-    -lWildMidi
 
+win32:{
+  QMAKE_LIBDIR += ../../../../bin
+  gcc{
+      INCLUDEPATH += $$EXTRA_PREFIX/libwildmidi/include
+      LIBS += -L$$EXTRA_PREFIX/libwildmidi/lib -lwildmidi \
+              -lqmmp0
+  }
+}
+unix:{
+    QMAKE_LIBDIR += ../../../../lib
+    LIBS += -lqmmp \
+        -L/usr/lib \
+        -I/usr/include \
+        -lWildMidi
+}
 
 isEmpty (LIB_DIR):LIB_DIR = /lib
 target.path = $$LIB_DIR/qmmp/Input
