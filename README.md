@@ -9,9 +9,9 @@ The TTKMusicplayer plugin for run
  * |__MLanguage
  * |__MLrc
  * |__Movie
- * |__MPlugins
  * |__MTheme
  * |__Music
+ * |__plugins
  * |
  * |music.dll
  * |music_1.dll
