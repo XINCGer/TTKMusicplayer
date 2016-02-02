@@ -44,8 +44,3 @@ Volume *OutputPulseAudioFactory::createVolume()
 {
     return 0;
 }
-
-void OutputPulseAudioFactory::showSettings(QWidget* parent)
-{
-   Q_UNUSED(parent);
-}

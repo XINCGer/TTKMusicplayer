@@ -47,7 +47,6 @@ public:
     Decoder *create(const QString &url, QIODevice *i);
     QList<FileInfo *> createPlayList(const QString &fileName, bool useMetaData, QStringList *);
     MetaDataModel* createMetaDataModel(const QString &path, QObject *parent = 0);
-    void showSettings(QWidget *parent);
 
 };
 

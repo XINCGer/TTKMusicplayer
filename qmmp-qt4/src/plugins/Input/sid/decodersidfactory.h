@@ -47,9 +47,6 @@ public:
     Decoder *create(const QString &path, QIODevice *input);
     QList<FileInfo *> createPlayList(const QString &fileName, bool useMetaData, QStringList *);
     MetaDataModel* createMetaDataModel(const QString &path, QObject *parent = 0);
-    void showSettings(QWidget *parent);
-    void showAbout(QWidget *parent);
-    QTranslator *createTranslator(QObject *parent);
 
 private:
     SidDatabase m_db;

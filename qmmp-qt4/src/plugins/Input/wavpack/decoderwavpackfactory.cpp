@@ -147,10 +147,5 @@ MetaDataModel* DecoderWavPackFactory::createMetaDataModel(const QString &path, Q
         return 0;
 }
 
-void DecoderWavPackFactory::showSettings(QWidget *)
-{
-
-}
-
 
 Q_EXPORT_PLUGIN2(wavpack,DecoderWavPackFactory)

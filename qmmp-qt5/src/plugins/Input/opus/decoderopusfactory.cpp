@@ -118,21 +118,3 @@ QList<FileInfo *> DecoderOpusFactory::createPlayList(const QString &fileName, bo
     list << info;
     return list;
 }
-
-void DecoderOpusFactory::showSettings(QWidget *)
-{}
-
-void DecoderOpusFactory::showAbout(QWidget *parent)
-{
-    QMessageBox::about (parent, tr("About Opus Audio Plugin"),
-                        tr("Qmmp Opus Audio Plugin")+"\n"+
-                        tr("Written by: Ilya Kotov <forkotov02@hotmail.ru>"));
-}
-
-QTranslator *DecoderOpusFactory::createTranslator(QObject *parent)
-{
-    QTranslator *translator = new QTranslator(parent);
-    QString locale = Qmmp::systemLanguageID();
-    translator->load(QString(":/opus_plugin_") + locale);
-    return translator;
-}

@@ -50,10 +50,5 @@ Volume *OutputWaveOutFactory::createVolume()
     return vol;
 }
 
-void OutputWaveOutFactory::showSettings(QWidget* parent)
-{
-   Q_UNUSED(parent);
-}
-
 
 Q_EXPORT_PLUGIN2(waveout,OutputWaveOutFactory)

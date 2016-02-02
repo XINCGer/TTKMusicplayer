@@ -36,7 +36,6 @@ public:
     const OutputProperties properties() const;
     Output* create();
     Volume *createVolume();
-    void showSettings(QWidget* parent);
 
 };
 

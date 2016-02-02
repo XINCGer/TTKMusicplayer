@@ -128,8 +128,3 @@ QList<FileInfo *> DecoderVorbisFactory::createPlayList(const QString &fileName, 
     list << info;
     return list;
 }
-
-void DecoderVorbisFactory::showSettings(QWidget *)
-{
-
-}

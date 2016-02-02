@@ -195,6 +195,3 @@ MetaDataModel*DecoderFLACFactory::createMetaDataModel(const QString &path, QObje
     else
         return 0;
 }
-
-void DecoderFLACFactory::showSettings(QWidget *)
-{}

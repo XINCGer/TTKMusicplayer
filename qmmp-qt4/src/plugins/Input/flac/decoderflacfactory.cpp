@@ -195,10 +195,5 @@ MetaDataModel*DecoderFLACFactory::createMetaDataModel(const QString &path, QObje
         return 0;
 }
 
-void DecoderFLACFactory::showSettings(QWidget *)
-{
-
-}
-
 
 Q_EXPORT_PLUGIN2(flac,DecoderFLACFactory)

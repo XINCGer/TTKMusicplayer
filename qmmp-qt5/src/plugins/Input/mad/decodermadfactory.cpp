@@ -253,9 +253,3 @@ MetaDataModel* DecoderMADFactory::createMetaDataModel(const QString &path, QObje
 {
    return new MPEGMetaDataModel(m_using_rusxmms, path, parent);
 }
-
-void DecoderMADFactory::showSettings(QWidget *parent)
-{
-    SettingsDialog *s = new SettingsDialog(m_using_rusxmms, parent);
-    s->show();
-}

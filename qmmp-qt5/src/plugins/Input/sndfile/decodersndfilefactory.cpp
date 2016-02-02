@@ -121,8 +121,3 @@ MetaDataModel* DecoderSndFileFactory::createMetaDataModel(const QString&, QObjec
 {
     return 0;
 }
-
-void DecoderSndFileFactory::showSettings(QWidget *)
-{
-
-}

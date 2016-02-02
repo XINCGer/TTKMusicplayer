@@ -93,11 +93,5 @@ MetaDataModel* DecoderWildMidiFactory::createMetaDataModel(const QString &path, 
     return 0;
 }
 
-void DecoderWildMidiFactory::showSettings(QWidget *parent)
-{
-    SettingsDialog *d = new SettingsDialog(parent);
-    d->show();
-}
-
 
 Q_EXPORT_PLUGIN2(wildmidi,DecoderWildMidiFactory)

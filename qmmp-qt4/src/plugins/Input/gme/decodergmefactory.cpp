@@ -105,11 +105,5 @@ MetaDataModel* DecoderGmeFactory::createMetaDataModel(const QString &path, QObje
     return 0;
 }
 
-void DecoderGmeFactory::showSettings(QWidget *parent)
-{
-   SettingsDialog *d = new SettingsDialog(parent);
-   d->show();
-}
-
 
 Q_EXPORT_PLUGIN2(gme,DecoderGmeFactory)

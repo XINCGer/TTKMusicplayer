@@ -146,8 +146,3 @@ MetaDataModel* DecoderWavPackFactory::createMetaDataModel(const QString &path, Q
     else
         return 0;
 }
-
-void DecoderWavPackFactory::showSettings(QWidget *)
-{
-
-}

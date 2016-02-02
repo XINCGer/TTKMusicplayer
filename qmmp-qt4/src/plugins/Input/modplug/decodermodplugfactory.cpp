@@ -116,11 +116,5 @@ MetaDataModel* DecoderModPlugFactory::createMetaDataModel(const QString &path, Q
     return new ModPlugMetaDataModel(path, parent);
 }
 
-void DecoderModPlugFactory::showSettings(QWidget *parent)
-{
-    SettingsDialog *d = new SettingsDialog(parent);
-    d->show();
-}
-
 
 Q_EXPORT_PLUGIN2(modplug,DecoderModPlugFactory)

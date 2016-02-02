@@ -79,21 +79,3 @@ MetaDataModel* DecoderAACFactory::createMetaDataModel(const QString &path, QObje
 {
     return new AACMetaDataModel(path, parent);
 }
-
-void DecoderAACFactory::showSettings(QWidget *)
-{}
-
-void DecoderAACFactory::showAbout(QWidget *parent)
-{
-    QMessageBox::about (parent, tr("About AAC Audio Plugin"),
-                        tr("Qmmp AAC Audio Plugin")+"\n"+
-                        tr("Written by: Ilya Kotov <forkotov02@hotmail.ru>"));
-}
-
-QTranslator *DecoderAACFactory::createTranslator(QObject *parent)
-{
-    QTranslator *translator = new QTranslator(parent);
-    QString locale = Qmmp::systemLanguageID();
-    translator->load(QString(":/aac_plugin_") + locale);
-    return translator;
-}

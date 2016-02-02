@@ -112,25 +112,5 @@ MetaDataModel* DecoderSIDFactory::createMetaDataModel(const QString &path, QObje
     return 0;
 }
 
-void DecoderSIDFactory::showSettings(QWidget *parent)
-{
-    SettingsDialog *d = new SettingsDialog(&m_db, parent);
-    d->show();
-}
 
-void DecoderSIDFactory::showAbout(QWidget *parent)
-{
-    QMessageBox::about (parent, tr("About SID Audio Plugin"),
-                        tr("Qmmp SID Audio Plugin")+"\n"+
-                        tr("This plugin plays Commodore 64 music files using libsidplayfp library")+"\n"+
-                        tr("Written by: Ilya Kotov <forkotov02@hotmail.ru>"));
-}
-
-QTranslator *DecoderSIDFactory::createTranslator(QObject *parent)
-{
-    QTranslator *translator = new QTranslator(parent);
-    QString locale = Qmmp::systemLanguageID();
-    translator->load(QString(":/sid_plugin_") + locale);
-    return translator;
-}
 Q_EXPORT_PLUGIN2(sid,DecoderSIDFactory)

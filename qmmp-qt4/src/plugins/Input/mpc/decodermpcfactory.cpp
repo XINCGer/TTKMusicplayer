@@ -125,10 +125,5 @@ MetaDataModel* DecoderMPCFactory::createMetaDataModel(const QString &path, QObje
     return new MPCMetaDataModel(path, parent);
 }
 
-void DecoderMPCFactory::showSettings(QWidget *)
-{
-
-}
-
 
 Q_EXPORT_PLUGIN2(mpc,DecoderMPCFactory)

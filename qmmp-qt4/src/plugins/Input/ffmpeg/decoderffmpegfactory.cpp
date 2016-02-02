@@ -246,11 +246,5 @@ MetaDataModel* DecoderFFmpegFactory::createMetaDataModel(const QString &path, QO
     return new FFmpegMetaDataModel(path,parent);
 }
 
-void DecoderFFmpegFactory::showSettings(QWidget *parent)
-{
-    SettingsDialog *s = new SettingsDialog(parent);
-    s->show();
-}
-
 
 Q_EXPORT_PLUGIN2(ffmpeg,DecoderFFmpegFactory)

@@ -127,10 +127,5 @@ QList<FileInfo *> DecoderVorbisFactory::createPlayList(const QString &fileName, 
     return list;
 }
 
-void DecoderVorbisFactory::showSettings(QWidget *)
-{
-
-}
-
 
 Q_EXPORT_PLUGIN2(vorbis,DecoderVorbisFactory)

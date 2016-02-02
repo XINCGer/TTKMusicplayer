@@ -44,8 +44,3 @@ Volume *OutputNullFactory::createVolume()
 {
     return 0;
 }
-
-void OutputNullFactory::showSettings(QWidget* parent)
-{
-   Q_UNUSED(parent);
-}

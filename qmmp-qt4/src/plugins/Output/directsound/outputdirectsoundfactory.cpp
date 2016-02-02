@@ -42,10 +42,5 @@ Volume *OutputDirectSoundFactory::createVolume()
     return new VolumeDirectSound();
 }
 
-void OutputDirectSoundFactory::showSettings(QWidget* parent)
-{
-   Q_UNUSED(parent);
-}
-
 
 Q_EXPORT_PLUGIN2(directsound,OutputDirectSoundFactory)

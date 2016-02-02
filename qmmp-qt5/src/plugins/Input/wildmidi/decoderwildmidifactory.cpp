@@ -93,25 +93,3 @@ MetaDataModel* DecoderWildMidiFactory::createMetaDataModel(const QString &path, 
     Q_UNUSED(parent);
     return 0;
 }
-
-void DecoderWildMidiFactory::showSettings(QWidget *parent)
-{
-    SettingsDialog *d = new SettingsDialog(parent);
-    d->show();
-}
-
-void DecoderWildMidiFactory::showAbout(QWidget *parent)
-{
-    QMessageBox::about (parent, tr("About WildMidi Audio Plugin"),
-                        tr("Qmmp WildMidi Audio Plugin")+"\n"+
-                        tr("This plugin uses WildMidi library to play midi files")+"\n"+
-                        tr("Written by: Ilya Kotov <forkotov02@hotmail.ru>"));
-}
-
-QTranslator *DecoderWildMidiFactory::createTranslator(QObject *parent)
-{
-    QTranslator *translator = new QTranslator(parent);
-    QString locale = Qmmp::systemLanguageID();
-    translator->load(QString(":/wildmidi_plugin_") + locale);
-    return translator;
-}

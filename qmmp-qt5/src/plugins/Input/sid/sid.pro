@@ -37,8 +37,9 @@ win32 {
     gcc{
         INCLUDEPATH += $$EXTRA_PREFIX/libsidplayfp/include
 
-        LIBS += -L$$EXTRA_PREFIX/libsidplayfp/lib -lsidplayfp.dll \
-                -lqmmp1
+        LIBS += -lqmmp1 \
+                -L$$EXTRA_PREFIX/libsidplayfp/lib -lsidplayfp.dll \
+
     }
 #    LIBS += -lqmmp0 -lsidplayfp.dll
 }

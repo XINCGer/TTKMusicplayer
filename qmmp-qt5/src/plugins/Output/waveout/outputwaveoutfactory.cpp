@@ -50,8 +50,3 @@ Volume *OutputWaveOutFactory::createVolume()
     }
     return vol;
 }
-
-void OutputWaveOutFactory::showSettings(QWidget* parent)
-{
-   Q_UNUSED(parent);
-}

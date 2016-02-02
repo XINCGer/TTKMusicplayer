@@ -44,9 +44,5 @@ Volume *OutputJACKFactory::createVolume()
     return 0;
 }
 
-void OutputJACKFactory::showSettings(QWidget*)
-{
-}
-
 
 Q_EXPORT_PLUGIN2(jack,OutputJACKFactory)

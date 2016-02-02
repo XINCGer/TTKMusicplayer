@@ -80,10 +80,5 @@ MetaDataModel* DecoderAACFactory::createMetaDataModel(const QString &path, QObje
     return new AACMetaDataModel(path, parent);
 }
 
-void DecoderAACFactory::showSettings(QWidget *)
-{
-
-}
-
 
 Q_EXPORT_PLUGIN2(aac,DecoderAACFactory)

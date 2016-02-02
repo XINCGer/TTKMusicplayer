@@ -44,10 +44,5 @@ Volume *OutputNullFactory::createVolume()
     return 0;
 }
 
-void OutputNullFactory::showSettings(QWidget* parent)
-{
-   Q_UNUSED(parent);
-}
-
 
 Q_EXPORT_PLUGIN2(null, OutputNullFactory)
