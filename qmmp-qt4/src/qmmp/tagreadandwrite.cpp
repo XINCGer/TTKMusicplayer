@@ -7,16 +7,23 @@
 
 TagReadAndWrite::TagReadAndWrite(const QString &file)
 {
+#if QT_VERSION < 0x050000
     QTextCodec *codec = QTextCodec::codecForName("GBK");
     QTextCodec::setCodecForLocale(codec);
     QTextCodec::setCodecForCStrings(codec);
     QTextCodec::setCodecForTr(codec);
+#endif
     m_path = file;
 }
 
 TagReadAndWrite::~TagReadAndWrite()
 {
-
+#if QT_VERSION < 0x050000
+    QTextCodec *codec = QTextCodec::codecForName("utf-8");
+    QTextCodec::setCodecForLocale(codec);
+    QTextCodec::setCodecForCStrings(codec);
+    QTextCodec::setCodecForTr(codec);
+#endif
 }
 
 bool TagReadAndWrite::readFile()

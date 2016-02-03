@@ -39,6 +39,6 @@ contains(CONFIG, AAC_PLUGIN){
     SUBDIRS += aac
 }
 
-contains(CONFIG, WILDMIDI_PLUGIN){
-    SUBDIRS += wildmidi
-}
+#contains(CONFIG, WILDMIDI_PLUGIN){
+#    SUBDIRS += wildmidi
+#}
