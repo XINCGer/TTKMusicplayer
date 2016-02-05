@@ -1,14 +1,13 @@
 include(../../plugins.pri)
-FORMS += settingsdialog.ui
+
 
 HEADERS += outputoss4factory.h \
-           outputoss4.h \
-           settingsdialog.h
+           outputoss4.h
 
 
 SOURCES += outputoss4factory.cpp \
-           outputoss4.cpp \
-           settingsdialog.cpp
+           outputoss4.cpp
+
 
 TARGET=$$PLUGINS_PREFIX/Output/oss4
 QMAKE_CLEAN =$$PLUGINS_PREFIX/Output/liboss4.so

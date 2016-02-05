@@ -1,13 +1,15 @@
 include(../../plugins.pri)
-FORMS += settingsdialog.ui
+
+
 HEADERS += decoderffmpegfactory.h \
     decoder_ffmpeg.h \
-    settingsdialog.h \
     ffmpegmetadatamodel.h
+
+
 SOURCES += decoder_ffmpeg.cpp \
     decoderffmpegfactory.cpp \
-    settingsdialog.cpp \
     ffmpegmetadatamodel.cpp
+
 
 INCLUDEPATH += ../../../
 

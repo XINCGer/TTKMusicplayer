@@ -21,7 +21,6 @@
 #include <QMessageBox>
 #include <QTranslator>
 #include "mplayermetadatamodel.h"
-#include "settingsdialog.h"
 #include "mplayerengine.h"
 #include "mplayerenginefactory.h"
 

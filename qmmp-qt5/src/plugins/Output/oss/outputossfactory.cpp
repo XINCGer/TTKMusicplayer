@@ -21,7 +21,6 @@
 #include <QTranslator>
 #include <QMessageBox>
 #include <qmmp/qmmp.h>
-#include "settingsdialog.h"
 #include "outputoss.h"
 #include "outputossfactory.h"
 

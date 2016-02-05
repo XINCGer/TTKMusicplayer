@@ -22,7 +22,6 @@
 #include "decoder_cue.h"
 #include "cuemetadatamodel.h"
 #include "cueparser.h"
-#include "settingsdialog.h"
 #include "decodercuefactory.h"
 
 

@@ -1,15 +1,17 @@
 include(../../plugins.pri)
-FORMS += settingsdialog.ui
+
 HEADERS += decodercuefactory.h \
     cueparser.h \
     decoder_cue.h \
-    settingsdialog.h \
     cuemetadatamodel.h
+
+
 SOURCES += decoder_cue.cpp \
     decodercuefactory.cpp \
     cueparser.cpp \
-    settingsdialog.cpp \
     cuemetadatamodel.cpp
+
+
 win32:HEADERS += ../../../../src/qmmp/decoder.h \
     ../../../../src/qmmp/statehandler.h
 TARGET = $$PLUGINS_PREFIX/Input/cue

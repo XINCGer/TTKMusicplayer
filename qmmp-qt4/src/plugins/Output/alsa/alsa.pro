@@ -1,11 +1,13 @@
 include(../../plugins.pri)
 
+
 HEADERS += outputalsa.h \
-           outputalsafactory.h  \
-           settingsdialog.h
+           outputalsafactory.h
+
+
 SOURCES += outputalsa.cpp \
-           outputalsafactory.cpp  \
-           settingsdialog.cpp
+           outputalsafactory.cpp
+
 
 TARGET=$$PLUGINS_PREFIX/Output/alsa
 QMAKE_CLEAN =$$PLUGINS_PREFIX/Output/libalsa.so
@@ -21,9 +23,6 @@ link_pkgconfig
 TEMPLATE = lib
 LIBS += -lqmmp
 PKGCONFIG += alsa
-
-FORMS += settingsdialog.ui
-
 
 
 isEmpty (LIB_DIR){

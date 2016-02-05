@@ -21,7 +21,6 @@
 #include <QTranslator>
 #include <QMessageBox>
 #include <QRegExp>
-#include "settingsdialog.h"
 #include "gmehelper.h"
 #include "decoder_gme.h"
 #include "decodergmefactory.h"

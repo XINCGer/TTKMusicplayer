@@ -173,28 +173,6 @@ QList<Visual*>* Visual::visuals()
     return &m_visuals;
 }
 
-void Visual::showSettings(VisualFactory *factory, QWidget *parent)
-{
-    QDialog *dialog = factory->createConfigDialog(parent);
-    if (!dialog)
-        return;
-
-    if (dialog->exec() == QDialog::Accepted && m_vis_map.contains(factory))
-    {
-        Visual *visual = m_vis_map.value(factory);
-        remove(visual);
-        visual->close();
-        visual = factory->create(m_parentWidget);
-        if (m_receiver && m_member)
-            connect(visual, SIGNAL(closedByUser()), m_receiver, m_member);
-        visual->setWindowFlags(Qt::Window);
-        m_vis_map[factory] = visual;
-        visual->show();
-        add(visual);
-    }
-    dialog->deleteLater();
-}
-
 void Visual::checkFactories()
 {
     if (!m_factories)

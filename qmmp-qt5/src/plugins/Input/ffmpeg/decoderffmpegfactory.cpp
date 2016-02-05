@@ -29,7 +29,6 @@ extern "C"{
 }
 
 #include "ffmpegmetadatamodel.h"
-#include "settingsdialog.h"
 #include "decoder_ffmpeg.h"
 #include "decoderffmpegfactory.h"
 

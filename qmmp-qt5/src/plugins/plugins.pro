@@ -1,7 +1,8 @@
 TEMPLATE = subdirs
 
 SUBDIRS += Input \
-           Output
+           Output \
+           Visual
 
 unix:SUBDIRS += Engines
 

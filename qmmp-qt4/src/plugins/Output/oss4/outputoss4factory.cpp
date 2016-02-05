@@ -20,7 +20,6 @@
 
 #include <QtGui>
 #include <qmmp/qmmp.h>
-#include "settingsdialog.h"
 #include "outputoss4.h"
 #include "outputoss4factory.h"
 

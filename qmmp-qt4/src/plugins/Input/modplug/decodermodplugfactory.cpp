@@ -24,7 +24,6 @@
 #include <libmodplug/stdafx.h>
 #include <libmodplug/it_defs.h>
 #include <libmodplug/sndfile.h>
-#include "settingsdialog.h"
 #include "modplugmetadatamodel.h"
 #include "decoder_modplug.h"
 #include "archivereader.h"

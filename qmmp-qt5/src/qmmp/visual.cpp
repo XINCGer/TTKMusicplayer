@@ -30,7 +30,7 @@
 #include "visualfactory.h"
 #include "output.h"
 #include "visual.h"
-
+#include <QDebug>
 Visual::Visual(QWidget *parent, Qt::WindowFlags f) : QWidget(parent, f)
 {
     setAttribute(Qt::WA_DeleteOnClose, true);
@@ -94,6 +94,7 @@ QString Visual::file(VisualFactory *factory)
 void Visual::setEnabled(VisualFactory* factory, bool enable)
 {
     checkFactories();
+
     if (!m_factories->contains(factory))
         return;
 
@@ -105,6 +106,7 @@ void Visual::setEnabled(VisualFactory* factory, bool enable)
     {
         if (!visList.contains(name))
             visList << name;
+
         if (!m_vis_map.value(factory) && m_parentWidget)
         {
             Visual* visual = factory->create(m_parentWidget);
@@ -114,6 +116,8 @@ void Visual::setEnabled(VisualFactory* factory, bool enable)
             m_vis_map.insert (factory, visual);
             m_visuals.append(visual);
             visual->show();
+
+            qDebug() << "Fffff";
         }
     }
     else
@@ -175,28 +179,6 @@ void Visual::initialize(QWidget *parent , QObject *receiver, const char *member)
 QList<Visual*>* Visual::visuals()
 {
     return &m_visuals;
-}
-
-void Visual::showSettings(VisualFactory *factory, QWidget *parent)
-{
-    QDialog *dialog = factory->createConfigDialog(parent);
-    if (!dialog)
-        return;
-
-    if (dialog->exec() == QDialog::Accepted && m_vis_map.contains(factory))
-    {
-        Visual *visual = m_vis_map.value(factory);
-        remove(visual);
-        visual->close();
-        visual = factory->create(m_parentWidget);
-        if (m_receiver && m_member)
-            connect(visual, SIGNAL(closedByUser()), m_receiver, m_member);
-        visual->setWindowFlags(Qt::Window);
-        m_vis_map[factory] = visual;
-        visual->show();
-        add(visual);
-    }
-    dialog->deleteLater();
 }
 
 void Visual::checkFactories()
