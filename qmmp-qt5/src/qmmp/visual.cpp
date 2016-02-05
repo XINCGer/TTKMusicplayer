@@ -30,7 +30,7 @@
 #include "visualfactory.h"
 #include "output.h"
 #include "visual.h"
-#include <QDebug>
+
 Visual::Visual(QWidget *parent, Qt::WindowFlags f) : QWidget(parent, f)
 {
     setAttribute(Qt::WA_DeleteOnClose, true);
@@ -116,8 +116,6 @@ void Visual::setEnabled(VisualFactory* factory, bool enable)
             m_vis_map.insert (factory, visual);
             m_visuals.append(visual);
             visual->show();
-
-            qDebug() << "Fffff";
         }
     }
     else
