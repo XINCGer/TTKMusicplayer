@@ -11,6 +11,7 @@ The TTKMusicplayer plugin for run
  * |__Movie
  * |__MTheme
  * |__Music
+ * |__MPlugins
  * |__plugins
  * |
  * |music.dll
