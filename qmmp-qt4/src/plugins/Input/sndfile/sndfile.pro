@@ -8,7 +8,12 @@ SOURCES += decoder_sndfile.cpp \
 TARGET=$$PLUGINS_PREFIX/Input/sndfile
 
 
-INCLUDEPATH += ../../../
+INCLUDEPATH += ../../../ \
+                   $$EXTRA_PREFIX/libsndfile/include \
+                   $$EXTRA_PREFIX/libflac/include \
+                   $$EXTRA_PREFIX/libvorbis/include \
+                   $$EXTRA_PREFIX/libogg/include
+
 CONFIG += warn_on \
 plugin \
 link_pkgconfig
@@ -23,10 +28,12 @@ unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib
     target.path = $$LIB_DIR/qmmp/Input
     INSTALLS += target
-
     QMAKE_LIBDIR += ../../../../lib
-    LIBS += -lqmmp
-    PKGCONFIG += sndfile
+    LIBS += -L$$EXTRA_PREFIX/libsndfile/lib -lsndfile \
+            -L$$EXTRA_PREFIX/libflac/lib -lFLAC \
+            -L$$EXTRA_PREFIX/libvorbis/lib -lvorbisenc -lvorbis \
+            -L$$EXTRA_PREFIX/libogg/lib -logg \
+            -lqmmp
     QMAKE_CLEAN =$$PLUGINS_PREFIX/Input/libsndfile.so
 }
 
@@ -35,11 +42,6 @@ win32 {
                ../../../../src/qmmp/decoderfactory.h
     QMAKE_LIBDIR += ../../../../bin
     gcc{
-        INCLUDEPATH += $$EXTRA_PREFIX/libsndfile/include \
-                       $$EXTRA_PREFIX/libflac/include \
-                       $$EXTRA_PREFIX/libvorbis/include \
-                       $$EXTRA_PREFIX/libogg/include
-
         LIBS += -L$$EXTRA_PREFIX/libsndfile/lib -lsndfile \
                 -L$$EXTRA_PREFIX/libflac/lib -lflac \
                 -L$$EXTRA_PREFIX/libvorbis/lib -lvorbisenc -lvorbis \

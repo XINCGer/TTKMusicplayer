@@ -1,6 +1,5 @@
 include(../../plugins.pri)
 
-
 HEADERS += decodermodplugfactory.h \
     decoder_modplug.h \
     archivereader.h \
@@ -17,7 +16,10 @@ TARGET = $$PLUGINS_PREFIX/Input/modplug
 
 DEFINES += HAVE_STDINT_H \
     HAVE_INTTYPES_H
-INCLUDEPATH += ../../../
+
+INCLUDEPATH += ../../../ \
+                    $$EXTRA_PREFIX/libmodplug/include
+
 CONFIG += warn_on \
     plugin \
     link_pkgconfig
@@ -30,10 +32,8 @@ unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib
     target.path = $$LIB_DIR/qmmp/Input
     INSTALLS += target
-
     QMAKE_LIBDIR += ../../../../lib
-    LIBS += -lqmmp
-    PKGCONFIG += libmodplug
+    LIBS += -L$$EXTRA_PREFIX/libmodplug/lib -lmodplug -lqmmp
     QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libmodplug.so
 }
 
@@ -42,8 +42,6 @@ win32 {
                ../../../../src/qmmp/decoderfactory.h
     QMAKE_LIBDIR += ../../../../bin
     gcc{
-        INCLUDEPATH += $$EXTRA_PREFIX/libmodplug/include
-
         LIBS += -L$$EXTRA_PREFIX/libmodplug/lib -lmodplug \
                 -lqmmp0
     }

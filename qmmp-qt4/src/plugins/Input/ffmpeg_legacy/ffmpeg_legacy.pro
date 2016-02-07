@@ -10,10 +10,8 @@ SOURCES += decoder_ffmpeg.cpp \
     decoderffmpegfactory.cpp \
     ffmpegmetadatamodel.cpp
 
-
-INCLUDEPATH += ../../../
-
-
+INCLUDEPATH += ../../../ \
+                $$EXTRA_PREFIX/libav/include
 
 CONFIG += warn_on \
     plugin \
@@ -26,22 +24,18 @@ unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib
     target.path = $$LIB_DIR/qmmp/Input
     INSTALLS += target
-    QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libffmpeg_legacy.so
-    LIBS += -lqmmp
+    QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libffmpeg.so
+    LIBS += -L$$EXTRA_PREFIX/libav/lib -lavcodec -lavformat -lavutil -lqmmp
     QMAKE_LIBDIR += ../../../../lib
-    PKGCONFIG += libavcodec libavformat libavutil
 }
-
 
 win32 {
     HEADERS += ../../../../src/qmmp/metadatamodel.h \
                ../../../../src/qmmp/decoderfactory.h
     QMAKE_LIBDIR += ../../../../bin
-
     gcc{
-        INCLUDEPATH += $$EXTRA_PREFIX/libav/include
         LIBS += -L$$EXTRA_PREFIX/libav/lib -lavcodec.dll -lavformat.dll -lavutil.dll \
-                -lqmmp0
+                -lqmmp1
     }
 #    LIBS += -lqmmp0 -lavcodec.dll -lavformat.dll -lavutil.dll
 }

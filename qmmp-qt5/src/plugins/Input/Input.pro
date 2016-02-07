@@ -27,18 +27,16 @@ contains(CONFIG, OPUS_PLUGIN){
     SUBDIRS += opus
 }
 
-#contains(CONFIG, CDAUDIO_PLUGIN){
-#    SUBDIRS += cdaudio
-#}
+unix:{
+    contains(CONFIG, CDAUDIO_PLUGIN){
+        SUBDIRS += cdaudio
+    }
 
-#contains(CONFIG, SID_PLUGIN){
-#    SUBDIRS += sid
-#}
+    contains(CONFIG, SID_PLUGIN){
+        SUBDIRS += sid
+    }
+}
 
 contains(CONFIG, AAC_PLUGIN){
     SUBDIRS += aac
 }
-
-#contains(CONFIG, WILDMIDI_PLUGIN){
-#    SUBDIRS += wildmidi
-#}

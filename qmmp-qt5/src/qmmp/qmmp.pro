@@ -1,5 +1,4 @@
-unix:include(../../qmmp.pri)
-win32:include(../../qmmp.pri)
+include(../../qmmp.pri)
 HEADERS += \
     buffer.h \
     decoder.h \
@@ -42,6 +41,7 @@ HEADERS += \
     channelconverter_p.h \
     tagreadandwrite.h
 
+
 SOURCES += recycler.cpp \
     decoder.cpp \
     output.cpp \
@@ -75,6 +75,7 @@ SOURCES += recycler.cpp \
     channelconverter.cpp \
     volume.cpp \
     tagreadandwrite.cpp
+
 
 FORMS +=
 unix:TARGET = ../../lib/qmmp
@@ -122,8 +123,7 @@ unix {
         visualfactory.h \
         visual.h \
         volume.h \
-        channelmap.h \
-        tagreadandwrite.h
+        channelmap.h
 
     devel.path = /include/qmmp
     INSTALLS += target \
@@ -132,9 +132,12 @@ unix {
 }
 INCLUDEPATH += ./ \
                ../../../extra/gcc/libtaglib/include
-LIBS += -L../../../extra/gcc/libtaglib/lib -ltag.dll
+win32:{
+    LIBS += -L../../../extra/gcc/libtaglib/lib -ltag.dll
+}
 
-unix {
+unix:{
+    LIBS += -L../../../extra/gcc/libtaglib/lib -ltag
     CONFIG += create_pc create_prl no_install_prl
     QMAKE_PKGCONFIG_NAME = qmmp
     QMAKE_PKGCONFIG_DESCRIPTION = qmmp core library

@@ -2,19 +2,20 @@ include(../../plugins.pri)
 
 HEADERS += decodersidfactory.h \
     decoder_sid.h \
-    sidhelper.h \
-    settingsdialog.h
+    sidhelper.h
+
+
 SOURCES += decoder_sid.cpp \
     decodersidfactory.cpp \
-    sidhelper.cpp \
-    settingsdialog.cpp
-FORMS += \
-    settingsdialog.ui
+    sidhelper.cpp
 
 
 TARGET = $$PLUGINS_PREFIX/Input/sid
 QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libsid.so
-INCLUDEPATH += ../../../
+
+INCLUDEPATH += ../../../ \
+            $$EXTRA_PREFIX/libsidplayfp/include
+
 CONFIG += warn_on \
           plugin \
           link_pkgconfig
@@ -25,21 +26,15 @@ unix{
     target.path = $$LIB_DIR/qmmp/Input
     INSTALLS += target
     QMAKE_LIBDIR += ../../../../lib
-    LIBS += -lqmmp
-    PKGCONFIG += libsidplayfp
+    LIBS += -L$$EXTRA_PREFIX/libsidplayfp/lib -lsidplayfp -lqmmp
 }
 
 win32 {
     HEADERS += ../../../../src/qmmp/metadatamodel.h \
                ../../../../src/qmmp/decoderfactory.h
     QMAKE_LIBDIR += ../../../../bin
-
     gcc{
-        INCLUDEPATH += $$EXTRA_PREFIX/libsidplayfp/include
-
-        LIBS += -lqmmp0 \
-                -L$$EXTRA_PREFIX/libsidplayfp/lib -lsidplayfp.dll \
-
+        LIBS += -L$$EXTRA_PREFIX/libsidplayfp/lib -lsidplayfp -lqmmp0
     }
 #    LIBS += -lqmmp0 -lsidplayfp.dll
 }

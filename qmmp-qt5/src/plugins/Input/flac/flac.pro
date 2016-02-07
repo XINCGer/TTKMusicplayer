@@ -12,7 +12,10 @@ SOURCES += decoder_flac.cpp \
     replaygainreader.cpp
 TARGET = $$PLUGINS_PREFIX/Input/flac
 
-INCLUDEPATH += ../../../
+INCLUDEPATH += ../../../ \
+                    $$EXTRA_PREFIX/libtaglib/include \
+                   $$EXTRA_PREFIX/libflac/include
+
 CONFIG += warn_on \
     plugin \
     link_pkgconfig
@@ -20,13 +23,13 @@ TEMPLATE = lib
 QMAKE_LIBDIR += ../../../../lib
 
 
-
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib
     target.path = $$LIB_DIR/qmmp/Input
     INSTALLS += target
-    PKGCONFIG += taglib flac
-    LIBS += -lqmmp
+    LIBS += -L$$EXTRA_PREFIX/libflac/lib -lFLAC \
+            -L$$EXTRA_PREFIX/libtaglib/lib -ltag \
+            -lqmmp
     QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libflac.so
 }
 
@@ -36,8 +39,6 @@ win32 {
     QMAKE_LIBDIR += ../../../../bin
 
     gcc{
-        INCLUDEPATH += $$EXTRA_PREFIX/libtaglib/include \
-                       $$EXTRA_PREFIX/libflac/include
         LIBS += -L$$EXTRA_PREFIX/libflac/lib -llibFLAC \
                 -L$$EXTRA_PREFIX/libtaglib/lib -ltag.dll \
                 -L$$EXTRA_PREFIX/libogg/lib -logg \

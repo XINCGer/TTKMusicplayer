@@ -10,7 +10,11 @@ SOURCES += decoder_vorbis.cpp \
     replaygainreader.cpp
 TARGET = $$PLUGINS_PREFIX/Input/vorbis
 
-INCLUDEPATH += ../../../
+INCLUDEPATH += ../../../ \
+                   $$EXTRA_PREFIX/libtaglib/include \
+                   $$EXTRA_PREFIX/libogg/include \
+                   $$EXTRA_PREFIX/libvorbis/include
+
 CONFIG += warn_on \
     plugin \
     link_pkgconfig
@@ -23,9 +27,9 @@ unix {
     isEmpty (LIB_DIR):LIB_DIR = /lib
     target.path = $$LIB_DIR/qmmp/Input
     INSTALLS += target
-
-    PKGCONFIG += taglib ogg vorbisfile vorbis
-    LIBS += -lqmmp
+    LIBS += -L$$EXTRA_PREFIX/libvorbis/lib -lvorbisfile -lvorbis \
+            -L$$EXTRA_PREFIX/libogg/lib -logg \
+            -L$$EXTRA_PREFIX/libtaglib/lib -ltag -lqmmp
     QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libvorbis.so
 }
 
@@ -34,9 +38,6 @@ win32 {
                ../../../../src/qmmp/decoderfactory.h
     QMAKE_LIBDIR += ../../../../bin
     gcc{
-        INCLUDEPATH += $$EXTRA_PREFIX/libtaglib/include \
-                       $$EXTRA_PREFIX/libogg/include \
-                       $$EXTRA_PREFIX/libvorbis/include
         LIBS += -L$$EXTRA_PREFIX/libvorbis/lib -lvorbisfile -lvorbis \
                 -L$$EXTRA_PREFIX/libogg/lib -logg \
                 -L$$EXTRA_PREFIX/libtaglib/lib -ltag.dll \

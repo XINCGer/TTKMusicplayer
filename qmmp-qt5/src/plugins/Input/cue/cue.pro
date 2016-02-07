@@ -16,13 +16,16 @@ win32:HEADERS += ../../../../src/qmmp/decoder.h \
     ../../../../src/qmmp/statehandler.h
 TARGET = $$PLUGINS_PREFIX/Input/cue
 unix:QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libcue.so
-INCLUDEPATH += ../../../
+
+INCLUDEPATH += ../../../ \
+         $$EXTRA_PREFIX/libenca/include
+
 CONFIG += warn_on \
     plugin
 TEMPLATE = lib
 unix{
    QMAKE_LIBDIR += ../../../../lib
-   LIBS += -lqmmp -L/usr/lib
+   LIBS += -L$$EXTRA_PREFIX/libenca/lib -lenca -lqmmp
 }
 
 win32{
@@ -33,10 +36,8 @@ win32{
 contains(CONFIG, WITH_ENCA){
    CONFIG += link_pkgconfig
    DEFINES += WITH_ENCA
-   unix:PKGCONFIG += enca
    win32:{
       gcc{
-          INCLUDEPATH += $$EXTRA_PREFIX/libenca/include
           LIBS += -L$$EXTRA_PREFIX/libenca/lib -lenca
       }
    }

@@ -4,5 +4,3 @@ SUBDIRS += Input \
            Output \
            Visual
 
-unix:SUBDIRS += Engines
-

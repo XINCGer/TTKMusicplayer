@@ -21,7 +21,7 @@
 #ifndef OPUSMETADATAMODEL_H
 #define OPUSMETADATAMODEL_H
 
-#include <taglib/opusfile.h>
+//#include <taglib/opusfile.h>
 #include <taglib/xiphcomment.h>
 #include <qmmp/metadatamodel.h>
 
@@ -52,8 +52,8 @@ public:
     void save();
 
 private:
-    TagLib::Ogg::Opus::File *m_file;
-    TagLib::Ogg::XiphComment *m_tag;
+//    TagLib::Ogg::Opus::File *m_file;
+//    TagLib::Ogg::XiphComment *m_tag;
 };
 
 #endif // OPUSMETADATAMODEL_H

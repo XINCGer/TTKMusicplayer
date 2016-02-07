@@ -21,14 +21,14 @@
 #include <QtGlobal>
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
-#include <taglib/opusfile.h>
+//#include <taglib/opusfile.h>
 #include "replaygainreader.h"
 
 ReplayGainReader::ReplayGainReader(const QString &path)
 {
-    TagLib::Ogg::Opus::File fileRef(path.toLocal8Bit ().constData());
-    if(fileRef.tag())
-        readVorbisComment(fileRef.tag());
+//    TagLib::Ogg::Opus::File fileRef(path.toLocal8Bit ().constData());
+//    if(fileRef.tag())
+//        readVorbisComment(fileRef.tag());
 }
 
 QMap <Qmmp::ReplayGainKey, double> ReplayGainReader::replayGainInfo() const

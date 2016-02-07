@@ -1,8 +1,7 @@
 include(../../plugins.pri)
 
-
 HEADERS += outputalsa.h \
-           outputalsafactory.h
+           outputalsafactory.h  \
 
 
 SOURCES += outputalsa.cpp \
@@ -22,8 +21,9 @@ link_pkgconfig
 
 TEMPLATE = lib
 LIBS += -lqmmp
-PKGCONFIG += alsa
-
+INCLUDEPATH += $$EXTRA_PREFIX/libalsa/include
+LIBS += -L$$EXTRA_PREFIX/libalsa/lib -lasound \
+             -lqmmp
 
 isEmpty (LIB_DIR){
 LIB_DIR = /lib

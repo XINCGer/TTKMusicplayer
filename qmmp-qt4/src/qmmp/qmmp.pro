@@ -132,10 +132,12 @@ unix {
 }
 INCLUDEPATH += ./ \
                ../../../extra/gcc/libtaglib/include
-LIBS += -L../../../extra/gcc/libtaglib/lib -ltag.dll
+win32:{
+    LIBS += -L../../../extra/gcc/libtaglib/lib -ltag.dll
+}
 
-
-unix {
+unix: {
+    LIBS += -L../../../extra/gcc/libtaglib/lib -ltag
     CONFIG += create_pc create_prl no_install_prl
     QMAKE_PKGCONFIG_NAME = qmmp
     QMAKE_PKGCONFIG_DESCRIPTION = qmmp core library

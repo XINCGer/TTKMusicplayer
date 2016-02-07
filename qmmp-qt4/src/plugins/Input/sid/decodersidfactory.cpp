@@ -24,7 +24,6 @@
 #include <sidplayfp/SidTuneInfo.h>
 #include "decoder_sid.h"
 #include "sidhelper.h"
-#include "settingsdialog.h"
 #include "decodersidfactory.h"
 
 // DecoderSIDFactory
