@@ -1,103 +1,253 @@
 #include "musicenhancedwidget.h"
 #include "musicsettingmanager.h"
 #include "musicuiobject.h"
-#include "musicconnectionpool.h"
+#include "musicfunctionuiobject.h"
+#include "musicmagicwidgetuiobject.h"
+#include "musicapplicationobject.h"
+#include "musicrightareawidget.h"
+///qmmp incldue
+#include "effect.h"
+#include "effectfactory.h"
 
-#include <QMenu>
-#include <QWidgetAction>
+#include <QLabel>
 #include <QButtonGroup>
+#include <QPropertyAnimation>
 
-MusicEnhancedWidget::MusicEnhancedWidget(QWidget *parent)
+#define LABEL_ANIMAT_WIDGET 156
+#define LABEL_BUTTON_WIDGET 116
+#define LABEL_BUTTON_HEIGHT 111
+
+MusicEnhancedToolButton::MusicEnhancedToolButton(QWidget *parent)
     : QToolButton(parent)
 {
-    setCursor(Qt::PointingHandCursor);
+    m_state = false;
+
+    m_animationLabel = new QLabel(this);
+    m_animationLabel->setGeometry(-LABEL_ANIMAT_WIDGET, 0, LABEL_ANIMAT_WIDGET, LABEL_BUTTON_HEIGHT);
+    m_animationLabel->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+
+    m_foreLabel = new QLabel(this);
+    m_foreLabel->setObjectName("ForeLabel");
+    m_foreLabel->resize(LABEL_ANIMAT_WIDGET, LABEL_BUTTON_HEIGHT);
+
+    m_animation = new QPropertyAnimation(m_animationLabel, "pos", this);
+    m_animation->setDuration(500);
+    m_animation->setStartValue(QPoint(-LABEL_ANIMAT_WIDGET, 0));
+    m_animation->setEndValue(QPoint(LABEL_ANIMAT_WIDGET, 0));
+    connect(m_animation, SIGNAL(finished()), SLOT(finished()));
+}
+
+MusicEnhancedToolButton::~MusicEnhancedToolButton()
+{
+    delete m_foreLabel;
+    delete m_animationLabel;
+    delete m_animation;
+}
+
+QString MusicEnhancedToolButton::getClassName()
+{
+    return staticMetaObject.className();
+}
+
+void MusicEnhancedToolButton::setStyleSheet(const QString &styleSheet, bool state)
+{
+    m_state = state;
+    if(m_state)
+    {
+        m_animation->setDuration(2000);
+        m_foreLabel->setStyleSheet(QString("#ForeLabel{%1}").arg(styleSheet));
+        m_animationLabel->setStyleSheet("background-image:url(':/enhance/lb_selected')");
+        QToolButton::setStyleSheet(QString("QToolButton{background-image:url(':/enhance/lb_blue');}"));
+    }
+    else
+    {
+        m_animation->setDuration(500);
+        m_foreLabel->setStyleSheet(QString());
+        m_animationLabel->setStyleSheet("background-image:url(':/enhance/lb_enter')");
+        QToolButton::setStyleSheet(QString("QToolButton{%1}").arg(styleSheet));
+    }
+}
+
+void MusicEnhancedToolButton::start()
+{
+    m_animation->start();
+}
+
+void MusicEnhancedToolButton::stop()
+{
+    m_animation->stop();
+}
+
+void MusicEnhancedToolButton::finished()
+{
+    if(m_state)
+    {
+        start();
+    }
+}
+
+void MusicEnhancedToolButton::enterEvent(QEvent *event)
+{
+    QToolButton::enterEvent(event);
+    if(!m_state)
+    {
+        start();
+    }
+}
+
+
+MusicEnhancedWidget::MusicEnhancedWidget(QWidget *parent)
+    : MusicToolMenuWidget(parent)
+{
     setToolTip(tr("magic music"));
 
     initWidget();
-    M_CONNECTION->setValue("MusicEnhancedWidget", this);
+
+    connect(MusicApplicationObject::instance(), SIGNAL(enhancedMusicChanged(int)),
+                                                SLOT(setEnhancedMusicConfig(int)));
+    connect(m_menu, SIGNAL(windowStateChanged(bool)), SLOT(buttonAnimationChanged(bool)));
 }
 
 MusicEnhancedWidget::~MusicEnhancedWidget()
 {
-    M_CONNECTION->poolDisConnect("MusicEnhancedWidget");
     delete m_caseButton;
-    delete m_Button1;
-    delete m_Button2;
-    delete m_Button3;
-    delete m_Button4;
+    while(!m_buttons.isEmpty())
+    {
+        delete m_buttons.takeLast();
+    }
 }
 
-void MusicEnhancedWidget::initWidget()
+QString MusicEnhancedWidget::getClassName()
 {
-    m_menu = new QMenu(this);
-    QWidgetAction *actionWidget = new QWidgetAction(m_menu);
-
-    QWidget *containWidget = new QWidget(this);
-    containWidget->setFixedSize(270, 358);
-    containWidget->setObjectName("containWidget");
-    containWidget->setStyleSheet("#containWidget{background:url(':/enhance/background')}");
-
-    m_caseButton = new QToolButton(containWidget);
-    m_caseButton->setGeometry(200, 73, 54, 24);
-    m_caseButton->setStyleSheet("background-image:url(':/enhance/on')");
-    m_caseButton->setCursor(Qt::PointingHandCursor);
-
-    m_Button1 = new QToolButton(containWidget);
-    m_Button1->setGeometry(15, 115, 112, 107);
-    m_Button1->setStyleSheet("background-image:url(':/enhance/3dOff')");
-    m_Button1->setCursor(Qt::PointingHandCursor);
-
-    m_Button2 = new QToolButton(containWidget);
-    m_Button2->setGeometry(145, 115, 112, 107);
-    m_Button2->setStyleSheet("background-image:url(':/enhance/vocalOff')");
-    m_Button2->setCursor(Qt::PointingHandCursor);
-
-    m_Button3 = new QToolButton(containWidget);
-    m_Button3->setGeometry(15, 240, 112, 107);
-    m_Button3->setStyleSheet("background-image:url(':/enhance/NICAMOff')");
-    m_Button3->setCursor(Qt::PointingHandCursor);
-
-    m_Button4 = new QToolButton(containWidget);
-    m_Button4->setGeometry(145, 240, 112, 107);
-    m_Button4->setStyleSheet("background-image:url(':/enhance/subwooferOff')");
-    m_Button4->setCursor(Qt::PointingHandCursor);
-
-    QButtonGroup *group = new QButtonGroup(this);
-    group->addButton(m_caseButton, 0);
-    group->addButton(m_Button1, 1);
-    group->addButton(m_Button2, 2);
-    group->addButton(m_Button3, 3);
-    group->addButton(m_Button4, 4);
-    connect(group, SIGNAL(buttonClicked(int)), SLOT(setEnhancedMusicConfig(int)));
-
-    actionWidget->setDefaultWidget(containWidget);
-
-    m_menu->addAction(actionWidget);
-    setMenu(m_menu);
-    setPopupMode(QToolButton::InstantPopup);
+    return staticMetaObject.className();
 }
 
 void MusicEnhancedWidget::setEnhancedMusicConfig(int type)
 {
-    QString prfix = "QToolButton{background-image:url(':/enhance/";
+    setObjectName("EnhancedWidget");
+    QString style = MusicUIObject::MKGBtnMagic;
     switch(type)
     {
-        case 0: prfix.append("iconOff');}"); break;
-        case 1: prfix.append("icon3D');}"); break;
-        case 2: prfix.append("iconVocal');}"); break;
-        case 3: prfix.append("iconNICAM');}"); break;
-        case 4: prfix.append("iconSubwoofer');}"); break;
+        case 0: style += "#EnhancedWidget{ margin-left: -2px; }"; break;
+        case 1: style += "#EnhancedWidget{ margin-left: -46px; }"; break;
+        case 2: style += "#EnhancedWidget{ margin-left: -178px; }"; break;
+        case 3: style += "#EnhancedWidget{ margin-left: -90px; }"; break;
+        case 4: style += "#EnhancedWidget{ margin-left: -134px; }"; break;
     }
-    setStyleSheet("QToolButton::menu-indicator{image:None;}" + prfix + "QWidget{border:none;}");
+    setStyleSheet( style );
 
-    prfix = QString("background-image:url(':/enhance/%1')");
-    m_caseButton->setStyleSheet(prfix.arg(type ? "on" : "off"));
-    m_Button1->setStyleSheet(prfix.arg(type == 1 ? "3dOn" : "3dOff"));
-    m_Button2->setStyleSheet(prfix.arg(type == 2 ? "vocalOn" : "vocalOff"));
-    m_Button3->setStyleSheet(prfix.arg(type == 3 ? "NICAMOn" : "NICAMOff"));
-    m_Button4->setStyleSheet(prfix.arg(type == 4 ? "subwooferOn" : "subwooferOff"));
+    QString prfix = QString("background-image:url(':/enhance/lb_%1')");
+    m_caseButton->setStyleSheet(type ? MusicUIObject::MKGEnhanceOn : MusicUIObject::MKGEnhanceOff);
+    m_buttons[0]->setStyleSheet(prfix.arg(type == 1 ? "3dOn" : "3dOff"), type == 1);
+    m_buttons[1]->setStyleSheet(prfix.arg(type == 2 ? "NICAMOn" : "NICAMOff"), type == 2);
+    m_buttons[2]->setStyleSheet(prfix.arg(type == 3 ? "subwooferOn" : "subwooferOff"), type == 3);
+    m_buttons[3]->setStyleSheet(prfix.arg(type == 4 ? "vocalOn" : "vocalOff"), type == 4);
 
-    M_SETTING->setValue(MusicSettingManager::EqualizerEnableChoiced, 0);
-    M_SETTING->setValue(MusicSettingManager::EnhancedMusicChoiced, type);
+    m_lastSelectedIndex = (type == 0) ? m_lastSelectedIndex : type;
+    M_SETTING_PTR->setValue(MusicSettingManager::EqualizerEnableChoiced, 0);
+    M_SETTING_PTR->setValue(MusicSettingManager::EnhancedMusicChoiced, type);
+
+    ////////////////////////////////////////////////////////////////////
+    foreach(EffectFactory *factory, Effect::factories())
+    {
+        Effect::setEnabled(factory, false);
+    }
+    ////////////////////////////////////////////////////////////////////
+
     emit enhancedMusicChanged(type);
+
+    m_menu->close();
+}
+
+void MusicEnhancedWidget::caseButtonOnAndOff()
+{
+    setEnhancedMusicConfig( m_caseButton->styleSheet().contains(":/enhance/btn_magic_off_normal") ?
+                            m_lastSelectedIndex : 0);
+}
+
+void MusicEnhancedWidget::buttonAnimationChanged(bool state)
+{
+    int index = M_SETTING_PTR->value(MusicSettingManager::EnhancedMusicChoiced).toInt();
+    if(index < 1 || index > m_buttons.count())
+    {
+        return;
+    }
+
+    state ? m_buttons[index - 1]->start() : m_buttons[index - 1]->stop();
+}
+
+void MusicEnhancedWidget::helpButtonClicked()
+{
+    MusicRightAreaWidget::instance()->musicFunctionClicked(MusicRightAreaWidget::KuiSheWidget);
+    m_menu->close();
+}
+
+void MusicEnhancedWidget::initWidget()
+{
+    setTranslucentBackground();
+    m_menu->setStyleSheet(MusicUIObject::MMenuStyle05);
+
+    m_containWidget->setFixedSize(272, 370);
+    m_containWidget->setObjectName("containWidget");
+    m_containWidget->setStyleSheet(QString("#containWidget{%1%2}").arg(MusicUIObject::MBorderStyle01)
+                                                   .arg("background:url(':/enhance/lb_background')"));
+
+    QToolButton *labelButton = new QToolButton(m_containWidget);
+    labelButton->setGeometry(80, 20, 126, 40);
+    labelButton->setStyleSheet(MusicUIObject::MKGEnhanceTitle);
+    labelButton->setCursor(Qt::PointingHandCursor);
+
+    QToolButton *helpButton = new QToolButton(m_containWidget);
+    helpButton->setGeometry(205, 3, 24, 24);
+    helpButton->setStyleSheet(MusicUIObject::MKGEnhanceHelp);
+    helpButton->setCursor(Qt::PointingHandCursor);
+    connect(helpButton, SIGNAL(clicked()), SLOT(helpButtonClicked()));
+
+    QToolButton *shareButton = new QToolButton(m_containWidget);
+    shareButton->setGeometry(230, 3, 24, 24);
+    shareButton->setStyleSheet(MusicUIObject::MKGEnhanceShare);
+    shareButton->setCursor(Qt::PointingHandCursor);
+
+    QToolButton *closeButton = new QToolButton(m_containWidget);
+    closeButton->setGeometry(255, 8, 16, 16);
+    closeButton->setStyleSheet(MusicUIObject::MKGEnhanceClose);
+    closeButton->setCursor(Qt::PointingHandCursor);
+    connect(closeButton, SIGNAL(clicked()), m_menu, SLOT(close()));
+
+    m_caseButton = new QToolButton(m_containWidget);
+    m_caseButton->setGeometry(200, 70, 62, 38);
+    m_caseButton->setStyleSheet(MusicUIObject::MKGEnhanceOn);
+    m_caseButton->setCursor(Qt::PointingHandCursor);
+
+    MusicEnhancedToolButton *button1 = new MusicEnhancedToolButton(m_containWidget);
+    button1->setGeometry(15, 115, LABEL_BUTTON_WIDGET, LABEL_BUTTON_HEIGHT);
+    button1->setStyleSheet("background-image:url(':/enhance/lb_3dOff')");
+    button1->setCursor(Qt::PointingHandCursor);
+
+    MusicEnhancedToolButton *button2 = new MusicEnhancedToolButton(m_containWidget);
+    button2->setGeometry(145, 115, LABEL_BUTTON_WIDGET, LABEL_BUTTON_HEIGHT);
+    button2->setStyleSheet("background-image:url(':/enhance/lb_NICAMOff')");
+    button2->setCursor(Qt::PointingHandCursor);
+
+    MusicEnhancedToolButton *button3 = new MusicEnhancedToolButton(m_containWidget);
+    button3->setGeometry(15, 240, LABEL_BUTTON_WIDGET, LABEL_BUTTON_HEIGHT);
+    button3->setStyleSheet("background-image:url(':/enhance/lb_subwooferOff')");
+    button3->setCursor(Qt::PointingHandCursor);
+
+    MusicEnhancedToolButton *button4 = new MusicEnhancedToolButton(m_containWidget);
+    button4->setGeometry(145, 240, LABEL_BUTTON_WIDGET, LABEL_BUTTON_HEIGHT);
+    button4->setStyleSheet("background-image:url(':/enhance/lb_vocalOff')");
+    button4->setCursor(Qt::PointingHandCursor);
+
+    QButtonGroup *group = new QButtonGroup(this);
+    group->addButton(button1, 1);
+    group->addButton(button2, 2);
+    group->addButton(button3, 3);
+    group->addButton(button4, 4);
+    connect(group, SIGNAL(buttonClicked(int)), SLOT(setEnhancedMusicConfig(int)));
+
+    m_buttons << button1 << button2 << button3 << button4;
+
+    m_lastSelectedIndex = M_SETTING_PTR->value(MusicSettingManager::EnhancedMusicChoiced).toInt();
+    connect(m_caseButton, SIGNAL(clicked()), SLOT(caseButtonOnAndOff()));
 }

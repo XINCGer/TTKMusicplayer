@@ -1,5 +1,6 @@
 #include "musiccoremplayer.h"
 #include "musicobject.h"
+#include "musicnumberdefine.h"
 
 #include <QProcess>
 
@@ -9,9 +10,8 @@ MusicCoreMPlayer::MusicCoreMPlayer(QObject *parent)
     m_process = nullptr;
     m_playState = StoppedState;
     m_category = NullCategory;
-    m_currentPos = 0;
 
-    m_timer.setInterval(1000);
+    m_timer.setInterval(MT_S2MS);
     connect(&m_timer, SIGNAL(timeout()), SLOT(timeout()));
 }
 
@@ -24,6 +24,11 @@ MusicCoreMPlayer::~MusicCoreMPlayer()
     delete m_process;
 }
 
+QString MusicCoreMPlayer::getClassName()
+{
+    return staticMetaObject.className();
+}
+
 void MusicCoreMPlayer::setMedia(Category type, const QString &data, int winId)
 {
     m_timer.stop();
@@ -33,10 +38,16 @@ void MusicCoreMPlayer::setMedia(Category type, const QString &data, int winId)
         delete m_process;
         m_process = nullptr;
     }
+    if(!QFile::exists(MAKE_PLAYER_FULL))
+    {
+        M_LOGGER_ERROR(tr("Lack of plugin file!"));
+        return;
+    }
 
     m_category = type;
     m_playState = StoppedState;
     m_process = new QProcess(this);
+    connect(m_process, SIGNAL(finished(int)), SIGNAL(finished()));
 
     switch(m_category)
     {
@@ -63,22 +74,27 @@ void MusicCoreMPlayer::setVideoMedia(const QString &data, int winId)
     m_process->setProcessChannelMode(QProcess::MergedChannels);
     connect(m_process, SIGNAL(readyReadStandardOutput()), SLOT(durationRecieve()));
     m_process->write("get_time_length\n");
-    m_process->start(MAKE_PLAYER_AL, arguments);
+    m_process->start(MAKE_PLAYER_FULL, arguments);
 }
 
 void MusicCoreMPlayer::setMusicMedia(const QString &data)
 {
+    emit mediaChanged(data);
+
     QStringList arguments;
     arguments << "-slave" << "-quiet" << "-vo" << "directx:noaccel" << data;
-    m_process->start(MAKE_PLAYER_AL, arguments);
+    connect(m_process, SIGNAL(readyReadStandardOutput()), SLOT(dataRecieve()));
+    m_process->start(MAKE_PLAYER_FULL, arguments);
 }
 
 void MusicCoreMPlayer::setRadioMedia(const QString &data)
 {
+    emit mediaChanged(data);
+
     QStringList arguments;
     arguments << "-slave" << "-quiet" << "-vo" << "directx:noaccel" << data;
-    m_process->start(MAKE_PLAYER_AL, arguments);
     connect(m_process, SIGNAL(readyReadStandardOutput()), SLOT(dataRecieve()));
+    m_process->start(MAKE_PLAYER_FULL, arguments);
 }
 
 void MusicCoreMPlayer::setPosition(qint64 pos)
@@ -105,7 +121,7 @@ void MusicCoreMPlayer::setVolume(int value)
     {
         return;
     }
-    emit volumnChanged(value);
+    emit volumeChanged(value);
     m_process->write(QString("volume %1 1\n").arg(value).toUtf8());
 }
 
@@ -139,7 +155,7 @@ void MusicCoreMPlayer::durationRecieve()
         QByteArray data = m_process->readLine();
         if(data.startsWith("ANS_LENGTH"))
         {
-            data.replace(QByteArray("\r\n"), "");
+            data.replace(QByteArray("\r\n"), QByteArray(""));
             disconnect(m_process, SIGNAL(readyReadStandardOutput()), this, SLOT(durationRecieve()));
             emit durationChanged(QString(data).mid(11).toFloat());
             return;
@@ -167,8 +183,8 @@ void MusicCoreMPlayer::positionRecieve()
         QByteArray data = m_process->readLine();
         if(data.startsWith("ANS_TIME_POSITION"))
         {
-            data.replace(QByteArray("\r\n"), "");
-            emit positionChanged(m_currentPos = QString(data).mid(18).toFloat());
+            data.replace(QByteArray("\r\n"), QByteArray(""));
+            emit positionChanged(QString(data).mid(18).toFloat());
         }
     }
 }
@@ -188,7 +204,21 @@ void MusicCoreMPlayer::radioStandardRecieve()
 
 void MusicCoreMPlayer::musicStandardRecieve()
 {
-    emit musicChanged();
+    m_timer.start();
+    while(m_process->canReadLine())
+    {
+        QString message(m_process->readLine());
+        if(message.startsWith("ANS_LENGTH"))
+        {
+            message.replace(QByteArray("\r\n"), QByteArray(""));
+            emit durationChanged(QString(message).mid(11).toFloat());
+        }
+        if(message.startsWith("ANS_TIME_POSITION"))
+        {
+            message.replace(QByteArray("\r\n"), QByteArray(""));
+            emit positionChanged(QString(message).mid(18).toFloat());
+        }
+    }
 }
 
 void MusicCoreMPlayer::stop()

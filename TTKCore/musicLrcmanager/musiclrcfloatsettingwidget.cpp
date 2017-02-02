@@ -1,30 +1,30 @@
 #include "musiclrcfloatsettingwidget.h"
 #include "musiclrccontainerforinline.h"
+#include "musicinlinefloatuiobject.h"
 
 #include <QTimer>
 #include <QPushButton>
 #include <QButtonGroup>
 
 MusicLrcFloatSettingWidget::MusicLrcFloatSettingWidget(QWidget *parent)
-    : MusicLrcFloatAbstractWidget(parent)
+    : MusicFloatAbstractWidget(parent)
 {
     setObjectName("MusicLrcFloatSettingWidget");
-    setStyleSheet("#MusicLrcFloatSettingWidget{" + MusicUIObject::MCustomStyle03 + "}" +
-                  MusicUIObject::MPushButtonStyle14);
+    setStyleSheet(QString("#MusicLrcFloatSettingWidget{%1}").arg(MusicUIObject::MBackgroundStyle08));
 
     QLabel *colorLabel = new QLabel(tr("Color"), this);
     QLabel *sizeLabel = new QLabel(tr("Size"), this);
     QLabel *bgLabel = new QLabel(tr("Background"), this);
-    colorLabel->setStyleSheet( MusicUIObject::MCustomStyle23 );
-    sizeLabel->setStyleSheet( MusicUIObject::MCustomStyle23 );
-    bgLabel->setStyleSheet( MusicUIObject::MCustomStyle23 );
+
+    const QString labelStyle = MusicUIObject::MColorStyle01 + MusicUIObject::MCustomStyle02 + "\
+                               image:url(:/lrc/lb_shadow);";
+    colorLabel->setStyleSheet(labelStyle);
+    sizeLabel->setStyleSheet(labelStyle);
+    bgLabel->setStyleSheet(labelStyle);
     colorLabel->setAlignment(Qt::AlignCenter);
     sizeLabel->setAlignment(Qt::AlignCenter);
     bgLabel->setAlignment(Qt::AlignCenter);
-    QFrame *line = new QFrame(this);
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
-    line->setGeometry(10, 170, 150, 5);
+
     colorLabel->setGeometry(10, 30, 70, 20);
     sizeLabel->setGeometry(10, 80, 70, 20);
     bgLabel->setGeometry(10, 120, 70, 20);
@@ -44,12 +44,10 @@ MusicLrcFloatSettingWidget::MusicLrcFloatSettingWidget(QWidget *parent)
 
     QPushButton *sizeBigerButton = new QPushButton(this);
     QPushButton *sizeSmallerButton = new QPushButton(this);
-    sizeBigerButton->setIcon(QIcon(":/desktopTool/lrcsizeUp"));
-    sizeSmallerButton->setIcon(QIcon(":/desktopTool/lrcsizeDown"));
-    sizeBigerButton->setIconSize(QSize(25,25));
-    sizeSmallerButton->setIconSize(QSize(25,25));
-    sizeBigerButton->setGeometry(85, 80, 25, 25);
-    sizeSmallerButton->setGeometry(125, 80, 25, 25);
+    sizeBigerButton->setStyleSheet(MusicUIObject::MKGInlineLrcBigger);
+    sizeSmallerButton->setStyleSheet(MusicUIObject::MKGInlineLrcSmaller);
+    sizeBigerButton->setGeometry(85, 80, 24, 24);
+    sizeSmallerButton->setGeometry(125, 80, 24, 24);
     sizeBigerButton->setCursor(QCursor(Qt::PointingHandCursor));
     sizeSmallerButton->setCursor(QCursor(Qt::PointingHandCursor));
     connect(sizeBigerButton, SIGNAL(clicked()), SLOT(lrcSizeUpChanged()));
@@ -61,22 +59,27 @@ MusicLrcFloatSettingWidget::MusicLrcFloatSettingWidget(QWidget *parent)
     QPushButton *artBgButton = new QPushButton(tr("ArtBg"), this);
     artBgButton->setCursor(QCursor(Qt::PointingHandCursor));
     connect(artBgButton, SIGNAL(clicked()), SLOT(lrcArtBackgroundChanged()));
-    musicBgButton->setStyleSheet(MusicUIObject::MPushButtonStyle18);
-    artBgButton->setStyleSheet(MusicUIObject::MPushButtonStyle18);
-    musicBgButton->setGeometry(10, 145, 70, 20);
-    artBgButton->setGeometry(90, 145, 70, 20);
+    musicBgButton->setStyleSheet(MusicUIObject::MKGInlineFloatSetting + MusicUIObject::MPushButtonStyle08);
+    artBgButton->setStyleSheet(MusicUIObject::MKGInlineFloatSetting + MusicUIObject::MPushButtonStyle08);
+    musicBgButton->setGeometry(15, 155, 60, 22);
+    artBgButton->setGeometry(90, 155, 60, 22);
 
     QPushButton *settingButton = new QPushButton(tr("More"),this);
     settingButton->setCursor(QCursor(Qt::PointingHandCursor));
     connect(settingButton, SIGNAL(clicked()), parent, SIGNAL(changeCurrentLrcColorSetting()));
-    settingButton->setStyleSheet(MusicUIObject::MPushButtonStyle18);
-    settingButton->setGeometry(10, 180, 150, 20);
+    settingButton->setStyleSheet(MusicUIObject::MKGInlineFloatSetting + MusicUIObject::MPushButtonStyle08);
+    settingButton->setGeometry(15, 180, 60, 22);
 }
 
-void MusicLrcFloatSettingWidget::resizeWidth(int width)
+QString MusicLrcFloatSettingWidget::getClassName()
 {
-    m_rectIn = QRect(375 + width, 120, 165, 210);
-    m_rectOut = QRect(535 + width, 171, 165, 105);
+    return staticMetaObject.className();
+}
+
+void MusicLrcFloatSettingWidget::resizeWindow(int width, int height)
+{
+    m_rectIn = QRect(495 + width, 120 + height, 165, 210);
+    m_rectOut = QRect(655 + width, 171 + height, 165, 105);
     setGeometry(m_rectOut);
 }
 
@@ -85,16 +88,16 @@ QPushButton *MusicLrcFloatSettingWidget::createPushButton(int index)
     QPushButton *button = new QPushButton(this);
     switch(index)
     {
-        case 0: button->setIcon(QIcon(":/color/origin")); break;
-        case 1: button->setIcon(QIcon(":/color/red")); break;
-        case 2: button->setIcon(QIcon(":/color/orange")); break;
-        case 3: button->setIcon(QIcon(":/color/yellow")); break;
-        case 4: button->setIcon(QIcon(":/color/green")); break;
-        case 5: button->setIcon(QIcon(":/color/blue")); break;
-        case 6: button->setIcon(QIcon(":/color/indigo")); break;
-        case 7: button->setIcon(QIcon(":/color/purple")); break;
-        case 8: button->setIcon(QIcon(":/color/white")); break;
-        case 9: button->setIcon(QIcon(":/color/black")); break;
+        case 0: button->setIcon(QIcon(":/color/lb_origin")); break;
+        case 1: button->setIcon(QIcon(":/color/lb_red")); break;
+        case 2: button->setIcon(QIcon(":/color/lb_orange")); break;
+        case 3: button->setIcon(QIcon(":/color/lb_yellow")); break;
+        case 4: button->setIcon(QIcon(":/color/lb_green")); break;
+        case 5: button->setIcon(QIcon(":/color/lb_blue")); break;
+        case 6: button->setIcon(QIcon(":/color/lb_indigo")); break;
+        case 7: button->setIcon(QIcon(":/color/lb_purple")); break;
+        case 8: button->setIcon(QIcon(":/color/lb_white")); break;
+        case 9: button->setIcon(QIcon(":/color/lb_black")); break;
     }
     if(index < 4)
         button->setGeometry(80 + index*20, 10, 16, 16);
@@ -138,7 +141,7 @@ void MusicLrcFloatSettingWidget::lrcArtBackgroundChanged()
 
 void MusicLrcFloatSettingWidget::show()
 {
-    MusicLrcFloatAbstractWidget::show();
+    MusicFloatAbstractWidget::show();
     animationIn();
 }
 

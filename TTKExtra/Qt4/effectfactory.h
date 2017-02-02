@@ -75,6 +75,7 @@ public:
      * Shows settings dialog.
      * @param parent Parent widget.
      */
+    virtual void showSettings(QWidget *parent) = 0;
 
 };
 

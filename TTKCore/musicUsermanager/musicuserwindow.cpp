@@ -1,38 +1,52 @@
 #include "musicuserwindow.h"
-#include "musicuiobject.h"
 #include "ui_musicuserwindow.h"
 #include "musicuserdialog.h"
 #include "musicusermodel.h"
-#include "musicusermanager.h"
+#include "musicusermanagerdialog.h"
 #include "musicmessagebox.h"
+#include "musicuiobject.h"
+#include "musicwidgetutils.h"
+#include "musicdatabaseobject.h"
 
 #include <QTimer>
 
 MusicUserWindow::MusicUserWindow(QWidget *parent)
    : QStackedWidget(parent),
-     ui(new Ui::MusicUserWindow)
+     m_ui(new Ui::MusicUserWindow)
 {
-    ui->setupUi(this);
-    ui->userName->setStyleSheet(MusicUIObject::MPushButtonStyle11);
-    ui->userLogin->setCursor(QCursor(Qt::PointingHandCursor));
-    ui->userName->setCursor(QCursor(Qt::PointingHandCursor));
+    m_ui->setupUi(this);
+    m_ui->userNameL->setStyleSheet(MusicUIObject::MPushButtonStyle07);
+    m_ui->userNameL->setCursor(QCursor(Qt::PointingHandCursor));
+    m_ui->userNameU->setCursor(QCursor(Qt::PointingHandCursor));
 
     connectDatabase();
 
-    m_userManager = new MusicUserManager(this);
-    connect(ui->userLogin, SIGNAL(clicked()), SLOT(musicUserLogin()));
-    connect(ui->userName, SIGNAL(clicked()), m_userManager, SLOT(exec()));
+    m_userManager = new MusicUserManagerDialog(this);
+    connect(m_ui->userIconU, SIGNAL(clicked()), SLOT(musicUserLogin()));
+    connect(m_ui->userNameU, SIGNAL(clicked()), SLOT(musicUserLogin()));
+    connect(m_ui->userIconL, SIGNAL(clicked()), m_userManager, SLOT(exec()));
+    connect(m_ui->userNameL, SIGNAL(clicked()), m_userManager, SLOT(exec()));
     connect(m_userManager, SIGNAL(userStateChanged(QString,QString)),
                            SLOT(userStateChanged(QString,QString)));
 
-    QTimer::singleShot(1, this, SLOT(checkToAutoLogin()));
+    QTimer::singleShot(MT_MS, this, SLOT(checkToAutoLogin()));
 }
 
 MusicUserWindow::~MusicUserWindow()
 {
     delete m_userManager;
-    delete ui;
+    delete m_ui;
     disConnectDatabase();
+}
+
+QString MusicUserWindow::getClassName()
+{
+    return staticMetaObject.className();
+}
+
+bool MusicUserWindow::isUserLogin() const
+{
+    return currentIndex() == 1;
 }
 
 bool MusicUserWindow::disConnectDatabase()
@@ -65,16 +79,16 @@ bool MusicUserWindow::connectDatabase()
         }
         else
         {
-            data = QSqlDatabase::addDatabase(DATABASETYPE, "user-data");
+            data = QSqlDatabase::addDatabase(SQLITE_DATABASE, "user-data");
         }
-        data.setDatabaseName(DARABASEPATH_AL);
-        if( !data.isDriverAvailable(DATABASETYPE) )
+        data.setDatabaseName(DARABASEPATH_FULL);
+        if( !data.isDriverAvailable(SQLITE_DATABASE) )
         {
             throw QString("The driver name is not available!");
         }
         if( !data.isValid() )
         {
-            throw QString("The database has not a vaild driver!");
+            throw QString("The database has not a valid driver!");
         }
         if (!data.isOpen() && !data.open() )
         {
@@ -101,15 +115,22 @@ bool MusicUserWindow::connectDatabase()
 
 void MusicUserWindow::userStateChanged(const QString &uid, const QString &icon)
 {
-    ui->userName->setText(QFontMetrics(font()).elidedText(uid, Qt::ElideRight, 44));
     if(uid.isEmpty())
     {
+        m_ui->userIconU->setPixmap(MusicUtils::Widget::pixmapToRound(QPixmap(":/image/lb_player_logo"),
+                                                                   QPixmap(":/usermanager/lb_mask"),
+                                                                   m_ui->userIconU->size()));
+        m_ui->userNameU->setText(tr("L|R"));
         setCurrentIndex(0);
     }
     else
     {
         m_userManager->setUserUID(uid);
-        ui->userIcon->setPixmap(QPixmap(icon).scaled(ui->userIcon->size()));
+        m_ui->userIconL->setPixmap(MusicUtils::Widget::pixmapToRound(QPixmap(icon),
+                                                                   QPixmap(":/usermanager/lb_mask"),
+                                                                   m_ui->userIconL->size()));
+        m_ui->userNameL->setText(MusicUtils::Widget::elidedText(font(), uid, Qt::ElideRight, 44));
+        m_ui->userNameL->setToolTip(uid);
         setCurrentIndex(1);
     }
 }
@@ -126,9 +147,10 @@ void MusicUserWindow::musicUserContextLogin()
 {
     if(currentIndex() == 1)
     {
-        setCurrentIndex(0);
+        m_userManager->musicUserLogoff();
+        return;
     }
-    QTimer::singleShot(1, this, SLOT(musicUserLogin()));
+    QTimer::singleShot(MT_MS, this, SLOT(musicUserLogin()));
 }
 
 void MusicUserWindow::checkToAutoLogin()
@@ -136,8 +158,5 @@ void MusicUserWindow::checkToAutoLogin()
     MusicUserDialog dialog;
     QString name, icon;
     dialog.checkToAutoLogin(name, icon);
-    if(!name.isEmpty())
-    {
-        userStateChanged(name, icon);
-    }
+    userStateChanged(name, icon);
 }

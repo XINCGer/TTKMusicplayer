@@ -1,43 +1,43 @@
 #include "musiclrcfloatwidget.h"
 #include "musiclrcfloatphotowidget.h"
 #include "musiclrcfloatsettingwidget.h"
+#include "musicinlinefloatuiobject.h"
 
 #include <QPushButton>
 
 MusicLrcFloatWidget::MusicLrcFloatWidget(QWidget *parent)
-    : MusicLrcFloatAbstractWidget(parent)
+    : MusicFloatAbstractWidget(parent)
 {
-    setStyleSheet(MusicUIObject::MCustomStyle03);
+    setStyleSheet(MusicUIObject::MBackgroundStyle08);
 
     m_floatPhotoWidget = new MusicLrcFloatPhotoWidget(parent);
     m_floatPhotoWidget->hide();
     m_floatSettingWidget = new MusicLrcFloatSettingWidget(parent);
     m_floatSettingWidget->hide();
 
-    resizeWidth(0);
+    resizeWindow(0, 0);
     m_update = new QPushButton(tr(" Update"), this);
     m_search = new QPushButton(tr(" Search"), this);
     m_more = new QPushButton(tr(" More"), this);
     m_wallp = new QPushButton(tr(" Wallp"), this);
     m_photo = new QPushButton(tr(" Photo"), this);
 
-    m_update->setIcon(QIcon(":/lrc/update"));
-    m_search->setIcon(QIcon(":/lrc/search"));
-    m_more->setIcon(QIcon(":/lrc/more"));
-    m_wallp->setIcon(QIcon(":/lrc/wallpaper"));
-    m_photo->setIcon(QIcon(":/share/showMV2"));
+    m_update->setGeometry(15, 10, 80, 20);
+    m_search->setGeometry(15, 50, 80, 20);
+    m_more->setGeometry(15, 90, 80, 20);
+    m_wallp->setGeometry(15, 130, 80, 20);
+    m_photo->setGeometry(15, 170, 80, 20);
 
-    m_update->setStyleSheet( MusicUIObject::MPushButtonStyle15 );
-    m_search->setStyleSheet( MusicUIObject::MPushButtonStyle15 );
-    m_more->setStyleSheet( MusicUIObject::MPushButtonStyle15 );
-    m_wallp->setStyleSheet( MusicUIObject::MPushButtonStyle15 );
-    m_photo->setStyleSheet( MusicUIObject::MPushButtonStyle15 );
-
-    m_update->setGeometry(15, 10, m_update->width(), m_update->height());
-    m_search->setGeometry(15, 50, m_search->width(), m_search->height());
-    m_more->setGeometry(15, 90, m_more->width(), m_more->height());
-    m_wallp->setGeometry(15, 130, m_wallp->width(), m_wallp->height());
-    m_photo->setGeometry(15, 170, m_photo->width(), m_photo->height());
+    m_update->setStyleSheet(MusicUIObject::MKGInlineFloatUpdate + MusicUIObject::MPushButtonStyle09 +
+                            MusicUIObject::MPushButtonStyle01);
+    m_search->setStyleSheet(MusicUIObject::MKGInlineFloatSearch + MusicUIObject::MPushButtonStyle09 +
+                            MusicUIObject::MPushButtonStyle01);
+    m_more->setStyleSheet(MusicUIObject::MKGInlineFloatMore + MusicUIObject::MPushButtonStyle09 +
+                          MusicUIObject::MPushButtonStyle01);
+    m_wallp->setStyleSheet(MusicUIObject::MKGInlineFloatWallpaper + MusicUIObject::MPushButtonStyle09 +
+                           MusicUIObject::MPushButtonStyle01);
+    m_photo->setStyleSheet(MusicUIObject::MKGInlineFloatPhoto + MusicUIObject::MPushButtonStyle09 +
+                           MusicUIObject::MPushButtonStyle01);
 
     m_update->setCursor(QCursor(Qt::PointingHandCursor));
     m_search->setCursor(QCursor(Qt::PointingHandCursor));
@@ -63,25 +63,30 @@ MusicLrcFloatWidget::~MusicLrcFloatWidget()
     delete m_floatSettingWidget;
 }
 
-void MusicLrcFloatWidget::resizeWidth(int width)
+QString MusicLrcFloatWidget::getClassName()
 {
-    m_rectIn = QRect(425 + width, 120, 115, 210);
-    m_rectOut = QRect(535 + width, 171, 115, 105);
+    return staticMetaObject.className();
+}
+
+void MusicLrcFloatWidget::resizeWindow(int width, int height)
+{
+    m_rectIn = QRect(548 + width, 120 + height/2, 115, 210);
+    m_rectOut = QRect(658 + width, 171 + height/2, 115, 105);
     setGeometry( m_rectOut );
 
-    m_floatSettingWidget->resizeWidth(width);
-    m_floatPhotoWidget->resizeWidth(width);
+    m_floatSettingWidget->resizeWindow(width, height);
+    m_floatPhotoWidget->resizeWindow(width, height);
 }
 
 void MusicLrcFloatWidget::showFloatSettingWidget()
 {
     animationOut();
     m_floatSettingWidget->show();
-    setblockAnimation(true);
+    setBlockAnimation(true);
 }
 
 void MusicLrcFloatWidget::closeFloatSettingWidget()
 {
     m_floatSettingWidget->close();
-    setblockAnimation(false);
+    setBlockAnimation(false);
 }

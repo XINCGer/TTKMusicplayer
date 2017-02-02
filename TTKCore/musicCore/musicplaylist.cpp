@@ -1,20 +1,25 @@
 #include "musicplaylist.h"
-#include "time.h"
+#include "musictime.h"
 
 MusicPlaylist::MusicPlaylist(QObject *parent)
     : QObject(parent)
 {
-    qsrand(time(nullptr));
-    m_currentIndex = 0;
+    MusicTime::timeSRand();
+    m_currentIndex = -1;
     m_playbackMode = MusicObject::MC_PlayOrder;
 }
 
-MusicObject::SongPlayType MusicPlaylist::playbackMode() const
+QString MusicPlaylist::getClassName()
+{
+    return staticMetaObject.className();
+}
+
+MusicObject::SongPlayMode MusicPlaylist::playbackMode() const
 {
     return m_playbackMode;
 }
 
-void MusicPlaylist::setPlaybackMode(MusicObject::SongPlayType mode)
+void MusicPlaylist::setPlaybackMode(MusicObject::SongPlayMode mode)
 {
     m_playbackMode = mode;
 }
@@ -30,8 +35,12 @@ QString MusicPlaylist::currentMediaString() const
     {
         return QString();
     }
-    return m_mediaList.isEmpty() ? QString()
-                                 : m_mediaList[m_currentIndex];
+    return m_mediaList.isEmpty() ? QString() : m_mediaList[m_currentIndex];
+}
+
+QStringList MusicPlaylist::mediaList() const
+{
+    return m_mediaList;
 }
 
 int MusicPlaylist::mediaCount() const
@@ -47,7 +56,7 @@ bool MusicPlaylist::isEmpty() const
 bool MusicPlaylist::clear()
 {
     m_mediaList.clear();
-    return isEmpty() ? true : false;
+    return isEmpty();
 }
 
 void MusicPlaylist::updateMediaLists(const QStringList &list, int index)
@@ -106,7 +115,6 @@ bool MusicPlaylist::removeMedia(int pos)
         return false;
     }
     m_mediaList.removeAt(pos);
-    emit removeCurrentMedia();
     return true;
 }
 
@@ -125,7 +133,7 @@ bool MusicPlaylist::removeMedia(int start, int end)
 
 void MusicPlaylist::setCurrentIndex(int index)
 {
-    if(index == -2)
+    if(index == DEFAULT_INDEX_LEVEL1)
     {
         switch(m_playbackMode)
         {

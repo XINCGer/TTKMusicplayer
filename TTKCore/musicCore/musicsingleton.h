@@ -3,24 +3,38 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (c) 2014 - 2016 Greedysky Studio
+ * Copyright (c) 2015 - 2017 Greedysky Studio
  * All rights reserved!
  * Redistribution and use of the source code or any derivative
  * works are strictly forbiden.
    =================================================*/
 
 #include <QMutex>
+#include <QObject>
 #include <QScopedPointer>
 #include "musicglobaldefine.h"
 
 template <typename T>
+/*! @brief The class of the singleton base.
+ * @author Greedysky <greedysky@163.com>
+ */
 class MUSIC_CORE_EXPORT MusicSingleton
 {
 public:
     static T* createInstance();
+    /*!
+     * Get object instance ptr.
+     */
+    static QString getClassName();
+    /*!
+     * Get class object name.
+     */
 
 private:
-    MusicSingleton(){}
+    MusicSingleton(){}   
+    /*!
+     * Object contsructor.
+     */
     ~MusicSingleton(){}
 
     static QMutex m_mutex;
@@ -53,6 +67,12 @@ T* MusicSingleton<T>::createInstance()
     return m_instance.data();
 }
 
+template<typename T>
+QString MusicSingleton<T>::getClassName()
+{
+    return "MusicSingleton";
+}
+
     ////////////////////////////////////////////////////////////////
     ///                                                           //
     ///              Singleton Macro                              //
@@ -61,7 +81,7 @@ T* MusicSingleton<T>::createInstance()
 
 ////Class that will implement the singleton mode,
 ////must use the macro in it's delare file
-#define DECLARE_SINGLETON_CLASS( Class )                        \
+#define DECLARE_SINGLETON_CLASS( Class )             \
     friend class MusicSingleton<Class>;              \
     friend struct QScopedPointerDeleter<Class>;
 

@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (c) 2014 - 2016 Greedysky Studio
+ * Copyright (c) 2015 - 2017 Greedysky Studio
  * All rights reserved!
  * Redistribution and use of the source code or any derivative
  * works are strictly forbiden.
@@ -17,38 +17,104 @@
 #include "musicsong.h"
 #include "musicobject.h"
 
+typedef struct MUSIC_CORE_EXPORT XmlAttribute
+{
+    QString m_key;
+    QVariant m_value;
+
+    XmlAttribute(const QString &key, const QVariant &value)
+    {
+        m_key = key;
+        m_value = value;
+    }
+}XmlAttribute;
+TTK_DECLARE_LISTS(XmlAttribute)
+
+/*! @brief The class of the base class of xml interface.
+ * @author Greedysky <greedysky@163.com>
+ */
 class MUSIC_CORE_EXPORT MusicAbstractXml : public QObject
 {
     Q_OBJECT
 public:
     explicit MusicAbstractXml(QObject *parent = 0);
+    /*!
+     * Object contsructor.
+     */
     ~MusicAbstractXml();
 
-protected:
-    bool readConfig(const QString &type);
-    bool writeConfig(const QString &type);
+    static QString getClassName();
+    /*!
+     * Get class object name.
+     */
+
+    bool readConfig(const QString &name);
+    /*!
+     * Read datas from xml file by given name.
+     */
+    bool writeConfig(const QString &name);
+    /*!
+     * Write datas into xml file by given name.
+     */
     QString readXmlAttributeByTagNameValue(const QString &tagName) const;
+    /*!
+     * Read xml attribute by tagName and default name "value".
+     */
     QString readXmlAttributeByTagName(const QString &tagName,
                                       const QString &attrName) const;
+    /*!
+     * Read xml attribute by tagName and attribute name.
+     */
     QString readXmlTextByTagName(const QString &tagName) const;
-    MStriantMap readXmlAttributesByTagName(const QString &tagName) const;
-
+    /*!
+     * Read xml attribute's text by tagName.
+     */
+    MusicObject::MStriantMap readXmlAttributesByTagName(const QString &tagName) const;
+    /*!
+     * Read xml attributes by tagName and default name "value".
+     */
     void createProcessingInstruction();
+    /*!
+     * Create processing instruction in header.
+     */
     QDomElement createRoot(const QString &node);
+    /*!
+     * Create xml node nodes by node name.
+     */
     QDomElement writeDom(QDomElement &element, const QString &node);
+    /*!
+     * Append xml element nodes by node name.
+     */
     QDomElement writeDomElement(QDomElement &element, const QString &node,
-                                const QString &key, const QVariant &value);
+                                const XmlAttribute &attr);
+    /*!
+     * Append xml element nodes by node name\ key name and value.
+     */
     QDomElement writeDomElementMutil(QDomElement &element, const QString &node,
-                                     const QStringList &keys, const QList<QVariant> &values);
+                                     const XmlAttributes &attrs);
+    /*!
+     * Append xml elements nodes by node name\ keys name and values.
+     */
     QDomElement writeDomElementText(QDomElement &element, const QString &node,
-                                    const QString &key, const QVariant &value,
-                                    const QString &text);
+                                    const XmlAttribute &attr, const QString &text);
+    /*!
+     * Append xml element nodes by node name\ key name \ value and attribute's text.
+     */
     QDomElement writeDomElementMutilText(QDomElement &element, const QString &node,
-                                         const QStringList &keys, const QList<QVariant> &values,
-                                         const QString &text);
+                                         const XmlAttributes &attrs, const QString &text);
+    /*!
+     * Append xml elements nodes by node name\ keys name \ values and attribute's text.
+     */
     QDomElement writeDomText(QDomElement &element, const QString &node, const QString &text);
-    void writeAttribute(QDomElement &element, const QString &key, const QVariant &value);
+    /*!
+     * Append xml element nodes by node name and attribute's text.
+     */
+    void writeAttribute(QDomElement &element, const XmlAttribute &attr);
+    /*!
+     * Append xml element nodes key name and value.
+     */
 
+protected:
     QFile *m_file;
     QDomDocument *m_ddom;
 

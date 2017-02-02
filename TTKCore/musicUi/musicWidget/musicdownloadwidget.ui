@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MusicDownloadWidget</class>
- <widget class="QDialog" name="MusicDownloadWidget">
+ <widget class="QWidget" name="MusicDownloadWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>210</height>
+    <width>468</width>
+    <height>178</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>下载窗口</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -19,8 +19,8 @@
   <widget class="QLabel" name="background">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>20</y>
+     <x>4</x>
+     <y>4</y>
      <width>460</width>
      <height>170</height>
     </rect>
@@ -35,8 +35,8 @@
   <widget class="QLabel" name="topTitleName">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>20</y>
+     <x>14</x>
+     <y>4</y>
      <width>221</width>
      <height>25</height>
     </rect>
@@ -51,8 +51,8 @@
   <widget class="QToolButton" name="topTitleCloseButton">
    <property name="geometry">
     <rect>
-     <x>458</x>
-     <y>22</y>
+     <x>442</x>
+     <y>6</y>
      <width>20</width>
      <height>20</height>
     </rect>
@@ -64,8 +64,8 @@
   <widget class="QWidget" name="backgroundMask" native="true">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>45</y>
+     <x>4</x>
+     <y>29</y>
      <width>460</width>
      <height>145</height>
     </rect>
@@ -96,9 +96,6 @@ QLabel{background:transparent;}</string>
       <height>20</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">QLineEdit{font-size:12px;color:#BFBFBF; font-weight:normal;border: 1px solid gray;}QLineEdit::hover{ border: 1px solid #AAAAFF;}</string>
-    </property>
     <property name="readOnly">
      <bool>true</bool>
     </property>
@@ -114,9 +111,6 @@ QLabel{background:transparent;}</string>
     </property>
     <property name="cursor">
      <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton{border-radius:1px;background-color:#80B7F1;color:white;font-size:12px;}</string>
     </property>
     <property name="text">
      <string>更改目录</string>
@@ -134,9 +128,6 @@ QLabel{background:transparent;}</string>
     <property name="cursor">
      <cursorShape>PointingHandCursor</cursorShape>
     </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton{border-radius:1px;background-color:#80B7F1;color:white;font-size:12px;}</string>
-    </property>
     <property name="text">
      <string>下载设置</string>
     </property>
@@ -147,14 +138,11 @@ QLabel{background:transparent;}</string>
       <x>180</x>
       <y>100</y>
       <width>100</width>
-      <height>40</height>
+      <height>35</height>
      </rect>
     </property>
     <property name="cursor">
      <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton{border-radius:5px;background-color:#80B7F1;color:white;font-size:17px;font-weight:bold;}</string>
     </property>
     <property name="text">
      <string>下载</string>

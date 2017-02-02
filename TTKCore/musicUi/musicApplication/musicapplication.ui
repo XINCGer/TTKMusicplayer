@@ -6,984 +6,1458 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>990</width>
+    <width>1033</width>
     <height>660</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1033</width>
+    <height>660</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>天天酷音</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-    <normaloff>:/image/windowicon</normaloff>:/image/windowicon</iconset>
+    <normaloff>:/image/lb_player_logo</normaloff>:/image/lb_player_logo</iconset>
   </property>
-  <widget class="QToolButton" name="windowClose">
-   <property name="geometry">
-    <rect>
-     <x>937</x>
-     <y>27</y>
-     <width>25</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="minimization">
-   <property name="geometry">
-    <rect>
-     <x>909</x>
-     <y>27</y>
-     <width>25</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="background">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>950</width>
-     <height>620</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="scaledContents">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicPrivious">
-   <property name="geometry">
-    <rect>
-     <x>114</x>
-     <y>80</y>
-     <width>55</width>
-     <height>55</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicNext">
-   <property name="geometry">
-    <rect>
-     <x>240</x>
-     <y>80</y>
-     <width>55</width>
-     <height>55</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="MusicTimerSliderWidget" name="musicTimeWidget" native="true">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>45</y>
-     <width>375</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="menuSetting">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>600</y>
-     <width>40</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="popupMode">
-    <enum>QToolButton::InstantPopup</enum>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicKey">
-   <property name="geometry">
-    <rect>
-     <x>177</x>
-     <y>80</y>
-     <width>55</width>
-     <height>55</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicSound">
-   <property name="geometry">
-    <rect>
-     <x>303</x>
-     <y>114</y>
-     <width>18</width>
-     <height>18</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border-image: url(:/image/soundmax);</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QSlider" name="musicSoundSlider">
-   <property name="geometry">
-    <rect>
-     <x>328</x>
-     <y>116</y>
-     <width>53</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QStackedWidget" name="songsContainer">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>144</y>
-     <width>331</width>
-     <height>455</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="MusicMarqueeWidget" name="showCurrentSong" native="true">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>30</y>
-     <width>200</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color:#FFFFFF;font-weight:bold;font-size:15px;</string>
-   </property>
-   <property name="text" stdset="0">
-    <string>当前无正在播放的歌曲</string>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicSetting">
-   <property name="geometry">
-    <rect>
-     <x>165</x>
-     <y>600</y>
-     <width>40</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicImport">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>600</y>
-     <width>40</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicSearch">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
-     <y>600</y>
-     <width>40</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicCurrentLocation">
-   <property name="geometry">
-    <rect>
-     <x>295</x>
-     <y>600</y>
-     <width>40</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="MusicLocalSongSearchInlineEdit" name="musicSongSearchLine" native="true">
-   <property name="geometry">
-    <rect>
-     <x>504</x>
-     <y>27</y>
-     <width>261</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text" stdset="0">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="musicWindowSpace">
-   <property name="geometry">
-    <rect>
-     <x>380</x>
-     <y>20</y>
-     <width>590</width>
-     <height>45</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border-image: url(:/image/screentop);</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="musicSearchButton">
-   <property name="geometry">
-    <rect>
-     <x>765</x>
-     <y>27</y>
-     <width>25</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border-image: url(:/share/searchlineleft);</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicWindowChangeSkin">
-   <property name="geometry">
-    <rect>
-     <x>800</x>
-     <y>27</y>
-     <width>25</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QStackedWidget" name="SurfaceStackedWidget">
-   <property name="geometry">
-    <rect>
-     <x>390</x>
-     <y>144</y>
-     <width>541</width>
-     <height>455</height>
-    </rect>
-   </property>
-   <property name="currentIndex">
+  <layout class="QHBoxLayout" name="horizontalLayout_5">
+   <property name="spacing">
     <number>0</number>
    </property>
-   <widget class="QLabel" name="showPicture">
-    <property name="styleSheet">
-     <string notr="true">border-image:url(:/image/beauty)</string>
-    </property>
-   </widget>
-   <widget class="MusicSongSearchOnlineWidget" name="songSearchWidget"/>
-   <widget class="MusicLrcContainerForInline" name="musiclrccontainerforinline"/>
-  </widget>
-  <widget class="QPushButton" name="musicSearchWidgetButton">
-   <property name="geometry">
-    <rect>
-     <x>595</x>
-     <y>88</y>
-     <width>80</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string>音乐</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="musicLrcWidgetButton">
-   <property name="geometry">
-    <rect>
-     <x>690</x>
-     <y>88</y>
-     <width>80</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string>歌词</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="musicSearchRefreshButton">
-   <property name="geometry">
-    <rect>
-     <x>450</x>
-     <y>90</y>
-     <width>35</width>
-     <height>35</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="musicIndexWidgetButton">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>88</y>
-     <width>80</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string>首页</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="showDownloadGif">
-   <property name="geometry">
-    <rect>
-     <x>930</x>
-     <y>510</y>
-     <width>41</width>
-     <height>101</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="musicDesktopLrc">
-   <property name="geometry">
-    <rect>
-     <x>35</x>
-     <y>113</y>
-     <width>15</width>
-     <height>15</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicBestLove">
-   <property name="geometry">
-    <rect>
-     <x>87</x>
-     <y>108</y>
-     <width>21</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QWidget" name="horizontalLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>400</x>
-     <y>26</y>
-     <width>101</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="userWindow">
-    <property name="spacing">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-   </layout>
-  </widget>
-  <widget class="QToolButton" name="musicButton_tools">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>475</y>
-     <width>40</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="popupMode">
-    <enum>QToolButton::InstantPopup</enum>
-   </property>
-  </widget>
-  <widget class="MusicEnhancedWidget" name="musicEnhancedButton" native="true">
-   <property name="geometry">
-    <rect>
-     <x>335</x>
-     <y>95</y>
-     <width>50</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicWindowRemote">
-   <property name="geometry">
-    <rect>
-     <x>878</x>
-     <y>27</y>
-     <width>25</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicButton_playlist">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>175</y>
-     <width>40</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicButton_radio">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>235</y>
-     <width>40</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicButton_mydownl">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>295</y>
-     <width>40</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicButton_cloud">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>415</y>
-     <width>40</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="vedioWidgetButton">
-   <property name="geometry">
-    <rect>
-     <x>785</x>
-     <y>88</y>
-     <width>80</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string>视频</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="playCurrentTime">
-   <property name="geometry">
-    <rect>
-     <x>311</x>
-     <y>75</y>
-     <width>35</width>
-     <height>15</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color:#FFFFFF;</string>
-   </property>
-   <property name="text">
-    <string>00:00</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="playTotalTime">
-   <property name="geometry">
-    <rect>
-     <x>345</x>
-     <y>75</y>
-     <width>37</width>
-     <height>15</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color:#FFFFFF;</string>
-   </property>
-   <property name="text">
-    <string>/00:00</string>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicPlayMode">
-   <property name="geometry">
-    <rect>
-     <x>56</x>
-     <y>108</y>
-     <width>25</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="musicWindowConcise">
-   <property name="geometry">
-    <rect>
-     <x>848</x>
-     <y>27</y>
-     <width>25</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="musicWindowSpace_2">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>601</y>
-     <width>951</width>
-     <height>39</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color:rgba(0,0,0,30)</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="resizeWindowLabel">
-   <property name="geometry">
-    <rect>
-     <x>950</x>
-     <y>620</y>
-     <width>15</width>
-     <height>15</height>
-    </rect>
-   </property>
-   <property name="pixmap">
-    <pixmap resource="../../../TTKQrc/MusicPlayer.qrc">:/image/resizeWindow</pixmap>
-   </property>
-  </widget>
-  <widget class="QWidget" name="verticalLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>35</x>
-     <y>35</y>
-     <width>46</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="musicQualityWindow"/>
-  </widget>
-  <widget class="QToolButton" name="musicButton_mobile">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>355</y>
-     <width>40</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="lrcDisplayAllButton">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>392</x>
-     <y>320</y>
-     <width>15</width>
-     <height>56</height>
-    </rect>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QPushButton{border:none;background:transparent;};</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="musicSearchBackButton">
-   <property name="geometry">
-    <rect>
-     <x>410</x>
-     <y>90</y>
-     <width>35</width>
-     <height>35</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <action name="action_About">
-   <property name="text">
-    <string>关于天天酷音(&amp;A)</string>
-   </property>
-   <property name="toolTip">
-    <string>关于天天酷音</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+A</string>
-   </property>
-  </action>
-  <action name="action_Quit">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/image/close</normaloff>:/image/close</iconset>
-   </property>
-   <property name="text">
-    <string>退出(&amp;Q)</string>
-   </property>
-   <property name="toolTip">
-    <string>退出</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Q</string>
-   </property>
-  </action>
-  <action name="action_ImportSongs">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/appTools/import</normaloff>:/appTools/import</iconset>
-   </property>
-   <property name="text">
-    <string>导入本地歌曲(&amp;I)</string>
-   </property>
-   <property name="toolTip">
-    <string>添加歌曲</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+I</string>
-   </property>
-  </action>
-  <action name="action_Privious">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/image/privious</normaloff>:/image/privious</iconset>
-   </property>
-   <property name="text">
-    <string>上一曲(&amp;P)</string>
-   </property>
-   <property name="toolTip">
-    <string>上一曲</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Left</string>
-   </property>
-  </action>
-  <action name="action_Next">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/image/next</normaloff>:/image/next</iconset>
-   </property>
-   <property name="text">
-    <string>下一曲(&amp;N)</string>
-   </property>
-   <property name="toolTip">
-    <string>下一曲</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Right</string>
-   </property>
-  </action>
-  <action name="action_Play">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/image/play</normaloff>:/image/play</iconset>
-   </property>
-   <property name="text">
-    <string>播放/暂停</string>
-   </property>
-   <property name="toolTip">
-    <string>播放/暂停</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+B</string>
-   </property>
-  </action>
-  <action name="action_VolumePlus">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/image/soundmax</normaloff>:/image/soundmax</iconset>
-   </property>
-   <property name="text">
-    <string>音量(&amp;+)</string>
-   </property>
-   <property name="toolTip">
-    <string>增加音量</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Up</string>
-   </property>
-  </action>
-  <action name="action_VolumeSub">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/image/soundmin</normaloff>:/image/soundmin</iconset>
-   </property>
-   <property name="text">
-    <string>音量(&amp;-)</string>
-   </property>
-   <property name="toolTip">
-    <string>降低音量</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Down</string>
-   </property>
-  </action>
-  <action name="action_OrderPlay">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/image/orderplay</normaloff>:/image/orderplay</iconset>
-   </property>
-   <property name="text">
-    <string>顺序播放</string>
-   </property>
-   <property name="toolTip">
-    <string>顺序播放</string>
-   </property>
-   <property name="shortcut">
-    <string>Alt+1</string>
-   </property>
-  </action>
-  <action name="action_RandomPlay">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/image/randomplay</normaloff>:/image/randomplay</iconset>
-   </property>
-   <property name="text">
-    <string>随机播放</string>
-   </property>
-   <property name="toolTip">
-    <string>随机播放</string>
-   </property>
-   <property name="shortcut">
-    <string>Alt+2</string>
-   </property>
-  </action>
-  <action name="action_SingleCycle">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/image/oneloop</normaloff>:/image/oneloop</iconset>
-   </property>
-   <property name="text">
-    <string>单曲循环</string>
-   </property>
-   <property name="toolTip">
-    <string>单曲循环</string>
-   </property>
-   <property name="shortcut">
-    <string>Alt+3</string>
-   </property>
-  </action>
-  <action name="action_ListCycle">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/image/listloop</normaloff>:/image/listloop</iconset>
-   </property>
-   <property name="text">
-    <string>列表循环</string>
-   </property>
-   <property name="toolTip">
-    <string>列表循环</string>
-   </property>
-   <property name="shortcut">
-    <string>Alt+4</string>
-   </property>
-  </action>
-  <action name="action_Setting">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/appTools/setting</normaloff>:/appTools/setting</iconset>
-   </property>
-   <property name="text">
-    <string>设置(&amp;S)</string>
-   </property>
-   <property name="toolTip">
-    <string>设置</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="action_ItemOnce">
-   <property name="icon">
-    <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
-     <normaloff>:/image/playonce</normaloff>:/image/playonce</iconset>
-   </property>
-   <property name="text">
-    <string>单曲播放</string>
-   </property>
-   <property name="shortcut">
-    <string>Alt+5</string>
-   </property>
-  </action>
-  <zorder>background</zorder>
-  <zorder>musicPrivious</zorder>
-  <zorder>musicNext</zorder>
-  <zorder>musicKey</zorder>
-  <zorder>musicSound</zorder>
-  <zorder>musicSoundSlider</zorder>
-  <zorder>songsContainer</zorder>
-  <zorder>showCurrentSong</zorder>
-  <zorder>musicWindowSpace</zorder>
-  <zorder>musicSongSearchLine</zorder>
-  <zorder>musicSearchButton</zorder>
-  <zorder>musicWindowChangeSkin</zorder>
-  <zorder>SurfaceStackedWidget</zorder>
-  <zorder>musicSearchWidgetButton</zorder>
-  <zorder>musicLrcWidgetButton</zorder>
-  <zorder>musicSearchRefreshButton</zorder>
-  <zorder>musicIndexWidgetButton</zorder>
-  <zorder>showDownloadGif</zorder>
-  <zorder>musicDesktopLrc</zorder>
-  <zorder>musicBestLove</zorder>
-  <zorder>horizontalLayoutWidget</zorder>
-  <zorder>musicButton_tools</zorder>
-  <zorder>musicWindowRemote</zorder>
-  <zorder>musicButton_playlist</zorder>
-  <zorder>musicButton_radio</zorder>
-  <zorder>musicButton_mydownl</zorder>
-  <zorder>musicButton_cloud</zorder>
-  <zorder>musicTimeWidget</zorder>
-  <zorder>vedioWidgetButton</zorder>
-  <zorder>playCurrentTime</zorder>
-  <zorder>playTotalTime</zorder>
-  <zorder>musicPlayMode</zorder>
-  <zorder>musicWindowConcise</zorder>
-  <zorder>musicWindowSpace_2</zorder>
-  <zorder>musicSetting</zorder>
-  <zorder>menuSetting</zorder>
-  <zorder>musicCurrentLocation</zorder>
-  <zorder>musicImport</zorder>
-  <zorder>musicSearch</zorder>
-  <zorder>resizeWindowLabel</zorder>
-  <zorder>minimization</zorder>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>musicEnhancedButton</zorder>
-  <zorder>musicButton_mobile</zorder>
-  <zorder>lrcDisplayAllButton</zorder>
-  <zorder>windowClose</zorder>
-  <zorder>musicSearchBackButton</zorder>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="MusicTransitionAnimationLabel" name="background">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
+      <item>
+       <widget class="QWidget" name="topWidget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QWidget" name="topLeftWidget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>370</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>370</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <widget class="QWidget" name="horizontalLayoutWidget">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>101</width>
+              <height>31</height>
+             </rect>
+            </property>
+            <layout class="QHBoxLayout" name="userWindow">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="topRightWidget" native="true">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QWidget" name="searchWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>300</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>300</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">#searchWidget{background:rgba(255,255,255,200); border-radius:15px;}</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_11">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>10</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="MusicLocalSongSearchInlineEdit" name="musicSongSearchLine" native="true">
+                 <property name="minimumSize">
+                  <size>
+                   <width>260</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>260</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="text" stdset="0">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="musicSearchButton">
+                 <property name="minimumSize">
+                  <size>
+                   <width>33</width>
+                   <height>27</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>33</width>
+                   <height>27</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="marginLabel">
+              <property name="minimumSize">
+               <size>
+                <width>1</width>
+                <height>1</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>1</width>
+                <height>1</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicWindowChangeSkin">
+              <property name="minimumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QFrame" name="frame">
+              <property name="minimumSize">
+               <size>
+                <width>1</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>1</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background:rgba(255,255,255,150)</string>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::VLine</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Sunken</enum>
+              </property>
+              <property name="lineWidth">
+               <number>1</number>
+              </property>
+              <property name="midLineWidth">
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicWindowSetting">
+              <property name="minimumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicWindowConcise">
+              <property name="minimumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicWindowRemote">
+              <property name="minimumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="minimization">
+              <property name="minimumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="windowClose">
+              <property name="minimumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>14</width>
+                <height>14</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="centerWidget" native="true">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QWidget" name="centerLeftWidget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>50</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QToolButton" name="musicButton_playlist">
+              <property name="minimumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicButton_cloud">
+              <property name="minimumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicButton_radio">
+              <property name="minimumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicButton_mobile">
+              <property name="minimumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicButton_mydownl">
+              <property name="minimumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicButton_tools">
+              <property name="minimumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="MusicAnimationStackedWidget" name="songsContainer">
+           <property name="minimumSize">
+            <size>
+             <width>320</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>320</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="centerRightWidget" native="true">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QWidget" name="stackedFunctionWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>35</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>35</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <property name="leftMargin">
+                <number>5</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QToolButton" name="musicBackButton">
+                 <property name="minimumSize">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="musicRefreshButton">
+                 <property name="minimumSize">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QWidget" name="stackedWidgetFunctionOption" native="true">
+                 <property name="minimumSize">
+                  <size>
+                   <width>470</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>470</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_8">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QToolButton" name="musicSongWidgetButton">
+                    <property name="minimumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="musicRadioWidgetButton">
+                    <property name="minimumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="musicListWidgetButton">
+                    <property name="minimumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="musicVideoWidgetButton">
+                    <property name="minimumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="musicLiveWidgetButton">
+                    <property name="minimumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QToolButton" name="musicLrcWidgetButton">
+                    <property name="minimumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>54</width>
+                      <height>23</height>
+                     </size>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="Line" name="line">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>1</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background:rgba(210, 210, 210)</string>
+              </property>
+              <property name="lineWidth">
+               <number>1</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QStackedWidget" name="surfaceStackedWidget">
+              <property name="minimumSize">
+               <size>
+                <width>661</width>
+                <height>503</height>
+               </size>
+              </property>
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="MusicSongSearchOnlineWidget" name="songSearchWidget"/>
+              <widget class="MusicLrcContainerForInline" name="musiclrccontainerforinline">
+               <widget class="QPushButton" name="lrcDisplayAllButton">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>200</y>
+                  <width>13</width>
+                  <height>55</height>
+                 </rect>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>13</width>
+                  <height>55</height>
+                 </size>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QPushButton{border:none;background:transparent;};</string>
+                </property>
+               </widget>
+              </widget>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="bottomWidget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>70</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>70</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QWidget" name="bottomLeftWidget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>220</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>220</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="musicLabelMargin">
+              <property name="minimumSize">
+               <size>
+                <width>1</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>1</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicPrevious">
+              <property name="minimumSize">
+               <size>
+                <width>44</width>
+                <height>44</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>44</width>
+                <height>44</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicKey">
+              <property name="minimumSize">
+               <size>
+                <width>44</width>
+                <height>44</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>44</width>
+                <height>44</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicNext">
+              <property name="minimumSize">
+               <size>
+                <width>44</width>
+                <height>44</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>44</width>
+                <height>44</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="bottomCenterWidget" native="true">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <layout class="QGridLayout" name="gridLayout">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <property name="horizontalSpacing">
+             <number>5</number>
+            </property>
+            <property name="verticalSpacing">
+             <number>0</number>
+            </property>
+            <item row="1" column="5">
+             <widget class="QLabel" name="rightMargin">
+              <property name="minimumSize">
+               <size>
+                <width>10</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>10</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <layout class="QVBoxLayout" name="musicQualityWindow">
+              <property name="spacing">
+               <number>6</number>
+              </property>
+             </layout>
+            </item>
+            <item row="3" column="0" colspan="6">
+             <widget class="MusicTimerSliderWidget" name="musicTimeWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <widget class="QWidget" name="timeWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>80</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="playCurrentTime">
+                 <property name="styleSheet">
+                  <string notr="true">color:#FFFFFF;</string>
+                 </property>
+                 <property name="text">
+                  <string>00:00</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="playTotalTime">
+                 <property name="styleSheet">
+                  <string notr="true">color:#FFFFFF;</string>
+                 </property>
+                 <property name="text">
+                  <string>/00:00</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="1" column="2" colspan="2">
+             <widget class="MusicMarqueeWidget" name="showCurrentSong" native="true">
+              <property name="styleSheet">
+               <string notr="true">color:#FFFFFF;font-weight:bold;font-size:15px;</string>
+              </property>
+              <property name="text" stdset="0">
+               <string>当前无正在播放的歌曲</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="6">
+             <widget class="QLabel" name="topMargin">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="leftMargin">
+              <property name="minimumSize">
+               <size>
+                <width>10</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>10</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="bottomRightWidget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>380</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>380</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <property name="spacing">
+             <number>15</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QToolButton" name="musicBestLove">
+              <property name="minimumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="musicDownload">
+              <property name="minimumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="MusicMoreFunctionsPopWidget" name="musicMoreFunction" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+              <property name="checkable" stdset="0">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="MusicPlayBackModeWidget" name="musicPlayMode" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="MusicVolumePopWidget" name="musicSound" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text" stdset="0">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="MusicEnhancedWidget" name="musicEnhancedButton" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="musicDesktopLrc">
+              <property name="minimumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="MusicPlayedListWidget" name="musicPlayedList" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>64</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>64</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text" stdset="0">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1022,6 +1496,41 @@
    <extends>QWidget</extends>
    <header>musicenhancedwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MusicAnimationStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>musicanimationstackedwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MusicPlayBackModeWidget</class>
+   <extends>QWidget</extends>
+   <header>musicplaybackmodewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MusicVolumePopWidget</class>
+   <extends>QWidget</extends>
+   <header>musicvolumepopwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MusicMoreFunctionsPopWidget</class>
+   <extends>QWidget</extends>
+   <header>musicmorefunctionspopwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MusicPlayedListWidget</class>
+   <extends>QWidget</extends>
+   <header>musicplayedlistwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MusicTransitionAnimationLabel</class>
+   <extends>QLabel</extends>
+   <header>musictransitionanimationlabel.h</header>
   </customwidget>
  </customwidgets>
  <resources>

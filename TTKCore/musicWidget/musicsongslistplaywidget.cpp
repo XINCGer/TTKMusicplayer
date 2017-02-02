@@ -1,122 +1,115 @@
 #include "musicsongslistplaywidget.h"
 #include "musicsongtag.h"
 #include "musicsongstoolitemrenamedwidget.h"
+#include "musicobject.h"
 #include "musicuiobject.h"
-#include "musicconnectionpool.h"
-#include "musicdownloadwidget.h"
-#include "musicsongsharingwidget.h"
+#include "musicstringutils.h"
+#include "musicwidgetutils.h"
+#include "musicnumberdefine.h"
+#include "musicsettingmanager.h"
+#include "musicapplication.h"
+#include "musicleftareawidget.h"
+#include "musictinyuiobject.h"
+#include "musicsplititemclickedlabel.h"
 
-MusicSongsEnterPlayWidget::MusicSongsEnterPlayWidget(int index, QWidget *parent)
-    : QWidget(parent), m_currentPlayIndex(index)
-{
-    QPalette pal = palette();
-    pal.setBrush(QPalette::Base,QBrush(QColor(0, 0, 0, 100)));
-    setPalette(pal);
-    setAutoFillBackground(true);
-}
-
-void MusicSongsEnterPlayWidget::enterEvent(QEvent *event)
-{
-    QWidget::enterEvent(event);
-    emit enterChanged(m_currentPlayIndex, -1);
-}
-
+#include <QMenu>
+#include <QTimer>
 
 MusicSongsListPlayWidget::MusicSongsListPlayWidget(int index, QWidget *parent)
-    : MusicSongsEnterPlayWidget(index, parent), m_renameLine(nullptr)
+    : QWidget(parent), m_renameLine(nullptr)
 {
+    QPalette pal = palette();
+    pal.setBrush(QPalette::Base,QBrush(QColor(0, 0, 0, 40)));
+    setPalette(pal);
+    setAutoFillBackground(true);
+
+    m_currentPlayIndex = index;
     m_totalTime = "/00:00";
 
-    m_artPicture = new QLabel(this);
-    m_artPicture->setFixedSize(60, 60);
-    m_artPicture->setAttribute(Qt::WA_TranslucentBackground);
-    m_artPicture->setGeometry(0, 0, 60, 60);
+    QPushButton *addButton = new QPushButton(this);
+    addButton->setGeometry(2, 25, 16, 16);
+    addButton->setStyleSheet(MusicUIObject::MKGTinyBtnPlayLater);
+    addButton->setCursor(QCursor(Qt::PointingHandCursor));
+    addButton->setToolTip(tr("playLater"));
 
-    m_songName = new QLabel(this);
-    m_songName->setFixedSize(202, 25);
-    m_songName->setAttribute(Qt::WA_TranslucentBackground);
-    m_songName->setStyleSheet(MusicUIObject::MCustomStyle11);
-    m_songName->setGeometry(65, 5, 182, 25);
+    m_artPictureLabel = new QLabel(this);
+    m_artPictureLabel->setFixedSize(60, 60);
+    m_artPictureLabel->setAttribute(Qt::WA_TranslucentBackground);
+    m_artPictureLabel->setGeometry(20, 0, 60, 60);
+
+    m_songNameLabel = new MusicSplitItemClickedLabel(this);
+    m_songNameLabel->setAttribute(Qt::WA_TranslucentBackground);
+    m_songNameLabel->setStyleSheet(MusicUIObject::MColorStyle01);
+    m_songNameLabel->setGeometry(85, 5, 200, 25);
 
     m_timeLabel = new QLabel(this);
     m_timeLabel->setFixedSize(100, 20);
     m_timeLabel->setAttribute(Qt::WA_TranslucentBackground);
-    m_timeLabel->setStyleSheet(MusicUIObject::MCustomStyle11);
-    m_timeLabel->setGeometry(65, 37, 100, 20);
-
-    m_columnOne = new MusicSongsEnterPlayWidget(index, this);
-    m_columnThree = new MusicSongsEnterPlayWidget(index, this);
-
-    m_loveButton = new QPushButton(this);
-    m_loveButton->setGeometry(214, 35, 23, 23);
-    m_loveButton->setStyleSheet( MusicUIObject::MPushButtonStyle13 );
-    m_loveButton->setIcon(QIcon(":/image/bestlove"));
-    m_loveButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_loveButton->setToolTip(tr("bestlove"));
-
-    m_deleteButton = new QPushButton(this);
-    m_deleteButton->setGeometry(235, 35, 23, 23);
-    m_deleteButton->setStyleSheet( MusicUIObject::MPushButtonStyle13 );
-    m_deleteButton->setIcon(QIcon(":/image/musicdelete"));
-    m_deleteButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_deleteButton->setToolTip(tr("deleteMusic"));
+    m_timeLabel->setStyleSheet(MusicUIObject::MColorStyle01);
+    m_timeLabel->setGeometry(85, 37, 100, 20);
 
     m_downloadButton = new QPushButton(this);
-    m_downloadButton->setGeometry(170, 35, 23, 23);
-    m_downloadButton->setStyleSheet( MusicUIObject::MPushButtonStyle13 );
-    m_downloadButton->setIcon(QIcon(":/appTools/buttonmydownl"));
-    m_downloadButton->setIconSize(QSize(23, 23));
+    m_downloadButton->setGeometry(175, 40, 16, 16);
     m_downloadButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_downloadButton->setToolTip(tr("songDownload"));
+    currentDownloadStateClicked();
 
-    m_showMVButton = new QPushButton(m_columnThree);
-    m_showMVButton->setGeometry(0, 35, 23, 23);
-    m_showMVButton->setStyleSheet( MusicUIObject::MPushButtonStyle13 );
-    m_showMVButton->setIcon(QIcon(":/share/showMV2"));
+    m_showMVButton = new QPushButton(this);
+    m_showMVButton->setGeometry(211, 39, 16, 16);
+    m_showMVButton->setStyleSheet(MusicUIObject::MKGTinyBtnMV);
     m_showMVButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_showMVButton->setToolTip(tr("showMV"));
 
-    m_songShareButton = new QPushButton(m_columnThree);
-    m_songShareButton->setGeometry(0, 7, 23, 23);
-    m_songShareButton->setStyleSheet( MusicUIObject::MPushButtonStyle13 );
-    m_songShareButton->setIcon(QIcon(":/image/songShare"));
-    m_songShareButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_songShareButton->setToolTip(tr("songShare"));
+    m_loveButton = new QPushButton(this);
+    m_loveButton->setGeometry(231, 40, 16, 16);
+    m_loveButton->setCursor(QCursor(Qt::PointingHandCursor));
+    m_loveButton->setToolTip(tr("bestlove"));
+    currentLoveStateClicked();
 
-    connect(m_loveButton, SIGNAL(clicked()), parent, SLOT(addMusicSongToLovestListAt()));
+    m_deleteButton = new QPushButton(this);
+    m_deleteButton->setGeometry(251, 40, 16, 16);
+    m_deleteButton->setStyleSheet(MusicUIObject::MKGTinyBtnDelete);
+    m_deleteButton->setCursor(QCursor(Qt::PointingHandCursor));
+    m_deleteButton->setToolTip(tr("deleteMusic"));
+
+    m_moreButton = new QPushButton(this);
+    m_moreButton->setGeometry(271, 39, 16, 16);
+    m_moreButton->setStyleSheet(MusicUIObject::MPushButtonStyle13 + MusicUIObject::MKGTinyBtnMore);
+    m_moreButton->setCursor(QCursor(Qt::PointingHandCursor));
+    m_moreButton->setToolTip(tr("moreFunction"));
+
+    QMenu *menu = new QMenu(this);
+    createMoreMenu(menu);
+    m_moreButton->setMenu(menu);
+
+    connect(m_loveButton, SIGNAL(clicked()), MusicApplication::instance(), SLOT(musicAddSongToLovestListAt()));
+    connect(m_downloadButton, SIGNAL(clicked()), MusicLeftAreaWidget::instance(), SLOT(musicDownloadSongToLocal()));
     connect(m_deleteButton, SIGNAL(clicked()), parent, SLOT(setDeleteItemAt()));
     connect(this, SIGNAL(renameFinished(QString)), parent, SLOT(setItemRenameFinished(QString)));
     connect(this, SIGNAL(enterChanged(int,int)), parent, SLOT(listCellEntered(int,int)));
-    connect(m_columnOne, SIGNAL(enterChanged(int,int)), parent, SLOT(listCellEntered(int,int)));
-    connect(m_columnThree, SIGNAL(enterChanged(int,int)), parent, SLOT(listCellEntered(int,int)));
-    connect(m_showMVButton, SIGNAL(clicked()), SLOT(showMVButtonClicked()));
-    connect(m_downloadButton, SIGNAL(clicked()), SLOT(downloadButtonClicked()));
-    connect(m_songShareButton, SIGNAL(clicked()), SLOT(sharingButtonClicked()));
+    connect(m_showMVButton, SIGNAL(clicked()), parent, SLOT(musicSongMovieFoundPy()));
+    connect(addButton, SIGNAL(clicked()), parent, SLOT(musicAddToPlayLater()));
 
-    M_CONNECTION->setValue("MusicSongsListPlayWidget", this);
-    M_CONNECTION->poolConnect("MusicSongsListPlayWidget", "MusicRightAreaWidget");
+    connect(MusicLeftAreaWidget::instance(), SIGNAL(currentLoveStateChanged()), SLOT(currentLoveStateClicked()));
+    connect(MusicLeftAreaWidget::instance(), SIGNAL(currentDownloadStateChanged()), SLOT(currentDownloadStateClicked()));
 }
 
 MusicSongsListPlayWidget::~MusicSongsListPlayWidget()
 {
-    M_CONNECTION->poolDisConnect("MusicSongsListPlayWidget");
     delete m_renameLine;
-    delete m_artPicture;
-    delete m_songName;
+    delete m_artPictureLabel;
+    delete m_songNameLabel;
     delete m_timeLabel;
     delete m_loveButton;
     delete m_deleteButton;
     delete m_showMVButton;
     delete m_downloadButton;
-    delete m_songShareButton;
-    delete m_columnOne;
-    delete m_columnThree;
+    delete m_moreButton;
 }
 
-void MusicSongsListPlayWidget::getWidget(QWidget *&one, QWidget *&two) const
+QString MusicSongsListPlayWidget::getClassName()
 {
-    one = m_columnOne;
-    two = m_columnThree;
+    return staticMetaObject.className();
 }
 
 void MusicSongsListPlayWidget::insertTimerLabel(const QString &t) const
@@ -124,68 +117,96 @@ void MusicSongsListPlayWidget::insertTimerLabel(const QString &t) const
     m_timeLabel->setText(t + m_totalTime);
 }
 
+void MusicSongsListPlayWidget::updateCurrentArtist()
+{
+    QString name = m_songNameLabel->toolTip();
+    if(!showArtPicture(MusicUtils::String::artistName(name)) &&
+       !showArtPicture(MusicUtils::String::songName(name)))
+    {
+        m_artPictureLabel->setPixmap(QPixmap(":/image/lb_defaultArt").scaled(60, 60));
+    }
+}
+
+void MusicSongsListPlayWidget::enterEvent(QEvent *event)
+{
+    QWidget::enterEvent(event);
+    emit enterChanged(m_currentPlayIndex, -1);
+}
+
+void MusicSongsListPlayWidget::createMoreMenu(QMenu *menu)
+{
+    menu->setStyleSheet(MusicUIObject::MMenuStyle02);
+
+    QMenu *addMenu = menu->addMenu(QIcon(":/contextMenu/btn_add"), tr("addToList"));
+    addMenu->addAction(tr("musicCloud"));
+
+    menu->addAction(QIcon(":/contextMenu/btn_mobile"), tr("songToMobile"), parent(), SLOT(musicSongTransferWidget()));
+    menu->addAction(QIcon(":/contextMenu/btn_ring"), tr("ringToMobile"), parent(), SLOT(musicSongTransferWidget()));
+    menu->addAction(QIcon(":/contextMenu/btn_similar"), tr("similar"), parent(), SLOT(musicSimilarFoundWidgetPy()));
+    menu->addAction(QIcon(":/contextMenu/btn_share"), tr("songShare"), parent(), SLOT(musicSongSharedWidgetPy()));
+    menu->addAction(QIcon(":/contextMenu/btn_kmicro"), tr("KMicro"));
+}
+
 bool MusicSongsListPlayWidget::showArtPicture(const QString &name) const
 {
-    QPixmap originPath(QString(ART_DOWNLOAD_AL + name + SKN_FILE));
+    QPixmap originPath(QString(ART_DIR_FULL + name + SKN_FILE));
     if(!originPath.isNull())
     {
-        m_artPicture->setPixmap(originPath.scaled(60, 60));
+        m_artPictureLabel->setPixmap(originPath.scaled(60, 60));
         return true;
     }
     return false;
 }
 
-void MusicSongsListPlayWidget::setParameter(const QString &name,const QString &path)
+void MusicSongsListPlayWidget::setParameter(const QString &name, const QString &path)
 {
     MusicSongTag tag;
     if(tag.readFile(path))
     {
         m_totalTime = "/" + tag.getLengthString();
     }
-    m_songName->setText(QFontMetrics(font()).elidedText(name, Qt::ElideRight, 180));
-    m_songName->setToolTip(name);
+    m_songNameLabel->setText(MusicUtils::Widget::elidedText(font(), name, Qt::ElideRight, 198));
+    m_songNameLabel->setToolTip(name);
     m_timeLabel->setText("00:00" + m_totalTime);
 
-    if(!showArtPicture(name.split('-').front().trimmed()) &&
-       !showArtPicture(name.split('-').back().trimmed()) )
+    if(!showArtPicture(MusicUtils::String::artistName(name)) &&
+       !showArtPicture(MusicUtils::String::songName(name)))
     {
-        m_artPicture->setPixmap(QPixmap(":/share/defaultArt").scaled(60, 60));
+        m_artPictureLabel->setPixmap(QPixmap(":/image/lb_defaultArt").scaled(60, 60));
     }
 }
 
 void MusicSongsListPlayWidget::setItemRename()
 {
-    m_renameLine = new MusicSongsToolItemRenamedWidget(0, m_songName->text(), this);
+    m_renameLine = new MusicSongsToolItemRenamedWidget(m_songNameLabel->toolTip(), this);
     connect(m_renameLine, SIGNAL(renameFinished(QString)), SLOT(setChangItemName(QString)));
-    m_renameLine->setFixedSize(182, 25);
-    m_renameLine->setGeometry(65, 5, 182, 25);
+    m_renameLine->setGeometry(85, 5, 200, 25);
     m_renameLine->show();
 }
 
-void MusicSongsListPlayWidget::setChangItemName(const QString &name)
+void MusicSongsListPlayWidget::deleteRenameItem()
 {
-    m_songName->setText(name);
-    m_songName->setToolTip(name);
-    emit renameFinished(name);
     delete m_renameLine;
     m_renameLine = nullptr;
 }
 
-void MusicSongsListPlayWidget::showMVButtonClicked()
+void MusicSongsListPlayWidget::setChangItemName(const QString &name)
 {
-    emit videoButtonClicked(m_songName->text());
+    m_songNameLabel->setText(MusicUtils::Widget::elidedText(font(), name, Qt::ElideRight, 198));
+    m_songNameLabel->setToolTip(name);
+    emit renameFinished(name);
+    QTimer::singleShot(MT_MS, this, SLOT(deleteRenameItem()));
 }
 
-void MusicSongsListPlayWidget::downloadButtonClicked()
+void MusicSongsListPlayWidget::currentLoveStateClicked()
 {
-    MusicDownloadWidget downloadWidget;
-    downloadWidget.setSongName(m_songName->text(), MusicDownLoadQueryThreadAbstract::MusicQuery);
-    downloadWidget.exec();
+    bool state = MusicApplication::instance()->musicLovestContains();
+    m_loveButton->setStyleSheet(state ? MusicUIObject::MKGTinyBtnLove : MusicUIObject::MKGTinyBtnUnLove);
 }
 
-void MusicSongsListPlayWidget::sharingButtonClicked()
+void MusicSongsListPlayWidget::currentDownloadStateClicked()
 {
-    MusicSongSharingWidget shareWidget;
-    shareWidget.setSongName(m_songName->text());
-    shareWidget.exec();
+    bool state = false;
+    MusicApplication::instance()->musicDownloadContains(state);
+    m_downloadButton->setStyleSheet(state ? MusicUIObject::MKGTinyBtnDownload : MusicUIObject::MKGTinyBtnUnDownload);
 }

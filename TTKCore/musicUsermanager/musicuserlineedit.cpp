@@ -16,13 +16,18 @@ MusicUserLineEdit::MusicUserLineEdit(QWidget *parent)
     m_statusLabel = nullptr;
 }
 
+QString MusicUserLineEdit::getClassName()
+{
+    return staticMetaObject.className();
+}
+
 void MusicUserLineEdit::focusInEvent(QFocusEvent *event)
 {
     QLineEdit::focusInEvent(event);
     if(m_tipsLabel)
     {
         m_tipsLabel->show();
-        m_tipsLabel->setStyleSheet(MusicUIObject::MCustomStyle13);
+        m_tipsLabel->setStyleSheet(MusicUIObject::MColorStyle04);
     }
 }
 
@@ -56,7 +61,7 @@ void MusicUserLineEdit::labelCheck(bool check)
         if(m_tipsLabel)
         {
             m_tipsLabel->show();
-            m_tipsLabel->setStyleSheet(MusicUIObject::MCustomStyle14);
+            m_tipsLabel->setStyleSheet(MusicUIObject::MColorStyle05);
         }
     }
 }
@@ -69,7 +74,7 @@ void MusicUserLineEdit::showLabel(int s, int e)
 
 void MusicUserLineEdit::showLabel()
 {
-    QRegExp mailRx("([a-zA-Z0-9][\\w-\\.]*)*[a-z0-9A-Z]@[a-z0-9A-Z][a-z0-9A-Z-]*[a-z0-9A-Z]\\.[a-zA-Z]{2,})");
+    QRegExp mailRx("([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)");
     labelCheck(m_mailContains = (text().contains(mailRx)));
 }
 

@@ -3,101 +3,286 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (c) 2014 - 2016 Greedysky Studio
+ * Copyright (c) 2015 - 2017 Greedysky Studio
  * All rights reserved!
  * Redistribution and use of the source code or any derivative
  * works are strictly forbiden.
    =================================================*/
 
-#include <QPair>
 #include <QColor>
 #include "musicabstractxml.h"
 
+/*! @brief The class of the XML Config Manager.
+ * @author Greedysky <greedysky@163.com>
+ */
 class MUSIC_CORE_EXPORT MusicXMLConfigManager : public MusicAbstractXml
 {
+    Q_OBJECT
 public:
     explicit MusicXMLConfigManager(QObject *parent = 0);
+    /*!
+     * Object contsructor.
+     */
 
-    inline bool readXMLConfig() { return readConfig(COFIGPATH_AL); }
-    inline bool readMusicXMLConfig(){ return readConfig(MUSICPATH_AL); }
+    static QString getClassName();
+    /*!
+     * Get class object name.
+     */
+    inline bool readXMLConfig() { return readConfig(COFIGPATH_FULL); }
+    /*!
+     * Read config datas from xml file by given name.
+     */
+    inline bool readMusicXMLConfig(){ return readConfig(MUSICPATH_FULL); }
+    /*!
+     * Read music datas from xml file by given name.
+     */
     void writeXMLConfig();
-    void writeMusicSongsConfig(const MusicSongsList &musics);
-    void readMusicSongsConfig(MusicSongsList &musics);
+    /*!
+     * Write datas into xml file.
+     */
+    void writeMusicSongsConfig(const MusicSongItems &musics,
+                               const QString &path = MUSICPATH_FULL);
+    /*!
+     * Write music datas into xml file.
+     */
+    void readMusicSongsConfig(MusicSongItems &musics);
+    /*!
+     * Read music datas into xml file.
+     */
     inline int readMusicPlayModeConfig() const
     { return readXmlAttributeByTagNameValue("playMode").toInt(); }
+    /*!
+     * Read Music Play Mode Config.
+     */
     inline int readMusicPlayVolumeConfig() const
     { return readXmlAttributeByTagNameValue("playVolume").toInt(); }
-    inline QString readSystemCloseConfig() const
-    { return readXmlAttributeByTagNameValue("closeEvent"); }
+    /*!
+     * Read Music Play Volume Config.
+     */
+    inline int readSystemCloseConfig() const
+    { return readXmlAttributeByTagNameValue("closeEvent").toInt(); }
+    /*!
+     * Read System Close Config.
+     */
     inline int readCloseNetworkConfig() const
     { return readXmlAttributeByTagNameValue("closeNetwork").toInt(); }
-    inline QString readSystemAutoPlayConfig() const
-    { return readXmlAttributeByTagNameValue("autoPlay"); }
-    inline int readEnhancedMusicConfig() const
-    { return readXmlAttributeByTagNameValue("enhancedMusic").toInt(); }
+    /*!
+     * Read Close Network Config.
+     */
+    inline int readSystemAutoPlayConfig() const
+    { return readXmlAttributeByTagNameValue("autoPlay").toInt(); }
+    /*!
+     * Read System Auto Play Config.
+     */
     inline QString readBackgroundTheme() const
     { return readXmlAttributeByTagNameValue("bgTheme"); }
+    /*!
+     * Read Background Theme Config.
+     */
     inline QString readBackgroundTransparent() const
     { return readXmlAttributeByTagNameValue("bgTransparent"); }
+    /*!
+     * Read Background Transparent Config.
+     */
     inline QString readBackgroundListTransparent() const
     { return readXmlAttributeByTagNameValue("bgListTransparent"); }
-    inline QString readShowInlineLrc() const
-    { return readXmlAttributeByTagNameValue("showInlineLrc"); }
-    inline QString readShowDesktopLrc() const
-    { return readXmlAttributeByTagNameValue("showDesktopLrc"); }
+    /*!
+     * Read Background List Transparent Config.
+     */
+    inline int readShowInlineLrc() const
+    { return readXmlAttributeByTagNameValue("showInlineLrc").toInt(); }
+    /*!
+     * Read Show Inline Lrc Config.
+     */
+    inline int readShowDesktopLrc() const
+    { return readXmlAttributeByTagNameValue("showDesktopLrc").toInt(); }
+    /*!
+     * Read Music Show Desktop Lrc Config.
+     */
     inline int readShowLrcColor() const
     { return readXmlAttributeByTagNameValue("lrcColor").toInt(); }
+    /*!
+     * Read Show Lrc Color Config.
+     */
     inline int readShowLrcSize() const
     { return readXmlAttributeByTagNameValue("lrcSize").toInt(); }
+    /*!
+     * Read Show Lrc Size Config.
+     */
     inline int readShowLrcFamily() const
     { return readXmlAttributeByTagNameValue("lrcFamily").toInt(); }
+    /*!
+     * Read Show Lrc Family Config.
+     */
     inline int readShowLrcType() const
     { return readXmlAttributeByTagNameValue("lrcType").toInt(); }
+    /*!
+     * Read Show Lrc Type Config.
+     */
     inline int readShowLrcTransparent() const
     { return readXmlAttributeByTagNameValue("lrcTransparent").toInt(); }
+    /*!
+     * Read Show Lrc Transparent Config.
+     */
     inline int readShowDLrcColor() const
     { return readXmlAttributeByTagNameValue("lrcDColor").toInt(); }
+    /*!
+     * Read Show Desktop Lrc Color Config.
+     */
     inline int readShowDLrcSize() const
     { return readXmlAttributeByTagNameValue("lrcDSize").toInt(); }
+    /*!
+     * Read Show Desktop Lrc Size Config.
+     */
     inline int readShowDLrcFamily() const
     { return readXmlAttributeByTagNameValue("lrcDFamily").toInt(); }
+    /*!
+     * Read Show Desktop Lrc Family Config.
+     */
     inline int readShowDLrcType() const
     { return readXmlAttributeByTagNameValue("lrcDType").toInt(); }
+    /*!
+     * Read Show Desktop Lrc Type Config.
+     */
     inline int readShowDLrcTransparent() const
     { return readXmlAttributeByTagNameValue("lrcDTransparent").toInt(); }
+    /*!
+     * Read Show Desktop Lrc Family Transparent Config.
+     */
+    inline int readDLrcWindowType() const
+    { return readXmlAttributeByTagNameValue("lrcDWindowType").toInt(); }
+    /*!
+     * Read Show Desktop Lrc Locked Config.
+     */
     inline int readShowDLrcLocked() const
     { return readXmlAttributeByTagNameValue("lrcDLocked").toInt(); }
+    /*!
+     * Read Show Desktop Lrc Locked Config.
+     */
+    inline int readEnhancedMusicConfig() const
+    { return readXmlAttributeByTagNameValue("enhancedMusic").toInt(); }
+    /*!
+     * Read Enhanced Music Config.
+     */
     inline int readEqualizerIndex() const
     { return readXmlAttributeByTagNameValue("equalizerIndex").toInt(); }
-    inline int readEqualizerEnale() const
-    { return readXmlAttributeByTagNameValue("equalizerEnale").toInt(); }
+    /*!
+     * Read Equalizer Index Config.
+     */
+    inline int readEqualizerEnable() const
+    { return readXmlAttributeByTagNameValue("equalizerEnable").toInt(); }
+    /*!
+     * Read Equalizer Enale Config.
+     */
     inline QString readEqualizerValue() const
     { return readXmlAttributeByTagNameValue("equalizerValue"); }
-    inline int readSEqualizerIndex() const
-    { return readXmlAttributeByTagNameValue("sEqualizerIndex").toInt(); }
+    /*!
+     * Read Equalizer Value Config.
+     */
+    inline int readEnhancedBalance() const
+    { return readXmlAttributeByTagNameValue("enhancedBalance").toInt(); }
+    /*!
+     * Read Enhanced Volume Balance.
+     */
+    inline int readEnhancedFadeEnable() const
+    { return readXmlAttributeByTagNameValue("enhancedFadeEnable").toInt(); }
+    /*!
+     * Read Enhanced Fade Enable.
+     */
+    inline int readEnhancedFadeInValue() const
+    { return readXmlAttributeByTagNameValue("enhancedFadeInValue").toInt(); }
+    /*!
+     * Read Enhanced Fade In Value.
+     */
+    inline int readEnhancedFadeOutValue() const
+    { return readXmlAttributeByTagNameValue("enhancedFadeOutValue").toInt(); }
+    /*!
+     * Read Enhanced Fade Out Value.
+     */
+    inline int readEnhancedBS2B() const
+    { return readXmlAttributeByTagNameValue("enhancedBS2B").toInt(); }
+    /*!
+     * Read Enhanced BS2B.
+     */
+    inline int readEnhancedCrossfade() const
+    { return readXmlAttributeByTagNameValue("enhancedCrossfade").toInt(); }
+    /*!
+     * Read Enhanced Crossfade.
+     */
+    inline int readEnhancedStereo() const
+    { return readXmlAttributeByTagNameValue("enhancedStereo").toInt(); }
+    /*!
+     * Read Enhanced Stereo.
+     */
+    inline int readEnhancedLADSPA() const
+    { return readXmlAttributeByTagNameValue("enhancedLADSPA").toInt(); }
+    /*!
+     * Read Enhanced LADSPA.
+     */
+    inline int readEnhancedSOX() const
+    { return readXmlAttributeByTagNameValue("enhancedSOX").toInt(); }
+    /*!
+     * Read Enhanced SOX.
+     */
     inline int readLanguageIndex() const
     { return readXmlAttributeByTagNameValue("language").toInt(); }
+    /*!
+     * Read Language Index Config.
+     */
     inline int readDownloadCacheLimit() const
     { return readXmlAttributeByTagNameValue("downloadCacheLimit").toInt(); }
+    /*!
+     * Read Download Cache Limit Config.
+     */
     inline int readDownloadCacheSize() const
     { return readXmlAttributeByTagNameValue("downloadCacheSize").toInt(); }
+    /*!
+     * Read Download Cache Size Config.
+     */
 
-    inline QColor readShowLrcFgColor() const
-    { return readColorConfig("lrcFgColor");}
-    inline QColor readShowLrcBgColor() const
-    { return readColorConfig("lrcBgColor");}
-    inline QColor readShowDLrcFgColor() const
-    { return readColorConfig("lrcDFgColor");}
-    inline QColor readShowDLrcBgColor() const
-    { return readColorConfig("lrcDBgColor");}
+    inline QString readShowLrcFgColor() const
+    { return readXmlAttributeByTagNameValue("lrcFgColor");}
+    /*!
+     * Read Show Lrc Fg Color Config.
+     */
+    inline QString readShowLrcBgColor() const
+    { return readXmlAttributeByTagNameValue("lrcBgColor");}
+    /*!
+     * Read Show Lrc Bg Color Config.
+     */
+    inline QString readShowDLrcFgColor() const
+    { return readXmlAttributeByTagNameValue("lrcDFgColor");}
+    /*!
+     * Read Show Desktop Lrc Fg Color Config.
+     */
+    inline QString readShowDLrcBgColor() const
+    { return readXmlAttributeByTagNameValue("lrcDBgColor");}
+    /*!
+     * Read Show Desktop Lrc Bg Color Config.
+     */
 
     void readSystemLastPlayIndexConfig(QStringList &key) const;
-    QRect readShowDLrcGeometry() const;
+    /*!
+     * Read System Last Play Index Config.
+     */
+    QRect readWindowGeometry() const;
+    /*!
+     * Read window widget Geometry Config.
+     */
+    QPoint readShowDLrcGeometry() const;
+    /*!
+     * Read Show Desktop Lrc Geometry Config.
+     */
     void readOtherLoadConfig() const;
+    /*!
+     * Read Other Load Config.
+     */
 
 protected:
-    MusicSongs readMusicFilePath(const QString &value) const;
-    QColor readColorConfig(const QString &value) const;
+    MusicSongs readMusicFilePath(const QDomNode &node) const;
+    /*!
+     * Read Music File Path.
+     */
 
 };
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2012 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2015 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -32,7 +32,7 @@ class SoftwareVolume;
  * @brief The VolumeControl class provides volume control access
  * @author Ilya Kotov <forkotov02@hotmail.ru>
  */
-class VolumeControl : public QObject
+class Q_DECL_EXPORT VolumeControl : public QObject
 {
     Q_OBJECT
 public:
@@ -123,7 +123,7 @@ private:
  * @brief The SoftwareVolume class provides access to the software volume control.
  * @author Ilya Kotov <forkotov02@hotmail.ru>
  */
-class SoftwareVolume : public Volume
+class Q_DECL_EXPORT SoftwareVolume : public Volume
 {
 public:
     SoftwareVolume();
@@ -131,7 +131,7 @@ public:
 
     void setVolume(const VolumeSettings &v);
     VolumeSettings volume() const;
-    void changeVolume(Buffer *b, int chan, Qmmp::AudioFormat format);
+    void changeVolume(Buffer *b, int chan);
 
     static SoftwareVolume *instance();
 

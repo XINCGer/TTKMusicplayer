@@ -22,7 +22,7 @@ class QmmpPluginCache;
  * @author Brad Hughes <bhughes@trolltech.com>
  * @author Ilya Kotov <forkotov@hotmail.ru>
  */
-class Output
+class Q_DECL_EXPORT Output
 {
 public:
     /*!
@@ -134,6 +134,7 @@ private:
     quint32 m_frequency;
     ChannelMap m_chan_map;
     Qmmp::AudioFormat m_format;
+    int m_sample_size;
     static void loadPlugins();
     static QList<QmmpPluginCache*> *m_cache;
 };

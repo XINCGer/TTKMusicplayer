@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (c) 2014 - 2016 Greedysky Studio
+ * Copyright (c) 2015 - 2017 Greedysky Studio
  * All rights reserved!
  * Redistribution and use of the source code or any derivative
  * works are strictly forbiden.
@@ -11,9 +11,6 @@
 
 #include <QtCore/qglobal.h>
 
-#ifdef QT_DEBUG
-#   define MUSIC_DEBUG
-#endif
 //////////////////////////////////////
 #ifdef MUSIC_LIBRARY
 #  define MUSIC_NETWORK
@@ -28,12 +25,6 @@
 #  define MUSIC_VIDEO
 #  define MUSIC_GUI
 #endif
-//////////////////////////////////////
-#ifdef __cplusplus
-#  define MUSIC_CAST
-#endif
-//////////////////////////////////////
-
 
 //////////////////////////////////////
 ///exoprt
@@ -127,34 +118,6 @@
 #  else
 #    define MUSIC_VIDEO_IMPORT Q_DECL_IMPORT
 #  endif
-#endif
-
-
-//////////////////////////////////////
-///cast
-///
-#ifdef MUSIC_CAST
-#  define MConst_cast(x,y) (const_cast< x >(y))
-#else
-#  define MConst_cast(x,y) ((x)(y))
-#endif
-
-#ifdef MUSIC_CAST
-#  define MDynamic_cast(x,y) (dynamic_cast< x >(y))
-#else
-#  define MDynamic_cast(x,y) ((x)(y))
-#endif
-
-#ifdef MUSIC_CAST
-#  define MReinterpret_cast(x,y) (reinterpret_cast< x >(y))
-#else
-#  define MReinterpret_cast(x,y) ((x)(y))
-#endif
-
-#ifdef MUSIC_CAST
-#  define MStatic_cast(x,y) (static_cast< x >(y))
-#else
-#  define MStatic_cast(x,y) ((x)(y))
 #endif
 
 //////////////////////////////////////

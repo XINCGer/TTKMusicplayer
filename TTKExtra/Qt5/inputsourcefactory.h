@@ -30,7 +30,7 @@ class InputSource;
 /*! @brief Helper class to store transport plugin properies.
  * @author Ilya Kotov <forkotov02@hotmail.ru>
  */
-class InputSourceProperties
+class Q_DECL_EXPORT InputSourceProperties
 {
 public:
     /*!
@@ -53,7 +53,7 @@ public:
 /*! @brief Transport plugin interface.
  * @author Ilya Kotov <forkotov02@hotmail.ru>
  */
-class InputSourceFactory
+class Q_DECL_EXPORT InputSourceFactory
 {
 public:
     /*!
@@ -66,10 +66,6 @@ public:
      * @param parent Parent object.
      */
     virtual InputSource *create(const QString &url, QObject *parent = 0) = 0;
-    /*!
-     * Shows settings dialog.
-     * @param parent Parent widget.
-     */
 
 };
 

@@ -1,8 +1,10 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-08-08T23:19:41
-#
-#-------------------------------------------------
+# =================================================
+# * This file is part of the TTK Music Player project
+# * Copyright (c) 2015 - 2017 Greedysky Studio
+# * All rights reserved!
+# * Redistribution and use of the source code or any derivative
+# * works are strictly forbiden.
+# =================================================
 
 INCLUDEPATH += $$PWD
 
@@ -16,14 +18,19 @@ HEADERS  += \
     $$PWD/musiclrccontainerforinline.h \
     $$PWD/musiclrcsearchwidget.h \
     $$PWD/musiclrcsearchtablewidget.h \
-    $$PWD/musiclrcartphotoupload.h \
     $$PWD/musiclrcartphotolabel.h \
+    $$PWD/musiclrcartphotouploadwidget.h \
     $$PWD/musiclrcfloatwidget.h \
-    $$PWD/musiclrcfloatabstractwidget.h \
     $$PWD/musiclrcfloatsettingwidget.h \
     $$PWD/musiclrcfloatphotowidget.h \
     $$PWD/musiclrcmakerwidget.h \
-    $$PWD/musiclrcanalysis.h
+    $$PWD/musiclrcanalysis.h \
+    $$PWD/musiclrcerrorwidget.h \
+    $$PWD/musiclrclocallinkwidget.h \
+    $$PWD/musiclrcfromkrc.h \
+    $$PWD/musiclrccolorwidget.h \
+    $$PWD/musiclrccommentswidget.h \
+    $$PWD/musiclrctranslatedwidget.h
 
 }
 
@@ -37,13 +44,18 @@ SOURCES += \
     $$PWD/musiclrccontainerforinline.cpp \
     $$PWD/musiclrcsearchwidget.cpp \
     $$PWD/musiclrcsearchtablewidget.cpp \
-    $$PWD/musiclrcartphotoupload.cpp \
     $$PWD/musiclrcartphotolabel.cpp \
+    $$PWD/musiclrcartphotouploadwidget.cpp \
     $$PWD/musiclrcfloatwidget.cpp \
-    $$PWD/musiclrcfloatabstractwidget.cpp \
     $$PWD/musiclrcfloatsettingwidget.cpp \
     $$PWD/musiclrcfloatphotowidget.cpp \
     $$PWD/musiclrcmakerwidget.cpp \
-    $$PWD/musiclrcanalysis.cpp
+    $$PWD/musiclrcanalysis.cpp \
+    $$PWD/musiclrcerrorwidget.cpp \
+    $$PWD/musiclrclocallinkwidget.cpp \
+    $$PWD/musiclrcfromkrc.cpp \
+    $$PWD/musiclrccolorwidget.cpp \
+    $$PWD/musiclrccommentswidget.cpp \
+    $$PWD/musiclrctranslatedwidget.cpp
 
 }

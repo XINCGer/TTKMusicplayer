@@ -1,107 +1,64 @@
 #include "musicsystemtraymenu.h"
 #include "musicuiobject.h"
+#include "musicwidgetutils.h"
+#include "musiccontextuiobject.h"
+#include "musictinyuiobject.h"
+#include "musicclickedslider.h"
 
-#include <QWidgetAction>
-#include <QToolButton>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QLabel>
+#include <QBoxLayout>
+#include <QToolButton>
+#include <QWidgetAction>
 
 MusicSystemTrayMenu::MusicSystemTrayMenu(QWidget *parent)
     : QMenu(parent)
 {
     setStyleSheet(MusicUIObject::MMenuStyle02);
-    createPlayWidgetActions();
-    addAction(m_widgetAction);
 
-    m_showLrcAction = new QAction(QIcon(":/contextMenu/lrc"),tr("showDeskLrc"), this);
+    m_showLrcAction = new QAction(QIcon(":/contextMenu/btn_lrc"),tr("showDeskLrc"), this);
     connect(m_showLrcAction, SIGNAL(triggered()), SLOT(showDesktopLrc()));
-    m_lockLrcAction = new QAction(QIcon(":/contextMenu/lock"), tr("lockLrc"), this);
+    m_lockLrcAction = new QAction(QIcon(":/contextMenu/btn_lock"), tr("lockLrc"), this);
     connect(m_lockLrcAction, SIGNAL(triggered()), SIGNAL(setWindowLockedChanged()));
 
+    createPlayWidgetActions();
     addSeparator();
-    addAction(QIcon(":/contextMenu/window"), tr("showMainWindow"), parent, SLOT(showNormal()));
-    addSeparator();
-    addAction(QIcon(":/contextMenu/setting"), tr("showSetting"), parent, SLOT(musicSetting()));
+    createVolumeWidgetActions();
     addAction(m_showLrcAction);
-    addSeparator();
     addAction(m_lockLrcAction);
     addSeparator();
-    addAction(QIcon(":/contextMenu/quit"), tr("appClose"), parent, SLOT(quitWindowClose()));
+    addAction(tr("showMainWindow"), parent, SLOT(showNormal()));
+    addSeparator();
+    addAction(QIcon(":/contextMenu/btn_setting"), tr("showSetting"), parent, SLOT(musicSetting()));
+    addSeparator();
+    addAction(QIcon(":/contextMenu/btn_login"), tr("logout"));
+    addAction(tr("appClose"), parent, SLOT(quitWindowClose()));
 }
 
 MusicSystemTrayMenu::~MusicSystemTrayMenu()
 {
     delete m_showText;
     delete m_PlayOrStop;
+    delete m_volumeButton;
     delete m_showLrcAction;
     delete m_lockLrcAction;
-    delete m_widgetAction;
+    delete m_volumeSlider;
 }
 
-void MusicSystemTrayMenu::createPlayWidgetActions()
+QString MusicSystemTrayMenu::getClassName()
 {
-    m_widgetAction = new QWidgetAction(this);
-    QWidget *widgetActionContainer = new QWidget(this);
-    QVBoxLayout *vbox = new QVBoxLayout(widgetActionContainer);
-    vbox->setMargin(0);
-
-    QWidget *widgetContainer = new QWidget(widgetActionContainer);
-    QHBoxLayout *box = new QHBoxLayout(widgetContainer);
-    box->setMargin(0);
-
-    QToolButton *previousPlay = new QToolButton(widgetContainer);
-    QToolButton *nextPlay = new QToolButton(widgetContainer);
-    m_PlayOrStop = new QToolButton(widgetContainer);
-
-    previousPlay->setIcon(QIcon(QString::fromUtf8(":/contextMenu/sysprivious")));
-    nextPlay->setIcon(QIcon(QString::fromUtf8(":/contextMenu/sysnext")));
-    m_PlayOrStop->setIcon(QIcon(QString::fromUtf8(":/contextMenu/sysplay")));
-
-    previousPlay->setIconSize(QSize(40, 40));
-    nextPlay->setIconSize(QSize(40, 40));
-    m_PlayOrStop->setIconSize(QSize(45, 45));
-
-    previousPlay->setStyleSheet(MusicUIObject::MToolButtonStyle01);
-    nextPlay->setStyleSheet(MusicUIObject::MToolButtonStyle01);
-    m_PlayOrStop->setStyleSheet(MusicUIObject::MToolButtonStyle01);
-
-    previousPlay->setCursor(QCursor(Qt::PointingHandCursor));
-    nextPlay->setCursor(QCursor(Qt::PointingHandCursor));
-    m_PlayOrStop->setCursor(QCursor(Qt::PointingHandCursor));
-
-    previousPlay->setToolTip(tr("Privious"));
-    nextPlay->setToolTip(tr("Next"));
-    m_PlayOrStop->setToolTip(tr("Play"));
-
-    box->addWidget(previousPlay);
-    box->addWidget(m_PlayOrStop);
-    box->addWidget(nextPlay);
-
-    m_showText = new QLabel(widgetActionContainer);
-    m_showText->setAlignment(Qt::AlignCenter);
-    m_showText->setStyleSheet(MusicUIObject::MCustomStyle12);
-    vbox->addWidget(widgetContainer);
-    vbox->addWidget(m_showText);
-    widgetActionContainer->setLayout(vbox);
-    m_widgetAction->setDefaultWidget(widgetActionContainer);
-
-    connect(previousPlay, SIGNAL(clicked()), parent(), SLOT(musicPlayPrivious()));
-    connect(nextPlay, SIGNAL(clicked()), parent(), SLOT(musicPlayNext()));
-    connect(m_PlayOrStop, SIGNAL(clicked()), parent(), SLOT(musicKey()));
+    return staticMetaObject.className();
 }
 
 void MusicSystemTrayMenu::setLabelText(const QString &text) const
 {
-    QFontMetrics str(font());
-    m_showText->setText(str.elidedText(text, Qt::ElideRight,160));
+    m_showText->setText(MusicUtils::Widget::elidedText(font(), text, Qt::ElideRight, 160));
     m_showText->setToolTip(text);
 }
 
-void MusicSystemTrayMenu::showDesktopLrc(const QString &show) const
+void MusicSystemTrayMenu::showDesktopLrc(bool show) const
 {
-    m_showLrcAction->setText((show == "true") ? tr("hideDeskLrc") : tr("showDeskLrc"));
-    m_lockLrcAction->setEnabled((show == "true") ? true : false);
+    m_showLrcAction->setText( show ? tr("hideDeskLrc") : tr("showDeskLrc"));
+    m_lockLrcAction->setEnabled( show );
 }
 
 void MusicSystemTrayMenu::lockDesktopLrc(bool lock)
@@ -111,8 +68,33 @@ void MusicSystemTrayMenu::lockDesktopLrc(bool lock)
 
 void MusicSystemTrayMenu::showPlayStatus(bool status) const
 {
-    m_PlayOrStop->setIcon(QIcon(QString::fromUtf8(!status ? ":/contextMenu/sysstop"
-                                                          : ":/contextMenu/sysplay")) );
+    m_PlayOrStop->setStyleSheet(status ? MusicUIObject::MKGContextPlay : MusicUIObject::MKGContextPause);
+}
+
+void MusicSystemTrayMenu::setVolumeValue(int value) const
+{
+    m_volumeSlider->blockSignals(true);
+    m_volumeSlider->setValue(value);
+    m_volumeSlider->blockSignals(false);
+
+    QString style = MusicUIObject::MKGTinyBtnSound;
+    if(66 < value && value <=100)
+    {
+        style += "QToolButton{ margin-left:-48px; }";
+    }
+    else if(33 < value && value <=66)
+    {
+        style += "QToolButton{ margin-left:-32px; }";
+    }
+    else if(0 < value && value <=33)
+    {
+        style += "QToolButton{ margin-left:-16px; }";
+    }
+    else
+    {
+        style += "QToolButton{ margin-left:-64px; }";
+    }
+    m_volumeButton->setStyleSheet(style);
 }
 
 void MusicSystemTrayMenu::showDesktopLrc()
@@ -121,4 +103,79 @@ void MusicSystemTrayMenu::showDesktopLrc()
     m_showLrcAction->setText(show ? tr("hideDeskLrc") : tr("showDeskLrc"));
     m_lockLrcAction->setEnabled(show);
     emit setShowDesktopLrc(show);
+}
+
+void MusicSystemTrayMenu::createPlayWidgetActions()
+{
+    QWidgetAction *widgetAction = new QWidgetAction(this);
+    QWidget *widgetActionContainer = new QWidget(this);
+    QVBoxLayout *vbox = new QVBoxLayout(widgetActionContainer);
+
+    QWidget *widgetContainer = new QWidget(widgetActionContainer);
+    widgetContainer->setFixedWidth(172);
+    QHBoxLayout *box = new QHBoxLayout(widgetContainer);
+    box->setContentsMargins(9, 2, 9, 9);
+
+    QToolButton *previousPlay = new QToolButton(widgetContainer);
+    QToolButton *nextPlay = new QToolButton(widgetContainer);
+    m_PlayOrStop = new QToolButton(widgetContainer);
+
+    previousPlay->setFixedSize(32, 32);
+    nextPlay->setFixedSize(32, 32);
+    m_PlayOrStop->setFixedSize(32, 32);
+
+    previousPlay->setStyleSheet(MusicUIObject::MKGContextPrevious);
+    nextPlay->setStyleSheet(MusicUIObject::MKGContextNext);
+    m_PlayOrStop->setStyleSheet(MusicUIObject::MKGContextPlay);
+
+    previousPlay->setCursor(QCursor(Qt::PointingHandCursor));
+    nextPlay->setCursor(QCursor(Qt::PointingHandCursor));
+    m_PlayOrStop->setCursor(QCursor(Qt::PointingHandCursor));
+
+    previousPlay->setToolTip(tr("Previous"));
+    nextPlay->setToolTip(tr("Next"));
+    m_PlayOrStop->setToolTip(tr("Play"));
+
+    box->addWidget(previousPlay);
+    box->addWidget(m_PlayOrStop);
+    box->addWidget(nextPlay);
+
+    m_showText = new QLabel(widgetActionContainer);
+    m_showText->setAlignment(Qt::AlignCenter);
+    m_showText->setStyleSheet(MusicUIObject::MColorStyle03);
+    vbox->addWidget(widgetContainer);
+    vbox->addWidget(m_showText);
+    widgetActionContainer->setLayout(vbox);
+    widgetAction->setDefaultWidget(widgetActionContainer);
+    addAction(widgetAction);
+
+    connect(previousPlay, SIGNAL(clicked()), parent(), SLOT(musicPlayPrevious()));
+    connect(nextPlay, SIGNAL(clicked()), parent(), SLOT(musicPlayNext()));
+    connect(m_PlayOrStop, SIGNAL(clicked()), parent(), SLOT(musicStatePlay()));
+}
+
+void MusicSystemTrayMenu::createVolumeWidgetActions()
+{
+    QWidgetAction *widgetAction = new QWidgetAction(this);
+    QWidget *widgetActionContainer = new QWidget(this);
+    QHBoxLayout *vbox = new QHBoxLayout(widgetActionContainer);
+    vbox->setContentsMargins(9, 2, 9, 9);
+
+    m_volumeButton = new QToolButton(widgetActionContainer);
+    m_volumeButton->setCursor(QCursor(Qt::PointingHandCursor));
+    m_volumeButton->setFixedSize(16, 16);
+
+    m_volumeSlider = new MusicClickedSlider(Qt::Horizontal, widgetActionContainer);
+    m_volumeSlider->setRange(0, 100);
+    m_volumeSlider->setStyleSheet(MusicUIObject::MSliderStyle06);
+
+    vbox->addWidget(m_volumeButton);
+    vbox->addWidget(m_volumeSlider);
+    widgetActionContainer->setLayout(vbox);
+
+    widgetAction->setDefaultWidget(widgetActionContainer);
+    addAction(widgetAction);
+
+    connect(m_volumeButton, SIGNAL(clicked()), parent(), SLOT(musicVolumeMute()));
+    connect(m_volumeSlider, SIGNAL(valueChanged(int)), parent(), SLOT(musicVolumeChanged(int)));
 }

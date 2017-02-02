@@ -39,7 +39,7 @@ class StateHandler;
 /*! \brief The SoundCore class provides a simple interface for audio playback.
  * @author Ilya Kotov <forkotov02@hotmail.ru>
  */
-class SoundCore : public QObject
+class Q_DECL_EXPORT SoundCore : public QObject
 {
     Q_OBJECT
 public:
@@ -151,6 +151,14 @@ public slots:
      * @param volume volume of the left and right channels \b [0..100].
      */
     void setVolume(int volume);
+    /*!
+     * Increases volume by volume adjustment step.
+     */
+    void volumeUp();
+    /*!
+     * Decreases volume by volume adjustment step.
+     */
+    void volumeDown();
     /*!
      * Sets the balance between left and right channels.
      * @param balance balance between left and right channels \b [-100..100].

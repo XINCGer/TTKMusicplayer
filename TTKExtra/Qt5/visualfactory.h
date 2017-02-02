@@ -20,8 +20,9 @@
 
 #ifndef VISUALFACTORY_H
 #define VISUALFACTORY_H
+
 #include <QObject>
-class QObject;
+
 class QWidget;
 class QTranslator;
 class QDialog;
@@ -30,7 +31,7 @@ class Visual;
 /*! @brief Helper class to store visual plugin properies.
  *  @author Ilya Kotov <forkotov02@hotmail.ru>
  */
-class VisualProperties
+class Q_DECL_EXPORT VisualProperties
 {
 public:
     /*!
@@ -65,11 +66,6 @@ public:
      * @param parent Parent object.
      */
     virtual Visual *create(QWidget *parent) = 0;
-    /*!
-     * Creates configuration dialog.
-     * @param parent Parent widget.
-     * @return Configuration dialog pointer.
-     */
 
 };
 

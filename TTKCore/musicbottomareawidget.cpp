@@ -1,14 +1,19 @@
 #include "musicbottomareawidget.h"
 #include "ui_musicapplication.h"
+#include "musicapplication.h"
 #include "musicuiobject.h"
 #include "musicsystemtraymenu.h"
 #include "musicwindowextras.h"
+#include "musiclocalsongsearchdialog.h"
+
+MusicBottomAreaWidget *MusicBottomAreaWidget::m_instance = nullptr;
 
 MusicBottomAreaWidget::MusicBottomAreaWidget(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), m_musicLocalSongSearch(nullptr)
 {
-    m_supperClass = parent;
-    m_systemCloseConfig = false;//Control the mode to exit
+    m_instance = this;
+    m_systemCloseConfig = false;
+
     createSystemTrayIcon();
 
     m_musicWindowExtras = new MusicWindowExtras(parent);
@@ -19,73 +24,24 @@ MusicBottomAreaWidget::~MusicBottomAreaWidget()
     delete m_systemTrayMenu;
     delete m_systemTray;
     delete m_musicWindowExtras;
+    delete m_musicLocalSongSearch;
+}
+
+QString MusicBottomAreaWidget::getClassName()
+{
+    return staticMetaObject.className();
+}
+
+MusicBottomAreaWidget *MusicBottomAreaWidget::instance()
+{
+    return m_instance;
 }
 
 void MusicBottomAreaWidget::setupUi(Ui::MusicApplication* ui)
 {
     m_ui = ui;
-    ui->menuSetting->setIcon(QIcon(QString::fromUtf8(":/image/menu")));
-    ui->menuSetting->setIconSize(QSize(50, 50));
-    ui->menuSetting->setStyleSheet(MusicUIObject::MToolButtonStyle04);
-    ui->menuSetting->setCursor(QCursor(Qt::PointingHandCursor));
-    ui->menuSetting->setToolTip(tr("Menu"));
-    ui->menuSetting->setMenu(&m_toolPopupMenu);
-    
-    ui->musicImport->setIcon(QIcon(QString::fromUtf8(":/appTools/import")));
-    ui->musicImport->setIconSize(QSize(40, 40));
-    ui->musicImport->setStyleSheet(MusicUIObject::MToolButtonStyle03);
-    ui->musicImport->setCursor(QCursor(Qt::PointingHandCursor));
-    ui->musicImport->setToolTip(tr("Import"));
-    connect(ui->musicImport, SIGNAL(clicked()), m_supperClass, SLOT(musicImportSongs()));
-    
-    ui->musicSetting->setIcon(QIcon(QString::fromUtf8(":/appTools/setting")));
-    ui->musicSetting->setIconSize(QSize(40, 40));
-    ui->musicSetting->setStyleSheet(MusicUIObject::MToolButtonStyle03);
-    ui->musicSetting->setCursor(QCursor(Qt::PointingHandCursor));
-    ui->musicSetting->setToolTip(tr("Setting"));
-    connect(ui->musicSetting, SIGNAL(clicked()), m_supperClass, SLOT(musicSetting()));
-    
-    ui->musicSearch->setIcon(QIcon(QString::fromUtf8(":/appTools/search")));
-    ui->musicSearch->setIconSize(QSize(40, 40));
-    ui->musicSearch->setStyleSheet(MusicUIObject::MToolButtonStyle03);
-    ui->musicSearch->setCursor(QCursor(Qt::PointingHandCursor));
-    ui->musicSearch->setToolTip(tr("musicSearch"));
-
-    ui->musicCurrentLocation->setIcon(QIcon(QString::fromUtf8(":/appTools/location")));
-    ui->musicCurrentLocation->setIconSize(QSize(40, 40));
-    ui->musicCurrentLocation->setStyleSheet(MusicUIObject::MToolButtonStyle03);
-    ui->musicCurrentLocation->setCursor(QCursor(Qt::PointingHandCursor));
-    ui->musicCurrentLocation->setToolTip(tr("musicLocation"));
-    connect(ui->musicCurrentLocation, SIGNAL(clicked()), m_supperClass, SLOT(musicCurrentPlayLocation()));
-
+    ui->showCurrentSong->setEffectOnResize(true);
     connect(ui->musicDesktopLrc, SIGNAL(clicked()), m_systemTrayMenu, SLOT(showDesktopLrc()));
-
-    createToolPopupMenu();
-}
-
-void MusicBottomAreaWidget::createToolPopupMenu()
-{
-    m_toolPopupMenu.setStyleSheet(MusicUIObject::MMenuStyle02);
-    m_toolPopupMenu.addAction(m_ui->action_ImportSongs);
-    m_toolPopupMenu.addAction(m_ui->action_Setting);
-
-    m_toolPopupMenu.addSeparator();
-    m_toolPopupMenu.addAction(m_ui->action_Privious);
-    m_toolPopupMenu.addAction(m_ui->action_Play);
-    m_toolPopupMenu.addAction(m_ui->action_Next);
-    m_toolPopupMenu.addSeparator();
-    m_toolPopupMenu.addAction(m_ui->action_OrderPlay);
-    m_toolPopupMenu.addAction(m_ui->action_RandomPlay);
-    m_toolPopupMenu.addAction(m_ui->action_SingleCycle);
-    m_toolPopupMenu.addAction(m_ui->action_ListCycle);
-    m_toolPopupMenu.addAction(m_ui->action_ItemOnce);
-    m_toolPopupMenu.addSeparator();
-    m_toolPopupMenu.addAction(m_ui->action_VolumeSub);
-    m_toolPopupMenu.addAction(m_ui->action_VolumePlus);
-    m_toolPopupMenu.addSeparator();
-    m_toolPopupMenu.addAction(m_ui->action_About);
-    m_toolPopupMenu.addAction(m_ui->action_Quit);
-    createMenuActions();
 }
 
 void MusicBottomAreaWidget::iconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -95,10 +51,10 @@ void MusicBottomAreaWidget::iconActivated(QSystemTrayIcon::ActivationReason reas
         case QSystemTrayIcon::DoubleClick:
             break;
         case QSystemTrayIcon::Trigger:
-            if(!m_supperClass->isVisible())
+            if(!MusicApplication::instance()->isVisible())
             {
-                m_supperClass->show();
-                m_supperClass->activateWindow();
+                MusicApplication::instance()->show();
+                MusicApplication::instance()->activateWindow();
             }
             break;
         default:
@@ -106,35 +62,13 @@ void MusicBottomAreaWidget::iconActivated(QSystemTrayIcon::ActivationReason reas
     }
 }
 
-void MusicBottomAreaWidget::setVolumeValue(int value) const
-{
-    m_ui->musicSoundSlider->setValue(value);
-}
-
-void MusicBottomAreaWidget::createMenuActions() const
-{
-    connect(m_ui->action_ImportSongs, SIGNAL(triggered()), m_supperClass, SLOT(musicImportSongs()));
-    connect(m_ui->action_Setting, SIGNAL(triggered()), m_supperClass, SLOT(musicSetting()));
-    connect(m_ui->action_Quit, SIGNAL(triggered()), m_supperClass, SLOT(quitWindowClose()));
-    connect(m_ui->action_Next, SIGNAL(triggered()), m_supperClass, SLOT(musicPlayNext()));
-    connect(m_ui->action_Play, SIGNAL(triggered()), m_supperClass, SLOT(musicKey()));
-    connect(m_ui->action_Privious, SIGNAL(triggered()), m_supperClass, SLOT(musicPlayPrivious()));
-    connect(m_ui->action_VolumeSub, SIGNAL(triggered()), m_supperClass, SLOT(musicActionVolumeSub()));
-    connect(m_ui->action_VolumePlus, SIGNAL(triggered()), m_supperClass, SLOT(musicActionVolumePlus()));
-    connect(m_ui->action_OrderPlay, SIGNAL(triggered()), m_supperClass, SLOT(musicPlayOrder()));
-    connect(m_ui->action_RandomPlay, SIGNAL(triggered()), m_supperClass, SLOT(musicPlayRandom()));
-    connect(m_ui->action_SingleCycle, SIGNAL(triggered()), m_supperClass, SLOT(musicPlayOneLoop()));
-    connect(m_ui->action_ListCycle, SIGNAL(triggered()), m_supperClass, SLOT(musicPlayListLoop()));
-    connect(m_ui->action_ItemOnce, SIGNAL(triggered()), m_supperClass, SLOT(musicPlayItemOnce()));
-}
-
 void MusicBottomAreaWidget::createSystemTrayIcon()
 {
-    m_systemTray = new QSystemTrayIcon(m_supperClass);
-    m_systemTray->setIcon(QIcon(QString::fromUtf8(":/image/windowicon")));
+    m_systemTray = new QSystemTrayIcon(MusicApplication::instance());
+    m_systemTray->setIcon(QIcon(QString::fromUtf8(":/image/lb_player_logo")));
     m_systemTray->setToolTip(tr("TTKMusicPlayer"));
 
-    m_systemTrayMenu = new MusicSystemTrayMenu(m_supperClass);
+    m_systemTrayMenu = new MusicSystemTrayMenu(MusicApplication::instance());
     connect(m_systemTrayMenu, SIGNAL(setShowDesktopLrc(bool)), SIGNAL(setShowDesktopLrc(bool)));
     connect(m_systemTrayMenu, SIGNAL(setWindowLockedChanged()), SIGNAL(setWindowLockedChanged()));
 
@@ -144,7 +78,7 @@ void MusicBottomAreaWidget::createSystemTrayIcon()
                           SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
 }
 
-void MusicBottomAreaWidget::setDestopLrcVisible(const QString& status) const
+void MusicBottomAreaWidget::setDestopLrcVisible(bool status) const
 {
     m_systemTrayMenu->showDesktopLrc(status);
 }
@@ -152,19 +86,20 @@ void MusicBottomAreaWidget::setDestopLrcVisible(const QString& status) const
 void MusicBottomAreaWidget::showPlayStatus(bool status) const
 {
     m_systemTrayMenu->showPlayStatus(status);
-#if defined MUSIC_DEBUG && defined Q_OS_WIN && defined MUSIC_QT_5
+#if defined Q_OS_WIN && defined MUSIC_WINEXTRAS
     m_musicWindowExtras->showPlayStatus(status);
 #endif
+}
+
+void MusicBottomAreaWidget::setVolumeValue(int value) const
+{
+    m_systemTrayMenu->setVolumeValue(value);
 }
 
 void MusicBottomAreaWidget::setLabelText(const QString &name) const
 {
     m_systemTrayMenu->setLabelText(name);
-}
-
-void MusicBottomAreaWidget::setSystemCloseConfig(const QString &status)
-{
-    m_systemCloseConfig = (status == "true") ? true : false;
+    m_systemTray->setToolTip(name);
 }
 
 void MusicBottomAreaWidget::showMessage(const QString &title, const QString &text)
@@ -172,7 +107,7 @@ void MusicBottomAreaWidget::showMessage(const QString &title, const QString &tex
     m_systemTray->showMessage(title, text);
 }
 
-#if defined MUSIC_DEBUG && defined Q_OS_WIN && defined MUSIC_QT_5
+#if defined MUSIC_DEBUG && defined Q_OS_WIN && defined MUSIC_WINEXTRAS
 void MusicBottomAreaWidget::setValue(int value) const
 {
     m_musicWindowExtras->setValue(value);
@@ -186,16 +121,74 @@ void MusicBottomAreaWidget::setRange(int min, int max) const
 
 void MusicBottomAreaWidget::setWindowConcise()
 {
-    bool con = m_musicWindowExtras->isDisableBlurBehindWindow();
-    m_supperClass->resize( con ? 390 : 990, m_supperClass->height());
-    m_ui->musicWindowConcise->setGeometry(con ? 305 : 848, 27, 25, 25);
-    m_ui->minimization->setGeometry(con ? 335 : 909, 27, 25, 25);
-    m_ui->windowClose->setGeometry(con ? 360 : 937, 27, 25, 25);
-    m_ui->resizeWindowLabel->setGeometry(con ? 370 : 950, 620, 15, 15);
-    m_ui->musicWindowSpace->setGeometry(con ? 300 : 380, 20, con ? 100 : 590, con ? 38 : 45);
-    m_ui->lrcDisplayAllButton->setVisible(m_ui->SurfaceStackedWidget->currentIndex() == 2 && !con);
-    m_ui->musicWindowConcise->setIcon(QIcon(QString::fromUtf8(con ? ":/image/conciseout" : ":/image/concisein")));
-    m_musicWindowExtras->disableBlurBehindWindow( !con );
+//    bool con = m_musicWindowExtras->isDisableBlurBehindWindow();
+//    m_supperClass->resize( con ? 380 : 1033, m_supperClass->height());
+//    m_ui->musicWindowConcise->setGeometry(con ? 295 : 888, 30, 25, 25);
+//    m_ui->minimization->setGeometry(con ? 325 : 949, 30, 25, 25);
+//    m_ui->windowClose->setGeometry(con ? 350 : 977, 30, 25, 25);
+////    m_ui->musicWindowConcise->setIcon(QIcon(QString::fromUtf8(con ? ":/image/conciseout" : ":/image/concisein")));
+//    m_ui->musicSongSearchLine->setVisible( !con );
+//    m_ui->resizeWindowLabel->setVisible( !con );
+//    ////////////////////////////////////////////////////////////
+//    m_ui->songsContainer->resize(320, con ? 460 : 490);
+//    m_ui->musicPrevious->setGeometry(con ? 35 : 64, con ? 550 : 576, con ? 30 : 50, con ? 30 : 50);
+//    m_ui->musicKey->setGeometry(con ? 65 : 127, con ? 550 : 576, con ? 30 : 50, con ? 30 : 50);
+//    m_ui->musicNext->setGeometry(con ? 95 : 190, con ? 550 : 576, con ? 30 : 50, con ? 30 : 50);
+//    m_ui->musicTimeWidget->move(con ? 15 : 240, 593);
+////    m_ui->verticalLayoutWidget->move(con ? 30 : 255, 583);
+//    m_ui->showCurrentSong->move(con ? 85 : 310, 578);
+//    m_ui->playCurrentTime->move(con ? 307 : 532, 588);
+//    m_ui->playTotalTime->move(con ? 342 : 566, 588);
+//    m_ui->musicBestLove->move(con ? 175 : 695, con ? 555 : 598);
+//    m_ui->musicPlayMode->move(con ? 197 : 735, con ? 552 : 595);
+//    m_ui->musicSimilarFound->move(con ? 220 : 775, con ? 552 : 595);
+//    m_ui->musicDownload->move(con ? 245 : 815, con ? 552 : 595);
+//    m_ui->musicDesktopLrc->move(con ? 270 : 857, con ? 554 : 597);
+//    m_ui->musicSound->move(con ? 290 : 890, con ? 555 : 598);
+//    m_ui->musicSoundSlider->move(con ? 310 : 915, con ? 555 : 599);
+//    ////////////////////////////////////////////////////////////
+//    m_ui->musicEnhancedButton->setVisible( !con );
+//    m_ui->lrcDisplayAllButton->setVisible(m_ui->SurfaceStackedWidget->currentIndex() == 2 && !con);
+//    m_musicWindowExtras->disableBlurBehindWindow( !con );
+//    ////////////////////////////////////////////////////////////
+//    if(m_musicLocalSongSearch)
+//    {
+//        m_musicLocalSongSearch->move(60, con ? 505 : 535);
+//    }
+}
+
+QString MusicBottomAreaWidget::getSearchedText() const
+{
+    return m_musicLocalSongSearch->getSearchedText();
+}
+
+void MusicBottomAreaWidget::resizeWindow()
+{
+    int h = M_SETTING_PTR->value(MusicSettingManager::WidgetSize).toSize().height() - WINDOW_HEIGHT_MIN;
+    if(m_musicLocalSongSearch)
+    {
+        m_musicLocalSongSearch->move(51, 554 + h);
+    }
+    m_ui->musicSongSearchLine->resizeWindow();
+
+    h = m_ui->musiclrccontainerforinline->size().height() - m_ui->lrcDisplayAllButton->height();
+    m_ui->lrcDisplayAllButton->move(m_ui->lrcDisplayAllButton->x(), h/2);
+}
+
+void MusicBottomAreaWidget::clearSearchedText()
+{
+    m_musicLocalSongSearch->close();
+}
+
+void MusicBottomAreaWidget::musicSearch()
+{
+    if(m_musicLocalSongSearch == nullptr)
+    {
+        m_musicLocalSongSearch = new MusicLocalSongSearchDialog(MusicApplication::instance());
+        resizeWindow();
+//        m_musicLocalSongSearch->move(51, !m_musicWindowExtras->isDisableBlurBehindWindow() ? 505 : 535);
+    }
+    m_musicLocalSongSearch->setVisible(!m_musicLocalSongSearch->isVisible());
 }
 
 void MusicBottomAreaWidget::lockDesktopLrc(bool lock)
@@ -206,6 +199,6 @@ void MusicBottomAreaWidget::lockDesktopLrc(bool lock)
 void MusicBottomAreaWidget::desktopLrcClosed()
 {
     m_ui->musicDesktopLrc->setChecked(false);
-    m_systemTrayMenu->showDesktopLrc("false");
-    M_SETTING->setValue(MusicSettingManager::ShowDesktopLrcChoiced, false);
+    m_systemTrayMenu->showDesktopLrc(false);
+    M_SETTING_PTR->setValue(MusicSettingManager::ShowDesktopLrcChoiced, false);
 }

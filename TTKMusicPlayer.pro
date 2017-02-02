@@ -1,11 +1,15 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-08-08T23:19:41
-#
-#-------------------------------------------------
+# =================================================
+# * This file is part of the TTK Music Player project
+# * Copyright (c) 2015 - 2017 Greedysky Studio
+# * All rights reserved!
+# * Redistribution and use of the source code or any derivative
+# * works are strictly forbiden.
+# =================================================
+
+include(TTKVersion.pri)
 
 TEMPLATE = subdirs
-SUBDIRS = TTKCore TTKApp
+SUBDIRS = TTKQrc TTKThirdParty TTKCore TTKService TTKApp TTKTest
 
 TRANSLATIONS += TTKLanguage/cn.ts \
                 TTKLanguage/cn_c.ts \
@@ -32,19 +36,19 @@ else{
 }
 
 unix:{
-    output = $$OUT_PWD/lib/MLanguage
+    output = $$OUT_PWD/lib/$$TTKMusicPlayer/MLanguage
     !exists($$output):system(mkdir $$output)
 
-    system(find . -name *.ts | xargs $$LRELEASE_EXECUTABLE)
-    system(find . -name *.qm | xargs rename -vf 's/.qm/.ln/' *  )
+    system(find TTKLanguage -name *.ts | xargs $$LRELEASE_EXECUTABLE)
+    system(find TTKLanguage -name *.qm | xargs rename -vf 's/.qm/.ln/' *  )
     system(for F in TTKLanguage/*.ln ; do mv $F $$output ;done)
 }
 win32:{
-    output = $$OUT_PWD/bin/MLanguage
+    output = $$OUT_PWD/bin/$$TTKMusicPlayer/MLanguage
     output = $$replace(output, /, \\)
     !exists($$output):system(md $$output)
 
-    system(for /r %i in (*.ts) do $$LRELEASE_EXECUTABLE %i)
-    system(for /r %i in (*.qm) do ren %i *.ln)
-    system(for /r %i in (*.ln) do move /y %i $$output)
+    system(for /r TTKLanguage %i in (*.ts) do $$LRELEASE_EXECUTABLE %i)
+    system(for /r TTKLanguage %i in (*.qm) do ren %i *.ln)
+    system(for /r TTKLanguage %i in (*.ln) do move /y %i $$output)
 }

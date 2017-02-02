@@ -1,8 +1,14 @@
 #include "musicregeditmanager.h"
+#include "musicformats.h"
 
 #include <QSettings>
 #include <QStringList>
 #include <QApplication>
+
+QString MusicRegeditManager::getClassName()
+{
+    return "MusicRegeditManager";
+}
 
 void MusicRegeditManager::setDesktopWallAutoStart(bool state)
 {
@@ -30,19 +36,17 @@ void MusicRegeditManager::setDesktopWallControlPanel(const QString &originPath, 
 
 void MusicRegeditManager::setMusicRegeditAssociateFileIcon()
 {
-    QStringList types;
-    types << "pmc" << "wav" << "aac" << "ac3" << "flac" << "mp1"
-          << "mp2" << "mp3" << "oga" << "ogg";
+    QStringList types = MusicFormats::supportFormatsString();
     for(int i=0; i<types.count(); ++i)
     {
-        if(!currentNodeHasExsit(types[i]))
+        if(!currentNodeHasExist(types[i]))
         {
             createMusicRegedit(types[i], i + 1);
         }
     }
 }
 
-bool MusicRegeditManager::currentNodeHasExsit(const QString &key)
+bool MusicRegeditManager::currentNodeHasExist(const QString &key)
 {
     bool state = false;
     QString keyX = "HKEY_CLASSES_ROOT\\." + key;

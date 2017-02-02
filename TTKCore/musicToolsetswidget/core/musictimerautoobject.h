@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (c) 2014 - 2016 Greedysky Studio
+ * Copyright (c) 2015 - 2017 Greedysky Studio
  * All rights reserved!
  * Redistribution and use of the source code or any derivative
  * works are strictly forbiden.
@@ -15,30 +15,59 @@
 #include "musicobject.h"
 #include "musicglobaldefine.h"
 
-class MUSIC_CORE_EXPORT MusicTimerAutoObject : public QObject
+typedef struct MUSIC_TOOLSET_EXPORT TimeObjectPair
+{
+    int m_index;
+    int m_hour;
+    int m_minute;
+    bool m_state;
+
+    TimeObjectPair()
+    {
+        m_index = -1;
+        m_hour = -1;
+        m_minute = -1;
+        m_state = false;
+    }
+}TimeObjectPair;
+TTK_DECLARE_LISTS(TimeObjectPair)
+
+/*! @brief The class of the time auto run.
+ * @author Greedysky <greedysky@163.com>
+ */
+class MUSIC_TOOLSET_EXPORT MusicTimerAutoObject : public QObject
 {
     Q_OBJECT
 public:
     explicit MusicTimerAutoObject(QObject *parent = 0);
+    /*!
+     * Object contsructor.
+     */
     ~MusicTimerAutoObject();
 
+    static QString getClassName();
+    /*!
+     * Get class object name.
+     */
     void runTimerAutoConfig();
-
-Q_SIGNALS:
-    void setPlaySong(int index);
-    void setStopSong();
+    /*!
+     * Run time auto from local file config.
+     */
 
 public Q_SLOTS:
     void timeout();
+    /*!
+     * Check current state by one minute.
+     */
 
 protected:
-    bool systemIs64bit() const;
     void setShutdown();
+    /*!
+     * Set current system to shutdown.
+     */
 
     QTimer m_timer;
-    int m_hour;
-    int m_second;
-    int m_funcIndex;
+    TimeObjectPairs m_timeObjects;
 
 };
 

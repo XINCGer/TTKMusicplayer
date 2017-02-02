@@ -1,158 +1,36 @@
 #include "musiclrccontainerfordesktop.h"
 #include "musiclrcmanagerfordesktop.h"
 #include "musicuiobject.h"
+#include "musicfunctionuiobject.h"
+#include "musicdesktoplrcuiobject.h"
 #include "musicsettingmanager.h"
-
-#include <QToolButton>
-#include <QPushButton>
+#include "musicapplication.h"
 
 MusicLrcContainerForDesktop::MusicLrcContainerForDesktop(QWidget *parent)
     : MusicLrcContainer(parent)
 {
-    m_supperClass = parent;
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint );
     setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
 
     m_containerType = "DESKTOP";
-    //Move the QWidget in the appropriate location
-    QSize windowSize = M_SETTING->value(MusicSettingManager::ScreenSize).toSize();
-    m_geometry.setX(windowSize.width() - 300);
-    m_geometry.setY(80);
-
-    creatToolBarWidget();
-    m_desktopWidget = new QWidget(this);
-    m_desktopWidget->setObjectName("desktopWidget");
-    m_musicLrcContainer << new MusicLRCManagerForDesktop(m_desktopWidget)
-                        << new MusicLRCManagerForDesktop(m_desktopWidget);
-
-    setGeometry(200,  windowSize.height() - height() - 150, m_geometry.x(), 2*m_geometry.y() + TOOLBAR_HEIGHT);
-    m_desktopWidget->setGeometry(0, TOOLBAR_HEIGHT, m_geometry.x(), 2*m_geometry.y());
-    setSelfGeometry();
-
     m_reverse = false;
     m_windowLocked = false;
-
-    m_currentLrcFontSize = MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[0])->getFirstFontSize();
+    m_verticalWindow = false;
+    m_currentLrcFontSize = 0;
 }
 
 MusicLrcContainerForDesktop::~MusicLrcContainerForDesktop()
 {
     clearAllMusicLRCManager();
-    delete m_showMainWindow;
-    delete m_toolPreSongButton;
-    delete m_toolNextSongButton;
+    delete m_toolBarLayout;
     delete m_toolPlayButton;
-    delete m_toolCloseButton;
-    delete m_toolSettingButton;
-    delete m_toolWindowLockedButton;
-    delete m_toolLrcBigerButton;
-    delete m_toolLrcSmallerButton;
-    delete m_toolUpdateLrcButton;
     delete m_toolBarWidget;
-    delete m_desktopWidget;
 }
 
-void MusicLrcContainerForDesktop::creatToolBarWidget()
+QString MusicLrcContainerForDesktop::getClassName()
 {
-    m_toolBarWidget = new QWidget(this);
-    m_toolBarWidget->setStyleSheet(MusicUIObject::MCustomStyle09);
-    m_toolBarWidget->setGeometry((m_geometry.x() - TOOLBAR_WIDTH)/2, 0, TOOLBAR_WIDTH, TOOLBAR_HEIGHT);
-
-    m_showMainWindow = new QPushButton(m_toolBarWidget);
-
-    m_toolCloseButton = new QToolButton(m_toolBarWidget);
-    m_toolCloseButton->setGeometry(290, 0, 30, TOOLBAR_HEIGHT);
-    connect(m_toolCloseButton, SIGNAL(clicked()), SLOT(close()));
-
-    m_toolWindowLockedButton = new QToolButton(m_toolBarWidget);
-    m_toolWindowLockedButton->setGeometry(260, 0, 30, TOOLBAR_HEIGHT);
-    connect(m_toolWindowLockedButton, SIGNAL(clicked()), SLOT(setWindowLockedChanged()));
-
-    m_toolLrcBigerButton = new QToolButton(m_toolBarWidget);
-    m_toolLrcBigerButton->setGeometry(200, 0, 30, TOOLBAR_HEIGHT);
-    connect(m_toolLrcBigerButton, SIGNAL(clicked()), SLOT(setLrcBigerChanged()));
-
-    m_toolLrcSmallerButton = new QToolButton(m_toolBarWidget);
-    m_toolLrcSmallerButton->setGeometry(230, 0, 30, TOOLBAR_HEIGHT);
-    connect(m_toolLrcSmallerButton, SIGNAL(clicked()), SLOT(setLrcSmallerChanged()));
-
-    m_toolUpdateLrcButton = new QToolButton(m_toolBarWidget);
-    m_toolUpdateLrcButton->setGeometry(170, 0, 30, TOOLBAR_HEIGHT);
-    connect(m_toolUpdateLrcButton, SIGNAL(clicked()),  SIGNAL(theCurrentLrcUpdated()));
-
-    m_toolSettingButton = new QToolButton(m_toolBarWidget);
-    m_toolSettingButton->setGeometry(140, 0, 30, TOOLBAR_HEIGHT);
-    connect(m_toolSettingButton, SIGNAL(clicked()), SLOT(currentLrcCustom()));
-
-    m_toolPreSongButton = new QToolButton(m_toolBarWidget);
-    m_toolPreSongButton->setGeometry(50, 0, 30, TOOLBAR_HEIGHT);
-    m_toolNextSongButton = new QToolButton(m_toolBarWidget);
-    m_toolNextSongButton->setGeometry(110, 0, 30, TOOLBAR_HEIGHT);
-    m_toolPlayButton = new QToolButton(m_toolBarWidget);
-    m_toolPlayButton->setGeometry(80, 0, 30, TOOLBAR_HEIGHT);
-    connect(m_toolPreSongButton, SIGNAL(clicked()), m_supperClass, SLOT(musicPlayPrivious()));
-    connect(m_toolNextSongButton, SIGNAL(clicked()), m_supperClass, SLOT(musicPlayNext()));
-    connect(m_toolPlayButton, SIGNAL(clicked()), m_supperClass, SLOT(musicKey()));
-    connect(m_showMainWindow, SIGNAL(clicked()), m_supperClass, SLOT(showNormal()));
-
-    setButtonIcon();
-    setButtonCursor();
-    setButtonTips();
-    m_toolBarWidget->hide();
-}
-
-void MusicLrcContainerForDesktop::setButtonIcon() const
-{
-    m_toolCloseButton->setIcon(QIcon(QPixmap(":/image/close").scaled(30, 30)));
-    m_toolWindowLockedButton->setIcon(QIcon(QPixmap(":/desktopTool/lockWindow").scaled(30, 30)));
-    m_toolLrcBigerButton->setIcon(QIcon(QPixmap(":/desktopTool/lrcsizeUp").scaled(30, 30)));
-    m_toolLrcSmallerButton->setIcon(QIcon(QPixmap(":/desktopTool/lrcsizeDown").scaled(30, 30)));
-    m_toolUpdateLrcButton->setIcon(QIcon(QPixmap(":/desktopTool/updateLrc").scaled(30, 30)));
-    m_toolPreSongButton->setIcon(QIcon(":/desktopTool/previous"));
-    m_toolNextSongButton->setIcon(QIcon(":/desktopTool/next"));
-    m_toolPlayButton->setIcon(QIcon(":/desktopTool/play"));
-    m_toolSettingButton->setIcon(QIcon(":/desktopTool/setting"));
-    m_showMainWindow->setIcon(QIcon(":/image/windowicon"));
-}
-
-void MusicLrcContainerForDesktop::setButtonCursor() const
-{
-    m_toolCloseButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_toolWindowLockedButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_toolLrcBigerButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_toolLrcSmallerButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_toolUpdateLrcButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_toolPreSongButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_toolNextSongButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_toolPlayButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_toolSettingButton->setCursor(QCursor(Qt::PointingHandCursor));
-    m_showMainWindow->setCursor(QCursor(Qt::PointingHandCursor));
-
-    m_showMainWindow->setStyleSheet(MusicUIObject::MPushButtonStyle04);
-    m_toolCloseButton->setStyleSheet(MusicUIObject::MToolButtonStyle05);
-    m_toolWindowLockedButton->setStyleSheet(MusicUIObject::MToolButtonStyle05);
-    m_toolLrcSmallerButton->setStyleSheet(MusicUIObject::MToolButtonStyle05);
-    m_toolUpdateLrcButton->setStyleSheet(MusicUIObject::MToolButtonStyle05);
-    m_toolLrcBigerButton->setStyleSheet(MusicUIObject::MToolButtonStyle05);
-    m_toolPreSongButton->setStyleSheet(MusicUIObject::MToolButtonStyle05);
-    m_toolNextSongButton->setStyleSheet(MusicUIObject::MToolButtonStyle05);
-    m_toolPlayButton->setStyleSheet(MusicUIObject::MToolButtonStyle05);
-    m_toolSettingButton->setStyleSheet(MusicUIObject::MToolButtonStyle05);
-}
-
-void MusicLrcContainerForDesktop::setButtonTips() const
-{
-    m_toolCloseButton->setToolTip(tr("hide"));
-    m_toolWindowLockedButton->setToolTip(tr("lockLrc"));
-    m_toolLrcBigerButton->setToolTip(tr("lrcBiger"));
-    m_toolLrcSmallerButton->setToolTip(tr("lrcSmaller"));
-    m_toolUpdateLrcButton->setToolTip(tr("updateLrc"));
-    m_toolPreSongButton->setToolTip(tr("Privious"));
-    m_toolNextSongButton->setToolTip(tr("Next"));
-    m_toolPlayButton->setToolTip(tr("Play"));
-    m_toolSettingButton->setToolTip(tr("Setting"));
-    m_showMainWindow->setToolTip(tr("showMainWindow"));
+    return staticMetaObject.className();
 }
 
 void MusicLrcContainerForDesktop::startTimerClock()
@@ -160,16 +38,54 @@ void MusicLrcContainerForDesktop::startTimerClock()
     m_musicLrcContainer[!m_reverse]->startTimerClock();
 }
 
+void MusicLrcContainerForDesktop::stopLrcMask()
+{
+    foreach(MusicLRCManager *manager, m_musicLrcContainer)
+    {
+        manager->stopLrcMask();
+    }
+}
+
+void MusicLrcContainerForDesktop::setMaskLinearGradientColor(const QList<QColor> &colors) const
+{
+    foreach(MusicLRCManager *manager, m_musicLrcContainer)
+    {
+        manager->setMaskLinearGradientColor(colors);
+    }
+}
+
+void MusicLrcContainerForDesktop::setSettingParameter()
+{
+    MusicLrcContainer::setSettingParameter();
+    foreach(MusicLRCManager *manager, m_musicLrcContainer)
+    {
+        m_currentLrcFontSize = M_SETTING_PTR->value(MusicSettingManager::DLrcSizeChoiced).toInt();
+        manager->setLrcFontSize(MStatic_cast(MusicLRCManager::LrcSizeTable, m_currentLrcFontSize));
+    }
+    m_windowLocked = M_SETTING_PTR->value(MusicSettingManager::DLrcLockedChoiced).toInt() == 1;
+    QPoint point = M_SETTING_PTR->value(MusicSettingManager::DLrcGeometryChoiced).toPoint();
+    if(!point.isNull())
+    {
+        move(point);
+    }
+}
+
 void MusicLrcContainerForDesktop::initCurrentLrc() const
 {
     if(m_currentTime == 0)
     {
         m_musicLrcContainer[0]->setText(tr("welcome use TTKMusicPlayer"));
-        m_musicLrcContainer[0]->setGeometry(0, 20,
-                                            MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[0])->x(),
-                                            m_geometry.y());
-        m_musicLrcContainer[1]->setGeometry(0, m_geometry.y() + 20, 0, 0);
     }
+}
+
+void MusicLrcContainerForDesktop::showPlayStatus(bool status) const
+{
+    m_toolPlayButton->setStyleSheet(status ? MusicUIObject::MKGDeskTopPlay : MusicUIObject::MKGDeskTopPause);
+}
+
+bool MusicLrcContainerForDesktop::getPlayStatus() const
+{
+    return m_toolPlayButton->styleSheet().contains(MusicUIObject::MKGDeskTopPlay);
 }
 
 void MusicLrcContainerForDesktop::updateCurrentLrc(const QString &first, const QString &second, qint64 time)
@@ -184,121 +100,19 @@ void MusicLrcContainerForDesktop::updateCurrentLrc(const QString &first, const Q
     resizeLrcSizeArea();
 }
 
-void MusicLrcContainerForDesktop::resizeLrcSizeArea()
-{
-    int width = MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[0])->x();
-    m_musicLrcContainer[0]->setGeometry(0, 20, width, m_geometry.y());
-
-    width = MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[1])->x();
-    int pos = m_geometry.x() - width;
-    if(pos < 0 )
-    {
-        pos = 0;
-    }
-    m_musicLrcContainer[1]->setGeometry(pos, m_geometry.y() + 20, width, m_geometry.y());
-}
-
-void MusicLrcContainerForDesktop::resizeLrcSizeArea(bool bigger)
-{
-    m_geometry.setY(bigger ? m_geometry.y() + 1 : m_geometry.y() - 1);
-    setSelfGeometry();
-
-    foreach(MusicLRCManager *manager, m_musicLrcContainer)
-    {
-        MStatic_cast(MusicLRCManagerForDesktop*, manager)->setLrcFontSize(bigger ? ++m_currentLrcFontSize
-                                                                                 : --m_currentLrcFontSize);
-    }
-    m_musicLrcContainer[1]->setText(m_musicLrcContainer[1]->text());
-
-    resizeLrcSizeArea();
-    M_SETTING->setValue(MusicSettingManager::DLrcSizeChoiced, m_currentLrcFontSize);
-}
-
-void MusicLrcContainerForDesktop::stopLrcMask()
-{
-    foreach(MusicLRCManager *manager, m_musicLrcContainer)
-    {
-        manager->stopLrcMask();
-    }
-}
-
-void MusicLrcContainerForDesktop::setMaskLinearGradientColor(QColor color) const
-{
-    foreach(MusicLRCManager *manager, m_musicLrcContainer)
-    {
-        manager->setMaskLinearGradientColor(color);
-    }
-}
-
-void MusicLrcContainerForDesktop::mousePressEvent(QMouseEvent *event)
-{
-    QWidget::mousePressEvent(event);
-    if(!m_windowLocked && event->button() == Qt::LeftButton )
-    {
-        m_offset = event->globalPos() - frameGeometry().topLeft();
-    }
-}
-
-void MusicLrcContainerForDesktop::mouseMoveEvent(QMouseEvent *event)
-{
-    QWidget::mouseMoveEvent(event);
-    if(!m_windowLocked && (event->buttons() & Qt::LeftButton) )
-    {
-        setCursor(Qt::CrossCursor);
-        move(event->globalPos() - m_offset);
-        M_SETTING->setValue(MusicSettingManager::DLrcGeometryChoiced, QWidget::geometry());
-    }
-}
-
-void MusicLrcContainerForDesktop::enterEvent(QEvent *event)
-{
-    if(m_windowLocked)
-    {
-        return;
-    }
-    QWidget::enterEvent(event);
-    m_toolBarWidget->show();
-    setStyleSheet("#desktopWidget{" + MusicUIObject::MCustomStyle10 + "}");
-}
-
-void MusicLrcContainerForDesktop::leaveEvent(QEvent *event)
-{
-    if(m_windowLocked)
-    {
-        return;
-    }
-    QWidget::leaveEvent(event);
-    m_toolBarWidget->hide();
-    setStyleSheet("#desktopWidget{" + MusicUIObject::MCustomStyle01 + "}");
-}
-
-void MusicLrcContainerForDesktop::closeEvent(QCloseEvent *event)
-{
-    QWidget::closeEvent(event);
-    emit desktopLrcClosed();
-}
-
 void MusicLrcContainerForDesktop::setWindowLockedChanged()
 {
     m_windowLocked = !m_windowLocked;
     if(m_windowLocked)
     {
        m_toolBarWidget->hide();
-       setStyleSheet(MusicUIObject::MCustomStyle01);
+       setStyleSheet(MusicUIObject::MBackgroundStyle01);
     }
-    M_SETTING->setValue(MusicSettingManager::DLrcLockedChoiced,  m_windowLocked ? 1 : 0);
+    M_SETTING_PTR->setValue(MusicSettingManager::DLrcLockedChoiced,  m_windowLocked ? 1 : 0);
     emit setWindowLockedChanged(m_windowLocked);
 }
 
-void MusicLrcContainerForDesktop::setSelfGeometry() const
-{
-    foreach(MusicLRCManager *manager, m_musicLrcContainer)
-    {
-        MStatic_cast(MusicLRCManagerForDesktop*, manager)->setSelfGeometry(m_geometry.x(), m_geometry.y());
-    }
-}
-
-void MusicLrcContainerForDesktop::setLrcBigerChanged()
+void MusicLrcContainerForDesktop::setLrcBiggerChanged()
 {
     if(m_currentLrcFontSize > 35)
     {
@@ -316,10 +130,227 @@ void MusicLrcContainerForDesktop::setLrcSmallerChanged()
     resizeLrcSizeArea(false);
 }
 
+void MusicLrcContainerForDesktop::toolStyleChanged()
+{
+    QMenu menu(this);
+    menu.setStyleSheet(MusicUIObject::MMenuStyle02);
+    createColorMenu(menu);
+    menu.exec(QCursor::pos());
+}
+
+void MusicLrcContainerForDesktop::setSelfGeometry() const
+{
+    foreach(MusicLRCManager *manager, m_musicLrcContainer)
+    {
+        MStatic_cast(MusicLRCManagerForDesktop*, manager)->setSelfGeometry(m_geometry.x(), m_geometry.y());
+    }
+}
+
+void MusicLrcContainerForDesktop::creatToolBarWidget()
+{
+    m_toolBarLayout->setContentsMargins(0, 0, 0, 0);
+    m_toolBarLayout->addStretch(1);
+
+    m_toolBarWidget->setObjectName("toolBarWidget");
+    m_toolBarWidget->setStyleSheet(QString("#toolBarWidget{%1}").arg(MusicUIObject::MBackgroundStyle08));
+    m_toolBarWidget->setLayout(m_toolBarLayout);
+
+    QPushButton *showMainWindow = new QPushButton(m_toolBarWidget);
+    showMainWindow->setFixedSize(TOOLBAR_HEIGHT, TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(showMainWindow, 0, Qt::AlignCenter);
+    connect(showMainWindow, SIGNAL(clicked()), MusicApplication::instance(), SLOT(showNormal()));
+
+    QToolButton *toolWindowTypeButton = new QToolButton(m_toolBarWidget);
+    toolWindowTypeButton->setFixedSize(m_verticalWindow ? TOOLBAR_HEIGHT : TOOLBAR_WIDTH,
+                                       m_verticalWindow ? TOOLBAR_WIDTH : TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(toolWindowTypeButton, 0, Qt::AlignCenter);
+    connect(toolWindowTypeButton, SIGNAL(clicked()), this, SIGNAL(setWindowLrcTypeChanged()));
+
+    QToolButton *toolPreSongButton = new QToolButton(m_toolBarWidget);
+    toolPreSongButton->setFixedSize(TOOLBAR_HEIGHT, TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(toolPreSongButton, 0, Qt::AlignCenter);
+    connect(toolPreSongButton, SIGNAL(clicked()), MusicApplication::instance(), SLOT(musicPlayPrevious()));
+
+    m_toolPlayButton = new QToolButton(m_toolBarWidget);
+    m_toolPlayButton->setFixedSize(TOOLBAR_HEIGHT, TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(m_toolPlayButton, 0, Qt::AlignCenter);
+    connect(m_toolPlayButton, SIGNAL(clicked()), MusicApplication::instance(), SLOT(musicStatePlay()));
+
+    QToolButton *toolNextSongButton = new QToolButton(m_toolBarWidget);
+    toolNextSongButton->setFixedSize(TOOLBAR_HEIGHT, TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(toolNextSongButton, 0, Qt::AlignCenter);
+    connect(toolNextSongButton, SIGNAL(clicked()), MusicApplication::instance(), SLOT(musicPlayNext()));
+
+    QToolButton *toolSettingButton = new QToolButton(m_toolBarWidget);
+    toolSettingButton->setFixedSize(TOOLBAR_HEIGHT, TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(toolSettingButton, 0, Qt::AlignCenter);
+    connect(toolSettingButton, SIGNAL(clicked()), SLOT(currentLrcCustom()));
+
+    QToolButton *toolLrcSmallerButton = new QToolButton(m_toolBarWidget);
+    toolLrcSmallerButton->setFixedSize(TOOLBAR_HEIGHT, TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(toolLrcSmallerButton, 0, Qt::AlignCenter);
+    connect(toolLrcSmallerButton, SIGNAL(clicked()), SLOT(setLrcSmallerChanged()));
+
+    QToolButton *toolLrcBigerButton = new QToolButton(m_toolBarWidget);
+    toolLrcBigerButton->setFixedSize(TOOLBAR_HEIGHT, TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(toolLrcBigerButton, 0, Qt::AlignCenter);
+    connect(toolLrcBigerButton, SIGNAL(clicked()), SLOT(setLrcBiggerChanged()));
+
+    QToolButton *toolStyleButton = new QToolButton(m_toolBarWidget);
+    toolStyleButton->setFixedSize(20, 20);
+    m_toolBarLayout->addWidget(toolStyleButton, 0, Qt::AlignCenter);
+    connect(toolStyleButton, SIGNAL(clicked()), SLOT(toolStyleChanged()));
+
+    QToolButton *toolMakeLrcTextButton = new QToolButton(m_toolBarWidget);
+    toolMakeLrcTextButton->setFixedSize(m_verticalWindow ? TOOLBAR_HEIGHT : TOOLBAR_TEXT_LENGTH,
+                                        m_verticalWindow ? TOOLBAR_TEXT_LENGTH : TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(toolMakeLrcTextButton, 0, Qt::AlignCenter);
+    connect(toolMakeLrcTextButton, SIGNAL(clicked()), SLOT(theCurrentLrcMaked()));
+
+    QToolButton *toolSearchLrcTextButton = new QToolButton(m_toolBarWidget);
+    toolSearchLrcTextButton->setFixedSize(m_verticalWindow ? TOOLBAR_HEIGHT : TOOLBAR_TEXT_LENGTH,
+                                          m_verticalWindow ? TOOLBAR_TEXT_LENGTH : TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(toolSearchLrcTextButton, 0, Qt::AlignCenter);
+    connect(toolSearchLrcTextButton, SIGNAL(clicked()), SLOT(searchMusicLrcs()));
+
+    QToolButton *toolUpdateLrcTextButton = new QToolButton(m_toolBarWidget);
+    toolUpdateLrcTextButton->setFixedSize(m_verticalWindow ? TOOLBAR_HEIGHT : TOOLBAR_TEXT_LENGTH,
+                                          m_verticalWindow ? TOOLBAR_TEXT_LENGTH : TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(toolUpdateLrcTextButton, 0, Qt::AlignCenter);
+    connect(toolUpdateLrcTextButton, SIGNAL(clicked()), SIGNAL(theCurrentLrcUpdated()));
+
+    QToolButton *toolErrorLrcTextButton = new QToolButton(m_toolBarWidget);
+    toolErrorLrcTextButton->setFixedSize(m_verticalWindow ? TOOLBAR_HEIGHT : TOOLBAR_TEXT_LENGTH,
+                                         m_verticalWindow ? TOOLBAR_TEXT_LENGTH : TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(toolErrorLrcTextButton, 0, Qt::AlignCenter);
+    connect(toolErrorLrcTextButton, SIGNAL(clicked()), SLOT(theCurrentLrcError()));
+
+    QToolButton *toolWindowLockedButton = new QToolButton(m_toolBarWidget);
+    toolWindowLockedButton->setFixedSize(TOOLBAR_HEIGHT, TOOLBAR_HEIGHT);
+    m_toolBarLayout->addWidget(toolWindowLockedButton, 0, Qt::AlignCenter);
+    connect(toolWindowLockedButton, SIGNAL(clicked()), SLOT(setWindowLockedChanged()));
+
+    QToolButton *toolCloseButton = new QToolButton(m_toolBarWidget);
+    toolCloseButton->setFixedSize(14, 14);
+    m_toolBarLayout->addWidget(toolCloseButton, 0, Qt::AlignCenter);
+    connect(toolCloseButton, SIGNAL(clicked()), SLOT(close()));
+    m_toolBarLayout->addStretch(1);
+
+    showMainWindow->setIcon(QIcon(":/image/lb_player_logo"));
+
+    showMainWindow->setCursor(QCursor(Qt::PointingHandCursor));
+    toolWindowTypeButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolCloseButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolStyleButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolMakeLrcTextButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolSearchLrcTextButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolUpdateLrcTextButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolErrorLrcTextButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolWindowLockedButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolLrcBigerButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolLrcSmallerButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolPreSongButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolNextSongButton->setCursor(QCursor(Qt::PointingHandCursor));
+    toolSettingButton->setCursor(QCursor(Qt::PointingHandCursor));
+    m_toolPlayButton->setCursor(QCursor(Qt::PointingHandCursor));
+
+    showMainWindow->setStyleSheet(MusicUIObject::MPushButtonStyle02);
+    toolCloseButton->setStyleSheet(MusicUIObject::MKGBtnTClose);
+    toolStyleButton->setStyleSheet(MusicUIObject::MKGDeskTopStyle);
+    toolWindowLockedButton->setStyleSheet(MusicUIObject::MKGDeskTopLock);
+    toolLrcSmallerButton->setStyleSheet(MusicUIObject::MKGDeskTopSizeDown);
+    toolLrcBigerButton->setStyleSheet(MusicUIObject::MKGDeskTopSizeUp);
+    toolPreSongButton->setStyleSheet(MusicUIObject::MKGDeskTopPrevious);
+    toolNextSongButton->setStyleSheet(MusicUIObject::MKGDeskTopNext);
+    toolSettingButton->setStyleSheet(MusicUIObject::MKGDeskTopSetting);
+    m_toolPlayButton->setStyleSheet(MusicUIObject::MKGDeskTopPlay);
+    toolWindowTypeButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MKGDeskTopHorizontal : MusicUIObject::MKGDeskTopVertical);
+    toolMakeLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MKGDeskTopVMakeLrc : MusicUIObject::MKGDeskTopHMakeLrc);
+    toolSearchLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MKGDeskTopVSearchLrc : MusicUIObject::MKGDeskTopHSearchLrc);
+    toolUpdateLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MKGDeskTopVUpdateLrc : MusicUIObject::MKGDeskTopHUpdateLrc);
+    toolErrorLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MKGDeskTopVErrorLrc : MusicUIObject::MKGDeskTopHErrorLrc);
+
+    showMainWindow->setToolTip(tr("showMainWindow"));
+    toolCloseButton->setToolTip(tr("hide"));
+    toolWindowLockedButton->setToolTip(tr("lockLrc"));
+    toolLrcBigerButton->setToolTip(tr("lrcBiger"));
+    toolLrcSmallerButton->setToolTip(tr("lrcSmaller"));
+    toolPreSongButton->setToolTip(tr("Previous"));
+    toolNextSongButton->setToolTip(tr("Next"));
+    toolSettingButton->setToolTip(tr("Setting"));
+    m_toolPlayButton->setToolTip(tr("Play"));
+
+    m_toolBarWidget->hide();
+}
+
+void MusicLrcContainerForDesktop::resizeLrcSizeArea(bool resize)
+{
+    m_geometry.setY(resize ? m_geometry.y() + 1 : m_geometry.y() - 1);
+    setSelfGeometry();
+
+    int size = resize ? ++m_currentLrcFontSize : --m_currentLrcFontSize;
+    foreach(MusicLRCManager *manager, m_musicLrcContainer)
+    {
+        MStatic_cast(MusicLRCManagerForDesktop*, manager)->setLrcFontSize(size);
+    }
+    m_musicLrcContainer[1]->setText(m_musicLrcContainer[1]->text());
+
+    resizeLrcSizeArea();
+    M_SETTING_PTR->setValue(MusicSettingManager::DLrcSizeChoiced, m_currentLrcFontSize);
+}
+
+void MusicLrcContainerForDesktop::mousePressEvent(QMouseEvent *event)
+{
+    MusicLrcContainer::mousePressEvent(event);
+    if(!m_windowLocked && event->button() == Qt::LeftButton)
+    {
+        m_offset = event->globalPos() - frameGeometry().topLeft();
+    }
+}
+
+void MusicLrcContainerForDesktop::mouseMoveEvent(QMouseEvent *event)
+{
+    MusicLrcContainer::mouseMoveEvent(event);
+    if(!m_windowLocked && (event->buttons() & Qt::LeftButton))
+    {
+        setCursor(Qt::CrossCursor);
+        move(event->globalPos() - m_offset);
+        M_SETTING_PTR->setValue(MusicSettingManager::DLrcGeometryChoiced, QWidget::pos());
+    }
+}
+
+void MusicLrcContainerForDesktop::enterEvent(QEvent *event)
+{
+    if(m_windowLocked)
+    {
+        return;
+    }
+    MusicLrcContainer::enterEvent(event);
+    m_toolBarWidget->show();
+    setStyleSheet(QString("#desktopWidget{%1}").arg(MusicUIObject::MBackgroundStyle08));
+}
+
+void MusicLrcContainerForDesktop::leaveEvent(QEvent *event)
+{
+    if(m_windowLocked)
+    {
+        return;
+    }
+    MusicLrcContainer::leaveEvent(event);
+    m_toolBarWidget->hide();
+    setStyleSheet(QString("#desktopWidget{%1}").arg(MusicUIObject::MBackgroundStyle01));
+}
+
+void MusicLrcContainerForDesktop::closeEvent(QCloseEvent *event)
+{
+    MusicLrcContainer::closeEvent(event);
+    emit desktopLrcClosed();
+}
+
 void MusicLrcContainerForDesktop::contextMenuEvent(QContextMenuEvent *event)
 {
-    QWidget::contextMenuEvent(event);
-    QMenu menu(this);
+    MusicLrcContainer::contextMenuEvent(event);
+    QMenu menu;
     QMenu changColorMenu(tr("changColorMenu"), this);
     changColorMenu.setStyleSheet(MusicUIObject::MMenuStyle02);
     menu.setStyleSheet(MusicUIObject::MMenuStyle02);
@@ -327,8 +358,11 @@ void MusicLrcContainerForDesktop::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(tr("updateLrc"), this, SIGNAL(theCurrentLrcUpdated()));
     menu.addAction(tr("makeLrc"), this, SLOT(theCurrentLrcMaked()));
     menu.addSeparator();
+
+    QAction *lrcLinkAc = menu.addAction(tr("localLinkOff"), this, SLOT(theLinkLrcChanged()));
+    m_linkLocalLrc ? lrcLinkAc->setText(tr("localLinkOff")) : lrcLinkAc->setText(tr("localLinkOn"));
     menu.addAction(tr("hide"), this, SLOT(close()));
-    menu.addAction(QIcon(":/contextMenu/lock"), tr("lockLrc"), this, SLOT(setWindowLockedChanged()));
+    menu.addAction(QIcon(":/contextMenu/btn_lock"), tr("lockLrc"), this, SLOT(setWindowLockedChanged()));
     menu.addMenu(&changColorMenu);
     menu.addSeparator();
 
@@ -338,23 +372,114 @@ void MusicLrcContainerForDesktop::contextMenuEvent(QContextMenuEvent *event)
     menu.exec(QCursor::pos());
 }
 
-void MusicLrcContainerForDesktop::setSettingParameter()
+
+MusicLrcContainerHorizontalDesktop::MusicLrcContainerHorizontalDesktop(QWidget *parent)
+    : MusicLrcContainerForDesktop(parent)
 {
-    MusicLrcContainer::setSettingParameter();
-    foreach(MusicLRCManager *manager, m_musicLrcContainer)
+    m_verticalWindow = false;
+    QSize windowSize = M_SETTING_PTR->value(MusicSettingManager::ScreenSize).toSize();
+    m_geometry.setX(windowSize.width() - 300);
+    m_geometry.setY(60);
+
+    m_toolBarWidget = new QWidget(this);
+    m_toolBarWidget->setGeometry(0, 0, m_geometry.x(), TOOLBAR_MAIN_HEIGHT);
+    m_toolBarLayout = new QHBoxLayout(m_toolBarWidget);
+    creatToolBarWidget();
+
+    QWidget *desktopWidget = new QWidget(this);
+    desktopWidget->setObjectName("desktopWidget");
+    m_musicLrcContainer << new MusicLRCManagerHorizontalDesktop(desktopWidget)
+                        << new MusicLRCManagerHorizontalDesktop(desktopWidget);
+    setGeometry(200,  windowSize.height() - height() - 200, m_geometry.x(), 2*m_geometry.y() + TOOLBAR_HEIGHT + TOOLBAR_MAIN_HEIGHT);
+    desktopWidget->setGeometry(0, TOOLBAR_MAIN_HEIGHT, m_geometry.x(), 2*m_geometry.y() + TOOLBAR_MAIN_HEIGHT);
+
+    setSelfGeometry();
+    m_currentLrcFontSize = MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[0])->getFirstFontSize();
+}
+
+QString MusicLrcContainerHorizontalDesktop::getClassName()
+{
+    return staticMetaObject.className();
+}
+
+void MusicLrcContainerHorizontalDesktop::initCurrentLrc() const
+{
+    MusicLrcContainerForDesktop::initCurrentLrc();
+    if(m_currentTime == 0)
     {
-        m_currentLrcFontSize = M_SETTING->value(MusicSettingManager::DLrcSizeChoiced).toInt();
-        manager->setLrcFontSize(MStatic_cast(MusicLRCManager::LrcSizeTable, m_currentLrcFontSize));
-    }
-    m_windowLocked = M_SETTING->value(MusicSettingManager::DLrcLockedChoiced).toInt() == 1;
-    QRect rect = M_SETTING->value(MusicSettingManager::DLrcGeometryChoiced).toRect();
-    if(!rect.isEmpty())
-    {
-        setGeometry(rect);
+        m_musicLrcContainer[0]->setGeometry(0, 20,
+                                            MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[0])->x(),
+                                            m_geometry.y());
+        m_musicLrcContainer[1]->setGeometry(0, m_geometry.y() + 20, 0, 0);
     }
 }
 
-void MusicLrcContainerForDesktop::showPlayStatus(bool status) const
+void MusicLrcContainerHorizontalDesktop::resizeLrcSizeArea()
 {
-    m_toolPlayButton->setIcon(QIcon(QString::fromUtf8(!status ? ":/desktopTool/stop" : ":/desktopTool/play")) );
+    int width = MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[0])->x();
+    m_musicLrcContainer[0]->setGeometry(0, 20, width, m_geometry.y());
+
+    width = MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[1])->x();
+    int pos = m_geometry.x() - width;
+    if(pos < 0 )
+    {
+        pos = 0;
+    }
+    m_musicLrcContainer[1]->setGeometry(pos, m_geometry.y() + 20, width, m_geometry.y());
+}
+
+
+MusicLrcContainerVerticalDesktop::MusicLrcContainerVerticalDesktop(QWidget *parent)
+    : MusicLrcContainerForDesktop(parent)
+{
+    m_verticalWindow = true;
+    QSize windowSize = M_SETTING_PTR->value(MusicSettingManager::ScreenSize).toSize();
+    m_geometry.setX(windowSize.height() - 150);
+    m_geometry.setY(60);
+
+    m_toolBarWidget = new QWidget(this);
+    m_toolBarWidget->setGeometry(0, 0, TOOLBAR_MAIN_HEIGHT, m_geometry.x());
+    m_toolBarLayout = new QVBoxLayout(m_toolBarWidget);
+    creatToolBarWidget();
+
+    QWidget *desktopWidget = new QWidget(this);
+    desktopWidget->setObjectName("desktopWidget");
+    m_musicLrcContainer << new MusicLRCManagerVerticalDesktop(desktopWidget)
+                        << new MusicLRCManagerVerticalDesktop(desktopWidget);
+    setGeometry(200,  75, 2*m_geometry.y() + TOOLBAR_HEIGHT + TOOLBAR_MAIN_HEIGHT, m_geometry.x());
+    desktopWidget->setGeometry(TOOLBAR_MAIN_HEIGHT, 0, 2*m_geometry.y() + TOOLBAR_MAIN_HEIGHT, m_geometry.x());
+
+    setSelfGeometry();
+    m_currentLrcFontSize = MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[0])->getFirstFontSize();
+}
+
+QString MusicLrcContainerVerticalDesktop::getClassName()
+{
+    return staticMetaObject.className();
+}
+
+void MusicLrcContainerVerticalDesktop::initCurrentLrc() const
+{
+    MusicLrcContainerForDesktop::initCurrentLrc();
+    if(m_currentTime == 0)
+    {
+        m_musicLrcContainer[0]->setGeometry(20, 0,
+                                            m_geometry.y(),
+                                            MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[0])->x());
+        m_musicLrcContainer[1]->setGeometry(m_geometry.x() + 20, 0, 0, 0);
+    }
+}
+
+void MusicLrcContainerVerticalDesktop::resizeLrcSizeArea()
+{
+    int height = MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[0])->x();
+    m_musicLrcContainer[0]->setGeometry(20, 0, m_geometry.y(), height);
+
+    height = MStatic_cast(MusicLRCManagerForDesktop*, m_musicLrcContainer[1])->x();
+    int pos = m_geometry.x() - height;
+    if(pos < 0 )
+    {
+        pos = 0;
+    }
+    m_musicLrcContainer[1]->setGeometry(m_geometry.y() + 20, pos, m_geometry.y(), height);
 }

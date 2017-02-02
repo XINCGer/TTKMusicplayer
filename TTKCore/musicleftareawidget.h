@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (c) 2014 - 2016 Greedysky Studio
+ * Copyright (c) 2015 - 2017 Greedysky Studio
  * All rights reserved!
  * Redistribution and use of the source code or any derivative
  * works are strictly forbiden.
@@ -12,40 +12,113 @@
 #include <QWidget>
 #include "musicglobaldefine.h"
 
-class MusicLocalSongSearch;
 class MusicQualityChoiceWidget;
+class MusicCloudSharedSongWidget;
 
 namespace Ui {
     class MusicApplication;
 }
 
+/*! @brief The class of the app left area widget.
+ * @author Greedysky <greedysky@163.com>
+ */
 class MUSIC_GUI_EXPORT MusicLeftAreaWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit MusicLeftAreaWidget(QWidget *parent = 0);
+    /*!
+     * Object contsructor.
+     */
     ~MusicLeftAreaWidget();
 
+    static QString getClassName();
+    /*!
+     * Get class object name.
+     */
+    static MusicLeftAreaWidget *instance();
+    /*!
+     * Get class object instance.
+     */
     void setupUi(Ui::MusicApplication* ui);
-    QString getSearchedText() const;
+    /*!
+     * Set up app ui.
+     */
+    void musictLoveStateClicked(bool state);
+    /*!
+     * Reset current music love icon state.
+     */
+
+Q_SIGNALS:
+    void currentLoveStateChanged();
+    /*!
+     * Current music love icon state changed.
+     */
+    void currentDownloadStateChanged();
+    /*!
+     * Current music download icon state changed.
+     */
 
 public Q_SLOTS:
-    void musicSearch();
+    void musicDownloadSongToLocal();
+    /*!
+     * To download music data from net to load.
+     */
+    void musicDownloadSongFinished();
+    /*!
+     * To download music data from net finished.
+     */
     void musicStackedSongListWidgetChanged();
+    /*!
+     * Change to song list widget.
+     */
     void musicStackedToolsWidgetChanged();
+    /*!
+     * Change to tool sets widget.
+     */
     void musicStackedRadioWidgetChanged();
+    /*!
+     * Change to radio widget.
+     */
     void musicStackedMyDownWidgetChanged();
+    /*!
+     * Change to my download widget.
+     */
     void musicStackedMobileWidgetChanged();
-    void musicSpectrumWidget();
-    void clearSearchedText();
+    /*!
+     * Change to mobile widget.
+     */
+    void musicStackedCloudWidgetChanged();
+    /*!
+     * Change to shared cloud widget.
+     */
+    void musicAnalyzerSpectrumWidget();
+    /*!
+     * Show analyzer spectrum widget.
+     */
+    void musicProjectMSpectrumWidget();
+    /*!
+     * Show projectM spectrum widget.
+     */
+    void cloudSharedSongUploadAllDone();
+    /*!
+     * All files upload finsihed.
+     */
 
 protected:
-    QWidget *m_supperClass;
-    Ui::MusicApplication *m_ui;
-    QWidget *m_stackedWidget;
-    MusicLocalSongSearch *m_musicLocalSongSearch;
-    MusicQualityChoiceWidget *m_qualityChoiceWidget;
+    void switchToSelectedItemStyle(int index);
+    /*!
+     * Switch to selected item style.
+     */
 
+    Ui::MusicApplication *m_ui;
+
+    int m_currentIndex;
+    QWidget *m_stackedWidget;
+    MusicQualityChoiceWidget *m_qualityChoiceWidget;
+    MusicCloudSharedSongWidget *m_cloudSharedSongWidget;
+
+    static MusicLeftAreaWidget *m_instance;
 };
 
 #endif // MUSICLEFTAREAWIDGET_H

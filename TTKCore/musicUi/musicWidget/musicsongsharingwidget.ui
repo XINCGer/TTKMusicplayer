@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>310</height>
+    <width>468</width>
+    <height>278</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>音乐分享</string>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -19,8 +19,8 @@
   <widget class="QLabel" name="background">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>20</y>
+     <x>4</x>
+     <y>4</y>
      <width>460</width>
      <height>270</height>
     </rect>
@@ -35,8 +35,8 @@
   <widget class="QLabel" name="topTitleName">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>20</y>
+     <x>14</x>
+     <y>4</y>
      <width>221</width>
      <height>25</height>
     </rect>
@@ -51,8 +51,8 @@
   <widget class="QToolButton" name="topTitleCloseButton">
    <property name="geometry">
     <rect>
-     <x>458</x>
-     <y>22</y>
+     <x>442</x>
+     <y>6</y>
      <width>20</width>
      <height>20</height>
     </rect>
@@ -64,8 +64,8 @@
   <widget class="QWidget" name="backgroundMask" native="true">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>45</y>
+     <x>4</x>
+     <y>29</y>
      <width>460</width>
      <height>245</height>
     </rect>
@@ -74,8 +74,8 @@
     <string notr="true">QWidget{color:#666666;background:rgba(255,255,255,200);}
 QLabel{background:transparent;color:#666666;}
 QRadioButton{background:transparent;}
-QRadioButton::indicator::unchecked{ image: url(:/control/radiobutton_unchecked); }
-QRadioButton::indicator:checked { image: url(:/control/radiobutton_checked); }</string>
+QRadioButton::indicator::unchecked{ image: url(:/control/btn_radioButton_unchecked); }
+QRadioButton::indicator:checked { image: url(:/control/btn_radiobutton_checked); }</string>
    </property>
    <widget class="QLabel" name="sharedName">
     <property name="geometry">
@@ -89,9 +89,6 @@ QRadioButton::indicator:checked { image: url(:/control/radiobutton_checked); }</
     <property name="styleSheet">
      <string notr="true">QLabel{font-size:22px;font-weight:bold;}</string>
     </property>
-    <property name="text">
-     <string>XXXXXXXXXXXXXXXXXXX</string>
-    </property>
    </widget>
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
@@ -101,22 +98,6 @@ QRadioButton::indicator:checked { image: url(:/control/radiobutton_checked); }</
       <width>311</width>
       <height>101</height>
      </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="QRCodeIcon">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>40</y>
-      <width>80</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background:black</string>
-    </property>
-    <property name="pixmap">
-     <pixmap resource="../../../TTKQrc/MusicPlayerShare.qrc">:/share/myQRCode</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="sharedNameIcon">
@@ -184,8 +165,8 @@ QRadioButton::indicator:checked { image: url(:/control/radiobutton_checked); }</
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="../../../TTKQrc/MusicPlayerUser.qrc">
-      <normaloff>:/usermanager/qq</normaloff>:/usermanager/qq</iconset>
+     <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
+      <normaloff>:/usermanager/lb_qq</normaloff>:/usermanager/lb_qq</iconset>
     </property>
    </widget>
    <widget class="QRadioButton" name="renrenButton">
@@ -201,8 +182,8 @@ QRadioButton::indicator:checked { image: url(:/control/radiobutton_checked); }</
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="../../../TTKQrc/MusicPlayerUser.qrc">
-      <normaloff>:/usermanager/renren</normaloff>:/usermanager/renren</iconset>
+     <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
+      <normaloff>:/usermanager/lb_renren</normaloff>:/usermanager/lb_renren</iconset>
     </property>
    </widget>
    <widget class="QRadioButton" name="qqspaceButton">
@@ -218,8 +199,8 @@ QRadioButton::indicator:checked { image: url(:/control/radiobutton_checked); }</
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="../../../TTKQrc/MusicPlayerUser.qrc">
-      <normaloff>:/usermanager/qqspace</normaloff>:/usermanager/qqspace</iconset>
+     <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
+      <normaloff>:/usermanager/lb_qq_space</normaloff>:/usermanager/lb_qq_space</iconset>
     </property>
    </widget>
    <widget class="QRadioButton" name="qqblogButton">
@@ -235,8 +216,8 @@ QRadioButton::indicator:checked { image: url(:/control/radiobutton_checked); }</
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="../../../TTKQrc/MusicPlayerUser.qrc">
-      <normaloff>:/usermanager/qqblog</normaloff>:/usermanager/qqblog</iconset>
+     <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
+      <normaloff>:/usermanager/lb_qqblog</normaloff>:/usermanager/lb_qqblog</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="shareButton">
@@ -290,16 +271,42 @@ QRadioButton::indicator:checked { image: url(:/control/radiobutton_checked); }</
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="../../../TTKQrc/MusicPlayerUser.qrc">
-      <normaloff>:/usermanager/xinlang</normaloff>:/usermanager/xinlang</iconset>
+     <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
+      <normaloff>:/usermanager/lb_xinlang</normaloff>:/usermanager/lb_xinlang</iconset>
+    </property>
+   </widget>
+   <widget class="QWidget" name="QRCodeIconWidget">
+    <property name="geometry">
+     <rect>
+      <x>355</x>
+      <y>35</y>
+      <width>90</width>
+      <height>90</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="QRCodeIconWidgetLayout"/>
+   </widget>
+   <widget class="QRadioButton" name="weixingButton">
+    <property name="geometry">
+     <rect>
+      <x>385</x>
+      <y>173</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="../../../TTKQrc/MusicPlayer.qrc">
+      <normaloff>:/usermanager/lb_weixing</normaloff>:/usermanager/lb_weixing</iconset>
     </property>
    </widget>
   </widget>
  </widget>
  <resources>
-  <include location="../../../TTKQrc/MusicPlayerShare.qrc"/>
-  <include location="../../../TTKQrc/MusicPlayerShare.qrc"/>
-  <include location="../../../TTKQrc/MusicPlayerUser.qrc"/>
+  <include location="../../../TTKQrc/MusicPlayer.qrc"/>
  </resources>
  <connections/>
 </ui>

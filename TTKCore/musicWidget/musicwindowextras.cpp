@@ -2,14 +2,14 @@
 #include "musicapplication.h"
 
 #include <QStyle>
-#if defined Q_OS_WIN && defined MUSIC_QT_5
-#   include <QtWinExtras>
+#if defined Q_OS_WIN && defined MUSIC_WINEXTRAS
+#   include <QtWinExtras/QtWinExtras>
 #endif
 
 MusicWindowExtras::MusicWindowExtras(QObject *parent)
     : QObject(parent)
 {
-#if defined Q_OS_WIN && defined MUSIC_QT_5
+#if defined Q_OS_WIN && defined MUSIC_WINEXTRAS
     m_playToolButton = nullptr;
     m_forwardToolButton = nullptr;
     m_backwardToolButton = nullptr;
@@ -18,20 +18,19 @@ MusicWindowExtras::MusicWindowExtras(QObject *parent)
     m_thumbnailToolBar = nullptr;
     m_superClass = MStatic_cast(MusicApplication*, parent);
     disableBlurBehindWindow( QtWin::isCompositionEnabled() );
-#ifdef MUSIC_DEBUG
+#  ifdef MUSIC_DEBUG
     createJumpList();
     createTaskbar();
-#endif
+#  endif
     createThumbnailToolBar();
 #else
     m_disableBlurBehindWindow = true;
 #endif
 }
 
-
 MusicWindowExtras::~MusicWindowExtras()
 {
-#if defined Q_OS_WIN && defined MUSIC_QT_5
+#if defined Q_OS_WIN && defined MUSIC_WINEXTRAS
     delete m_playToolButton;
     delete m_forwardToolButton;
     delete m_backwardToolButton;
@@ -41,16 +40,21 @@ MusicWindowExtras::~MusicWindowExtras()
 #endif
 }
 
+QString MusicWindowExtras::getClassName()
+{
+    return staticMetaObject.className();
+}
+
 void MusicWindowExtras::disableBlurBehindWindow(bool enable)
 {
     m_disableBlurBehindWindow = enable;
-#if defined Q_OS_WIN && defined MUSIC_QT_5
+#if defined Q_OS_WIN && defined MUSIC_WINEXTRAS
     QtWin::enableBlurBehindWindow(m_superClass);
     QtWin::disableBlurBehindWindow(m_superClass);
 #endif
 }
 
-#if defined Q_OS_WIN && defined MUSIC_QT_5
+#if defined Q_OS_WIN && defined MUSIC_WINEXTRAS
 void MusicWindowExtras::showPlayStatus(bool status) const
 {
     if(!status)
@@ -103,12 +107,12 @@ void MusicWindowExtras::createThumbnailToolBar()
     m_playToolButton = new QWinThumbnailToolButton(m_thumbnailToolBar);
     m_playToolButton->setToolTip(tr("Play"));
     m_playToolButton->setIcon(m_superClass->style()->standardIcon(QStyle::SP_MediaPlay));
-    connect(m_playToolButton, SIGNAL(clicked()), m_superClass, SLOT(musicKey()));
+    connect(m_playToolButton, SIGNAL(clicked()), m_superClass, SLOT(musicStatePlay()));
 
     m_forwardToolButton = new QWinThumbnailToolButton(m_thumbnailToolBar);
-    m_forwardToolButton->setToolTip(tr("Privious"));
+    m_forwardToolButton->setToolTip(tr("Previous"));
     m_forwardToolButton->setIcon(m_superClass->style()->standardIcon(QStyle::SP_MediaSeekBackward));
-    connect(m_forwardToolButton, SIGNAL(clicked()), m_superClass, SLOT(musicPlayPrivious()));
+    connect(m_forwardToolButton, SIGNAL(clicked()), m_superClass, SLOT(musicPlayPrevious()));
 
     m_backwardToolButton = new QWinThumbnailToolButton(m_thumbnailToolBar);
     m_backwardToolButton->setToolTip(tr("Next"));

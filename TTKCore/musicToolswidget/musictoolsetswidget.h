@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (c) 2014 - 2016 Greedysky Studio
+ * Copyright (c) 2015 - 2017 Greedysky Studio
  * All rights reserved!
  * Redistribution and use of the source code or any derivative
  * works are strictly forbiden.
@@ -13,29 +13,45 @@
 #include "musicuiobject.h"
 #include "musicglobaldefine.h"
 
-class QProcess;
-class MusicDesktopWallpaperWidget;
-
+/*! @brief The class of the tool sets widget.
+ * @author Greedysky <greedysky@163.com>
+ */
 class MUSIC_TOOL_EXPORT MusicToolSetsWidget : public QListWidget
 {
     Q_OBJECT
 public:
     explicit MusicToolSetsWidget(QWidget *parent = 0);
+    /*!
+     * Object contsructor.
+     */
     ~MusicToolSetsWidget();
 
-Q_SIGNALS:
-    void getCurrentPlayList(QStringList &list);
+    static QString getClassName();
+    /*!
+     * Get class object name.
+     */
 
 public Q_SLOTS:
     void itemHasClicked(QListWidgetItem *item);
+    /*!
+     * Tool sets list item has clicked.
+     */
     void addListWidgetItem();
+    /*!
+     * Add tool sets list into list widget.
+     */
 
 protected:
-    void setTransparent(int angle);
     void clearAllItems();
+    /*!
+     * Clear All Items.
+     */
+    virtual void contextMenuEvent(QContextMenuEvent *event) override;
+    /*!
+     * Override the widget event.
+     */
 
-    MusicDesktopWallpaperWidget *m_wallpaper;
-    QProcess *m_process;
+    QWidget *m_containItem;
 
 };
 
