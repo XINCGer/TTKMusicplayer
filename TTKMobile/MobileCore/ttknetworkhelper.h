@@ -12,8 +12,7 @@
 #include <QObject>
 #include "musicobject.h"
 #include "musicmobileglobaldefine.h"
-
-class MusicDownLoadQueryMultipleThread;
+#include "musicdownloadquerythreadabstract.h"
 
 /*! @brief The class of the music network helper.
  * @author Greedysky <greedysky@163.com>
@@ -38,6 +37,12 @@ public:
      */
     ~TTKNetworkHelper();
 
+    //////////////////////////////////////////////////////
+    Q_INVOKABLE void setBlockNetWork(int block);
+    /*!
+     * Set flag wheather to block current network.
+     */
+    //////////////////////////////////////////////////////
     Q_INVOKABLE void setQueryType(int type);
     /*!
      * Set network query type.
@@ -66,8 +71,25 @@ public:
     /*!
      * Get searched information attributes.
      */
+    Q_INVOKABLE void setCurrentServer();
+    /*!
+     * Set current server index.
+     */
+    Q_INVOKABLE void setCurrentServer(int index);
+    /*!
+     * Set current server index.
+     */
+    Q_INVOKABLE int getCurrentServer() const;
+    /*!
+     * Get current server index.
+     */
 
 Q_SIGNALS:
+    void networkConnectionStateChanged(bool state);
+    /*!
+     * Network connection state changed.
+     * default status is true, means connected network.
+     */
     void clearAllItems();
     /*!
      * Clear all items before the new query start.
@@ -114,6 +136,10 @@ private Q_SLOTS:
     /*!
      * Search data dwonload finished.
      */
+    void createSearchedItems(const MusicSearchedItem &songItem);
+    /*!
+     * Create the current items by song name\ artist name and time.
+     */
 
 protected:
     void dataForDownloadSong();
@@ -148,7 +174,7 @@ protected:
 
     int m_currentIndex;
     Type m_queryType;
-    MusicDownLoadQueryMultipleThread *m_queryThread;
+    MusicDownLoadQueryThreadAbstract *m_queryThread;
 
 };
 

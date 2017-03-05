@@ -1,8 +1,12 @@
 #include "ttkmusicutils.h"
 #include "musicobject.h"
 #include "musictime.h"
+#include "musicversion.h"
 #include "musicsongtag.h"
 #include "musicnumberutils.h"
+#include "musicsettingmanager.h"
+#include "musicsourceupdatethread.h"
+#include "musicsemaphoreloop.h"
 
 #include <QDir>
 #include <QMessageBox>
@@ -17,6 +21,16 @@ TTKMusicUtils::TTKMusicUtils(QObject *parent)
 TTKMusicUtils::~TTKMusicUtils()
 {
     delete m_songTag;
+}
+
+QVariant TTKMusicUtils::getValue(const QString &key) const
+{
+    return M_SETTING_PTR->value(key);
+}
+
+void TTKMusicUtils::setValue(const QString &key, const QVariant &value) const
+{
+    M_SETTING_PTR->setValue(key, value);
 }
 
 QString TTKMusicUtils::getRoot() const
@@ -58,6 +72,27 @@ bool TTKMusicUtils::currentNetIsWifi()
     return (wifi == 0);
 #endif
     return false;
+}
+
+void TTKMusicUtils::updateApplicationDialog()
+{
+#if defined (Q_OS_ANDROID)
+    MusicSemaphoreLoop loop;
+    MusicSourceUpdateThread *download = new MusicSourceUpdateThread(this);
+    connect(download, SIGNAL(downLoadDataChanged(QVariant)), &loop, SLOT(quit()));
+    download->startToDownload();
+    loop.exec();
+
+    if(!download->isLastedVersion())
+    {
+        QAndroidJniObject::callStaticMethod<void>(APP_PKG_NAME, "updateApplicationDialog", "(Ljava/lang/String;)V",
+        QAndroidJniObject::fromString( download->getLastedVersion() ).object<jstring>());
+    }
+    else
+    {
+        showMessageBox(tr("Current version is updated!"));
+    }
+#endif
 }
 
 QString TTKMusicUtils::normalizeTime(qint64 time, const QString &format)

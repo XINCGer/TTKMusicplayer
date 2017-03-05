@@ -3,7 +3,6 @@
 #include "musicdownloadstatuslabel.h"
 #include "musiccoreutils.h"
 #include "musicstringutils.h"
-#include "musicnetworkthread.h"
 #include "musicbackgroundmanager.h"
 
 #include <QTimer>
@@ -26,7 +25,6 @@
 MusicApplication::MusicApplication(QQmlContext *parent)
     : QObject(parent)
 {
-    M_NETWORK_PTR->start();
     ///////////////////////////////////////////////////////////////////////////////////
     qmlRegisterType<TTKRadioHelper>("TTKRadioHelper", 1, 0, "TTKRadioHelper");
     qmlRegisterType<TTKFileSearchCore>("TTKFileSearchCore", 1, 0, "TTKFileSearchCore");
@@ -428,8 +426,9 @@ void MusicApplication::readXMLConfigFromText()
     M_SETTING_PTR->setValue(MusicSettingManager::LrcTypeChoiced, xml.readShowLrcType());
     M_SETTING_PTR->setValue(MusicSettingManager::LrcSizeChoiced, xml.readShowLrcSize());
 
-    M_SETTING_PTR->setValue(MusicSettingManager::DownloadServerChoiced, 0);
-    M_SETTING_PTR->setValue(MusicSettingManager::DownloadServerMultipleChoiced, 1);
+    xml.readOtherLoadConfig();
+    m_networkHelper->setCurrentServer();
+
     M_SETTING_PTR->setValue(MusicSettingManager::ShowInlineLrcChoiced, 1);
     M_SETTING_PTR->setValue(MusicSettingManager::ShowDesktopLrcChoiced, 1);
 

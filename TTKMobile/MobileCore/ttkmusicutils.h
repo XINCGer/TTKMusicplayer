@@ -29,6 +29,15 @@ public:
      */
     ~TTKMusicUtils();
 
+    Q_INVOKABLE QVariant getValue(const QString &key) const;
+    /*!
+     * Get global setting vale.
+     */
+    Q_INVOKABLE void setValue(const QString &key, const QVariant &value) const;
+    /*!
+     * Set global setting vale.
+     */
+
     Q_INVOKABLE QString getRoot() const;
     /*!
      * Get root.
@@ -49,6 +58,10 @@ public:
     Q_INVOKABLE bool currentNetIsWifi();
     /*!
      * Show message box.
+     */
+    Q_INVOKABLE void updateApplicationDialog();
+    /*!
+     * Update application dialog.
      */
 
     Q_INVOKABLE QString normalizeTime(qint64 time, const QString &format);

@@ -10,6 +10,7 @@
 #include "musicalbumfoundwidget.h"
 #include "musicartistfoundwidget.h"
 #include "musicsimilarfoundwidget.h"
+#include "musicplaylistfoundwidget.h"
 #include "musicsongsearchonlinewidget.h"
 #include "musicidentifysongswidget.h"
 #include "musicfunctionuiobject.h"
@@ -209,6 +210,10 @@ void MusicRightAreaWidget::resizeWindow()
     {
         MObject_cast(MusicArtistFoundWidget*, m_stackedFuncWidget)->resizeWindow();
     }
+    else if(MObject_cast(MusicPlaylistFoundWidget*, m_stackedFuncWidget))
+    {
+        MObject_cast(MusicPlaylistFoundWidget*, m_stackedFuncWidget)->resizeWindow();
+    }
     else if(MObject_cast(MusicVideoPlayWidget*, m_stackedFuncWidget))
     {
         MObject_cast(MusicVideoPlayWidget*, m_stackedFuncWidget)->resizeWindow();
@@ -321,19 +326,25 @@ void MusicRightAreaWidget::musicFunctionClicked(int index)
         case SearchWidget: //insert search display widget
             {
                 QString searchedQString = m_ui->musicSongSearchLine->text().trimmed();
-                m_ui->surfaceStackedWidget->setCurrentIndex(0);
-                emit updateBackgroundTheme();
+                searchedQString = searchedQString.isEmpty() ? m_ui->musicSongSearchLine->placeholderText() : searchedQString;
                 //The string searched wouldn't allow to be none
-                if( !searchedQString.isEmpty() && searchedQString != tr("please input search text") )
+                if(!searchedQString.isEmpty() && searchedQString != tr("please input search text"))
                 {
+                    m_ui->musicSongSearchLine->setText(searchedQString);
                     m_ui->songSearchWidget->startSearchQuery(searchedQString);
                 }
                 else
                 {
+                    musicFunctionClicked(MusicRightAreaWidget::KugGouSongWidget);
+
                     MusicMessageBox message;
                     message.setText(tr("enter input search text first"));
                     message.exec();
+                    break;
                 }
+
+                m_ui->surfaceStackedWidget->setCurrentIndex(0);
+                emit updateBackgroundTheme();
                 break;
             }
         case SimilarWidget: //insert similar found widget
@@ -360,6 +371,15 @@ void MusicRightAreaWidget::musicFunctionClicked(int index)
                 m_ui->surfaceStackedWidget->addWidget(artistFoundWidget);
                 m_ui->surfaceStackedWidget->setCurrentWidget(artistFoundWidget);
                 m_stackedFuncWidget = artistFoundWidget;
+                emit updateBackgroundTheme();
+                break;
+            }
+        case PlaylistWidget: //insert playlist found widget
+            {
+                MusicPlaylistFoundWidget *playlistFoundWidget = new MusicPlaylistFoundWidget(this);
+                m_ui->surfaceStackedWidget->addWidget(playlistFoundWidget);
+                m_ui->surfaceStackedWidget->setCurrentWidget(playlistFoundWidget);
+                m_stackedFuncWidget = playlistFoundWidget;
                 emit updateBackgroundTheme();
                 break;
             }
@@ -391,7 +411,7 @@ void MusicRightAreaWidget::musicSongCommentsWidget()
 {
     if(m_ui->surfaceStackedWidget->currentIndex() != 1)
     {
-        musicFunctionClicked(LrcWidget);
+        musicFunctionClicked(MusicRightAreaWidget::LrcWidget);
     }
     m_ui->musiclrccontainerforinline->showSongCommentsWidget();
 }
@@ -412,6 +432,12 @@ void MusicRightAreaWidget::musicArtistFound(const QString &text)
 {
     musicFunctionClicked(MusicRightAreaWidget::ArtistWidget);
     MStatic_cast(MusicArtistFoundWidget*, m_stackedFuncWidget)->setSongName(text);
+}
+
+void MusicRightAreaWidget::musicPlaylistFound()
+{
+    musicFunctionClicked(MusicRightAreaWidget::PlaylistWidget);
+    MStatic_cast(MusicPlaylistFoundWidget*, m_stackedFuncWidget)->setSongName(QString());
 }
 
 void MusicRightAreaWidget::musicLoadSongIndexWidget()
@@ -485,7 +511,13 @@ void MusicRightAreaWidget::songResearchButtonSearched(const QString &name)
 
 void MusicRightAreaWidget::researchQueryByQuality(const QString &quality)
 {
-    m_ui->songSearchWidget->researchQueryByQuality(m_ui->showCurrentSong->text().trimmed(), quality);
+    QString text = m_ui->showCurrentSong->text().trimmed();
+    if(text.isEmpty())
+    {
+        return;
+    }
+
+    m_ui->songSearchWidget->researchQueryByQuality(text, quality);
     m_ui->surfaceStackedWidget->setCurrentIndex(0);
     emit updateBackgroundTheme();
 }
