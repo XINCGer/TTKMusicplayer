@@ -49,6 +49,26 @@ Item {
         }
     }
 
+    Connections {
+        target: TTK_APP
+        onImportSongFinished: {
+            if(index === ttkTheme.music_downmv_list) {
+                playlistModel.clear();
+                var names = TTK_APP.mediaNames(ttkTheme.music_downmv_list);
+                var artists = TTK_APP.mediaArtists(ttkTheme.music_downmv_list);
+                for(var i=0; i<names.length; ++i) {
+                    var info = {
+                        title: names[i],
+                        artist: artists[i]
+                    }
+                    playlistModel.append(info);
+                }
+                itemListView.currentIndex = TTK_APP.getCurrentIndex();
+                updateItemListView();
+            }
+        }
+    }
+
     TTKMusicSongSettingPage {
         id: ttkMusicSongSettingPage
     }
@@ -131,6 +151,10 @@ Item {
 
                         MouseArea {
                             anchors.fill: parent
+                            onPressAndHold: {
+                                ttkGlobal.list_module_index = ttkTheme.music_downmv_list;
+                                ttkOutStackView.push("qrc:/MobileWidgets/TTKMusicListsManagerPage.qml");
+                            }
                             onClicked: {
                                 itemListView.currentIndex = index;
                                 ttkGlobal.video_url = TTK_APP.mediaPath(ttkTheme.music_downmv_list, index);

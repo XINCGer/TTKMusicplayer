@@ -57,7 +57,11 @@ public:
      */
     Q_INVOKABLE bool currentNetIsWifi();
     /*!
-     * Show message box.
+     * Check current network is wifi.
+     */
+    Q_INVOKABLE void setNetworkBlockNotWifi();
+    /*!
+     * Set network block if it is not Wifi.
      */
     Q_INVOKABLE void updateApplicationDialog();
     /*!
@@ -95,6 +99,10 @@ public:
      * Close tag reader object.
      */
 
+    Q_INVOKABLE bool removeCacheDir(const QString &dir);
+    /*!
+     * Remove cache dir in ecursive.
+     */
     Q_INVOKABLE bool removeDir(const QString &dir);
     /*!
      * Remove dir in ecursive.

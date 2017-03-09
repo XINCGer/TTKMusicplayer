@@ -49,6 +49,26 @@ Item {
         }
     }
 
+    Connections {
+        target: TTK_APP
+        onImportSongFinished: {
+            if(index === ttkTheme.music_musicrg_list) {
+                playlistModel.clear();
+                var names = TTK_APP.mediaNames(ttkTheme.music_musicrg_list);
+                var artists = TTK_APP.mediaArtists(ttkTheme.music_musicrg_list);
+                for(var i=0; i<names.length; ++i) {
+                    var info = {
+                        title: names[i],
+                        artist: artists[i]
+                    }
+                    playlistModel.append(info);
+                }
+                itemListView.currentIndex = TTK_APP.getCurrentIndex();
+                updateItemListView();
+            }
+        }
+    }
+
     TTKMusicSongSettingPage {
         id: ttkMusicSongSettingPage
     }
@@ -131,6 +151,10 @@ Item {
 
                         MouseArea {
                             anchors.fill: parent
+                            onPressAndHold: {
+                                ttkGlobal.list_module_index = ttkTheme.music_musicrg_list;
+                                ttkOutStackView.push("qrc:/MobileWidgets/TTKMusicListsManagerPage.qml");
+                            }
                             onClicked: {
                                 itemListView.currentIndex = index;
                                 TTK_APP.setCurrentIndex(ttkTheme.music_musicrg_list, index);
@@ -156,7 +180,7 @@ Item {
                         Text {
                             id: titleArea
                             text: title
-                            width: ttkMusicIdentifyListsPage.width - iconArea.width - ttkGlobal.dpHeight(60)
+                            width: ttkMusicIdentifyListsPage.width - iconArea.width - ttkGlobal.dpWidth(60)
                             anchors {
                                 top: parent.top
                                 topMargin: ttkGlobal.dpHeight(10)

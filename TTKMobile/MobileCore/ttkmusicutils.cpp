@@ -7,6 +7,7 @@
 #include "musicsettingmanager.h"
 #include "musicsourceupdatethread.h"
 #include "musicsemaphoreloop.h"
+#include "musicnetworkthread.h"
 
 #include <QDir>
 #include <QMessageBox>
@@ -72,6 +73,14 @@ bool TTKMusicUtils::currentNetIsWifi()
     return (wifi == 0);
 #endif
     return false;
+}
+
+void TTKMusicUtils::setNetworkBlockNotWifi()
+{
+#if defined (Q_OS_ANDROID)
+    bool block = M_SETTING_PTR->value(MusicSettingManager::MobileWifiConnectChoiced).toBool() && currentNetIsWifi();
+    M_NETWORK_PTR->setBlockNetWork(block);
+#endif
 }
 
 void TTKMusicUtils::updateApplicationDialog()
@@ -145,7 +154,7 @@ void TTKMusicUtils::closeTagFromFile()
     m_songTag = nullptr;
 }
 
-bool TTKMusicUtils::removeDir(const QString &dir)
+bool TTKMusicUtils::removeCacheDir(const QString &dir)
 {
     QDir d(dir);
     if(d.exists() && d.removeRecursively())
@@ -154,6 +163,12 @@ bool TTKMusicUtils::removeDir(const QString &dir)
         return true;
     }
     return false;
+}
+
+bool TTKMusicUtils::removeDir(const QString &dir)
+{
+    QDir d(dir);
+    return (d.exists() && d.removeRecursively());
 }
 
 void TTKMusicUtils::checkTheFileNeededExist()
