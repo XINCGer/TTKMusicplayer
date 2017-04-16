@@ -135,8 +135,16 @@ private Q_SLOTS:
     /*!
      * Create the current items by song name\ artist name and time.
      */
+    void downloadProgressChanged(float percent, const QString &total, qint64 time);
+    /*!
+     * Update download percent\ total time and current time progress.
+     */
 
 protected:
+    void closeWindowNotify();
+    /*!
+     * Close window notify.
+     */
     void dataForDownloadSong();
     /*!
      * Query for download song.

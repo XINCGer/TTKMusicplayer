@@ -4,7 +4,7 @@
 #include "musicuiobject.h"
 #include "musiclrccontainerfordesktop.h"
 #include "musicvideoplaywidget.h"
-#include "musicdownloadstatuslabel.h"
+#include "musicdownloadstatusobject.h"
 #include "musicsettingwidget.h"
 #include "musicmessagebox.h"
 #include "musicalbumfoundwidget.h"
@@ -30,7 +30,7 @@ MusicRightAreaWidget::MusicRightAreaWidget(QWidget *parent)
     m_stackedFuncWidget = nullptr;
     m_musicLrcForDesktop = nullptr;
 
-    m_downloadStatusLabel = new MusicDownloadStatusLabel(parent);
+    m_downloadStatusLabel = new MusicDownloadStatusObject(parent);
     m_setting = new MusicSettingWidget(this);
     connect(m_setting, SIGNAL(parameterSettingChanged()), parent,
                        SLOT(getParameterSetting()));
@@ -251,6 +251,7 @@ void MusicRightAreaWidget::musicFunctionClicked(int index)
     }
 
     deleteStackedFuncWidget();
+    m_ui->songSearchWidget->auditionStop();
     m_ui->lrcDisplayAllButton->setVisible(false);
     if(m_ui->musiclrccontainerforinline->lrcDisplayExpand())
     {

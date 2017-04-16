@@ -10,7 +10,6 @@ INCLUDEPATH += $$PWD
 
 !contains(CONFIG, TTK_NO_MSVC_LINK_NEED){
 HEADERS  += \
-    $$PWD/musicdownloadstatuslabel.h \
     $$PWD/musicsettingwidget.h \
     $$PWD/musicbackgroundskindialog.h \
     $$PWD/musicsystemtraymenu.h \
@@ -30,6 +29,7 @@ HEADERS  += \
     $$PWD/musicenhancedwidget.h \
     $$PWD/musicdownloadwidget.h \
     $$PWD/musicdownloadmgmtwidget.h \
+    $$PWD/musicdownloadstatusobject.h \
     $$PWD/musicsongsharingwidget.h \
     $$PWD/musicsonglistsharingwidget.h \
     $$PWD/musicsourceupdatewidget.h \
@@ -46,13 +46,13 @@ HEADERS  += \
     $$PWD/musicplaylistfoundwidget.h \
     $$PWD/musicplaylistfoundinfowidget.h \
     $$PWD/musicplaylistfoundtablewidget.h \
-    $$PWD/musicplaylistfoundcategorywidget.h
+    $$PWD/musicplaylistfoundcategorywidget.h \
+    $$PWD/musicsonglistenhancelosslesswidget.h
 
 }
 
 contains(CONFIG, TTK_BUILD_LIB){
 SOURCES += \
-    $$PWD/musicdownloadstatuslabel.cpp \
     $$PWD/musicsettingwidget.cpp \
     $$PWD/musicbackgroundskindialog.cpp \
     $$PWD/musicsystemtraymenu.cpp \
@@ -72,6 +72,7 @@ SOURCES += \
     $$PWD/musicenhancedwidget.cpp \
     $$PWD/musicdownloadwidget.cpp \
     $$PWD/musicdownloadmgmtwidget.cpp \
+    $$PWD/musicdownloadstatusobject.cpp \
     $$PWD/musicsongsharingwidget.cpp \
     $$PWD/musicsonglistsharingwidget.cpp \
     $$PWD/musicsourceupdatewidget.cpp \
@@ -88,6 +89,7 @@ SOURCES += \
     $$PWD/musicplaylistfoundwidget.cpp \
     $$PWD/musicplaylistfoundinfowidget.cpp \
     $$PWD/musicplaylistfoundtablewidget.cpp \
-    $$PWD/musicplaylistfoundcategorywidget.cpp
+    $$PWD/musicplaylistfoundcategorywidget.cpp \
+    $$PWD/musicsonglistenhancelosslesswidget.cpp
 
 }
