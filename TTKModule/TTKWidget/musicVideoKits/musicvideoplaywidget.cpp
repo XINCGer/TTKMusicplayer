@@ -101,8 +101,7 @@ MusicVideoPlayWidget::MusicVideoPlayWidget(QWidget *parent)
     m_videoFloatWidget->setText(MusicVideoFloatWidget::FreshType, tr("PopupMode"));
 
     connect(m_searchButton,SIGNAL(clicked(bool)), SLOT(searchButtonClicked()));
-    connect(m_videoTable, SIGNAL(mvURLNameChanged(QString,QString)),
-                          SLOT(mvURLNameChanged(QString,QString)));
+    connect(m_videoTable, SIGNAL(mvURLNameChanged(QString,QString)), SLOT(mvURLNameChanged(QString,QString)));
     connect(m_videoTable, SIGNAL(restartSearchQuery(QString)),
                           SLOT(videoResearchButtonSearched(QString)));
     connect(m_searchEdit, SIGNAL(enterFinished(QString)), SLOT(videoResearchButtonSearched(QString)));
@@ -330,8 +329,11 @@ void MusicVideoPlayWidget::shareButtonClicked()
         return;
     }
 
+    QVariantMap data;
+    data["songName"] = text;
+
     MusicSongSharingWidget shareWidget(this);
-    shareWidget.setSongName(text);
+    shareWidget.setData(MusicSongSharingWidget::Song, data);
     shareWidget.exec();
 }
 

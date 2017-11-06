@@ -13,6 +13,7 @@
 #include "musicgiflabelwidget.h"
 #include "musicdownloadbatchwidget.h"
 #include "musictime.h"
+#include "musicapplication.h"
 
 #include <QBoxLayout>
 #include <QPushButton>
@@ -122,6 +123,14 @@ void MusicSongSearchOnlineTableWidget::auditionToMusic(int row)
         message.exec();
         return;
     }
+
+    MusicApplication *w = MusicApplication::instance();
+    if(w->isPlaying())
+    {
+        w->musicStatePlay();
+    }
+    ///stop current media play while audition starts.
+
     if(m_audition == nullptr)
     {
         m_audition = new MusicCoreMPlayer(this);
@@ -632,7 +641,7 @@ void MusicSongSearchOnlineWidget::setResizeLabelText(const QString &name)
     }
 
     width = width - WINDOW_WIDTH_MIN + 240;
-    m_textLabel->setText(tr("&nbsp;find <font color=#80B7F1> %1 </font> result")
+    m_textLabel->setText(tr("&nbsp;find <font color=#158FE1> %1 </font> result")
                          .arg(MusicUtils::Widget::elidedText(font(), name, Qt::ElideRight, width)));
     m_textLabel->setToolTip(name);
 }
