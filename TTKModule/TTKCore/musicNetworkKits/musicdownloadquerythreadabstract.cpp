@@ -21,6 +21,11 @@ QString MusicDownLoadQueryThreadAbstract::getClassName()
     return staticMetaObject.className();
 }
 
+void MusicDownLoadQueryThreadAbstract::startToSingleSearch(const QString &text)
+{
+    Q_UNUSED(text);
+}
+
 QString MusicDownLoadQueryThreadAbstract::mapQueryServerString() const
 {
     QString v = tr("Current Used Server Is %1");
@@ -38,6 +43,8 @@ QString MusicDownLoadQueryThreadAbstract::mapQueryServerString() const
         return v.arg(tr("WY"));
     else if(m_queryServer.contains("XiaMi"))
         return v.arg(tr("XM"));
+    else if(m_queryServer.contains("WuSing"))
+        return v.arg(tr("WS"));
     else if(m_queryServer.contains("YinYueTai"))
         return v.arg(tr("YYT"));
     else

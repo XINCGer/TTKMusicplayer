@@ -30,7 +30,7 @@ void MusicQQSongCommentsThread::startToSearch(const QString &name)
     m_rawData["songID"].clear();
     if(!query->getMusicSongInfos().isEmpty())
     {
-        m_rawData["songID"] = query->getMusicSongInfos().first().m_songId;
+        m_rawData["songID"] = query->getRawData()["songID"];
         startToPage(0);
     }
 }
@@ -45,12 +45,13 @@ void MusicQQSongCommentsThread::startToPage(int offset)
     M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(offset));
     deleteAll();
     m_pageTotal = 0;
-
+    m_interrupt = true;
     QUrl musicUrl = QString(MusicUtils::Algorithm::mdII(QQ_COMMIT_URL, false));
 
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(QQ_UA_URL_1, ALG_UA_KEY, false).toUtf8());
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfig = request.sslConfiguration();
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
@@ -72,6 +73,8 @@ void MusicQQSongCommentsThread::downLoadFinished()
     }
 
     M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    m_interrupt = false;
+
     if(m_reply->error() == QNetworkReply::NoError)
     {
         QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
@@ -89,6 +92,13 @@ void MusicQQSongCommentsThread::downLoadFinished()
                 QVariantList comments = value["comment"].toList();
                 foreach(const QVariant &comm, comments)
                 {
+                    if(comm.isNull())
+                    {
+                        continue;
+                    }
+
+                    if(m_interrupt) return;
+
                     MusicSongCommentItem comment;
                     value = comm.toMap();
                     comment.m_likedCount = QString::number(value["praisenum"].toInt());
@@ -140,18 +150,19 @@ void MusicQQPlaylistCommentsThread::startToPage(int offset)
     M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(offset));
     deleteAll();
     m_pageTotal = 0;
-
+    m_interrupt = true;
     QUrl musicUrl = QString(MusicUtils::Algorithm::mdII(QQ_COMMIT_URL, false));
 
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(QQ_UA_URL_1, ALG_UA_KEY, false).toUtf8());
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfig = request.sslConfiguration();
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(sslConfig);
 #endif
-    m_reply = m_manager->post( request, MusicUtils::Algorithm::mdII(QQ_PL_COMMIT_URL, false)
+    m_reply = m_manager->post( request, MusicUtils::Algorithm::mdII(QQ_PL_COMMIT_DATA_URL, false)
                                .arg(m_rawData["songID"].toString()).arg(offset).arg(m_pageSize).toUtf8());
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()) );
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)),
@@ -167,6 +178,8 @@ void MusicQQPlaylistCommentsThread::downLoadFinished()
     }
 
     M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    m_interrupt = false;
+
     if(m_reply->error() == QNetworkReply::NoError)
     {
         QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
@@ -184,6 +197,13 @@ void MusicQQPlaylistCommentsThread::downLoadFinished()
                 QVariantList comments = value["comment"].toList();
                 foreach(const QVariant &comm, comments)
                 {
+                    if(comm.isNull())
+                    {
+                        continue;
+                    }
+
+                    if(m_interrupt) return;
+
                     MusicSongCommentItem comment;
                     value = comm.toMap();
                     comment.m_likedCount = QString::number(value["praisenum"].toInt());

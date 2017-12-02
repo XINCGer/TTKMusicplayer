@@ -45,12 +45,14 @@ void MusicKGSongCommentsThread::startToPage(int offset)
     M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(offset));
     deleteAll();
     m_pageTotal = 0;
-
+    m_interrupt = true;
     QUrl musicUrl = MusicUtils::Algorithm::mdII(KG_SG_COMMIT_URL, false)
                     .arg(m_rawData["songID"].toString()).arg(offset + 1).arg(m_pageSize);
+
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KG_UA_URL_1, ALG_UA_KEY, false).toUtf8());
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfig = request.sslConfiguration();
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
@@ -71,6 +73,8 @@ void MusicKGSongCommentsThread::downLoadFinished()
     }
 
     M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    m_interrupt = false;
+
     if(m_reply->error() == QNetworkReply::NoError)
     {
         QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
@@ -88,6 +92,13 @@ void MusicKGSongCommentsThread::downLoadFinished()
                 QVariantList comments = value["list"].toList();
                 foreach(const QVariant &comm, comments)
                 {
+                    if(comm.isNull())
+                    {
+                        continue;
+                    }
+
+                    if(m_interrupt) return;
+
                     MusicSongCommentItem comment;
                     value = comm.toMap();
 
@@ -141,12 +152,14 @@ void MusicKGPlaylistCommentsThread::startToPage(int offset)
     M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(offset));
     deleteAll();
     m_pageTotal = 0;
-
+    m_interrupt = true;
     QUrl musicUrl = MusicUtils::Algorithm::mdII(KG_PL_COMMIT_URL, false)
                     .arg(m_rawData["songID"].toString()).arg(offset + 1).arg(m_pageSize);
+
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KG_UA_URL_1, ALG_UA_KEY, false).toUtf8());
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfig = request.sslConfiguration();
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
@@ -167,6 +180,8 @@ void MusicKGPlaylistCommentsThread::downLoadFinished()
     }
 
     M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    m_interrupt = false;
+
     if(m_reply->error() == QNetworkReply::NoError)
     {
         QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
@@ -184,6 +199,13 @@ void MusicKGPlaylistCommentsThread::downLoadFinished()
                 QVariantList comments = value["list"].toList();
                 foreach(const QVariant &comm, comments)
                 {
+                    if(comm.isNull())
+                    {
+                        continue;
+                    }
+
+                    if(m_interrupt) return;
+
                     MusicSongCommentItem comment;
                     value = comm.toMap();
 

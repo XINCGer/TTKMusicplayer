@@ -69,6 +69,11 @@ typedef struct MUSIC_NETWORK_EXPORT MusicPlaylistItem
         m_updateTime = "-";
         m_tags = "-";
     }
+
+    bool isEmpty() const
+    {
+        return m_name == "-" && m_nickname == "-" && m_coverUrl == "-" && m_description == "-";
+    }
 }MusicPlaylistItem;
 MUSIC_DECLARE_LISTS(MusicPlaylistItem)
 
@@ -104,6 +109,11 @@ public:
      * Subclass should implement this function.
      */
     virtual void startToSearch(QueryType type, const QString &text) = 0;
+    /*!
+     * Start to search single data from id.
+     * Subclass should implement this function.
+     */
+    virtual void startToSingleSearch(const QString &text);
 
     /*!
      * Set search data quality.
@@ -133,6 +143,10 @@ public:
      * Set query extra movie flag.
      */
     inline void setQueryExtraMovie(bool state) { m_queryExtraMovie = state;}
+    /*!
+     * Return the current song query type.
+     */
+    inline void setQueryType(QueryType type) { m_currentType = type;}
     /*!
      * Return the current song query type.
      */

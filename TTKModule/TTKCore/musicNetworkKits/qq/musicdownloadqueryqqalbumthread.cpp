@@ -24,10 +24,12 @@ void MusicDownLoadQueryQQAlbumThread::startToSearch(const QString &album)
     M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(album));
     QUrl musicUrl = MusicUtils::Algorithm::mdII(QQ_ALBUM_URL, false).arg(album);
     deleteAll();
+    m_interrupt = true;
 
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(QQ_UA_URL_1, ALG_UA_KEY, false).toUtf8());
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfig = request.sslConfiguration();
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
@@ -50,6 +52,7 @@ void MusicDownLoadQueryQQAlbumThread::downLoadFinished()
     M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
     emit clearAllItems();      ///Clear origin items
     m_musicSongInfos.clear();  ///Empty the last search to songsInfo
+    m_interrupt = false;
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
@@ -89,49 +92,47 @@ void MusicDownLoadQueryQQAlbumThread::downLoadFinished()
                         }
                         QVariantMap name = var.toMap();
                         musicInfo.m_singerName = name["name"].toString();
-                        musicInfo.m_artistId = QString::number(name["id"].toULongLong());
+                        musicInfo.m_artistId = name["mid"].toString();
                     }
                     musicInfo.m_songName = value["songname"].toString();
-                    musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["interval"].toInt()*1000);;
+                    musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["interval"].toInt()*1000);
 
-                    if(m_currentType != MovieQuery)
+                    m_rawData["songID"] = value["songid"].toString();
+                    musicInfo.m_songId = value["songmid"].toString();
+                    musicInfo.m_albumId = value["albummid"].toString();
+                    musicInfo.m_lrcUrl = MusicUtils::Algorithm::mdII(QQ_SONG_LRC_URL, false).arg(musicInfo.m_songId);
+                    musicInfo.m_smallPicUrl = MusicUtils::Algorithm::mdII(QQ_SONG_PIC_URL, false)
+                                .arg(musicInfo.m_albumId.right(2).left(1))
+                                .arg(musicInfo.m_albumId.right(1)).arg(musicInfo.m_albumId);
+                    musicInfo.m_albumName = value["albumname"].toString();
+
+                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    readFromMusicSongAttribute(&musicInfo, value, m_searchQuality, m_queryAllRecords);
+                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+
+                    if(musicInfo.m_songAttrs.isEmpty())
                     {
-                        musicInfo.m_songId = value["songid"].toString();
-                        musicInfo.m_albumId = value["albummid"].toString();
-                        musicInfo.m_lrcUrl = MusicUtils::Algorithm::mdII(QQ_SONG_LRC_URL, false).arg(musicInfo.m_songId);
-                        musicInfo.m_smallPicUrl = MusicUtils::Algorithm::mdII(QQ_SONG_PIC_URL, false)
-                                    .arg(musicInfo.m_albumId.right(2).left(1))
-                                    .arg(musicInfo.m_albumId.right(1)).arg(musicInfo.m_albumId);
-                        musicInfo.m_albumName = value["albumname"].toString();
-
-                        if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-                        readFromMusicSongAttribute(&musicInfo, value, m_searchQuality, m_queryAllRecords);
-                        if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-
-                        if(musicInfo.m_songAttrs.isEmpty())
-                        {
-                            continue;
-                        }
-                        ////////////////////////////////////////////////////////////
-                        if(!albumFlag)
-                        {
-                            albumFlag = true;
-                            info.m_name = musicInfo.m_singerName;
-                            info.m_id = musicInfo.m_albumId;
-                            info.m_description = musicInfo.m_albumName + info.m_description;
-                            info.m_coverUrl = musicInfo.m_smallPicUrl;
-                            emit createAlbumInfoItem(info);
-                        }
-                        ////////////////////////////////////////////////////////////
-                        MusicSearchedItem item;
-                        item.m_songName = musicInfo.m_songName;
-                        item.m_singerName = musicInfo.m_singerName;
-                        item.m_albumName = musicInfo.m_albumName;
-                        item.m_time = musicInfo.m_timeLength;
-                        item.m_type = mapQueryServerString();
-                        emit createSearchedItems(item);
-                        m_musicSongInfos << musicInfo;
+                        continue;
                     }
+                    ////////////////////////////////////////////////////////////
+                    if(!albumFlag)
+                    {
+                        albumFlag = true;
+                        info.m_name = musicInfo.m_singerName;
+                        info.m_id = musicInfo.m_albumId;
+                        info.m_description = musicInfo.m_albumName + info.m_description;
+                        info.m_coverUrl = musicInfo.m_smallPicUrl;
+                        emit createAlbumInfoItem(info);
+                    }
+                    ////////////////////////////////////////////////////////////
+                    MusicSearchedItem item;
+                    item.m_songName = musicInfo.m_songName;
+                    item.m_singerName = musicInfo.m_singerName;
+                    item.m_albumName = musicInfo.m_albumName;
+                    item.m_time = musicInfo.m_timeLength;
+                    item.m_type = mapQueryServerString();
+                    emit createSearchedItems(item);
+                    m_musicSongInfos << musicInfo;
                 }
             }
         }

@@ -48,11 +48,14 @@ public:
         kugouLiveWidget,        /*!< insert kugou live widget*/
         LrcWidget,              /*!< insert lrc display widget*/
         SearchWidget,           /*!< insert search display widget*/
+        SearchSingleWidget,     /*!< insert search single display widget*/
         SimilarWidget,          /*!< insert similar found widget*/
         AlbumWidget,            /*!< insert album found widget*/
         ArtistWidget,           /*!< insert artist found widget*/
         ToplistWidget,          /*!< insert toplist found widget*/
         PlaylistWidget,         /*!< insert playlist found widget*/
+        AdvancedSearchWidget,   /*!< insert advanced search widget*/
+        RecommendWidget,        /*!< insert recommend found widget*/
         IndentifyWidget,        /*!< insert indentify songs widget*/
         KuiSheWidget            /*!< insert kugou kuishe widget*/
     };
@@ -176,11 +179,23 @@ public Q_SLOTS:
     /*!
      * Music playlist function.
      */
-    void musicPlaylistFound();
+    void musicPlaylistFound(const QString &id);
+    /*!
+     * Music recommend function.
+     */
+    void musicRecommendFound();
+    /*!
+     * Music advanced search function.
+     */
+    void musicAdvancedSearch();
     /*!
      * Music song research button searched by name.
      */
     void musicSongSearchedFound(const QString &text);
+    /*!
+     * Music song search by given id.
+     */
+    void musicSingleSearchedFound(const QString &id);
     /*!
      * Music load song index widget.
      */
@@ -208,7 +223,7 @@ public Q_SLOTS:
     /*!
      * Video button clicked by name to search.
      */
-    void musicVideoButtonSearched(const QString &name);
+    void musicVideoButtonSearched(const QString &name, const QString &id);
     /*!
      * Set video widget popop or not.
      */

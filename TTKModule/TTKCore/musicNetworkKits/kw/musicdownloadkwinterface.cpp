@@ -2,6 +2,7 @@
 #include "musicnumberutils.h"
 #include "musicsemaphoreloop.h"
 #include "musicalgorithmutils.h"
+#include "musictime.h"
 
 #///QJson import
 #include "qjson/parser.h"
@@ -203,11 +204,12 @@ void MusicDownLoadKWInterface::readFromMusicSongPic(MusicObject::MusicSongInform
         return;
     }
 
-    QUrl musicUrl = MusicUtils::Algorithm::mdII(KW_SONG_INFO_URL, false).arg(id);
+    QUrl musicUrl = MusicUtils::Algorithm::mdII(KW_SONG_LRC_URL, false).arg(id);
 
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KW_UA_URL_1, ALG_UA_KEY, false).toUtf8());
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfig = request.sslConfiguration();
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
@@ -238,6 +240,11 @@ void MusicDownLoadKWInterface::readFromMusicSongPic(MusicObject::MusicSongInform
             if(!info->m_smallPicUrl.contains("http://") && !info->m_smallPicUrl.contains("null"))
             {
                 info->m_smallPicUrl = MusicUtils::Algorithm::mdII(KW_ALBUM_COVER_URL, false) + info->m_smallPicUrl;
+            }
+
+            if(info->m_timeLength.isEmpty())
+            {
+                info->m_timeLength = MusicTime::msecTime2LabelJustified(value["duration"].toString().toInt()*1000);
             }
         }
     }

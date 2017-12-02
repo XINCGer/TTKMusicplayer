@@ -141,9 +141,6 @@
         </tag>
     </Kuwo>
     <XiaMi>
-        <tag value="虾米官方榜">
-            <value key="alimusic_week_billboard" value="阿里音乐周榜"/>
-        </tag>
         <tag value="全球媒体榜">
             <value key="billboard" value="美国Billboard单曲榜"/>
             <value key="hito" value="Hito 中文排行榜"/>
@@ -160,4 +157,12 @@
             <value key="xiami_weibo" value="微博分享榜"/>
         </tag>
     </XiaMi>
+    <WuSing>
+        <tag value="排行榜">
+            <value key="yc" value="原创音乐榜"/>
+            <value key="fc" value="翻唱音乐榜"/>
+            <value key="list23" value="新歌top50"/>
+            <value key="list25" value="支持榜"/>
+        </tag>
+    </WuSing>
 <TTKMusicPlayer>

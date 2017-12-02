@@ -22,6 +22,10 @@
 #include "musicobject.h"
 #include "musicglobaldefine.h"
 
+class QNetworkRequest;
+
+///////////////////////////////////////////////////////////////////////////
+const QString BD_UA_URL_1           = "QTllV1FYb3p4ZmZVNDArOW1uSGQrUGp2clowek55RmxrV2kzK3djN2dpb3J4YUlCbHpHSU9FNkJMREtSWDdVdWlVeVRHTnpTQUZ5TjE2RDlLb3lIeFNsMWVHMXBkWEsxSVpIRU85Ui8wVzhEbm80dUdQdHUxc0EzL1VhRHh5WmtxWlpJR1BqR3kzYkMycXVhQWljSmE3K1B3ZFd5dEdWMlE1UGhtWjBzOXJDcVRsN0lrL0d4V2ExdFJjQWtxMy9IbUN4ZkZ1NWhsY0ZqY3ZGcg==";
 /////////////////////////////////////////////////////////////////////////////
 const QString BD_ALBUM_URL          = "aldnSzNmNHJBaFlGSTlXN3FUSDhzWjlhZ3U1SmN2eEJYWUE0WlM5RWhrQ09lK3MvTzRTcHlWNklhZk4xY0JMTFhVbVhWMzE2anYxT01IVjd1V2g2Rmx0S3dUaUpRUEtTZGsyUkIwbk1VeU8rSldaU2NsMGVPWkdmQWFQQUJZRnUvNnNGVXV6elZCa0tBUkorUTlkaVdTN3Baa0UvZDJqUG5hNis4OW1CZTFzcldWUmNqNnl6SjZVem1JdkVwYk9z";
 /////////////////////////////////////////////////////////////////////////////
@@ -52,6 +56,8 @@ const QString BD_PL_COMMIT_DATA_URL = "UEhqK3V6bGlJeEpGSmJwWFdjNUdXWFdlc2hkTTZoM
 const QString BD_PLAYLIST_URL       = "WFUzM3JKMytSWDFzdURoQ1pDMDhDRDN0S0g1SjNtdFFNNTEvSmNEUDg2MG1xZ0JkbnpvZlhVTmxzdVBiS0dVL05MMzF5aFJ4UkZOVXB6c1dtcitmSTZESWVobWNDUEZNZGtzRHZTejBxTjdQM2ZFOENGVy9DaDhxeW9TS1FvcklYSmJpTmdKTlJCcUlUNVJHU0M3RGdDd1BYZitXRmJESlhPd3hiaERiclByUXl5bHpMbmYxbzZoNkZvWUpaSVpy";
 const QString BD_PLAYLIST_ATTR_URL  = "NXJsZ3ArR0JHeXFJYmdWUi9sOVNTaHlxbEpuekJYSVFrVkloY0U3d2VtU1VKOFZqcjlQTVNkMkJLbzJDSUxBb0ZWM0laZ0lVZHh1Y2RHUWRxVU5rS2hNMEpFM08yK0hxZXlYZGNlK0hpcys2RkVKRm94Uk5nUXlEVGo4QjlwQnFKQ0JmV0hGenBTTERoRG4xUGc0Z3I5OWtWMEhLMVh0RzBoeTdLQT09";
 ///////////////////////////////////////////////////////////////////////////
+const QString BD_RCM_URL            = "NFpxdTFTWldSaktNZGRTTVhCc3VuUFZkZFROa2tQdXBLZjVPVFNMN2dGQ0QrbXozUjRyZU1uMUlLSmlQOUk2Qk85VXlwTFdqajRYcngyWEl4QXBFdndEWnFseCt5aS92V3BaYWR6Wi9jYlY2WDg2RnJBaVZ5ZExENUJmUzFwbXZMT1FGbkhab1g1OEthUlc3enNveEMvQWd3NHpBTVNGQnRtWTZQT0xTZUMyWUZHL0ZLVzNKWXNNUzVMMVF5amVl";
+///////////////////////////////////////////////////////////////////////////
 
 
 /*! @brief The class to baidu query download interface.
@@ -60,6 +66,10 @@ const QString BD_PLAYLIST_ATTR_URL  = "NXJsZ3ArR0JHeXFJYmdWUi9sOVNTaHlxbEpuekJYS
 class MUSIC_NETWORK_EXPORT MusicDownLoadBDInterface
 {
 public:
+    /*!
+     * Make token query url string.
+     */
+    void makeTokenQueryUrl(QNetworkRequest *request, const QString &id);
     /*!
      * Read tags(size\bitrate\url) from query results.
      */

@@ -36,10 +36,12 @@ void MusicDownLoadQueryKGToplistThread::startToSearch(const QString &toplist)
     M_LOGGER_INFO(QString("%1 startToSearch").arg(getClassName()));
     QUrl musicUrl = MusicUtils::Algorithm::mdII(KG_SONG_TOPLIST_URL, false).arg(toplist);
     deleteAll();
+    m_interrupt = true;
 
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KG_UA_URL_1, ALG_UA_KEY, false).toUtf8());
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfig = request.sslConfiguration();
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
@@ -61,6 +63,7 @@ void MusicDownLoadQueryKGToplistThread::downLoadFinished()
     M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
     emit clearAllItems();      ///Clear origin items
     m_musicSongInfos.clear();  ///Empty the last search to songsInfo
+    m_interrupt = false;
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
@@ -77,7 +80,7 @@ void MusicDownLoadQueryKGToplistThread::downLoadFinished()
                 QVariantMap topInfo = value["info"].toMap();
                 MusicPlaylistItem info;
                 info.m_name = topInfo["rankname"].toString();
-                info.m_coverUrl = topInfo["imgurl"].toString();
+                info.m_coverUrl = topInfo["imgurl"].toString().replace("{size}", "400");
                 info.m_playCount = "-";
                 info.m_description = topInfo["intro"].toString();
 
@@ -110,15 +113,15 @@ void MusicDownLoadQueryKGToplistThread::downLoadFinished()
                     musicInfo.m_albumId = value["album_id"].toString();
 
                     MusicPlaylistItem albumInfo;
-                    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
                     readFromMusicSongAlbumInfo(&albumInfo, musicInfo.m_albumId);
                     musicInfo.m_albumName = albumInfo.m_nickname;
-                    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
 
                     readFromMusicSongLrcAndPic(&musicInfo, musicInfo.m_songId);
-                    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
                     readFromMusicSongAttribute(&musicInfo, value, m_searchQuality, m_queryAllRecords);
-                    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
 
                     if(musicInfo.m_songAttrs.isEmpty())
                     {

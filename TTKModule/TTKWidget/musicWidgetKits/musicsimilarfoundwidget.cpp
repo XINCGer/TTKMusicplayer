@@ -34,6 +34,7 @@ void MusicSimilarFoundTableWidget::createSearchedItems(const MusicSearchedItem &
     {
         return;
     }
+
     MusicQueryFoundTableWidget::createSearchedItems(songItem);
 }
 

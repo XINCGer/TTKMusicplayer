@@ -21,6 +21,8 @@
 #include "musicregeditmanager.h"
 #include "musictopareawidget.h"
 #include "musicotherdefine.h"
+#include "musicadvancedsearchedwidget.h"
+#include "musicrecommendfoundwidget.h"
 
 #include "qkugou/kugouwindow.h"
 
@@ -203,7 +205,7 @@ void MusicRightAreaWidget::loadCurrentSongLrc(const QString &name, const QString
 
 void MusicRightAreaWidget::setSongSpeedAndSlow(qint64 time) const
 {
-    m_ui->musiclrccontainerforinline->setSongSpeedAndSlow(time);
+    m_ui->musiclrccontainerforinline->setSongSpeedChanged(time);
 }
 
 void MusicRightAreaWidget::musicCheckHasLrcAlready() const
@@ -241,6 +243,10 @@ void MusicRightAreaWidget::resizeWindow()
     else if(MObject_cast(MusicPlaylistFoundWidget*, m_stackedFuncWidget))
     {
         MObject_cast(MusicPlaylistFoundWidget*, m_stackedFuncWidget)->resizeWindow();
+    }
+    else if(MObject_cast(MusicRecommendFoundWidget*, m_stackedFuncWidget))
+    {
+        MObject_cast(MusicRecommendFoundWidget*, m_stackedFuncWidget)->resizeWindow();
     }
 
     if(m_videoPlayerWidget && !m_videoPlayerWidget->isPopup())
@@ -380,6 +386,12 @@ void MusicRightAreaWidget::musicFunctionClicked(int index)
                 emit updateBackgroundTheme();
                 break;
             }
+        case SearchSingleWidget: //insert search display widget
+            {
+                m_ui->surfaceStackedWidget->setCurrentIndex(0);
+                emit updateBackgroundTheme();
+                break;
+            }
         case SimilarWidget: //insert similar found widget
             {
                 MusicSimilarFoundWidget *similarFoundWidget = new MusicSimilarFoundWidget(this);
@@ -422,6 +434,24 @@ void MusicRightAreaWidget::musicFunctionClicked(int index)
                 m_ui->surfaceStackedWidget->addWidget(playlistFoundWidget);
                 m_ui->surfaceStackedWidget->setCurrentWidget(playlistFoundWidget);
                 m_stackedFuncWidget = playlistFoundWidget;
+                emit updateBackgroundTheme();
+                break;
+            }
+        case RecommendWidget: //insert recommend found widget
+            {
+                MusicRecommendFoundWidget *recommendWidget = new MusicRecommendFoundWidget(this);
+                m_ui->surfaceStackedWidget->addWidget(recommendWidget);
+                m_ui->surfaceStackedWidget->setCurrentWidget(recommendWidget);
+                m_stackedFuncWidget = recommendWidget;
+                emit updateBackgroundTheme();
+                break;
+            }
+        case AdvancedSearchWidget: //insert advanced search widget
+            {
+                MusicAdvancedSearchedWidget *advancedWidget = new MusicAdvancedSearchedWidget(this);
+                m_ui->surfaceStackedWidget->addWidget(advancedWidget);
+                m_ui->surfaceStackedWidget->setCurrentWidget(advancedWidget);
+                m_stackedFuncWidget = advancedWidget;
                 emit updateBackgroundTheme();
                 break;
             }
@@ -489,16 +519,34 @@ void MusicRightAreaWidget::musicToplistFound()
     MStatic_cast(MusicTopListFoundWidget*, m_stackedFuncWidget)->setSongName(QString());
 }
 
-void MusicRightAreaWidget::musicPlaylistFound()
+void MusicRightAreaWidget::musicPlaylistFound(const QString &id)
 {
     musicFunctionClicked(MusicRightAreaWidget::PlaylistWidget);
-    MStatic_cast(MusicPlaylistFoundWidget*, m_stackedFuncWidget)->setSongName(QString());
+    MusicPlaylistFoundWidget *w = MStatic_cast(MusicPlaylistFoundWidget*, m_stackedFuncWidget);
+    id.isEmpty() ? w->setSongName(QString()) : w->setSongNameById(id);
+}
+
+void MusicRightAreaWidget::musicRecommendFound()
+{
+    musicFunctionClicked(MusicRightAreaWidget::RecommendWidget);
+    MStatic_cast(MusicRecommendFoundWidget*, m_stackedFuncWidget)->setSongName(QString());
+}
+
+void MusicRightAreaWidget::musicAdvancedSearch()
+{
+    musicFunctionClicked(MusicRightAreaWidget::AdvancedSearchWidget);
 }
 
 void MusicRightAreaWidget::musicSongSearchedFound(const QString &text)
 {
     m_ui->musicSongSearchLine->setText(text.trimmed());
     musicFunctionClicked(MusicRightAreaWidget::SearchWidget);
+}
+
+void MusicRightAreaWidget::musicSingleSearchedFound(const QString &id)
+{
+    musicFunctionClicked(MusicRightAreaWidget::SearchSingleWidget);
+    m_ui->songSearchWidget->startSearchSingleQuery(id);
 }
 
 void MusicRightAreaWidget::musicLoadSongIndexWidget()
@@ -579,7 +627,7 @@ void MusicRightAreaWidget::researchQueryByQuality(const QString &quality)
     emit updateBackgroundTheme();
 }
 
-void MusicRightAreaWidget::musicVideoButtonSearched(const QString &name)
+void MusicRightAreaWidget::musicVideoButtonSearched(const QString &name, const QString &id)
 {
     if(m_videoPlayerWidget && m_videoPlayerWidget->isPopup())
     {
@@ -589,7 +637,8 @@ void MusicRightAreaWidget::musicVideoButtonSearched(const QString &name)
     {
         musicFunctionClicked(MusicRightAreaWidget::VideoWidget);
     }
-    m_videoPlayerWidget->videoResearchButtonSearched(name);
+
+    id.isEmpty() ? m_videoPlayerWidget->videoResearchButtonSearched(name) : m_videoPlayerWidget->startSearchSingleQuery(id);
 }
 
 void MusicRightAreaWidget::musicVideoSetPopup(bool popup)

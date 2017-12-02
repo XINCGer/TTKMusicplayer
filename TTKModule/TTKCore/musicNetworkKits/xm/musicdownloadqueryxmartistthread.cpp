@@ -25,6 +25,7 @@ void MusicDownLoadQueryXMArtistThread::startToSearch(const QString &artist)
     M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(artist));
     deleteAll();
     m_searchText = artist;
+    m_interrupt = true;
 
     QNetworkRequest request;
     if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
@@ -54,13 +55,11 @@ void MusicDownLoadQueryXMArtistThread::downLoadFinished()
     M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
     emit clearAllItems();      ///Clear origin items
     m_musicSongInfos.clear();  ///Empty the last search to songsInfo
+    m_interrupt = false;
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
         QByteArray bytes = m_reply->readAll();///Get all the data obtained by request
-        bytes = bytes.replace("xiami(", "");
-        bytes = bytes.replace("callback(", "");
-        bytes.chop(1);
 
         QJson::Parser parser;
         bool ok;
@@ -95,9 +94,9 @@ void MusicDownLoadQueryXMArtistThread::downLoadFinished()
 
                     musicInfo.m_smallPicUrl = value["albumLogo"].toString();
 
-                    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
                     readFromMusicSongAttribute(&musicInfo, value["listenFiles"], m_searchQuality, m_queryAllRecords);
-                    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
 
                     if(musicInfo.m_songAttrs.isEmpty())
                     {
@@ -108,9 +107,9 @@ void MusicDownLoadQueryXMArtistThread::downLoadFinished()
                     {
                         artistFlag = true;
                         MusicPlaylistItem info;
-                        if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                        if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
                         getDownLoadIntro(&info);
-                        if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                        if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
                         info.m_id = m_searchText;
                         info.m_name = musicInfo.m_singerName;
                         info.m_coverUrl = musicInfo.m_smallPicUrl;
@@ -165,9 +164,6 @@ void MusicDownLoadQueryXMArtistThread::getDownLoadIntro(MusicPlaylistItem *item)
     }
 
     QByteArray bytes = reply->readAll();
-    bytes = bytes.replace("xiami(", "");
-    bytes = bytes.replace("callback(", "");
-    bytes.chop(1);
 
     QJson::Parser parser;
     bool ok;

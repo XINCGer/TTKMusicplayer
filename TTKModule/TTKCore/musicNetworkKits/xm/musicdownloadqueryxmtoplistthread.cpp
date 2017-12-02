@@ -22,7 +22,7 @@ void MusicDownLoadQueryXMToplistThread::startToSearch(QueryType type, const QStr
     }
     else
     {
-        startToSearch(toplist.isEmpty() ? "alimusic_week_billboard" : toplist);
+        startToSearch(toplist.isEmpty() ? "xiami_daxia" : toplist);
     }
 }
 
@@ -35,6 +35,7 @@ void MusicDownLoadQueryXMToplistThread::startToSearch(const QString &toplist)
 
     M_LOGGER_INFO(QString("%1 startToSearch").arg(getClassName()));
     deleteAll();
+    m_interrupt = true;
 
     QNetworkRequest request;
     if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
@@ -64,13 +65,11 @@ void MusicDownLoadQueryXMToplistThread::downLoadFinished()
     M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
     emit clearAllItems();      ///Clear origin items
     m_musicSongInfos.clear();  ///Empty the last search to songsInfo
+    m_interrupt = false;
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
         QByteArray bytes = m_reply->readAll();///Get all the data obtained by request
-        bytes = bytes.replace("xiami(", "");
-        bytes = bytes.replace("callback(", "");
-        bytes.chop(1);
 
         QJson::Parser parser;
         bool ok;
@@ -111,9 +110,9 @@ void MusicDownLoadQueryXMToplistThread::downLoadFinished()
 
                     musicInfo.m_smallPicUrl = value["albumLogo"].toString();
 
-                    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
                     readFromMusicSongAttribute(&musicInfo, value["listenFiles"], m_searchQuality, m_queryAllRecords);
-                    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
 
                     if(musicInfo.m_songAttrs.isEmpty())
                     {

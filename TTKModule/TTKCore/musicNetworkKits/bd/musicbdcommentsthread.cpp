@@ -47,20 +47,21 @@ void MusicBDSongCommentsThread::startToPage(int offset)
     M_LOGGER_INFO(QString("%1 startToPage %2").arg(getClassName()).arg(offset));
     deleteAll();
     m_pageTotal = 0;
+    m_interrupt = true;
 
     QString time = "1494911685";
     QString key = MusicUtils::Algorithm::md5(QString("baidu_taihe_music_secret_key" + time).toUtf8()).toHex().mid(8, 16);
     QString data = MusicUtils::Algorithm::mdII(BD_SG_COMMIT_DATA_URL, false).arg(m_pageSize*offset).arg(m_pageSize).arg(m_rawData["songID"].toInt());
-    QString eKey = QAesWrap::encrypt(data.toUtf8(), key.toUtf8(), key.toUtf8());
+    QString eKey = QString(QAesWrap(key.toUtf8(), key.toUtf8(), QAesWrap::AES_128)
+                   .encrypt(data.toUtf8(), QAesWrap::AES_CBC, QAesWrap::PKCS7));
     QString sign = MusicUtils::Algorithm::md5(QString("baidu_taihe_music" + eKey + time).toUtf8()).toHex();
-    eKey.replace('+', "%2B");
-    eKey.replace('/', "%2F");
-    eKey.replace('=', "%3D");
+    MusicUtils::Algorithm::urlEncode(eKey);
     QUrl musicUrl = MusicUtils::Algorithm::mdII(BD_COMMIT_URL, false).arg(time).arg(sign).arg(eKey);
 
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfig = request.sslConfiguration();
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
@@ -80,6 +81,8 @@ void MusicBDSongCommentsThread::downLoadFinished()
     }
 
     M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    m_interrupt = false;
+
     if(m_reply->error() == QNetworkReply::NoError)
     {
         QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
@@ -98,6 +101,13 @@ void MusicBDSongCommentsThread::downLoadFinished()
                 QVariantList comments = value["commentlist_last"].toList();
                 foreach(const QVariant &comm, comments)
                 {
+                    if(comm.isNull())
+                    {
+                        continue;
+                    }
+
+                    if(m_interrupt) return;
+
                     MusicSongCommentItem comment;
                     value = comm.toMap();
                     comment.m_likedCount = QString::number(value["zan_num"].toLongLong());
@@ -150,11 +160,13 @@ void MusicBDPlaylistCommentsThread::startToPage(int offset)
     M_LOGGER_INFO(QString("%1 startToPage %2").arg(getClassName()).arg(offset));
     deleteAll();
     m_pageTotal = 0;
+    m_interrupt = true;
 
     QString time = "1494911685";
     QString key = MusicUtils::Algorithm::md5(QString("baidu_taihe_music_secret_key" + time).toUtf8()).toHex().mid(8, 16);
     QString data = MusicUtils::Algorithm::mdII(BD_PL_COMMIT_DATA_URL, false).arg(m_pageSize*offset).arg(m_pageSize).arg(m_rawData["songID"].toInt());
-    QString eKey = QAesWrap::encrypt(data.toUtf8(), key.toUtf8(), key.toUtf8());
+    QString eKey = QString(QAesWrap(key.toUtf8(), key.toUtf8(), QAesWrap::AES_128)
+                   .encrypt(data.toUtf8(), QAesWrap::AES_CBC, QAesWrap::PKCS7));
     QString sign = MusicUtils::Algorithm::md5(QString("baidu_taihe_music" + eKey + time).toUtf8()).toHex();
     eKey.replace('+', "%2B");
     eKey.replace('/', "%2F");
@@ -164,6 +176,7 @@ void MusicBDPlaylistCommentsThread::startToPage(int offset)
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
 #ifndef QT_NO_SSL
     QSslConfiguration sslConfig = request.sslConfiguration();
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
@@ -183,6 +196,8 @@ void MusicBDPlaylistCommentsThread::downLoadFinished()
     }
 
     M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    m_interrupt = false;
+
     if(m_reply->error() == QNetworkReply::NoError)
     {
         QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
@@ -201,6 +216,13 @@ void MusicBDPlaylistCommentsThread::downLoadFinished()
                 QVariantList comments = value["commentlist_last"].toList();
                 foreach(const QVariant &comm, comments)
                 {
+                    if(comm.isNull())
+                    {
+                        continue;
+                    }
+
+                    if(m_interrupt) return;
+
                     MusicSongCommentItem comment;
                     value = comm.toMap();
                     comment.m_likedCount = QString::number(value["zan_num"].toLongLong());
