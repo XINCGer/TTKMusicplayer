@@ -48,7 +48,6 @@ public Q_SLOTS:
      */
     virtual void downLoadFinished() override;
 
-
 };
 
 #endif // MUSICBDDISCOVERLISTTHREAD_H
