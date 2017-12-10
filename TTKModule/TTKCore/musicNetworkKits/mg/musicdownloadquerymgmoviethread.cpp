@@ -8,7 +8,7 @@
 #include "qjson/parser.h"
 
 MusicDownLoadQueryMGMovieThread::MusicDownLoadQueryMGMovieThread(QObject *parent)
-    : MusicDownLoadQueryThreadAbstract(parent)
+    : MusicDownLoadQueryMovieThread(parent)
 {
     m_queryServer = "Migu";
 }
@@ -43,6 +43,34 @@ void MusicDownLoadQueryMGMovieThread::startToSearch(QueryType type, const QStrin
 #endif
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
+    connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
+}
+
+void MusicDownLoadQueryMGMovieThread::startToPage(int offset)
+{
+    if(!m_manager)
+    {
+        return;
+    }
+
+    M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(offset));
+    deleteAll();
+    m_pageTotal = 0;
+    m_pageSize = 10;
+    m_interrupt = true;
+    QUrl musicUrl = MusicUtils::Algorithm::mdII(MG_AR_MV_URL, false).arg(m_searchText).arg(offset + 1);
+
+    QNetworkRequest request;
+    request.setUrl(musicUrl);
+    request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(MG_UA_URL_1, ALG_UA_KEY, false).toUtf8());
+#ifndef QT_NO_SSL
+    QSslConfiguration sslConfig = request.sslConfiguration();
+    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(sslConfig);
+#endif
+    m_reply = m_manager->get(request);
+    connect(m_reply, SIGNAL(finished()), SLOT(pageDownLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
 }
 
@@ -143,6 +171,58 @@ void MusicDownLoadQueryMGMovieThread::downLoadFinished()
     M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
 }
 
+void MusicDownLoadQueryMGMovieThread::pageDownLoadFinished()
+{
+    if(!m_reply || !m_manager)
+    {
+        deleteAll();
+        return;
+    }
+
+    M_LOGGER_INFO(QString("%1 pageDownLoadFinished").arg(getClassName()));
+    m_interrupt = false;
+
+    if(m_reply->error() == QNetworkReply::NoError)
+    {
+        QByteArray bytes = m_reply->readAll();///Get all the data obtained by request
+
+        QJson::Parser parser;
+        bool ok;
+        QVariant data = parser.parse(bytes, &ok);
+        if(ok)
+        {
+            QVariantMap value = data.toMap();
+            if(value["code"].toString() == "000000" && value.contains("mvs"))
+            {
+                m_pageTotal = value["totalcount"].toInt();
+                QVariantList datas = value["mvs"].toList();
+                foreach(const QVariant &var, datas)
+                {
+                    if(var.isNull())
+                    {
+                        continue;
+                    }
+
+                    value = var.toMap();
+
+                    if(m_interrupt) return;
+
+                    MusicPlaylistItem info;
+                    info.m_id = value["id"].toString();
+                    info.m_coverUrl = value["img"].toString();
+                    info.m_name = value["title"].toString();
+                    info.m_updateTime.clear();
+                    emit createMovieInfoItem(info);
+                }
+            }
+        }
+    }
+
+    emit downLoadDataChanged(QString());
+    deleteAll();
+    M_LOGGER_INFO(QString("%1 pageDownLoadFinished deleteAll").arg(getClassName()));
+}
+
 void MusicDownLoadQueryMGMovieThread::singleDownLoadFinished()
 {
     M_LOGGER_INFO(QString("%1 singleDownLoadFinished").arg(getClassName()));
@@ -232,9 +312,7 @@ void MusicDownLoadQueryMGMovieThread::readFromMusicMVAttribute(MusicObject::Musi
                 info->m_songName = MusicUtils::String::artistName(fileName);
             }
 
-            if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-            attr.m_size = MusicUtils::Number::size2Label(getUrlFileSize(attr.m_url));
-            if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+            if(!findUrlFileSize(&attr)) return;
             info->m_songAttrs.append(attr);
         }
     }

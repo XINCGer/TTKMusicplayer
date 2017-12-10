@@ -42,6 +42,7 @@ MusicAlbumFoundWidget::MusicAlbumFoundWidget(QWidget *parent)
 {
     m_shareType = MusicSongSharingWidget::Album;
     m_foundTableWidget = new MusicAlbumFoundTableWidget(this);
+    m_foundTableWidget->hide();
     m_downloadThread = M_DOWNLOAD_QUERY_PTR->getQueryThread(this);
     connect(m_downloadThread, SIGNAL(downLoadDataChanged(QString)), SLOT(queryAllFinished()));
 }
@@ -70,24 +71,24 @@ void MusicAlbumFoundWidget::setSongNameById(const QString &id)
 void MusicAlbumFoundWidget::resizeWindow()
 {
     m_foundTableWidget->resizeWindow();
-    if(!m_resizeWidget.isEmpty())
+    if(!m_resizeWidgets.isEmpty())
     {
         int width = M_SETTING_PTR->value(MusicSettingManager::WidgetSize).toSize().width();
         width = width - WINDOW_WIDTH_MIN;
 
-        QLabel *label = m_resizeWidget[1];
+        QLabel *label = m_resizeWidgets[1];
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220 + width));
 
-        label = m_resizeWidget[2];
+        label = m_resizeWidgets[2];
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220 + width));
 
-        label = m_resizeWidget[3];
+        label = m_resizeWidgets[3];
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220 + width));
 
-        label = m_resizeWidget[4];
+        label = m_resizeWidgets[4];
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220 + width));
 
-        label = m_resizeWidget[5];
+        label = m_resizeWidgets[5];
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220 + width));
     }
 }
@@ -138,7 +139,7 @@ void MusicAlbumFoundWidget::createAlbumInfoItem(const MusicPlaylistItem &item)
 
     createLabels();
 
-    if(!m_resizeWidget.isEmpty())
+    if(!m_resizeWidgets.isEmpty())
     {
         QStringList lists = item.m_description.split("<>");
         if(lists.count() < 4)
@@ -161,26 +162,26 @@ void MusicAlbumFoundWidget::createAlbumInfoItem(const MusicPlaylistItem &item)
             }
         }
 
-        QLabel *label = m_resizeWidget[0];
+        QLabel *label = m_resizeWidgets[0];
         label->setText(tr("<font color=#158FE1> Alubm > %1 </font>").arg(lists[0]));
 
-        label = m_resizeWidget[1];
+        label = m_resizeWidgets[1];
         label->setToolTip(lists[0]);
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
 
-        label = m_resizeWidget[2];
+        label = m_resizeWidgets[2];
         label->setToolTip(tr("Singer: %1").arg(item.m_name));
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
 
-        label = m_resizeWidget[3];
+        label = m_resizeWidgets[3];
         label->setToolTip(tr("Language: %1").arg(lists[1]));
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
 
-        label = m_resizeWidget[4];
+        label = m_resizeWidgets[4];
         label->setToolTip(tr("Company: %1").arg(lists[2]));
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
 
-        label = m_resizeWidget[5];
+        label = m_resizeWidgets[5];
         label->setToolTip(tr("Year: %1").arg(lists[3]));
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
     }
@@ -339,5 +340,5 @@ void MusicAlbumFoundWidget::createLabels()
     function->setLayout(grid);
     m_mainWindow->layout()->addWidget(function);
 
-    m_resizeWidget << firstLabel << albumLabel << singerLabel << languageLabel << companyLabel << yearLabel;
+    m_resizeWidgets << firstLabel << albumLabel << singerLabel << languageLabel << companyLabel << yearLabel;
 }

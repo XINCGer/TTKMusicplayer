@@ -137,6 +137,14 @@ public:
      */
     void showSettingWidget() const;
     /*!
+     * Music artist albums function.
+     */
+    void musicArtistAlbums(const QString &id);
+    /*!
+     * Music artist mvs function.
+     */
+    void musicArtistMvs(const QString &id);
+    /*!
      * Resize window bound by widgte resize called.
      */
     void resizeWindow();
@@ -168,6 +176,14 @@ public Q_SLOTS:
      * Music album function that by string.
      */
     void musicAlbumFound(const QString &text, const QString &id);
+    /*!
+     * Music artist albums function.
+     */
+    void musicArtistAlbumsFound();
+    /*!
+     * Music artist mvs function.
+     */
+    void musicArtistMvsFound();
     /*!
      * Music artist function that by string.
      */
@@ -258,6 +274,7 @@ public Q_SLOTS:
     void musicChangeDownloadCustumWidget();
 
 protected:
+    QString m_rawData;
     QWidget *m_stackedFuncWidget;
     Ui::MusicApplication *m_ui;
     MusicSettingWidget *m_settingWidget;

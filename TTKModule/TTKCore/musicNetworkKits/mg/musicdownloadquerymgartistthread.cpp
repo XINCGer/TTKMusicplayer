@@ -36,7 +36,7 @@ void MusicDownLoadQueryMGArtistThread::startToSearch(const QString &artist)
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(sslConfig);
 #endif
-    m_reply = m_manager->get( request );
+    m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
 }
@@ -67,6 +67,7 @@ void MusicDownLoadQueryMGArtistThread::downLoadFinished()
             if(value["code"].toString() == "000000" && value.contains("songs"))
             {
                 bool artistFlag = false;
+                QString description = value["detail"].toString();
                 ////////////////////////////////////////////////////////////
                 QVariantList datas = value["songs"].toList();
                 foreach(const QVariant &var, datas)
@@ -99,22 +100,13 @@ void MusicDownLoadQueryMGArtistThread::downLoadFinished()
                         continue;
                     }
                     ////////////////////////////////////////////////////////////
-                    for(int i=0; i<musicInfo.m_songAttrs.count(); ++i)
-                    {
-                        MusicObject::MusicSongAttribute *attr = &musicInfo.m_songAttrs[i];
-                        if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-                        if(attr->m_size.isEmpty())
-                        {
-                            attr->m_size = MusicUtils::Number::size2Label(getUrlFileSize(attr->m_url));
-                        }
-                        if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-                    }
+                    if(!findUrlFileSize(&musicInfo.m_songAttrs)) return;
                     ////////////////////////////////////////////////////////////
                     if(!artistFlag)
                     {
                         artistFlag = true;
                         MusicPlaylistItem info;
-                        info.m_description = value["detail"].toString();
+                        info.m_description = description;
                         info.m_id = m_searchText;
                         info.m_name = musicInfo.m_singerName;
                         info.m_coverUrl = musicInfo.m_smallPicUrl;

@@ -21,6 +21,157 @@
 
 #include "musicfoundabstractwidget.h"
 
+/*! @brief The class of the artist albums item widget.
+ * @author Greedysky <greedysky@163.com>
+ */
+class MUSIC_WIDGET_EXPORT MusicArtistAlbumsItemWidget : public QLabel
+{
+    Q_OBJECT
+public:
+    /*!
+     * Object contsructor.
+     */
+    explicit MusicArtistAlbumsItemWidget(QWidget *parent = 0);
+
+    virtual ~MusicArtistAlbumsItemWidget();
+
+    /*!
+     * Get class object name.
+     */
+    static QString getClassName();
+
+    /*!
+     * Set music item.
+     */
+    void setMusicItem(const MusicPlaylistItem &item);
+
+Q_SIGNALS:
+    /*!
+     * Current item clicked.
+     */
+    void currentItemClicked(const QString &id);
+
+public Q_SLOTS:
+    /*!
+     * Send recieved data from net.
+     */
+    void downLoadFinished(const QByteArray &data);
+    /*!
+     * Current item clicked.
+     */
+    void currentItemClicked();
+
+protected:
+    MusicPlaylistItem m_itemData;
+    QPushButton *m_playButton;
+    QLabel *m_iconLabel, *m_nameLabel, *m_updateLabel;
+
+};
+
+class MusicPagingWidgetObject;
+
+/*! @brief The class of the artist mvs found widget.
+ * @author Greedysky <greedysky@163.com>
+ */
+class MUSIC_WIDGET_EXPORT MusicArtistMvsFoundWidget : public MusicFoundAbstractWidget
+{
+    Q_OBJECT
+public:
+    /*!
+     * Object contsructor.
+     */
+    explicit MusicArtistMvsFoundWidget(QWidget *parent = 0);
+
+    virtual ~MusicArtistMvsFoundWidget();
+
+    /*!
+     * Get class object name.
+     */
+    static QString getClassName();
+
+    /*!
+     * Set current name to search founds.
+     */
+    virtual void setSongName(const QString &name) override;
+    /*!
+     * Set current id to search founds.
+     */
+    virtual void setSongNameById(const QString &id) override;
+    /*!
+     * Resize window bound by widgte resize called.
+     */
+    virtual void resizeWindow() override;
+
+public Q_SLOTS:
+    /*!
+     * Create the current albums item.
+     */
+    void createArtistMvsItem(const MusicPlaylistItem &item);
+    /*!
+     * Current item clicked.
+     */
+    void currentItemClicked(const QString &id);
+    /*!
+     * Paging widget button has changed.
+     */
+    void buttonClicked(int index);
+
+protected:
+    QGridLayout *m_gridLayout;
+    bool m_firstInit;
+    MusicPagingWidgetObject *m_pagingWidgetObject;
+
+};
+
+
+/*! @brief The class of the artist albums found widget.
+ * @author Greedysky <greedysky@163.com>
+ */
+class MUSIC_WIDGET_EXPORT MusicArtistAlbumsFoundWidget : public MusicFoundAbstractWidget
+{
+    Q_OBJECT
+public:
+    /*!
+     * Object contsructor.
+     */
+    explicit MusicArtistAlbumsFoundWidget(QWidget *parent = 0);
+
+    virtual ~MusicArtistAlbumsFoundWidget();
+
+    /*!
+     * Get class object name.
+     */
+    static QString getClassName();
+
+    /*!
+     * Set current name to search founds.
+     */
+    virtual void setSongName(const QString &name) override;
+    /*!
+     * Set current id to search founds.
+     */
+    virtual void setSongNameById(const QString &id) override;
+    /*!
+     * Resize window bound by widgte resize called.
+     */
+    virtual void resizeWindow() override;
+
+public Q_SLOTS:
+    /*!
+     * Create the current albums item.
+     */
+    void createArtistAlbumsItem(const MusicPlaylistItem &item);
+    /*!
+     * Current item clicked.
+     */
+    void currentItemClicked(const QString &id);
+
+protected:
+    QGridLayout *m_gridLayout;
+
+};
+
+
 /*! @brief The class of the artist music found table widget.
  * @author Greedysky <greedysky@163.com>
  */
@@ -60,6 +211,8 @@ public:
      */
     explicit MusicArtistFoundWidget(QWidget *parent = 0);
 
+    virtual ~MusicArtistFoundWidget();
+
     /*!
      * Get class object name.
      */
@@ -92,12 +245,27 @@ public Q_SLOTS:
      * Create the current artist info item.
      */
     void createArtistInfoItem(const MusicPlaylistItem &item);
+    /*!
+     * Set current container index.
+     */
+    void setCurrentIndex(int index);
 
 protected:
     /*!
      * Create init interface lables.
      */
     void createLabels();
+    /*!
+     * Init the third widget.
+     */
+    void initThirdWidget();
+    /*!
+     * Init the fourth widget.
+     */
+    void initFourthWidget();
+
+    MusicArtistAlbumsFoundWidget *m_artistAlbums;
+    MusicArtistMvsFoundWidget *m_artistMvs;
 
 };
 

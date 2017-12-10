@@ -21,7 +21,7 @@
 
 #include "musicabstractxml.h"
 #include "musicdownloadxminterface.h"
-#include "musicdownloadquerythreadabstract.h"
+#include "musicdownloadquerymoviethread.h"
 
 /*! @brief The class to xiami query mv info xml data from net.
  * @author Greedysky <greedysky@163.com>
@@ -51,7 +51,7 @@ public:
 /*! @brief The class to xiami mv query download data from net.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_NETWORK_EXPORT MusicDownLoadQueryXMMovieThread : public MusicDownLoadQueryThreadAbstract,
+class MUSIC_NETWORK_EXPORT MusicDownLoadQueryXMMovieThread : public MusicDownLoadQueryMovieThread,
                                                              private MusicDownLoadXMInterface
 {
     Q_OBJECT
@@ -71,6 +71,10 @@ public:
      */
     virtual void startToSearch(QueryType type, const QString &text) override;
     /*!
+     * Start to search data from name and type bt paging.
+     */
+    virtual void startToPage(int offset) override;
+    /*!
      * Start to search data by given id.
      */
     virtual void startToSingleSearch(const QString &text) override;
@@ -81,6 +85,10 @@ public Q_SLOTS:
      */
     virtual void downLoadFinished() override;
     /*!
+     * Download page data from net finished.
+     */
+    void pageDownLoadFinished();
+    /*!
      * Download single data from net finished.
      */
     void singleDownLoadFinished();
@@ -89,12 +97,12 @@ protected:
     /*!
      * Read mv info attribute from query results.
      */
-    void readFromMusicMVInfoAttribute(MusicObject::MusicSongInformation *info, bool more);
+    void readFromMusicMVAttribute(MusicObject::MusicSongInformation *info, bool more);
     /*!
      * Read mv info attribute from query results.
      */
-    void readFromMusicMVInfoAttribute(MusicObject::MusicSongInformation *info,
-                                      const QString &vid, const QString &uid);
+    void readFromMusicMVAttribute(MusicObject::MusicSongInformation *info,
+                                  const QString &vid, const QString &uid);
 
 };
 

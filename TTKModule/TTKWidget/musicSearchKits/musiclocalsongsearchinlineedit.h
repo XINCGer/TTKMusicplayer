@@ -21,7 +21,9 @@
 
 #include "musiclocalsongsearchedit.h"
 
+class MusicDownLoadDiscoverListThread;
 class MusicLocalSongSearchPopWidget;
+class MusicDownLoadQueryThreadAbstract;
 
 /*! @brief The class of the net search line edit widget.
  * @author Greedysky <greedysky@163.com>
@@ -46,7 +48,25 @@ public:
      */
     void initWidget(QWidget *parent);
 
+public Q_SLOTS:
+    /*!
+     * Input changed text changed.
+     */
+    void textChanged(const QString &text);
+    /*!
+     * Suggest data changed.
+     */
+    void suggestDataChanged();
+    /*!
+     * Search top list information finished.
+     */
+    void searchTopListInfoFinished(const QString &data);
+
 protected:
+    /*!
+     * Pop widget changed.
+     */
+    void popWidgetChanged(const QString &text);
     /*!
      * Override the widget event.
      */
@@ -54,6 +74,8 @@ protected:
     virtual void leaveEvent(QEvent *event) override;
 
     MusicLocalSongSearchPopWidget *m_popWidget;
+    MusicDownLoadDiscoverListThread *m_discoverThread;
+    MusicDownLoadQueryThreadAbstract *m_suggestThread;
 
 };
 

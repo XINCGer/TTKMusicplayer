@@ -8,7 +8,7 @@
 #include "qjson/parser.h"
 
 MusicDownLoadQueryBDMovieThread::MusicDownLoadQueryBDMovieThread(QObject *parent)
-    : MusicDownLoadQueryThreadAbstract(parent)
+    : MusicDownLoadQueryMovieThread(parent)
 {
     m_queryServer = "Baidu";
 }
@@ -43,6 +43,34 @@ void MusicDownLoadQueryBDMovieThread::startToSearch(QueryType type, const QStrin
 #endif
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
+    connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
+}
+
+void MusicDownLoadQueryBDMovieThread::startToPage(int offset)
+{
+    if(!m_manager)
+    {
+        return;
+    }
+
+    M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(offset));
+    m_pageTotal = 0;
+    m_pageSize = 20;
+    QUrl musicUrl = MusicUtils::Algorithm::mdII(BD_AR_MV_URL, false).arg(m_searchText).arg(offset*m_pageSize);
+    deleteAll();
+    m_interrupt = true;
+
+    QNetworkRequest request;
+    request.setUrl(musicUrl);
+    request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
+#ifndef QT_NO_SSL
+    QSslConfiguration sslConfig = request.sslConfiguration();
+    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(sslConfig);
+#endif
+    m_reply = m_manager->get(request);
+    connect(m_reply, SIGNAL(finished()), SLOT(pageDownLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
 }
 
@@ -144,6 +172,59 @@ void MusicDownLoadQueryBDMovieThread::downLoadFinished()
     M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
 }
 
+void MusicDownLoadQueryBDMovieThread::pageDownLoadFinished()
+{
+    if(!m_reply || !m_manager)
+    {
+        deleteAll();
+        return;
+    }
+
+    M_LOGGER_INFO(QString("%1 pageDownLoadFinished").arg(getClassName()));
+    m_interrupt = false;
+
+    if(m_reply->error() == QNetworkReply::NoError)
+    {
+        QByteArray bytes = m_reply->readAll();///Get all the data obtained by request
+
+        QJson::Parser parser;
+        bool ok;
+        QVariant data = parser.parse(bytes, &ok);
+        if(ok)
+        {
+            QVariantMap value = data.toMap();
+            if(value.contains("data") && value["errorCode"].toInt() == 22000)
+            {
+                readFromMusicMVCount();
+
+                value = value["data"].toMap();
+                QString html = value["html"].toString();
+                QRegExp regx("data-mv=\\\"([^\"]+).*title=\\\"([^\"]+).*org_src=\\\"([^\"]+).*>");
+                regx.setMinimal(true);
+                int pos = html.indexOf(regx);
+                while(pos != -1)
+                {
+                    if(m_interrupt) return;
+
+                    MusicPlaylistItem info;
+                    info.m_id = regx.cap(1).remove("/playmv/");
+                    info.m_coverUrl = regx.cap(3).remove("@s_0,w_160,h_90");
+                    info.m_name = regx.cap(2).remove("MV");
+                    info.m_updateTime.clear();
+                    emit createMovieInfoItem(info);
+
+                    pos += regx.matchedLength();
+                    pos = regx.indexIn(html, pos);
+                }
+            }
+        }
+    }
+
+    emit downLoadDataChanged(QString());
+    deleteAll();
+    M_LOGGER_INFO(QString("%1 pageDownLoadFinished deleteAll").arg(getClassName()));
+}
+
 void MusicDownLoadQueryBDMovieThread::singleDownLoadFinished()
 {
     M_LOGGER_INFO(QString("%1 singleDownLoadFinished").arg(getClassName()));
@@ -172,6 +253,46 @@ void MusicDownLoadQueryBDMovieThread::singleDownLoadFinished()
     emit downLoadDataChanged(QString());
     deleteAll();
     M_LOGGER_INFO(QString("%1 singleDownLoadFinished deleteAll").arg(getClassName()));
+}
+
+void MusicDownLoadQueryBDMovieThread::readFromMusicMVCount()
+{
+    if(!m_manager)
+    {
+        return;
+    }
+
+    M_LOGGER_INFO(QString("%1 readFromMusicMVCount").arg(getClassName()));
+    QUrl musicUrl = MusicUtils::Algorithm::mdII(BD_AR_MV_PG_URL, false).arg(m_searchText);
+    m_pageTotal = MU_MAX;
+
+    QNetworkRequest request;
+    request.setUrl(musicUrl);
+    request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
+#ifndef QT_NO_SSL
+    QSslConfiguration sslConfig = request.sslConfiguration();
+    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(sslConfig);
+#endif
+    MusicSemaphoreLoop loop;
+    QNetworkReply *reply = m_manager->get(request);
+    QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    QObject::connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
+    loop.exec();
+
+    if(!reply || reply->error() != QNetworkReply::NoError)
+    {
+        return;
+    }
+
+    QString html(reply->readAll());
+    QRegExp regx("<a class=\"list\" hidefocus=\"true\" href=\"#\">MV(.*)</a>");
+    regx.setMinimal(true);
+    if(html.indexOf(regx) != -1)
+    {
+        m_pageTotal = regx.cap(1).remove('(').remove(')').toInt();
+    }
 }
 
 void MusicDownLoadQueryBDMovieThread::readFromMusicMVAttribute(MusicObject::MusicSongInformation *info, bool more)
@@ -234,13 +355,13 @@ void MusicDownLoadQueryBDMovieThread::readFromMusicMVAttribute(MusicObject::Musi
             }
 
             if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-            readFromMusicMVInfo(info, path);
+            readFromMusicMVAttribute(info, path);
             if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
         }
     }
 }
 
-void MusicDownLoadQueryBDMovieThread::readFromMusicMVInfo(MusicObject::MusicSongInformation *info, const QString &id)
+void MusicDownLoadQueryBDMovieThread::readFromMusicMVAttribute(MusicObject::MusicSongInformation *info, const QString &id)
 {
     if(id.isEmpty() || !m_manager)
     {
@@ -280,22 +401,22 @@ void MusicDownLoadQueryBDMovieThread::readFromMusicMVInfo(MusicObject::MusicSong
             QString duration = MusicTime::msecTime2LabelJustified(value["duration"].toInt()*1000);
             if(value.contains("hdVideoUrl"))
             {
-                readFromMusicMVInfoAttribute(info, value["hdVideoUrl"].toString(), duration);
+                readFromMusicMVAttribute(info, value["hdVideoUrl"].toString(), duration);
             }
             if(value.contains("hcVideoUrl"))
             {
-                readFromMusicMVInfoAttribute(info, value["hcVideoUrl"].toString(), duration);
+                readFromMusicMVAttribute(info, value["hcVideoUrl"].toString(), duration);
             }
             if(value.contains("heVideoUrl"))
             {
-                readFromMusicMVInfoAttribute(info, value["heVideoUrl"].toString(), duration);
+                readFromMusicMVAttribute(info, value["heVideoUrl"].toString(), duration);
             }
         }
     }
 }
 
-void MusicDownLoadQueryBDMovieThread::readFromMusicMVInfoAttribute(MusicObject::MusicSongInformation *info,
-                                                                   const QString &url, const QString &duration)
+void MusicDownLoadQueryBDMovieThread::readFromMusicMVAttribute(MusicObject::MusicSongInformation *info,
+                                                               const QString &url, const QString &duration)
 {
     if(url.isEmpty())
     {
@@ -308,9 +429,7 @@ void MusicDownLoadQueryBDMovieThread::readFromMusicMVInfoAttribute(MusicObject::
         QString v = datas.front();
         MusicObject::MusicSongAttribute attr;
         attr.m_url = url;
-        if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-        attr.m_size = MusicUtils::Number::size2Label(getUrlFileSize(attr.m_url));
-        if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+        if(!findUrlFileSize(&attr)) return;
         attr.m_format = MusicUtils::Core::fileSuffix(v);
         attr.m_duration = duration;
         v = datas.back();

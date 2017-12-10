@@ -5,7 +5,7 @@
 #include "musicalgorithmutils.h"
 #///QJson import
 #include "qjson/parser.h"
-#include "qaes/qaeswrap.h"
+#include "qalg/qaeswrap.h"
 
 #include <QNetworkReply>
 #include <QNetworkRequest>
@@ -254,17 +254,4 @@ void MusicDownLoadBDInterface::readFromMusicPayAttribute(MusicObject::MusicSongI
             }
         }
     }
-}
-
-QString MusicDownLoadBDInterface::findTimeStringByAttrs(const MusicObject::MusicSongAttributes &attrs)
-{
-    foreach(const MusicObject::MusicSongAttribute &attr, attrs)
-    {
-        if(!attr.m_duration.isEmpty())
-        {
-            return attr.m_duration;
-        }
-    }
-
-    return QString("-");
 }

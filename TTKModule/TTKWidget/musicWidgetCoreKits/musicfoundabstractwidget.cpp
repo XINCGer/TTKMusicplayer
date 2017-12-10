@@ -27,7 +27,7 @@ MusicFoundAbstractWidget::MusicFoundAbstractWidget(QWidget *parent)
 
 MusicFoundAbstractWidget::~MusicFoundAbstractWidget()
 {
-    qDeleteAll(m_resizeWidget);
+    qDeleteAll(m_resizeWidgets);
     delete m_iconLabel;
     delete m_statusLabel;
     delete m_infoLabel;
@@ -180,6 +180,7 @@ void MusicFoundAbstractWidget::initFirstWidget()
     vlayout->addStretch(1);
     songWidget->setLayout(vlayout);
 
+    m_foundTableWidget->show();
     m_container->addWidget(songWidget);
 }
 

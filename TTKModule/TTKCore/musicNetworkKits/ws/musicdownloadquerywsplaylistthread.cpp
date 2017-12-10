@@ -1,5 +1,6 @@
 #include "musicdownloadquerywsplaylistthread.h"
 #include "musicsemaphoreloop.h"
+#include "musicnumberutils.h"
 #///QJson import
 #include "qjson/parser.h"
 
@@ -50,10 +51,9 @@ void MusicDownLoadQueryWSPlaylistThread::startToPage(int offset)
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(sslConfig);
 #endif
-    m_reply = m_manager->get( request );
+    m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
-    connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-                     SLOT(replyError(QNetworkReply::NetworkError)));
+    connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
 }
 
 void MusicDownLoadQueryWSPlaylistThread::startToSearch(const QString &playlist)
@@ -111,7 +111,7 @@ void MusicDownLoadQueryWSPlaylistThread::downLoadFinished()
             QVariantMap value = data.toMap();
             if(value["code"].toString() == "0000000" && value.contains("data"))
             {
-                m_pageTotal = 999999;
+                m_pageTotal = MU_MAX;
                 value = value["data"].toMap();
                 QVariantList datas = value["songMenu"].toList();
                 foreach(const QVariant &var, datas)

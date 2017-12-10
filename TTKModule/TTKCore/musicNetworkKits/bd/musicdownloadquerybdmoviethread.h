@@ -20,12 +20,12 @@
  ================================================= */
 
 #include "musicdownloadbdinterface.h"
-#include "musicdownloadquerythreadabstract.h"
+#include "musicdownloadquerymoviethread.h"
 
 /*! @brief The class to baidu mv query download data from net.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_NETWORK_EXPORT MusicDownLoadQueryBDMovieThread : public MusicDownLoadQueryThreadAbstract,
+class MUSIC_NETWORK_EXPORT MusicDownLoadQueryBDMovieThread : public MusicDownLoadQueryMovieThread,
                                                              private MusicDownLoadBDInterface
 {
     Q_OBJECT
@@ -44,6 +44,10 @@ public:
      */
     virtual void startToSearch(QueryType type, const QString &text) override;
     /*!
+     * Start to search data from name and type bt paging.
+     */
+    virtual void startToPage(int offset) override;
+    /*!
      * Start to search data by given id.
      */
     virtual void startToSingleSearch(const QString &text) override;
@@ -54,11 +58,19 @@ public Q_SLOTS:
      */
     virtual void downLoadFinished() override;
     /*!
+     * Download page data from net finished.
+     */
+    void pageDownLoadFinished();
+    /*!
      * Download single data from net finished.
      */
     void singleDownLoadFinished();
 
 protected:
+    /*!
+     * Read mv numbers.
+     */
+    void readFromMusicMVCount();
     /*!
      * Read mv tags(size\bitrate\url) from query results.
      */
@@ -66,12 +78,12 @@ protected:
     /*!
      * Read mv infos from query results.
      */
-    void readFromMusicMVInfo(MusicObject::MusicSongInformation *info, const QString &id);
+    void readFromMusicMVAttribute(MusicObject::MusicSongInformation *info, const QString &id);
     /*!
      * Read mv info attribute from query results.
      */
-    void readFromMusicMVInfoAttribute(MusicObject::MusicSongInformation *info,
-                                      const QString &url, const QString &duration);
+    void readFromMusicMVAttribute(MusicObject::MusicSongInformation *info,
+                                  const QString &url, const QString &duration);
 
 };
 

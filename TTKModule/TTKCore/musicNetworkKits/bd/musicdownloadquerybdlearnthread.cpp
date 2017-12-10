@@ -4,7 +4,7 @@
 #include "musictime.h"
 #///QJson import
 #include "qjson/parser.h"
-#include "qaes/qaeswrap.h"
+#include "qalg/qaeswrap.h"
 
 MusicDownLoadQueryBDLearnThread::MusicDownLoadQueryBDLearnThread(QObject *parent)
     : MusicDownLoadQueryThreadAbstract(parent)
@@ -39,7 +39,7 @@ void MusicDownLoadQueryBDLearnThread::startToSearch(QueryType type, const QStrin
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(sslConfig);
 #endif
-    m_reply = m_manager->get( request );
+    m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
 }

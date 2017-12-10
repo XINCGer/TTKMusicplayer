@@ -27,6 +27,8 @@ const QString KG_UA_URL_1          = "cGhYNDZVdmNaVG5KZk50NVFvcUJyYWVQdmdNTkFTMm
 ///////////////////////////////////////////////////////////////////////////
 const QString KG_ALBUM_URL         = "T1I2UzExcHpQU0lzNVJTVkR4UkVabkxndmF6eGp3ajVvSHJaZWFQdFlybENrVDJiNWZ0OUw0VjN2TjArWFg4MS9LT0pRMmRrYzlIeWYvZmpEVkR6aFdwSUZhN2pLNGx5NHdaWFFGSlRUWDZ2aWFWazBhWmZWSXBEQXBHcjhIb1c=";
 const QString KG_ALBUM_INFO_URL    = "ajBGaXREQ3Y1S3pwZGkxd1pJUEREbUNxL3d0SWpPZzFNQjhZQjdyZk0rQmRzQVZXUFBrcVp0ekh6NEtLbjJWTklDNWIxbGpycFFqbHVVRE95aDRWMUJ4NUNVRTUySWdU";
+const QString KG_AR_ALBUM_URL      = "RENyS3hWZFdJTUQ1RGJHczRscTljSkFHbFd0MzZhcFVvZ1d5bDVqVzUxRzMwN1pPZnJPUE5IdmdaQXVLL0pWaE4zc25ieCtJMVpyd0M5YnVrMnIvcExqQ2RJT1FJbko4bEpkWmt1VnlValE9";
+const QString KG_AR_MV_URL         = "VkNHdSt6bWtxZ1Q1bEFjYjVoN0tvZzdFZFN1Rm1Vc1U1dE9vTlpoYjloNTBKMDFOQVluUGRRYkxFQ0ZDVFJ2QzM3ZDdPdy9RRDY4RW4vOW8zVHBaNXQ2ZHljbVJ1L1ljMTJERFpnPT0=";
 ///////////////////////////////////////////////////////////////////////////
 const QString KG_SONG_SEARCH_URL   = "K3l5ZjdYOTcySmR6cFdhbHhNTU1KSWswY0JKa1JFWmJoZjJHTExaZFdQejltM3JxbFRWNWRHVmlzL01ORzIwSTVGTHd3dzFaUWdWTG1QRk9ockZJNkczb3poTjBKYVFIdHBNeUpmb013bmFXWXpIZWErZXhJcWRUSEpyTlQ3eGVsWXlpMFJvMzZCZytYMnJMQSs4a2FPYks1T0hwQzFvQWFpZjFWVU5UTXA1YlN2MWxHWW1SQ1VFeTJiYjVTV2d1";
 const QString KG_SONG_LRC_URL      = "Yld5K1Rac2JFc3d0YThTbnluN2RkQ0U0bjBWQkxSQWJGNDZoT2xvUERFdEUzV0RkalhjbVpYT1FGcmY0UlZJTDRoTHFMMklXNWRsdyswcG5XYzArUlJ6bHhoWXdyQ3JtSXRiWEdXbE53dXNjcU1QMzRBNFBhMDdWOE95eVVURG5KRHRPNFE9PQ==";
@@ -50,6 +52,8 @@ const QString KG_PLAYLIST_INFO_URL = "bjBDZVdxUzlqMXJvaGgrSnB3ZEt1UnNOL0lqVU94Wk
 ///////////////////////////////////////////////////////////////////////////
 const QString KG_RCM_URL           = "MXVLUUtYWEpxaVFuZGpwdTgvdHF5NGVkVFZtVDNqMDBnbDhlQWV4M2l4TWc1QXlnMHZwanVZaTZkYStGM2k5T0ZmZ1RxeW16NkcvTTQzQm1LVm1PcWxCSDhLbXBBREd6WThPcC8vazFqTGdZS3U0aUdGWnB6RFdDMDFnWFF6czNVVjNmbFFHV1lRcz0=";
 ///////////////////////////////////////////////////////////////////////////
+const QString KG_SUGGEST_URL       = "UUFkNUtUeXBhZ2hxbG1nY0ZDRzBxTS9GNzdZMDdDbmpMUDVTaFJKeHMxSFBhdEw4dGZSRWVCL0tJY2NkMUdObjVyM0dObFdaaUtqbHZhcVpFWFJDTU5JREdnVmR1RFZ0";
+///////////////////////////////////////////////////////////////////////////
 
 
 class MusicPlaylistItem;
@@ -72,7 +76,7 @@ public:
     /*!
      * Read tags(lrc\smallpic) from query results.
      */
-    void readFromMusicSongLrcAndPic(MusicObject::MusicSongInformation *info, const QString &hash);
+    void readFromMusicSongLrcAndPic(MusicObject::MusicSongInformation *info);
     /*!
      * Read tags(album info) from query results.
      */

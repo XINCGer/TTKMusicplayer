@@ -4,7 +4,7 @@
 #include "musicalgorithmutils.h"
 #///QJson import
 #include "qjson/parser.h"
-#include "qaes/qaeswrap.h"
+#include "qalg/qaeswrap.h"
 
 #include <QNetworkReply>
 #include <QNetworkRequest>
@@ -243,7 +243,7 @@ void MusicDownLoadWYInterface::readFromMusicSongAttributeNew(MusicObject::MusicS
     }
 }
 
-QString MusicDownLoadWYInterface::encryptedId(qlonglong id)
+QString MusicDownLoadWYInterface::encryptedId(qint64 id)
 {
     return encryptedId(QString::number(id));
 }

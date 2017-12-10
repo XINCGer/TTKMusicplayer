@@ -8,7 +8,7 @@
 #include "qjson/parser.h"
 
 MusicDownLoadQueryKGMovieThread::MusicDownLoadQueryKGMovieThread(QObject *parent)
-    : MusicDownLoadQueryThreadAbstract(parent)
+    : MusicDownLoadQueryMovieThread(parent)
 {
     m_queryServer = "Kugou";
 }
@@ -43,6 +43,34 @@ void MusicDownLoadQueryKGMovieThread::startToSearch(QueryType type, const QStrin
 #endif
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
+    connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
+}
+
+void MusicDownLoadQueryKGMovieThread::startToPage(int offset)
+{
+    if(!m_manager)
+    {
+        return;
+    }
+
+    M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(offset));
+    m_pageTotal = 0;
+    m_pageSize = 20;
+    QUrl musicUrl = MusicUtils::Algorithm::mdII(KG_AR_MV_URL, false).arg(m_searchText).arg(offset + 1).arg(m_pageSize);
+    deleteAll();
+    m_interrupt = true;
+
+    QNetworkRequest request;
+    request.setUrl(musicUrl);
+    request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KG_UA_URL_1, ALG_UA_KEY, false).toUtf8());
+#ifndef QT_NO_SSL
+    QSslConfiguration sslConfig = request.sslConfiguration();
+    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(sslConfig);
+#endif
+    m_reply = m_manager->get(request);
+    connect(m_reply, SIGNAL(finished()), SLOT(pageDownLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
 }
 
@@ -140,6 +168,59 @@ void MusicDownLoadQueryKGMovieThread::downLoadFinished()
     M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
 }
 
+void MusicDownLoadQueryKGMovieThread::pageDownLoadFinished()
+{
+    if(!m_reply || !m_manager)
+    {
+        deleteAll();
+        return;
+    }
+
+    M_LOGGER_INFO(QString("%1 pageDownLoadFinished").arg(getClassName()));
+    m_interrupt = false;
+
+    if(m_reply->error() == QNetworkReply::NoError)
+    {
+        QByteArray bytes = m_reply->readAll();///Get all the data obtained by request
+
+        QJson::Parser parser;
+        bool ok;
+        QVariant data = parser.parse(bytes, &ok);
+        if(ok)
+        {
+            QVariantMap value = data.toMap();
+            if(value.contains("data") && value["errcode"].toInt() == 0)
+            {
+                value = value["data"].toMap();
+                m_pageTotal = value["total"].toInt();
+                QVariantList datas = value["info"].toList();
+                foreach(const QVariant &var, datas)
+                {
+                    if(var.isNull())
+                    {
+                        continue;
+                    }
+
+                    value = var.toMap();
+
+                    if(m_interrupt) return;
+
+                    MusicPlaylistItem info;
+                    info.m_id = value["hash"].toString();
+                    info.m_coverUrl = value["imgurl"].toString();
+                    info.m_name = value["filename"].toString();
+                    info.m_updateTime.clear();
+                    emit createMovieInfoItem(info);
+                }
+            }
+        }
+    }
+
+    emit downLoadDataChanged(QString());
+    deleteAll();
+    M_LOGGER_INFO(QString("%1 pageDownLoadFinished deleteAll").arg(getClassName()));
+}
+
 void MusicDownLoadQueryKGMovieThread::singleDownLoadFinished()
 {
     M_LOGGER_INFO(QString("%1 singleDownLoadFinished").arg(getClassName()));
@@ -220,22 +301,22 @@ void MusicDownLoadQueryKGMovieThread::readFromMusicMVAttribute(MusicObject::Musi
             QVariantMap mv = value["sd"].toMap();
             if(!mv.isEmpty())
             {
-                readFromMusicMVInfoAttribute(info, mv);
+                readFromMusicMVAttribute(info, mv);
             }
             mv = value["hd"].toMap();
             if(!mv.isEmpty())
             {
-                readFromMusicMVInfoAttribute(info, mv);
+                readFromMusicMVAttribute(info, mv);
             }
             mv = value["sq"].toMap();
             if(!mv.isEmpty())
             {
-                readFromMusicMVInfoAttribute(info, mv);
+                readFromMusicMVAttribute(info, mv);
             }
             mv = value["rq"].toMap();
             if(!mv.isEmpty())
             {
-                readFromMusicMVInfoAttribute(info, mv);
+                readFromMusicMVAttribute(info, mv);
             }
         }
     }
@@ -260,7 +341,7 @@ void MusicDownLoadQueryKGMovieThread::readFromMusicMVInfo(MusicObject::MusicSong
     request.setSslConfiguration(sslConfig);
 #endif
     MusicSemaphoreLoop loop;
-    QNetworkReply *reply = m_manager->get( request );
+    QNetworkReply *reply = m_manager->get(request);
     QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     QObject::connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
     loop.exec();
@@ -282,8 +363,8 @@ void MusicDownLoadQueryKGMovieThread::readFromMusicMVInfo(MusicObject::MusicSong
     }
 }
 
-void MusicDownLoadQueryKGMovieThread::readFromMusicMVInfoAttribute(MusicObject::MusicSongInformation *info,
-                                                                   const QVariantMap &key)
+void MusicDownLoadQueryKGMovieThread::readFromMusicMVAttribute(MusicObject::MusicSongInformation *info,
+                                                               const QVariantMap &key)
 {
     MusicObject::MusicSongAttribute attr;
     attr.m_url = key["downurl"].toString();
@@ -302,17 +383,4 @@ void MusicDownLoadQueryKGMovieThread::readFromMusicMVInfoAttribute(MusicObject::
 
     attr.m_duration = MusicTime::msecTime2LabelJustified(key["timelength"].toInt());
     info->m_songAttrs.append(attr);
-}
-
-QString MusicDownLoadQueryKGMovieThread::findTimeStringByAttrs(const MusicObject::MusicSongAttributes &attrs)
-{
-    foreach(const MusicObject::MusicSongAttribute &attr, attrs)
-    {
-        if(!attr.m_duration.isEmpty())
-        {
-            return attr.m_duration;
-        }
-    }
-
-    return QString("-");
 }

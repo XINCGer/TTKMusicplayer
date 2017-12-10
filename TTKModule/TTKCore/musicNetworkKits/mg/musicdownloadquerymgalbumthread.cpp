@@ -6,6 +6,7 @@
 MusicDownLoadQueryMGAlbumThread::MusicDownLoadQueryMGAlbumThread(QObject *parent)
     : MusicDownLoadQueryAlbumThread(parent)
 {
+    m_rawData["pg"] = 1;
     m_queryServer = "Migu";
 }
 
@@ -35,9 +36,36 @@ void MusicDownLoadQueryMGAlbumThread::startToSearch(const QString &album)
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(sslConfig);
 #endif
-    m_reply = m_manager->get( request );
+    m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
+}
+
+void MusicDownLoadQueryMGAlbumThread::startToSingleSearch(const QString &artist)
+{
+    if(!m_manager)
+    {
+        return;
+    }
+
+    M_LOGGER_INFO(QString("%1 startToSingleSearch %2").arg(getClassName()).arg(artist));
+    QUrl musicUrl = MusicUtils::Algorithm::mdII(MG_AR_ALBUM_URL, false).arg(artist).arg(m_rawData["pg"].toInt());
+    deleteAll();
+    m_searchText = artist;
+    m_interrupt = true;
+
+    QNetworkRequest request;
+    request.setUrl(musicUrl);
+    request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(MG_UA_URL_1, ALG_UA_KEY, false).toUtf8());
+#ifndef QT_NO_SSL
+    QSslConfiguration sslConfig = request.sslConfiguration();
+    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(sslConfig);
+#endif
+    QNetworkReply *reply = m_manager->get(request);
+    connect(reply, SIGNAL(finished()), SLOT(singleDownLoadFinished()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
 }
 
 void MusicDownLoadQueryMGAlbumThread::downLoadFinished()
@@ -104,16 +132,7 @@ void MusicDownLoadQueryMGAlbumThread::downLoadFinished()
                         continue;
                     }
                     ////////////////////////////////////////////////////////////
-                    for(int i=0; i<musicInfo.m_songAttrs.count(); ++i)
-                    {
-                        MusicObject::MusicSongAttribute *attr = &musicInfo.m_songAttrs[i];
-                        if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-                        if(attr->m_size.isEmpty())
-                        {
-                            attr->m_size = MusicUtils::Number::size2Label(getUrlFileSize(attr->m_url));
-                        }
-                        if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-                    }
+                    if(!findUrlFileSize(&musicInfo.m_songAttrs)) return;
                     ////////////////////////////////////////////////////////////
                     if(!albumFlag)
                     {
@@ -139,4 +158,58 @@ void MusicDownLoadQueryMGAlbumThread::downLoadFinished()
     emit downLoadDataChanged(QString());
     deleteAll();
     M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
+}
+
+void MusicDownLoadQueryMGAlbumThread::singleDownLoadFinished()
+{
+    QNetworkReply *reply = MObject_cast(QNetworkReply*, QObject::sender());
+
+    M_LOGGER_INFO(QString("%1 singleDownLoadFinished").arg(getClassName()));
+    m_interrupt = false;
+
+    if(reply && m_manager &&reply->error() == QNetworkReply::NoError)
+    {
+        QByteArray bytes = reply->readAll();///Get all the data obtained by request
+
+        QJson::Parser parser;
+        bool ok;
+        QVariant data = parser.parse(bytes, &ok);
+        if(ok)
+        {
+            QVariantMap value = data.toMap();
+            if(value["code"].toString() == "000000" && value.contains("albums"))
+            {
+                QVariantList datas = value["albums"].toList();
+                foreach(const QVariant &var, datas)
+                {
+                    if(var.isNull())
+                    {
+                        continue;
+                    }
+
+                    value = var.toMap();
+
+                    if(m_interrupt) return;
+
+                    MusicPlaylistItem info;
+                    info.m_id = value["albumid"].toString();
+                    info.m_coverUrl = value["img"].toString();
+                    info.m_name = value["title"].toString();
+                    info.m_updateTime = value["publishTime"].toString().replace('-', '.');
+                    emit createAlbumInfoItem(info);
+                }
+
+                int pg = m_rawData["pg"].toInt() + 1;
+                if(pg >= value["pagecount"].toInt())
+                {
+                    m_rawData["pg"] = pg;
+                    startToSingleSearch(m_searchText);
+                }
+            }
+        }
+    }
+
+    emit downLoadDataChanged(QString());
+    deleteAll();
+    M_LOGGER_INFO(QString("%1 singleDownLoadFinished deleteAll").arg(getClassName()));
 }

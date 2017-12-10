@@ -1,13 +1,269 @@
 #include "musicartistfoundwidget.h"
 #include "musicdownloadqueryfactory.h"
 #include "musicdownloadsourcethread.h"
+#include "musicdownloadquerymoviethread.h"
+#include "musicrightareawidget.h"
+#include "musicpagingwidgetobject.h"
+#include "musictinyuiobject.h"
 #include "musicstringutils.h"
 #include "musicuiobject.h"
 #include "musictime.h"
-
 #include "qrencode/qrcodewidget.h"
 
 #include <qmath.h>
+
+#define MIN_LABEL_SIZE  150
+#define MAX_LABEL_SIZE  200
+
+MusicArtistAlbumsItemWidget::MusicArtistAlbumsItemWidget(QWidget *parent)
+    : QLabel(parent)
+{
+    setFixedSize(MIN_LABEL_SIZE, MAX_LABEL_SIZE);
+
+    m_playButton = new QPushButton(this);
+    m_playButton->setGeometry(110, 110, 30, 30);
+    m_playButton->setCursor(Qt::PointingHandCursor);
+    m_playButton->setStyleSheet(MusicUIObject::MKGTinyBtnPlaylist + MusicUIObject::MPushButtonStyle01);
+    connect(m_playButton, SIGNAL(clicked()), SLOT(currentItemClicked()));
+
+#ifdef Q_OS_UNIX
+    m_playButton->setFocusPolicy(Qt::NoFocus);
+#endif
+
+    m_iconLabel = new QLabel(this);
+    m_iconLabel->setGeometry(0, 0, MIN_LABEL_SIZE, MIN_LABEL_SIZE);
+
+    m_nameLabel = new QLabel(this);
+    m_nameLabel->setGeometry(0, 150, MIN_LABEL_SIZE, 25);
+    m_nameLabel->setText(" - ");
+
+    m_updateLabel = new QLabel(this);
+    m_updateLabel->setGeometry(0, 175, MIN_LABEL_SIZE, 25);
+    m_updateLabel->setText(" - ");
+}
+
+MusicArtistAlbumsItemWidget::~MusicArtistAlbumsItemWidget()
+{
+    delete m_playButton;
+    delete m_iconLabel;
+    delete m_nameLabel;
+    delete m_updateLabel;
+}
+
+QString MusicArtistAlbumsItemWidget::getClassName()
+{
+    return staticMetaObject.className();
+}
+
+void MusicArtistAlbumsItemWidget::setMusicItem(const MusicPlaylistItem &item)
+{
+    m_itemData = item;
+    m_nameLabel->setToolTip(item.m_name);
+    m_nameLabel->setText(MusicUtils::Widget::elidedText(m_nameLabel->font(), m_nameLabel->toolTip(),
+                                                        Qt::ElideRight, MIN_LABEL_SIZE));
+    m_updateLabel->setToolTip(item.m_updateTime);
+    m_updateLabel->setText(MusicUtils::Widget::elidedText(m_updateLabel->font(), m_updateLabel->toolTip(),
+                                                          Qt::ElideRight, MIN_LABEL_SIZE));
+
+    MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
+    connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
+    if(!item.m_coverUrl.isEmpty() && item.m_coverUrl != "null")
+    {
+        download->startToDownload(item.m_coverUrl);
+    }
+}
+
+void MusicArtistAlbumsItemWidget::downLoadFinished(const QByteArray &data)
+{
+    QPixmap pix;
+    pix.loadFromData(data);
+    if(!pix.isNull())
+    {
+        m_iconLabel->setPixmap(pix.scaled(m_iconLabel->size()));
+    }
+    m_playButton->raise();
+}
+
+void MusicArtistAlbumsItemWidget::currentItemClicked()
+{
+    emit currentItemClicked(m_itemData.m_id);
+}
+
+
+
+MusicArtistMvsFoundWidget::MusicArtistMvsFoundWidget(QWidget *parent)
+    : MusicFoundAbstractWidget(parent)
+{
+    delete m_statusLabel;
+    m_statusLabel = nullptr;
+    m_pagingWidgetObject = nullptr;
+    m_firstInit = false;
+
+    QWidget *function = new QWidget(m_mainWindow);
+    m_gridLayout = new QGridLayout(function);
+    function->setLayout(m_gridLayout);
+    m_mainWindow->layout()->addWidget(function);
+    m_container->show();
+
+    m_shareType = MusicSongSharingWidget::Artist;
+    m_downloadThread = M_DOWNLOAD_QUERY_PTR->getMovieThread(this);
+    connect(m_downloadThread, SIGNAL(createMovieInfoItem(MusicPlaylistItem)), SLOT(createArtistMvsItem(MusicPlaylistItem)));
+}
+
+MusicArtistMvsFoundWidget::~MusicArtistMvsFoundWidget()
+{
+    delete m_gridLayout;
+}
+
+QString MusicArtistMvsFoundWidget::getClassName()
+{
+    return staticMetaObject.className();
+}
+
+void MusicArtistMvsFoundWidget::setSongName(const QString &name)
+{
+    MusicFoundAbstractWidget::setSongName(name);
+    MusicDownLoadQueryMovieThread *v = MStatic_cast(MusicDownLoadQueryMovieThread*, m_downloadThread);
+    v->startToSearch(m_songNameFull);
+}
+
+void MusicArtistMvsFoundWidget::setSongNameById(const QString &id)
+{
+    setSongName(id);
+}
+
+void MusicArtistMvsFoundWidget::resizeWindow()
+{
+    if(!m_resizeWidgets.isEmpty())
+    {
+        for(int i=0; i<m_resizeWidgets.count(); ++i)
+        {
+            m_gridLayout->removeWidget(m_resizeWidgets[i]);
+        }
+
+        int lineNumber = width()/MAX_LABEL_SIZE;
+        for(int i=0; i<m_resizeWidgets.count(); ++i)
+        {
+            m_gridLayout->addWidget(m_resizeWidgets[i], i/lineNumber, i%lineNumber, Qt::AlignCenter);
+        }
+    }
+}
+
+void MusicArtistMvsFoundWidget::createArtistMvsItem(const MusicPlaylistItem &item)
+{
+    if(!m_firstInit)
+    {
+        m_firstInit = true;
+        m_pagingWidgetObject = new MusicPagingWidgetObject(m_mainWindow);
+        connect(m_pagingWidgetObject, SIGNAL(mapped(int)), SLOT(buttonClicked(int)));
+        int total = ceil(m_downloadThread->getPageTotal()*1.0/m_downloadThread->getPageSize());
+        m_mainWindow->layout()->addWidget(m_pagingWidgetObject->createPagingWidget(m_mainWindow, total));
+    }
+
+    MusicArtistAlbumsItemWidget *label = new MusicArtistAlbumsItemWidget(this);
+    connect(label, SIGNAL(currentItemClicked(QString)), SLOT(currentItemClicked(QString)));
+    label->setMusicItem(item);
+
+    int lineNumber = width()/MAX_LABEL_SIZE;
+    m_gridLayout->addWidget(label, m_resizeWidgets.count()/lineNumber,
+                                   m_resizeWidgets.count()%lineNumber, Qt::AlignCenter);
+    m_resizeWidgets << label;
+}
+
+void MusicArtistMvsFoundWidget::currentItemClicked(const QString &id)
+{
+    MusicRightAreaWidget::instance()->musicArtistMvs(id);
+}
+
+void MusicArtistMvsFoundWidget::buttonClicked(int index)
+{
+    while(!m_resizeWidgets.isEmpty())
+    {
+        QWidget *w = m_resizeWidgets.takeLast();
+        m_gridLayout->removeWidget(w);
+        delete w;
+    }
+
+    int total = ceil(m_downloadThread->getPageTotal()*1.0/m_downloadThread->getPageSize());
+    m_pagingWidgetObject->paging(index, total);
+    m_downloadThread->startToPage(m_pagingWidgetObject->currentIndex() - 1);
+}
+
+
+
+MusicArtistAlbumsFoundWidget::MusicArtistAlbumsFoundWidget(QWidget *parent)
+    : MusicFoundAbstractWidget(parent)
+{
+    delete m_statusLabel;
+    m_statusLabel = nullptr;
+    QWidget *function = new QWidget(m_mainWindow);
+    m_gridLayout = new QGridLayout(function);
+    function->setLayout(m_gridLayout);
+    m_mainWindow->layout()->addWidget(function);
+    m_container->show();
+
+    m_shareType = MusicSongSharingWidget::Artist;
+    m_downloadThread = M_DOWNLOAD_QUERY_PTR->getAlbumThread(this);
+    connect(m_downloadThread, SIGNAL(createAlbumInfoItem(MusicPlaylistItem)), SLOT(createArtistAlbumsItem(MusicPlaylistItem)));
+}
+
+MusicArtistAlbumsFoundWidget::~MusicArtistAlbumsFoundWidget()
+{
+    delete m_gridLayout;
+}
+
+QString MusicArtistAlbumsFoundWidget::getClassName()
+{
+    return staticMetaObject.className();
+}
+
+void MusicArtistAlbumsFoundWidget::setSongName(const QString &name)
+{
+    MusicFoundAbstractWidget::setSongName(name);
+    m_downloadThread->startToSingleSearch(m_songNameFull);
+}
+
+void MusicArtistAlbumsFoundWidget::setSongNameById(const QString &id)
+{
+    MusicFoundAbstractWidget::setSongName(id);
+    m_downloadThread->startToSingleSearch(m_songNameFull);
+}
+
+void MusicArtistAlbumsFoundWidget::resizeWindow()
+{
+    if(!m_resizeWidgets.isEmpty())
+    {
+        for(int i=0; i<m_resizeWidgets.count(); ++i)
+        {
+            m_gridLayout->removeWidget(m_resizeWidgets[i]);
+        }
+
+        int lineNumber = width()/MAX_LABEL_SIZE;
+        for(int i=0; i<m_resizeWidgets.count(); ++i)
+        {
+            m_gridLayout->addWidget(m_resizeWidgets[i], i/lineNumber, i%lineNumber, Qt::AlignCenter);
+        }
+    }
+}
+
+void MusicArtistAlbumsFoundWidget::createArtistAlbumsItem(const MusicPlaylistItem &item)
+{
+    MusicArtistAlbumsItemWidget *label = new MusicArtistAlbumsItemWidget(this);
+    connect(label, SIGNAL(currentItemClicked(QString)), SLOT(currentItemClicked(QString)));
+    label->setMusicItem(item);
+
+    int lineNumber = width()/MAX_LABEL_SIZE;
+    m_gridLayout->addWidget(label, m_resizeWidgets.count()/lineNumber,
+                                   m_resizeWidgets.count()%lineNumber, Qt::AlignCenter);
+    m_resizeWidgets << label;
+}
+
+void MusicArtistAlbumsFoundWidget::currentItemClicked(const QString &id)
+{
+    MusicRightAreaWidget::instance()->musicArtistAlbums(id);
+}
+
+
 
 MusicArtistFoundTableWidget::MusicArtistFoundTableWidget(QWidget *parent)
     : MusicQueryFoundTableWidget(parent)
@@ -39,10 +295,19 @@ void MusicArtistFoundTableWidget::setQueryInput(MusicDownLoadQueryThreadAbstract
 MusicArtistFoundWidget::MusicArtistFoundWidget(QWidget *parent)
     : MusicFoundAbstractWidget(parent)
 {
+    m_artistAlbums = nullptr;
+    m_artistMvs = nullptr;
     m_shareType = MusicSongSharingWidget::Artist;
     m_foundTableWidget = new MusicArtistFoundTableWidget(this);
+    m_foundTableWidget->hide();
     m_downloadThread = M_DOWNLOAD_QUERY_PTR->getQueryThread(this);
     connect(m_downloadThread, SIGNAL(downLoadDataChanged(QString)), SLOT(queryAllFinished()));
+}
+
+MusicArtistFoundWidget::~MusicArtistFoundWidget()
+{
+    delete m_artistAlbums;
+    delete m_artistMvs;
 }
 
 QString MusicArtistFoundWidget::getClassName()
@@ -56,11 +321,12 @@ void MusicArtistFoundWidget::setSongName(const QString &name)
     m_downloadThread->setQueryAllRecords(false);
     m_downloadThread->setQuerySimplify(true);
     m_downloadThread->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery,
-                                      MusicUtils::String::artistName(name));
+                                    MusicUtils::String::artistName(name));
 }
 
 void MusicArtistFoundWidget::setSongNameById(const QString &id)
 {
+    MusicFoundAbstractWidget::setSongName(id);
     MusicDownLoadQueryThreadAbstract *v = M_DOWNLOAD_QUERY_PTR->getArtistThread(this);
     m_foundTableWidget->setQueryInput(v);
     m_foundTableWidget->startSearchQuery(id);
@@ -70,6 +336,15 @@ void MusicArtistFoundWidget::setSongNameById(const QString &id)
 void MusicArtistFoundWidget::resizeWindow()
 {
     m_foundTableWidget->resizeWindow();
+
+    if(m_artistAlbums)
+    {
+       m_artistAlbums->resizeWindow();
+    }
+    if(m_artistMvs)
+    {
+       m_artistMvs->resizeWindow();
+    }
 }
 
 void MusicArtistFoundWidget::queryAllFinished()
@@ -118,9 +393,9 @@ void MusicArtistFoundWidget::createArtistInfoItem(const MusicPlaylistItem &item)
 
     createLabels();
 
-    if(!m_resizeWidget.isEmpty())
+    if(!m_resizeWidgets.isEmpty())
     {
-        QLabel *label = m_resizeWidget[0];
+        QLabel *label = m_resizeWidgets[0];
         label->setText(tr("<font color=#158FE1> Artist > %1 </font>").arg(item.m_name));
 
         MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
@@ -130,24 +405,44 @@ void MusicArtistFoundWidget::createArtistInfoItem(const MusicPlaylistItem &item)
             download->startToDownload(item.m_coverUrl);
         }
 
-        label = m_resizeWidget[1];
+        label = m_resizeWidgets[1];
         label->setToolTip(item.m_name);
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
 
-        label = m_resizeWidget[2];
+        label = m_resizeWidgets[2];
         label->setToolTip(tr("NickName: %1").arg(item.m_nickname));
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
 
-        label = m_resizeWidget[3];
+        label = m_resizeWidgets[3];
         label->setToolTip(tr("Country: %1").arg(item.m_tags));
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
 
-        label = m_resizeWidget[4];
+        label = m_resizeWidgets[4];
         label->setToolTip(tr("Birth: %1").arg(item.m_updateTime));
         label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
 
         m_infoLabel->setText(item.m_description);
     }
+}
+
+void MusicArtistFoundWidget::setCurrentIndex(int index)
+{
+    delete m_artistAlbums;
+    m_artistAlbums = nullptr;
+    delete m_artistMvs;
+    m_artistMvs = nullptr;
+
+    if(index == 2)
+    {
+        initThirdWidget();
+    }
+    else if(index == 3)
+    {
+        index--;
+        initFourthWidget();
+    }
+
+    m_container->setCurrentIndex(index);
 }
 
 void MusicArtistFoundWidget::createLabels()
@@ -290,18 +585,32 @@ void MusicArtistFoundWidget::createLabels()
     infoButton->setFixedSize(100, 25);
     infoButton->setCursor(QCursor(Qt::PointingHandCursor));
     hlayout->addWidget(infoButton);
+    QPushButton *albumsButton = new QPushButton(functionWidget);
+    albumsButton->setText(tr("Albums"));
+    albumsButton->setFixedSize(100, 25);
+    albumsButton->setCursor(QCursor(Qt::PointingHandCursor));
+    hlayout->addWidget(albumsButton);
+    QPushButton *mvsButton = new QPushButton(functionWidget);
+    mvsButton->setText(tr("Mvs"));
+    mvsButton->setFixedSize(100, 25);
+    mvsButton->setCursor(QCursor(Qt::PointingHandCursor));
+    hlayout->addWidget(mvsButton);
     hlayout->addStretch(1);
     functionWidget->setLayout(hlayout);
+
     QButtonGroup *group = new QButtonGroup(this);
     group->addButton(m_songButton, 0);
     group->addButton(infoButton, 1);
-    connect(group, SIGNAL(buttonClicked(int)), m_container, SLOT(setCurrentIndex(int)));
+    group->addButton(albumsButton, 2);
+    group->addButton(mvsButton, 3);
+    connect(group, SIGNAL(buttonClicked(int)), SLOT(setCurrentIndex(int)));
 
 #ifdef Q_OS_UNIX
     playAllButton->setFocusPolicy(Qt::NoFocus);
     shareButton->setFocusPolicy(Qt::NoFocus);
     m_songButton->setFocusPolicy(Qt::NoFocus);
     infoButton->setFocusPolicy(Qt::NoFocus);
+    albumsButton->setFocusPolicy(Qt::NoFocus);
 #endif
     grid->addWidget(functionWidget);
     //////////////////////////////////////////////////////////////////////
@@ -311,5 +620,19 @@ void MusicArtistFoundWidget::createLabels()
     function->setLayout(grid);
     m_mainWindow->layout()->addWidget(function);
 
-    m_resizeWidget << firstLabel << artistLabel << nickNameLabel << countryLabel << birthLabel;
+    m_resizeWidgets << firstLabel << artistLabel << nickNameLabel << countryLabel << birthLabel;
+}
+
+void MusicArtistFoundWidget::initThirdWidget()
+{
+    m_artistAlbums = new MusicArtistAlbumsFoundWidget(m_container);
+    m_container->addWidget(m_artistAlbums);
+    m_artistAlbums->setSongName(m_songNameFull);
+}
+
+void MusicArtistFoundWidget::initFourthWidget()
+{
+    m_artistMvs = new MusicArtistMvsFoundWidget(m_container);
+    m_container->addWidget(m_artistMvs);
+    m_artistMvs->setSongName(m_songNameFull);
 }

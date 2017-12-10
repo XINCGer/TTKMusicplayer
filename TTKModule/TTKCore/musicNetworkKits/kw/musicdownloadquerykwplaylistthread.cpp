@@ -53,10 +53,9 @@ void MusicDownLoadQueryKWPlaylistThread::startToPage(int offset)
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(sslConfig);
 #endif
-    m_reply = m_manager->get( request );
+    m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
-    connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-                     SLOT(replyError(QNetworkReply::NetworkError)));
+    connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
 }
 
 void MusicDownLoadQueryKWPlaylistThread::startToSearch(const QString &playlist)
@@ -222,7 +221,7 @@ void MusicDownLoadQueryKWPlaylistThread::getDetailsFinished()
                     musicInfo.m_albumName = value["album"].toString();
 
                     if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-                    readFromMusicSongPic(&musicInfo, musicInfo.m_songId);
+                    readFromMusicSongPic(&musicInfo);
                     if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
                     musicInfo.m_lrcUrl = MusicUtils::Algorithm::mdII(KW_SONG_LRC_URL, false).arg(musicInfo.m_songId);
                     ///music normal songs urls
@@ -234,16 +233,7 @@ void MusicDownLoadQueryKWPlaylistThread::getDetailsFinished()
                         continue;
                     }
                     ////////////////////////////////////////////////////////////
-                    for(int i=0; i<musicInfo.m_songAttrs.count(); ++i)
-                    {
-                        MusicObject::MusicSongAttribute *attr = &musicInfo.m_songAttrs[i];
-                        if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-                        if(attr->m_size.isEmpty())
-                        {
-                            attr->m_size = MusicUtils::Number::size2Label(getUrlFileSize(attr->m_url));
-                        }
-                        if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-                    }
+                    if(!findUrlFileSize(&musicInfo.m_songAttrs)) return;
                     ////////////////////////////////////////////////////////////
                     MusicSearchedItem item;
                     item.m_songName = musicInfo.m_songName;

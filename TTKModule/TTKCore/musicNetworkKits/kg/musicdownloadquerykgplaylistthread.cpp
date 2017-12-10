@@ -52,7 +52,7 @@ void MusicDownLoadQueryKGPlaylistThread::startToPage(int offset)
     sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
     request.setSslConfiguration(sslConfig);
 #endif
-    m_reply = m_manager->get( request );
+    m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
 }
@@ -255,7 +255,7 @@ void MusicDownLoadQueryKGPlaylistThread::getDetailsFinished()
                     musicInfo.m_albumName = albumInfo.m_nickname;
                     if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
 
-                    readFromMusicSongLrcAndPic(&musicInfo, value["hash"].toString());
+                    readFromMusicSongLrcAndPic(&musicInfo);
                     if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
                     readFromMusicSongAttribute(&musicInfo, value, m_searchQuality, m_queryAllRecords);
                     if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
