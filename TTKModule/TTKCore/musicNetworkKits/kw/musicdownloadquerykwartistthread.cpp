@@ -82,7 +82,7 @@ void MusicDownLoadQueryKWArtistThread::downLoadFinished()
                     MusicObject::MusicSongInformation musicInfo;
                     musicInfo.m_singerName = value["ARTIST"].toString();
                     musicInfo.m_songName = value["SONGNAME"].toString();
-                    musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["DURATION"].toString().toInt()*1000);
+                    musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["DURATION"].toInt()*1000);
 
                     musicInfo.m_songId = value["MUSICRID"].toString().replace("MUSIC_", "");
                     musicInfo.m_artistId = value["ARTISTID"].toString();
@@ -172,7 +172,7 @@ void MusicDownLoadQueryKWArtistThread::getDownLoadIntro(MusicPlaylistItem *item)
         QVariantMap value = data.toMap();
         item->m_tags = value["country"].toString();
         item->m_updateTime = value["birthday"].toString();
-        item->m_nickname = value["aartist"].toString();
+        item->m_nickName = value["aartist"].toString();
         item->m_description = value["info"].toString();
 
         item->m_description.replace("&nbsp;", " ");

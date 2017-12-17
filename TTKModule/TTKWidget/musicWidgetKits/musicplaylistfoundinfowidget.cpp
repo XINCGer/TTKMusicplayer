@@ -126,7 +126,7 @@ void MusicPlaylistFoundInfoWidget::setMusicPlaylistItem(const MusicPlaylistItem 
     playlistLabel->setText(MusicUtils::Widget::elidedText(playlistFont, playlistLabel->toolTip(), Qt::ElideRight, 220));
     QLabel *creatorLabel = new QLabel(topLineWidget);
     creatorLabel->setStyleSheet(MusicUIObject::MColorStyle04 + MusicUIObject::MFontStyle03);
-    creatorLabel->setToolTip(tr("Creator: %1").arg(item.m_nickname));
+    creatorLabel->setToolTip(tr("Creator: %1").arg(item.m_nickName));
     creatorLabel->setText(MusicUtils::Widget::elidedText(creatorLabel->font(), creatorLabel->toolTip(), Qt::ElideRight, 220));
     QLabel *tagsLabel = new QLabel(topLineWidget);
     tagsLabel->setStyleSheet(MusicUIObject::MColorStyle04 + MusicUIObject::MFontStyle03);
@@ -263,10 +263,21 @@ void MusicPlaylistFoundInfoWidget::setQueryInput(MusicDownLoadQueryThreadAbstrac
 
 void MusicPlaylistFoundInfoWidget::setCurrentIndex(int index)
 {
+    if(m_foundTableWidget) m_foundTableWidget->hide();
+    if(m_infoLabel) m_infoLabel->hide();
+
     delete m_commentsWidget;
     m_commentsWidget = nullptr;
 
-    if(index == 2)
+    if(index == 0)
+    {
+        m_foundTableWidget->show();
+    }
+    else if(index == 1)
+    {
+        m_infoLabel->show();
+    }
+    else if(index == 2)
     {
         initThirdWidget();
     }

@@ -1,6 +1,7 @@
 #include "musicwscommentsthread.h"
 #include "musicsemaphoreloop.h"
 #include "musicdownloadquerywsthread.h"
+#include "musicnumberdefine.h"
 #///QJson import
 #include "qjson/parser.h"
 
@@ -106,15 +107,15 @@ void MusicWSSongCommentsThread::downLoadFinished()
 
                         if(m_interrupt) return;
 
-                        MusicSongCommentItem comment;
+                        MusicPlaylistItem comment;
                         value = comm.toMap();
                         QVariantMap user = value["user"].toMap();
                         comment.m_nickName = user["NN"].toString();
-                        comment.m_avatarUrl = user["I"].toString();
+                        comment.m_coverUrl = user["I"].toString();
 
-                        comment.m_likedCount = value["like"].toString();
-                        comment.m_time = value["createTime"].toString();
-                        comment.m_content = value["content"].toString();
+                        comment.m_playCount = value["like"].toString();
+                        comment.m_updateTime = value["createTime"].toString();
+                        comment.m_description = value["content"].toString();
 
                         emit createSearchedItems(comment);
                     }
@@ -150,7 +151,7 @@ void MusicWSPlaylistCommentsThread::startToSearch(const QString &name)
 void MusicWSPlaylistCommentsThread::startToPage(int offset)
 {
     Q_UNUSED(offset);
-    QTimer::singleShot(1, this, SLOT(downLoadFinished()));
+    QTimer::singleShot(MT_MS, this, SLOT(downLoadFinished()));
 }
 
 void MusicWSPlaylistCommentsThread::downLoadFinished()

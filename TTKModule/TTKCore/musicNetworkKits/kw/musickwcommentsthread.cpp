@@ -86,7 +86,7 @@ void MusicKWSongCommentsThread::downLoadFinished()
             QVariantMap value = data.toMap();
             if(value["result"].toString() == "ok")
             {
-                m_pageTotal = value["total"].toString().toInt();
+                m_pageTotal = value["total"].toInt();
 
                 QVariantList comments = value["rows"].toList();
                 foreach(const QVariant &comm, comments)
@@ -98,16 +98,16 @@ void MusicKWSongCommentsThread::downLoadFinished()
 
                     if(m_interrupt) return;
 
-                    MusicSongCommentItem comment;
+                    MusicPlaylistItem comment;
                     value = comm.toMap();
-                    comment.m_likedCount = value["like_num"].toString();
-                    comment.m_time = QString::number(QDateTime::fromString(value["time"].toString(),
+                    comment.m_playCount = value["like_num"].toString();
+                    comment.m_updateTime = QString::number(QDateTime::fromString(value["time"].toString(),
                                                      "yyyy-MM-dd hh:mm:ss").toMSecsSinceEpoch());
-                    comment.m_content = value["msg"].toString();
+                    comment.m_description = value["msg"].toString();
 
                     QUrl name;
                     comment.m_nickName = name.fromEncoded(value["u_name"].toByteArray(), QUrl::TolerantMode).toString();
-                    comment.m_avatarUrl = value["u_pic"].toString();
+                    comment.m_coverUrl = value["u_pic"].toString();
 
                     emit createSearchedItems(comment);
                 }
@@ -192,7 +192,7 @@ void MusicKWPlaylistCommentsThread::downLoadFinished()
             QVariantMap value = data.toMap();
             if(value["result"].toString() == "ok")
             {
-                m_pageTotal = value["total"].toString().toInt();
+                m_pageTotal = value["total"].toInt();
 
                 QVariantList comments = value["rows"].toList();
                 foreach(const QVariant &comm, comments)
@@ -204,16 +204,16 @@ void MusicKWPlaylistCommentsThread::downLoadFinished()
 
                     if(m_interrupt) return;
 
-                    MusicSongCommentItem comment;
+                    MusicPlaylistItem comment;
                     value = comm.toMap();
-                    comment.m_likedCount = value["like_num"].toString();
-                    comment.m_time = QString::number(QDateTime::fromString(value["time"].toString(),
+                    comment.m_playCount = value["like_num"].toString();
+                    comment.m_updateTime = QString::number(QDateTime::fromString(value["time"].toString(),
                                                      "yyyy-MM-dd hh:mm:ss").toMSecsSinceEpoch());
-                    comment.m_content = value["msg"].toString();
+                    comment.m_description = value["msg"].toString();
 
                     QUrl name;
                     comment.m_nickName = name.fromEncoded(value["u_name"].toByteArray(), QUrl::TolerantMode).toString();
-                    comment.m_avatarUrl = value["u_pic"].toString();
+                    comment.m_coverUrl = value["u_pic"].toString();
 
                     emit createSearchedItems(comment);
                 }
