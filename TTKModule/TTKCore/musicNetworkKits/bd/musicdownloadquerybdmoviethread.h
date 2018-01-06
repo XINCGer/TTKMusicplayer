@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2017 Greedysky Studio
+ * Copyright (C) 2015 - 2018 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,10 +90,14 @@ protected:
     void readFromMusicMVAttributeIQY(MusicObject::MusicSongInformation *info, const QString &var,
                                      bool more);
     /*!
-     * Read mv info attribute from query results.
+     * Read mv info attribute from yyt query results.
      */
-    void readFromMusicMVAttribute(MusicObject::MusicSongInformation *info, const QVariantMap &key,
-                                  int bitrate, const QString &duration);
+    void readFromMusicMVAttributeYYT(MusicObject::MusicSongInformation *info, const QVariantMap &key,
+                                     int bitrate, const QString &duration);
+    /*!
+     * Read mv info attribute from iqy query results.
+     */
+    void readFromMusicMVAttributeIQY(MusicObject::MusicSongAttribute *attr);
 
 };
 

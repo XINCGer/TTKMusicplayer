@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2017 Greedysky Studio
+ * Copyright (C) 2015 - 2018 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,11 @@ namespace MusicUtils
          * Get Language Name by given index.
          */
         MUSIC_UTILS_EXPORT QString getLanguageName(int index);
+
+        /*!
+         * Dir remove recursively.
+         */
+        MUSIC_UTILS_EXPORT bool removeRecursively(const QString &dir);
 
         /*!
          * Open file from local by path or net url.

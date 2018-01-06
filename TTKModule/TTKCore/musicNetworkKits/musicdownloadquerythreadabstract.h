@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2017 Greedysky Studio
+ * Copyright (C) 2015 - 2018 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,6 +163,10 @@ public:
      * Return the current song container.
      */
     inline const MusicObject::MusicSongInformations& getMusicSongInfos() const { return m_musicSongInfos; }
+    /*!
+     * Map query server string.
+     */
+    QString mapQueryServerString() const;
 
 Q_SIGNALS:
     /*!
@@ -179,10 +183,6 @@ protected:
      * Find time string by attrs.
      */
     QString findTimeStringByAttrs(const MusicObject::MusicSongAttributes &attrs);
-    /*!
-     * Map query server string.
-     */
-    QString mapQueryServerString() const;
     /*!
      * Find download file size.
      */
