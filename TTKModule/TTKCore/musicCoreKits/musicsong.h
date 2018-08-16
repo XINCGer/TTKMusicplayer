@@ -27,6 +27,7 @@
  */
 class MUSIC_CORE_EXPORT MusicSong
 {
+    TTK_DECLARE_MODULE(MusicSong)
 public:
     enum Sort
     {
@@ -62,26 +63,40 @@ public:
      * Object contsructor by music path and name and playcout and format and time.
      */
     MusicSong(const QString &musicPath, const QString &type,
-              const QString &time, int playCount,
+              const QString &playTime, int playCount,
               const QString &musicName = QString());
     /*!
      * Object contsructor by music path and name and playcout and time.
      */
-    MusicSong(const QString &musicPath, int playCount, const QString &time,
+    MusicSong(const QString &musicPath, int playCount, const QString &playTime,
               const QString &musicName);
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Get music artist name.
      */
     QString getMusicArtistFront() const;
     /*!
-     * Get music name.
+     * Get music song name.
      */
     QString getMusicArtistBack() const;
+
+    /*!
+     * Set music add time string.
+     */
+    inline void setMusicAddTimeStr(const QString &t) { m_musicAddTimeStr = t;}
+    /*!
+     * Get music add time string.
+     */
+    inline QString getMusicAddTimeStr() const { return m_musicAddTimeStr;}
+    /*!
+     * Set music size string.
+     */
+    inline void setMusicSizeStr(const QString s) { m_musicSizeStr = s;}
+    /*!
+     * Get music size string.
+     */
+    inline QString getMusicSizeStr() const { return m_musicSizeStr;}
+
     /*!
      * Set music name.
      */
@@ -109,11 +124,19 @@ public:
     /*!
      * Set music time.
      */
-    inline void setMusicTime(const QString &t) { m_musicTime = t;}
+    inline void setMusicPlayTime(const QString &t) { m_musicPlayTime = t;}
     /*!
      * Get music time.
      */
-    inline QString getMusicTime() const { return m_musicTime;}
+    inline QString getMusicPlayTime() const { return m_musicPlayTime;}
+    /*!
+     * Set music add time.
+     */
+    inline void setMusicAddTime(const qint64 &t) { m_musicAddTime = t;}
+    /*!
+     * Get music add time.
+     */
+    inline qint64 getMusicAddTime() const { return m_musicAddTime;}
     /*!
      * Set music size.
      */
@@ -149,15 +172,16 @@ public:
 
 protected:
     Sort m_sortType;
-    qint64  m_musicSize, m_musicAddTime;
+    qint64 m_musicSize, m_musicAddTime;
+    QString m_musicSizeStr, m_musicAddTimeStr;
     int m_musicPlayCount;
-    QString m_musicName, m_musicPath, m_musicType, m_musicTime;
+    QString m_musicName, m_musicPath, m_musicType, m_musicPlayTime;
 
 };
-MUSIC_DECLARE_LISTS(MusicSong)
+TTK_DECLARE_LISTS(MusicSong)
 
 ////////////////////////////////////////////////////////
-class MusicSongsListTableWidget;
+class MusicSongsListAbstractTableWidget;
 
 /*! @brief The class of the music song sort tag.
  * @author Greedysky <greedysky@163.com>
@@ -183,7 +207,7 @@ typedef struct MUSIC_CORE_EXPORT MusicSongItem
     QString m_itemName;
     MusicSort m_sort;
     MusicSongs m_songs;
-    MusicSongsListTableWidget* m_itemObject;
+    MusicSongsListAbstractTableWidget* m_itemObject;
 
     MusicSongItem()
     {
@@ -196,6 +220,6 @@ typedef struct MUSIC_CORE_EXPORT MusicSongItem
         return m_itemIndex < other.m_itemIndex;
     }
 }MusicSongItem;
-MUSIC_DECLARE_LISTS(MusicSongItem)
+TTK_DECLARE_LISTS(MusicSongItem)
 
 #endif // MUSICSONG_H

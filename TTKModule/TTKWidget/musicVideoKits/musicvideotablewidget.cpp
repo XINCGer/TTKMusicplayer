@@ -13,6 +13,11 @@ MusicVideoTableWidget::MusicVideoTableWidget(QWidget *parent)
     setColumnCount(9);
     resizeWindow(0);
 
+    viewport()->setStyleSheet(MusicUIObject::MBackgroundStyle02);
+
+    m_defaultBkColor = Qt::black;
+    m_singleRadioMode = false;
+
     MusicTime::timeSRand();
     M_CONNECTION_PTR->setValue(getClassName(), this);
 }
@@ -23,15 +28,10 @@ MusicVideoTableWidget::~MusicVideoTableWidget()
     clearAllItems();
 }
 
-QString MusicVideoTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicVideoTableWidget::startSearchQuery(const QString &text)
 {
-    if(!M_NETWORK_PTR->isOnline())
-    {   //no network connection
+    if(!M_NETWORK_PTR->isOnline())   //no network connection
+    {
         clearAllItems();
         emit showDownLoadInfoFor(MusicObject::DW_DisConnection);
         return;
@@ -41,15 +41,15 @@ void MusicVideoTableWidget::startSearchQuery(const QString &text)
     connect(d, SIGNAL(downLoadDataChanged(QString)), SLOT(createFinishedItem()));
     setQueryInput( d );
     ////////////////////////////////////////////////////////////////////////////////////
-    m_loadingLabel->show();
-    m_loadingLabel->start();
+    m_singleRadioMode = false;
+    m_loadingLabel->run(true);
     m_downLoadManager->startToSearch(MusicDownLoadQueryThreadAbstract::MovieQuery, text);
 }
 
 void MusicVideoTableWidget::startSearchSingleQuery(const QString &text)
 {
-    if(!M_NETWORK_PTR->isOnline())
-    {   //no network connection
+    if(!M_NETWORK_PTR->isOnline())   //no network connection
+    {
         clearAllItems();
         emit showDownLoadInfoFor(MusicObject::DW_DisConnection);
         return;
@@ -59,22 +59,46 @@ void MusicVideoTableWidget::startSearchSingleQuery(const QString &text)
     connect(d, SIGNAL(downLoadDataChanged(QString)), SLOT(createFinishedItem()));
     setQueryInput( d );
     ////////////////////////////////////////////////////////////////////////////////////
-    m_loadingLabel->show();
-    m_loadingLabel->start();
+    m_singleRadioMode = false;
+    m_loadingLabel->run(true);
     m_downLoadManager->setQueryType(MusicDownLoadQueryThreadAbstract::MovieQuery);
     m_downLoadManager->startToSingleSearch(text);
 }
 
-void MusicVideoTableWidget::musicDownloadLocal(int row)
+void MusicVideoTableWidget::startSearchSingleQuery(const QVariant &data)
 {
-    if(row < 0 || (row >= rowCount() - 1))
+    if(!M_NETWORK_PTR->isOnline())   //no network connection
     {
-        MusicMessageBox message;
-        message.setText(tr("Please Select One Item First!"));
-        message.exec();
+        clearAllItems();
+        emit showDownLoadInfoFor(MusicObject::DW_DisConnection);
         return;
     }
-    downloadLocalMovie(row);
+    ////////////////////////////////////////////////////////////////////////////////////
+    MusicDownLoadQueryThreadAbstract *d = M_DOWNLOAD_QUERY_PTR->getMovieThread(this);
+    connect(d, SIGNAL(downLoadDataChanged(QString)), SLOT(createFinishedItem()));
+    setQueryInput( d );
+    ////////////////////////////////////////////////////////////////////////////////////
+    m_singleRadioMode = true;
+    d->setMusicSongInfos(MusicObject::MusicSongInformations() << data.value<MusicObject::MusicSongInformation>());
+}
+
+void MusicVideoTableWidget::musicDownloadLocal(int row)
+{
+    if(!m_singleRadioMode)
+    {
+        if(row < 0 || (row >= rowCount() - 1))
+        {
+            MusicMessageBox message;
+            message.setText(tr("Please Select One Item First!"));
+            message.exec();
+            return;
+        }
+        downloadLocalMovie(row);
+    }
+    else
+    {
+        downloadLocalMovie(0);
+    }
 }
 
 void MusicVideoTableWidget::resizeWindow(int delta)
@@ -113,6 +137,12 @@ void MusicVideoTableWidget::listCellEntered(int row, int column)
     {
        unsetCursor();
     }
+
+    QTableWidgetItem *it = item(row, 0);
+    if(it)
+    {
+        it->setBackgroundColor(m_defaultBkColor);
+    }
 }
 
 void MusicVideoTableWidget::listCellClicked(int row, int column)
@@ -122,7 +152,7 @@ void MusicVideoTableWidget::listCellClicked(int row, int column)
     {
         case 6:
         case 7:
-            itemDoubleClicked(row, 999);
+            itemDoubleClicked(row, DEFAULT_LEVEL_HIGH);
             break;
         case 8:
             musicDownloadLocal(row);
@@ -137,7 +167,7 @@ void MusicVideoTableWidget::clearAllItems()
     setColumnCount(9);
 }
 
-void MusicVideoTableWidget::createSearchedItems(const MusicSearchedItem &songItem)
+void MusicVideoTableWidget::createSearchedItem(const MusicSearchedItem &songItem)
 {
     int count = rowCount();
     setRowCount(count + 1);
@@ -146,6 +176,7 @@ void MusicVideoTableWidget::createSearchedItems(const MusicSearchedItem &songIte
 
     QTableWidgetItem *item = new QTableWidgetItem;
     item->setData(MUSIC_CHECK_ROLE, false);
+    item->setBackgroundColor(m_defaultBkColor);
     setItem(count, 0, item);
 
                       item = new QTableWidgetItem;
@@ -179,15 +210,15 @@ void MusicVideoTableWidget::createSearchedItems(const MusicSearchedItem &songIte
     setItem(count, 5, item);
 
                       item = new QTableWidgetItem;
-    item->setIcon(QIcon(":/contextMenu/btn_mv"));
+    item->setIcon(QIcon(":/video/btn_mv"));
     setItem(count, 6, item);
 
                       item = new QTableWidgetItem;
-    item->setIcon(QIcon(":/contextMenu/btn_audition"));
+    item->setIcon(QIcon(":/video/btn_audition"));
     setItem(count, 7, item);
 
                       item = new QTableWidgetItem;
-    item->setIcon(QIcon(":/contextMenu/btn_download"));
+    item->setIcon(QIcon(":/video/btn_download"));
     setItem(count, 8, item);
 }
 
@@ -198,13 +229,18 @@ void MusicVideoTableWidget::itemDoubleClicked(int row, int column)
         return;
     }
 
-    MusicObject::MusicSongInformations musicSongInfos(m_downLoadManager->getMusicSongInfos());
-    MusicObject::MusicSongAttributes attrs = musicSongInfos[row].m_songAttrs;
+    MusicObject::MusicSongInformation musicSongInfo = m_downLoadManager->getMusicSongInfos()[row];
+    MusicObject::MusicSongAttributes attrs = musicSongInfo.m_songAttrs;
     if(!attrs.isEmpty())
     {
         MusicObject::MusicSongAttribute attr = attrs.first();
-        QString url = attr.m_multiParts ? attr.m_url.split(STRING_SPLITER).first() : attr.m_url;
-        emit mvURLNameChanged(item(row, 2)->toolTip() + " - " + item(row, 1)->toolTip(), url);
+        QString url = attr.m_multiPart ? attr.m_url.split(TTK_STR_SPLITER).first() : attr.m_url;
+        MusicVideoItem data;
+        data.m_name = item(row, 2)->toolTip() + " - " + item(row, 1)->toolTip();
+        data.m_url = url;
+        data.m_id = musicSongInfo.m_songId;
+        data.m_server = m_downLoadManager->getQueryServer();
+        emit mvURLNameChanged(data);
     }
 }
 
@@ -214,16 +250,25 @@ void MusicVideoTableWidget::getMusicMvInfo(MusicObject::MusicSongAttributes &dat
     {
         return;
     }
+
+    int row = !m_singleRadioMode ? m_previousClickRow : 0;
     MusicObject::MusicSongInformations musicSongInfos(m_downLoadManager->getMusicSongInfos());
-    data = (!musicSongInfos.isEmpty() && m_previousClickRow != -1) ?
-             musicSongInfos[m_previousClickRow].m_songAttrs : MusicObject::MusicSongAttributes();
+    data = (!musicSongInfos.isEmpty() && row != -1) ?
+            musicSongInfos[row].m_songAttrs : MusicObject::MusicSongAttributes();
 }
 
 void MusicVideoTableWidget::downloadLocalFromControl()
 {
-    if( m_previousClickRow != -1 && currentRow() != -1)
+    if(!m_singleRadioMode)
     {
-        downloadLocalMovie(currentRow());
+        if(m_previousClickRow != -1 && currentRow() != -1)
+        {
+            downloadLocalMovie(currentRow());
+        }
+    }
+    else
+    {
+        downloadLocalMovie(0);
     }
 }
 

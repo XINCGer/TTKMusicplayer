@@ -36,6 +36,7 @@ class MusicBackgroundRemoteWidget;
 class MUSIC_WIDGET_EXPORT MusicBackgroundSkinDialog : public MusicAbstractMoveDialog
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicBackgroundSkinDialog)
 public:
     /*!
      * Object contsructor.
@@ -45,14 +46,9 @@ public:
     virtual ~MusicBackgroundSkinDialog();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Set artist background picture by name.
      */
-    static QPixmap setMBackground(QString &name);
+    static QPixmap setBackgroundUrl(QString &name);
     /*!
      * Theme valid check.
      */

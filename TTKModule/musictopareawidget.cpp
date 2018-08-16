@@ -12,12 +12,13 @@
 #include "musicremotewidgetforcomplexstyle.h"
 #include "musicremotewidgetforstrip.h"
 #include "musicremotewidgetforripples.h"
+#include "musicremotewidgetforrayswave.h"
 #include "musicuiobject.h"
 #include "musictinyuiobject.h"
 #include "musicfunctionuiobject.h"
-#include "musicdownloadcounterpvthread.h"
 #include "musicotherdefine.h"
 #include "musictoolsetswidget.h"
+#include "musicsinglemanager.h"
 
 MusicTopAreaWidget *MusicTopAreaWidget::m_instance = nullptr;
 
@@ -30,10 +31,7 @@ MusicTopAreaWidget::MusicTopAreaWidget(QWidget *parent)
     m_pictureCarouselTimer.setInterval(10*MT_S2MS);
     connect(&m_pictureCarouselTimer, SIGNAL(timeout()), SLOT(musicBackgroundChanged()));
     connect(M_BACKGROUND_PTR, SIGNAL(userSelectIndexChanged()), SLOT(musicBackgroundChanged()));
-    ///////////////////////////////////////////////////////
-    m_counterPVThread = new MusicDownloadCounterPVThread(this);
-    m_counterPVThread->startToDownload();
-    ///////////////////////////////////////////////////////
+
     m_backgroundAListlpha = 40;
     m_lastRemoteBeforeWallpaper = -1;
 }
@@ -43,12 +41,6 @@ MusicTopAreaWidget::~MusicTopAreaWidget()
     delete m_musicUserWindow;
     delete m_musicBackgroundWidget;
     delete m_musicRemoteWidget;
-    delete m_counterPVThread;
-}
-
-QString MusicTopAreaWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 MusicTopAreaWidget *MusicTopAreaWidget::instance()
@@ -398,6 +390,17 @@ void MusicTopAreaWidget::musicRipplesRemote()
     createRemoteWidget();
 }
 
+void MusicTopAreaWidget::musicRaysWaveRemote()
+{
+    if(m_musicRemoteWidget)
+    {
+        delete m_musicRemoteWidget;
+    }
+    m_musicRemoteWidget = new MusicRemoteWidgetForRaysWave;
+    m_musicRemoteWidget->setLabelText(m_ui->showCurrentSong->text());
+    createRemoteWidget();
+}
+
 void MusicTopAreaWidget::musicDeleteRemote()
 {
     delete m_musicRemoteWidget;
@@ -433,12 +436,14 @@ void MusicTopAreaWidget::musicRemoteTypeChanged(int type)
         case MusicRemoteWidget::ComplexStyle: musicComplexStyleRemote(); break;
         case MusicRemoteWidget::Diamond: musicDiamondRemote(); break;
         case MusicRemoteWidget::Ripples: musicRipplesRemote(); break;
+        case MusicRemoteWidget::RaysWave: musicRaysWaveRemote(); break;
+        default: break;
     }
 }
 
 void MusicTopAreaWidget::musicStackedToolsWidgetChanged()
 {
-    (new MusicToolSetsWidget(this))->show();
+    M_SINGLE_MANAGER_WIDGET_CLASS(MusicToolSetsWidget);
 }
 
 void MusicTopAreaWidget::createRemoteWidget()
@@ -463,7 +468,7 @@ void MusicTopAreaWidget::createRemoteWidget()
 void MusicTopAreaWidget::drawWindowBackgroundRect()
 {
     m_pictureCarouselTimer.stop();
-    drawWindowBackgroundRect(MusicBackgroundSkinDialog::setMBackground(m_backgroundImagePath).toImage());
+    drawWindowBackgroundRect(MusicBackgroundSkinDialog::setBackgroundUrl(m_backgroundImagePath).toImage());
 }
 
 void MusicTopAreaWidget::drawWindowBackgroundRect(const QImage &image)

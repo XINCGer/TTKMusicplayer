@@ -3,6 +3,7 @@
 #include "musicsongslistplaywidget.h"
 #include "musictransformwidget.h"
 #include "musicsongringtonemakerwidget.h"
+#include "musicitemdelegate.h"
 #include "musicmessagebox.h"
 #include "musicprogresswidget.h"
 #include "musiccoreutils.h"
@@ -17,20 +18,21 @@
 #include "musicotherdefine.h"
 
 #include <qmath.h>
-#include <QUrl>
 #include <QAction>
 #include <QTimer>
 #include <QPainter>
 #include <QMouseEvent>
 
 #define ROW_HIGHT   30
-#define SEARCH_ITEM_DEFINE(index, names) \
-    case index: \
-    if(names.count() >= index) \
-    { \
-        MusicRightAreaWidget::instance()->musicSongSearchedFound(names[index - 1]); \
-    } \
-    break;
+#define SEARCH_ITEM_DEFINED(index, names)                                                   \
+    case index:                                                                             \
+    {                                                                                       \
+        if(names.count() >= index)                                                          \
+        {                                                                                   \
+            MusicRightAreaWidget::instance()->musicSongSearchedFound(names[index - 1]);     \
+        }                                                                                   \
+        break;                                                                              \
+    }
 
 
 MusicSongsListTableWidget::MusicSongsListTableWidget(int index, QWidget *parent)
@@ -45,6 +47,7 @@ MusicSongsListTableWidget::MusicSongsListTableWidget(int index, QWidget *parent)
     m_listHasSearched = false;
     m_mouseMoved = false;
     m_parentToolIndex = index;
+    m_renameLineEditDelegate = nullptr;
     m_musicSort = nullptr;
 
     setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -73,14 +76,11 @@ MusicSongsListTableWidget::~MusicSongsListTableWidget()
         delete m_musicSongs;
     }
     clearAllItems();
+
     delete m_openFileWidget;
     delete m_musicSongsInfoWidget;
     delete m_musicSongsPlayWidget;
-}
-
-QString MusicSongsListTableWidget::getClassName()
-{
-    return staticMetaObject.className();
+    delete m_renameLineEditDelegate;
 }
 
 void MusicSongsListTableWidget::updateSongsFileName(const MusicSongs &songs)
@@ -109,7 +109,7 @@ void MusicSongsListTableWidget::updateSongsFileName(const MusicSongs &songs)
         setItem(i, 3, item);
                           item = new QTableWidgetItem;
         setItem(i, 4, item);
-                          item = new QTableWidgetItem(songs[i].getMusicTime());
+                          item = new QTableWidgetItem(songs[i].getMusicPlayTime());
         item->setTextColor(QColor(MusicUIObject::MColorStyle12_S));
         item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         setItem(i, 5, item);
@@ -133,7 +133,7 @@ void MusicSongsListTableWidget::clearAllItems()
     setColumnCount(6);
 }
 
-void MusicSongsListTableWidget::setMusicSongsSearchedFileName(MusicSongs *songs, const MusicObject::MIntList &fileIndexs)
+void MusicSongsListTableWidget::setMusicSongsSearchedFileName(MusicSongs *songs, const MIntList &fileIndexs)
 {
     if(songs->count() == fileIndexs.count())
     {
@@ -241,7 +241,7 @@ void MusicSongsListTableWidget::replacePlayWidgetRow()
     setItem(m_playRowIndex, 3, new QTableWidgetItem);
     setItem(m_playRowIndex, 4, new QTableWidgetItem);
 
-    item = new QTableWidgetItem( (*m_musicSongs)[m_playRowIndex].getMusicTime() );
+    item = new QTableWidgetItem( (*m_musicSongs)[m_playRowIndex].getMusicPlayTime() );
     item->setTextColor(QColor(MusicUIObject::MColorStyle12_S));
     item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     setItem(m_playRowIndex, 5, item);
@@ -282,51 +282,55 @@ void MusicSongsListTableWidget::listCellEntered(int row, int column)
 {
     ///clear previous table item state
     QTableWidgetItem *it = item(m_previousColorRow, 0);
-    if(it != nullptr)
+    if(it)
     {
         it->setIcon(QIcon());
     }
+
     it = item(m_previousColorRow, 2);
-    if(it != nullptr)
+    if(it)
     {
         it->setIcon(QIcon());
     }
+
     it = item(m_previousColorRow, 3);
-    if(it != nullptr)
+    if(it)
     {
         it->setIcon(QIcon());
     }
+
     it = item(m_previousColorRow, 4);
-    if(it != nullptr)
+    if(it)
     {
         it->setIcon(QIcon());
     }
+
     it = item(m_previousColorRow, 5);
-    if(it != nullptr)
+    if(it)
     {
         it->setIcon(QIcon());
-        it->setText((*m_musicSongs)[m_previousColorRow].getMusicTime());
+        it->setText((*m_musicSongs)[m_previousColorRow].getMusicPlayTime());
     }
 
     ///draw new table item state
-    if((it = item(row, 0)) != nullptr)
+    if((it = item(row, 0)))
     {
         it->setIcon(QIcon(":/tiny/btn_play_later_normal"));
     }
-    if((it = item(row, 2)) != nullptr)
+    if((it = item(row, 2)))
     {
         it->setIcon(QIcon(":/tiny/btn_mv_normal"));
     }
-    if((it = item(row, 3)) != nullptr)
+    if((it = item(row, 3)))
     {
         bool contains = MusicApplication::instance()->musicListLovestContains(row);
         it->setIcon(QIcon(contains ? ":/tiny/btn_loved_normal" : ":/tiny/btn_unloved_normal"));
     }
-    if((it = item(row, 4)) != nullptr)
+    if((it = item(row, 4)))
     {
         it->setIcon(QIcon(":/tiny/btn_delete_normal"));
     }
-    if((it = item(row, 5)) != nullptr)
+    if((it = item(row, 5)))
     {
         it->setText(QString());
         it->setIcon(QIcon(":/tiny/btn_more_normal"));
@@ -385,7 +389,7 @@ void MusicSongsListTableWidget::listCellClicked(int row, int column)
 
                 bool contains = !MusicApplication::instance()->musicListLovestContains(row);
                 QTableWidgetItem *it = item(row, 3);
-                if(it != nullptr)
+                if(it)
                 {
                     it->setIcon(QIcon(contains ? ":/tiny/btn_loved_normal" : ":/tiny/btn_unloved_normal"));
                 }
@@ -431,23 +435,20 @@ void MusicSongsListTableWidget::setDeleteItemAt()
     progress.setTitle(tr("Delete File Mode"));
     progress.setRange(0, selectedItems().count()/3*2);
 
-    MusicObject::MIntSet deletedRow; //if selected multi rows
-    for(int i=0; i<selectedIndexes().count(); ++i)
+    MIntList deleteList(getMultiIndexSet());
+    if(deleteList.isEmpty())
     {
-        deletedRow.insert(selectedIndexes()[i].row());
+        return;
+    }
+
+    for(int i=0; i<deleteList.count(); ++i)
+    {
         if(i%3 == 0)
         {
             progress.setValue(i/3);
         }
     }
 
-    MusicObject::MIntList deleteList = deletedRow.toList();
-    if(deleteList.count() == 0)
-    {
-        return;
-    }
-
-    qSort(deleteList);
     if(deleteList.contains(m_playRowIndex) || deleteList[0] < m_playRowIndex)
     {
         replacePlayWidgetRow();
@@ -486,7 +487,7 @@ void MusicSongsListTableWidget::showTimeOut()
         m_musicSongsInfoWidget->setMusicSongInformation( song );
         m_musicSongsInfoWidget->move(mapToGlobal(QPoint(width(), 0)).x() + 8, QCursor::pos().y());
         bool state;
-        emit isCurrentIndexs(state);
+        emit isCurrentIndex(state);
         m_musicSongsInfoWidget->setVisible( state ? (m_musicSongsPlayWidget &&
                                             !m_musicSongsPlayWidget->getItemRenameState()) : true);
     }
@@ -505,13 +506,18 @@ void MusicSongsListTableWidget::setChangSongName()
     {
         return;
     }
-    if((currentRow() == m_playRowIndex) && m_musicSongsPlayWidget)
+
     //the playing widget allow renaming
+    if((currentRow() == m_playRowIndex) && m_musicSongsPlayWidget)
     {
         m_musicSongsPlayWidget->setItemRename();
         return;
     }
+
     //others
+    delete m_renameLineEditDelegate;
+    m_renameLineEditDelegate = new MusicRenameLineEditDelegate(this);
+    setItemDelegateForRow(currentRow(), m_renameLineEditDelegate);
     m_renameActived = true;
     m_renameItem = item(currentRow(), 1);
     m_renameItem->setText((*m_musicSongs)[m_renameItem->row()].getMusicName());
@@ -548,12 +554,12 @@ void MusicSongsListTableWidget::musicSearchQuery(QAction *action)
 
     QString songName = getCurrentSongName();
     QStringList names(MusicUtils::String::splitString(songName));
-    switch(action->data().toInt() - DEFAULT_INDEX_LEVEL1)
+    switch(action->data().toInt() - DEFAULT_LEVEL_NORMAL)
     {
         case 0 : MusicRightAreaWidget::instance()->musicSongSearchedFound(songName); break;
-        SEARCH_ITEM_DEFINE(1, names);
-        SEARCH_ITEM_DEFINE(2, names);
-        SEARCH_ITEM_DEFINE(3, names);
+        SEARCH_ITEM_DEFINED(1, names);
+        SEARCH_ITEM_DEFINED(2, names);
+        SEARCH_ITEM_DEFINED(3, names);
         default: break;
     }
 }
@@ -615,7 +621,7 @@ void MusicSongsListTableWidget::mousePressEvent(QMouseEvent *event)
     MusicSongsListAbstractTableWidget::mousePressEvent(event);
     closeRenameItem();
 
-    if( event->button() == Qt::LeftButton )
+    if(event->button() == Qt::LeftButton)
     {
         m_leftButtonPressed = true;
         m_dragStartIndex = currentRow();
@@ -770,8 +776,13 @@ void MusicSongsListTableWidget::closeRenameItem()
         QHeaderView *headerview = horizontalHeader();
         (*m_musicSongs)[m_renameItem->row()].setMusicName(m_renameItem->text());
         m_renameItem->setText(MusicUtils::Widget::elidedText(font(), m_renameItem->text(), Qt::ElideRight, headerview->sectionSize(1) - 10));
+
         m_renameActived = false;
+        setItemDelegateForRow(m_renameItem->row(), nullptr);
         m_renameItem = nullptr;
+
+        delete m_renameLineEditDelegate;
+        m_renameLineEditDelegate = nullptr;
     }
 }
 
@@ -816,11 +827,11 @@ void MusicSongsListTableWidget::startToDrag()
 
             QHeaderView *headerview = horizontalHeader();
             item(i, 1)->setText(MusicUtils::Widget::elidedText(font(), songs[i].getMusicName(), Qt::ElideRight, headerview->sectionSize(1) - 10));
-            item(i, 5)->setText(songs[i].getMusicTime());
+            item(i, 5)->setText(songs[i].getMusicPlayTime());
         }
 
         bool state;
-        emit isCurrentIndexs(state);
+        emit isCurrentIndex(state);
         if(state)
         {
             selectRow(index);
@@ -834,8 +845,8 @@ void MusicSongsListTableWidget::createContextMenu(QMenu &menu)
     QStringList names(MusicUtils::String::splitString(songName));
     for(int i=1; i<=names.count(); ++i)
     {
-        menu.addAction(tr("search '%1'").arg(names[i - 1].trimmed()))->setData(i + DEFAULT_INDEX_LEVEL1);
+        menu.addAction(tr("search '%1'").arg(names[i - 1].trimmed()))->setData(i + DEFAULT_LEVEL_NORMAL);
     }
-    menu.addAction(tr("search '%1'").arg(songName))->setData(DEFAULT_INDEX_LEVEL1);
+    menu.addAction(tr("search '%1'").arg(songName))->setData(DEFAULT_LEVEL_NORMAL);
     connect(&menu, SIGNAL(triggered(QAction*)), SLOT(musicSearchQuery(QAction*)));
 }

@@ -9,11 +9,6 @@ MusicKGArtistSimilarThread::MusicKGArtistSimilarThread(QObject *parent)
 
 }
 
-QString MusicKGArtistSimilarThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicKGArtistSimilarThread::startToSearch(const QString &text)
 {
     if(!m_manager)
@@ -30,11 +25,8 @@ void MusicKGArtistSimilarThread::startToSearch(const QString &text)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KG_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -61,7 +53,7 @@ void MusicKGArtistSimilarThread::downLoadFinished()
         {
             if(m_interrupt) return;
 
-            MusicPlaylistItem info;
+            MusicResultsItem info;
             QRegExp idrx("/(\\d+)");
             if(regx.cap(2).indexOf(idrx) != -1)
             {
@@ -70,7 +62,7 @@ void MusicKGArtistSimilarThread::downLoadFinished()
             info.m_coverUrl = regx.cap(1);
             info.m_name = regx.cap(3);
             info.m_updateTime.clear();
-            emit createSimilarItems(info);
+            emit createSimilarItem(info);
 
             pos += regx.matchedLength();
             pos = regx.indexIn(html, pos);

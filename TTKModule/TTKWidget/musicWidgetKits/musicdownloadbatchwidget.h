@@ -21,6 +21,7 @@
 
 #include "musicabstractmovewidget.h"
 #include "musicabstracttablewidget.h"
+#include "musicdownloadquerythreadabstract.h"
 
 namespace Ui {
 class MusicDownloadBatchWidget;
@@ -32,6 +33,7 @@ class MusicDownloadBatchWidget;
 class MUSIC_WIDGET_EXPORT MusicDownloadBatchTableItem : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownloadBatchTableItem)
 public:
     /*!
      * Object contsructor.
@@ -41,17 +43,13 @@ public:
     ~MusicDownloadBatchTableItem();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * Create current item by song info.
      */
     void createItem(const MusicObject::MusicSongInformation &info);
     /*!
-     * Start to download music data.
+     * Start to download data.
      */
-    void startToDownload();
+    void startToDownload(MusicDownLoadQueryThreadAbstract::QueryType type);
     /*!
      * Set current quality.
      */
@@ -64,9 +62,18 @@ public Q_SLOTS:
     void currentQualityChanged(int index);
 
 protected:
+    /*!
+     * Start to download music data.
+     */
+    void startToDownloadMusic();
+    /*!
+     * Start to download movie data.
+     */
+    void startToDownloadMovie();
+
     QObject *m_supperClass;
     QComboBox *m_qulity;
-    QString m_smallPicUrl, m_album;
+    MusicObject::MusicSongInformation m_songInfo;
     QLabel *m_songName, *m_singer, *m_information;
 
 };
@@ -78,6 +85,7 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicDownloadBatchTableWidget : public MusicAbstractTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownloadBatchTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -86,10 +94,6 @@ public:
 
     virtual ~MusicDownloadBatchTableWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set parent object.
      */
@@ -105,7 +109,7 @@ public:
     /*!
      * Start to download music data.
      */
-    void startToDownload();
+    void startToDownload(MusicDownLoadQueryThreadAbstract::QueryType type);
 
 public Q_SLOTS:
     /*!
@@ -135,6 +139,7 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicDownloadBatchWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownloadBatchWidget)
 public:
     /*!
      * Object contsructor.
@@ -144,13 +149,9 @@ public:
     virtual ~MusicDownloadBatchWidget();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * Set current name to search and download musics.
      */
-    void setSongName(const MusicObject::MusicSongInformations &infos);
+    void setSongName(const MusicObject::MusicSongInformations &infos, MusicDownLoadQueryThreadAbstract::QueryType type);
 
 public Q_SLOTS:
     /*!
@@ -165,6 +166,7 @@ public Q_SLOTS:
 protected:
     Ui::MusicDownloadBatchWidget *m_ui;
 
+    MusicDownLoadQueryThreadAbstract::QueryType m_queryType;
 };
 
 #endif // MUSICDOWNLOADBATCHWIDGET_H

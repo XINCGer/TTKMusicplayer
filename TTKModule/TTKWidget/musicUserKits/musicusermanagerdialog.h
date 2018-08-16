@@ -20,8 +20,9 @@
  ================================================= */
 
 #include <QTime>
-#include <QMenu>
+#include "musicwidgetheaders.h"
 #include "musicabstractmovedialog.h"
+#include "musicdatabaseobject.h"
 
 class MusicUserModel;
 
@@ -35,6 +36,7 @@ class MusicUserManagerDialog;
 class MUSIC_USER_EXPORT MusicUserManagerDialog : public QDialog
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicUserManagerDialog)
 public:
     /*!
      * Object contsructor.
@@ -44,13 +46,9 @@ public:
     ~MusicUserManagerDialog();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * Set current user's uid.
      */
-    void setUserUID(const QString &uid);
+    void setUserUID(const MusicUserUIDItem &uid);
     /*!
      * Set user model.
      */
@@ -60,7 +58,7 @@ Q_SIGNALS:
     /*!
      * User login state changed.
      */
-    void userStateChanged(const QString &uid, const QString &icon);
+    void userStateChanged(const MusicUserUIDItem &uid, const QString &icon);
 
 public Q_SLOTS:
     /*!
@@ -95,11 +93,10 @@ protected:
     void createButtonPopMenu();
 
     Ui::MusicUserManagerDialog *m_ui;
-    MusicUserModel* m_userModel;
-    QString m_currentUserUID;
+    MusicUserModel *m_userModel;
+    MusicUserUIDItem m_userUID;
     QTime m_time;
     QMenu m_popMenu;
-
 
 };
 

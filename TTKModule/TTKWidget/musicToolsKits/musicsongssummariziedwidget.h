@@ -35,6 +35,7 @@ class MusicLocalSongSearchDialog;
 class MUSIC_TOOL_EXPORT MusicSongsSummariziedWidget : public MusicSongsToolBoxWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongsSummariziedWidget)
 public:
     /*!
      * Object contsructor.
@@ -43,10 +44,6 @@ public:
 
     virtual ~MusicSongsSummariziedWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Add music datas into container.
      */
@@ -58,7 +55,7 @@ public:
     /*!
      * Get music datas from container.
      */
-    inline const MusicSongItems& getMusicLists() const  { return m_songItems;}
+    inline const MusicSongItems& getMusicLists() const  { return m_songItems; }
     /*!
      * Input orther imported music datas into container.
      */
@@ -152,6 +149,14 @@ public Q_SLOTS:
      */
     void swapDragItemIndex(int before, int after);
     /*!
+     * Add music to played list and play later.
+     */
+    void addToPlayLater(int index);
+    /*!
+     * Add music to played list.
+     */
+    void addToPlayedList(int index);
+    /*!
      * Import music songs by file.
      */
     void musicImportSongsOnlyFile();
@@ -188,7 +193,7 @@ public Q_SLOTS:
     /*!
      * Delete items from indexs and check remove file or not.
      */
-    void setDeleteItemAt(const MusicObject::MIntList &del, bool fileRemove);
+    void setDeleteItemAt(const MIntList &del, bool fileRemove);
     /*!
      * Swap the current play index when user drag and drop.
      */
@@ -196,7 +201,7 @@ public Q_SLOTS:
     /*!
      * Check is current play stack widget.
      */
-    void isCurrentIndexs(bool &state);
+    void isCurrentIndex(bool &state);
     /*!
      * Check current list is searched or not.
      */
@@ -284,7 +289,7 @@ protected:
     bool m_toolDeleteChanged;
     MusicSongItems m_songItems;
     MusicSongsToolBoxMaskWidget *m_listMaskWidget;
-    MusicObject::MIntsListMap m_searchfileListCache;
+    MIntsListMap m_searchfileListCache;
     MusicSongCheckToolsWidget *m_songCheckToolsWidget;
     MusicSongsListFunctionWidget *m_listFunctionWidget;
     MusicLocalSongSearchDialog *m_musicSongSearchWidget;

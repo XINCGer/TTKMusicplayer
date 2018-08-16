@@ -33,6 +33,7 @@ class MusicCoreMPlayer;
 class MUSIC_TOOLSET_EXPORT MusicSongRingtoneMaker : public MusicAbstractMoveDialog
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongRingtoneMaker)
 public:
     /*!
      * Object contsructor.
@@ -40,11 +41,6 @@ public:
     explicit MusicSongRingtoneMaker(QWidget *parent = 0);
 
     virtual ~MusicSongRingtoneMaker();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
 public Q_SLOTS:
     /*!
@@ -97,7 +93,7 @@ protected:
     Ui::MusicSongRingtoneMaker *m_ui;
     bool m_playRingtone;
     QString m_inputFilePath;
-    MusicCoreMPlayer *m_player;
+    MusicCoreMPlayer *m_mediaPlayer;
     qint64 m_startPos, m_stopPos;
 
 };

@@ -11,26 +11,21 @@ MusicKGSongCommentsThread::MusicKGSongCommentsThread(QObject *parent)
     m_pageSize = 20;
 }
 
-QString MusicKGSongCommentsThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicKGSongCommentsThread::startToSearch(const QString &name)
 {
     M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(name));
     MusicSemaphoreLoop loop;
-    MusicDownLoadQueryKGThread *query = new MusicDownLoadQueryKGThread(this);
-    query->setQueryAllRecords(false);
-    query->setQuerySimplify(true);
-    query->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, name);
-    connect(query, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
+    MusicDownLoadQueryKGThread *d = new MusicDownLoadQueryKGThread(this);
+    d->setQueryAllRecords(false);
+    d->setQuerySimplify(true);
+    d->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, name);
+    connect(d, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
     loop.exec();
 
     m_rawData["songID"].clear();
-    if(!query->getMusicSongInfos().isEmpty())
+    if(!d->isEmpty())
     {
-        m_rawData["songID"] = query->getMusicSongInfos().first().m_songId;
+        m_rawData["songID"] = d->getMusicSongInfos().first().m_songId;
         startToPage(0);
     }
 }
@@ -53,11 +48,8 @@ void MusicKGSongCommentsThread::startToPage(int offset)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KG_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -65,7 +57,7 @@ void MusicKGSongCommentsThread::startToPage(int offset)
 
 void MusicKGSongCommentsThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -76,7 +68,7 @@ void MusicKGSongCommentsThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -98,7 +90,7 @@ void MusicKGSongCommentsThread::downLoadFinished()
 
                     if(m_interrupt) return;
 
-                    MusicPlaylistItem comment;
+                    MusicResultsItem comment;
                     value = comm.toMap();
 
                     comment.m_playCount = QString::number(value["like"].toMap()["count"].toLongLong());
@@ -109,7 +101,7 @@ void MusicKGSongCommentsThread::downLoadFinished()
                     comment.m_nickName = value["user_name"].toString();
                     comment.m_coverUrl = value["user_pic"].toString();
 
-                    emit createSearchedItems(comment);
+                    emit createSearchedItem(comment);
                 }
             }
         }
@@ -126,11 +118,6 @@ MusicKGPlaylistCommentsThread::MusicKGPlaylistCommentsThread(QObject *parent)
     : MusicDownLoadCommentsThread(parent)
 {
     m_pageSize = 20;
-}
-
-QString MusicKGPlaylistCommentsThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicKGPlaylistCommentsThread::startToSearch(const QString &name)
@@ -159,11 +146,8 @@ void MusicKGPlaylistCommentsThread::startToPage(int offset)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KG_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -171,7 +155,7 @@ void MusicKGPlaylistCommentsThread::startToPage(int offset)
 
 void MusicKGPlaylistCommentsThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -182,7 +166,7 @@ void MusicKGPlaylistCommentsThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -204,7 +188,7 @@ void MusicKGPlaylistCommentsThread::downLoadFinished()
 
                     if(m_interrupt) return;
 
-                    MusicPlaylistItem comment;
+                    MusicResultsItem comment;
                     value = comm.toMap();
 
                     comment.m_playCount = QString::number(value["like"].toMap()["count"].toLongLong());
@@ -215,7 +199,7 @@ void MusicKGPlaylistCommentsThread::downLoadFinished()
                     comment.m_nickName = value["user_name"].toString();
                     comment.m_coverUrl = value["user_pic"].toString();
 
-                    emit createSearchedItems(comment);
+                    emit createSearchedItem(comment);
                 }
             }
         }

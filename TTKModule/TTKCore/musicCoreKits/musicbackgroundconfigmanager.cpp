@@ -6,15 +6,10 @@ MusicSkinConfigManager::MusicSkinConfigManager(QObject *parent)
 
 }
 
-QString MusicSkinConfigManager::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSkinConfigManager::writeSkinXMLConfig(const MusicSkinConfigItem &item, const QString &path)
 {
     //Open wirte file
-    if( !writeConfig( path ) )
+    if(!writeConfig( path ))
     {
         return;
     }
@@ -29,7 +24,7 @@ void MusicSkinConfigManager::writeSkinXMLConfig(const MusicSkinConfigItem &item,
 
     //Write to file
     QTextStream out(m_file);
-    m_ddom->save(out, 4);
+    m_document->save(out, 4);
 }
 
 void MusicSkinConfigManager::readSkinXMLConfig(MusicSkinConfigItem &item)

@@ -27,6 +27,7 @@
 class MUSIC_WIDGET_EXPORT MusicArtistAlbumsItemWidget : public QLabel
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicArtistAlbumsItemWidget)
 public:
     /*!
      * Object contsructor.
@@ -36,14 +37,9 @@ public:
     virtual ~MusicArtistAlbumsItemWidget();
 
     /*!
-     * Get class object name.
+     * Set music results item.
      */
-    static QString getClassName();
-
-    /*!
-     * Set music item.
-     */
-    void setMusicItem(const MusicPlaylistItem &item);
+    void setMusicResultsItem(const MusicResultsItem &item);
 
 Q_SIGNALS:
     /*!
@@ -62,7 +58,7 @@ public Q_SLOTS:
     void currentItemClicked();
 
 protected:
-    MusicPlaylistItem m_itemData;
+    MusicResultsItem m_itemData;
     QPushButton *m_playButton;
     QLabel *m_iconLabel, *m_nameLabel, *m_updateLabel;
 
@@ -76,6 +72,7 @@ class MusicPagingWidgetObject;
 class MUSIC_WIDGET_EXPORT MusicArtistMvsFoundWidget : public MusicFoundAbstractWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicArtistMvsFoundWidget)
 public:
     /*!
      * Object contsructor.
@@ -83,11 +80,6 @@ public:
     explicit MusicArtistMvsFoundWidget(QWidget *parent = 0);
 
     virtual ~MusicArtistMvsFoundWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set current name to search founds.
@@ -106,7 +98,7 @@ public Q_SLOTS:
     /*!
      * Create the current albums item.
      */
-    void createArtistMvsItem(const MusicPlaylistItem &item);
+    void createArtistMvsItem(const MusicResultsItem &item);
     /*!
      * Current item clicked.
      */
@@ -131,6 +123,7 @@ class MusicDownLoadSimilarThread;
 class MUSIC_WIDGET_EXPORT MusicArtistSimilarFoundWidget : public MusicFoundAbstractWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicArtistSimilarFoundWidget)
 public:
     /*!
      * Object contsructor.
@@ -138,11 +131,6 @@ public:
     explicit MusicArtistSimilarFoundWidget(QWidget *parent = 0);
 
     virtual ~MusicArtistSimilarFoundWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set current name to search founds.
@@ -161,7 +149,7 @@ public Q_SLOTS:
     /*!
      * Create the current similar item.
      */
-    void createArtistSimilarItem(const MusicPlaylistItem &item);
+    void createArtistSimilarItem(const MusicResultsItem &item);
     /*!
      * Current item clicked.
      */
@@ -180,6 +168,7 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicArtistAlbumsFoundWidget : public MusicFoundAbstractWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicArtistAlbumsFoundWidget)
 public:
     /*!
      * Object contsructor.
@@ -187,11 +176,6 @@ public:
     explicit MusicArtistAlbumsFoundWidget(QWidget *parent = 0);
 
     virtual ~MusicArtistAlbumsFoundWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set current name to search founds.
@@ -210,7 +194,7 @@ public Q_SLOTS:
     /*!
      * Create the current albums item.
      */
-    void createArtistAlbumsItem(const MusicPlaylistItem &item);
+    void createArtistAlbumsItem(const MusicResultsItem &item);
     /*!
      * Current item clicked.
      */
@@ -228,6 +212,7 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicArtistFoundTableWidget : public MusicQueryFoundTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicArtistFoundTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -235,11 +220,6 @@ public:
     explicit MusicArtistFoundTableWidget(QWidget *parent = 0);
 
     virtual ~MusicArtistFoundTableWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set network query input.
@@ -255,6 +235,7 @@ public:
 class MUSIC_WIDGET_EXPORT MusicArtistFoundWidget : public MusicFoundAbstractWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicArtistFoundWidget)
 public:
     /*!
      * Object contsructor.
@@ -262,11 +243,6 @@ public:
     explicit MusicArtistFoundWidget(QWidget *parent = 0);
 
     virtual ~MusicArtistFoundWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set current name to search founds.
@@ -294,7 +270,7 @@ public Q_SLOTS:
     /*!
      * Create the current artist info item.
      */
-    void createArtistInfoItem(const MusicPlaylistItem &item);
+    void createArtistInfoItem(const MusicResultsItem &item);
     /*!
      * Set current container index.
      */

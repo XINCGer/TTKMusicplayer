@@ -19,13 +19,8 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QLabel>
-#include <QCheckBox>
-#include <QBoxLayout>
-#include <QPushButton>
 #include <QButtonGroup>
-#include <QScrollArea>
-#include <QStackedWidget>
+#include "musicwidgetheaders.h"
 #include "musicsongsharingwidget.h"
 #include "musicqueryfoundtablewidget.h"
 
@@ -35,6 +30,7 @@
 class MUSIC_WIDGET_EXPORT MusicFoundAbstractWidget : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicFoundAbstractWidget)
 public:
     /*!
      * Object contsructor.
@@ -42,11 +38,6 @@ public:
     explicit MusicFoundAbstractWidget(QWidget *parent = 0);
 
     ~MusicFoundAbstractWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set current name to search founds.
@@ -119,7 +110,7 @@ protected:
     QPushButton *m_songButton;
     QLabel *m_iconLabel, *m_statusLabel, *m_infoLabel;
     QStackedWidget *m_container;
-    MusicPlaylistItem m_currentPlaylistItem;
+    MusicResultsItem m_currentPlaylistItem;
     MusicQueryFoundTableWidget *m_foundTableWidget;
     MusicDownLoadQueryThreadAbstract *m_downloadThread;
     QList<QLabel*> m_resizeWidgets;

@@ -5,11 +5,12 @@
 #include "musicmessagebox.h"
 #include "musicuiobject.h"
 #include "musicobject.h"
-#include "musiccoreutils.h"
+#include "musicurlutils.h"
 #include "musicstringutils.h"
 #include "musicwidgetutils.h"
 #include "musicsemaphoreloop.h"
 #include "musicdownloadsourcethread.h"
+#include "musicotherdefine.h"
 
 #include "qrencode/qrcodewidget.h"
 
@@ -56,11 +57,6 @@ MusicSongSharingWidget::~MusicSongSharingWidget()
     delete m_ui;
 }
 
-QString MusicSongSharingWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSongSharingWidget::setData(Type type, const QVariantMap &data)
 {
     m_type = type;
@@ -71,6 +67,7 @@ void MusicSongSharingWidget::setData(Type type, const QVariantMap &data)
     switch(m_type)
     {
         case Song: break;
+        case Movie: break;
         case Artist:
         case Album:
         case Playlist:
@@ -110,17 +107,17 @@ void MusicSongSharingWidget::confirmButtonClicked()
     {
         case Song:
             {
-                MusicDownLoadQueryThreadAbstract *down = M_DOWNLOAD_QUERY_PTR->getQueryThread(this);
-                down->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, m_ui->sharedName->text().trimmed());
+                MusicDownLoadQueryThreadAbstract *d = M_DOWNLOAD_QUERY_PTR->getQueryThread(this);
+                d->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, m_ui->sharedName->text().trimmed());
 
                 MusicSemaphoreLoop loop;
-                connect(down, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
+                connect(d, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
                 loop.exec();
 
-                if(!down->getMusicSongInfos().isEmpty())
+                if(!d->isEmpty())
                 {
-                    MusicObject::MusicSongInformation info(down->getMusicSongInfos().first());
-                    QString server = down->getQueryServer();
+                    MusicObject::MusicSongInformation info(d->getMusicSongInfos().first());
+                    QString server = d->getQueryServer();
                     if(server == "WangYi")
                         server = MusicUtils::Algorithm::mdII(WY_SG_SHARE, ALG_LOW_KEY, false).arg(info.m_songId);
                     else if(server == "QQ")
@@ -133,8 +130,6 @@ void MusicSongSharingWidget::confirmButtonClicked()
                         server = MusicUtils::Algorithm::mdII(KW_SG_SHARE, ALG_LOW_KEY, false).arg(info.m_songId);
                     else if(server == "XiaMi")
                         server = MusicUtils::Algorithm::mdII(XM_SG_SHARE, ALG_LOW_KEY, false).arg(info.m_songId);
-                    else if(server == "Migu")
-                        server = MusicUtils::Algorithm::mdII(MG_SG_SHARE, ALG_LOW_KEY, false).arg(info.m_songId);
                     else
                     {
                         QTimer::singleShot(2*MT_S2MS, this, SLOT(queryUrlTimeout()));
@@ -147,6 +142,35 @@ void MusicSongSharingWidget::confirmButtonClicked()
                 {
                     QTimer::singleShot(2*MT_S2MS, this, SLOT(queryUrlTimeout()));
                 }
+                break;
+            }
+        case Movie:
+            {
+                QString server = m_data["queryServer"].toString(), id = m_data["id"].toString();
+                if(id.contains(MUSIC_YYT_PREFIX))
+                {
+                    id.remove(MUSIC_YYT_PREFIX);
+                    server = MusicUtils::Algorithm::mdII(YT_MV_SHARE, ALG_LOW_KEY, false).arg(id);
+                }
+                else if(server == "WangYi")
+                    server = MusicUtils::Algorithm::mdII(WY_MV_SHARE, ALG_LOW_KEY, false).arg(id);
+                else if(server == "QQ")
+                    server = MusicUtils::Algorithm::mdII(QQ_MV_SHARE, ALG_LOW_KEY, false).arg(id);
+                else if(server == "Kugou")
+                    server = MusicUtils::Algorithm::mdII(KG_MV_SHARE, ALG_LOW_KEY, false).arg(id);
+                else if(server == "Baidu")
+                    server = MusicUtils::Algorithm::mdII(BD_MV_SHARE, ALG_LOW_KEY, false).arg(id);
+                else if(server == "Kuwo")
+                    server = MusicUtils::Algorithm::mdII(KW_MV_SHARE, ALG_LOW_KEY, false).arg(id);
+                else if(server == "XiaMi")
+                    server = MusicUtils::Algorithm::mdII(XM_MV_SHARE, ALG_LOW_KEY, false).arg(id);
+                else
+                {
+                    QTimer::singleShot(2*MT_S2MS, this, SLOT(queryUrlTimeout()));
+                    break;
+                }
+
+                downLoadDataChanged(server, QString());
                 break;
             }
         case Artist:
@@ -164,8 +188,6 @@ void MusicSongSharingWidget::confirmButtonClicked()
                     server = MusicUtils::Algorithm::mdII(KW_AR_SHARE, ALG_LOW_KEY, false).arg(m_data["id"].toString());
                 else if(server == "XiaMi")
                     server = MusicUtils::Algorithm::mdII(XM_AR_SHARE, ALG_LOW_KEY, false).arg(m_data["id"].toString());
-                else if(server == "Migu")
-                    server = MusicUtils::Algorithm::mdII(MG_AR_SHARE, ALG_LOW_KEY, false).arg(m_data["id"].toString());
                 else
                 {
                     QTimer::singleShot(2*MT_S2MS, this, SLOT(queryUrlTimeout()));
@@ -190,8 +212,6 @@ void MusicSongSharingWidget::confirmButtonClicked()
                     server = MusicUtils::Algorithm::mdII(KW_AL_SHARE, ALG_LOW_KEY, false).arg(m_data["id"].toString());
                 else if(server == "XiaMi")
                     server = MusicUtils::Algorithm::mdII(XM_AL_SHARE, ALG_LOW_KEY, false).arg(m_data["id"].toString());
-                else if(server == "Migu")
-                    server = MusicUtils::Algorithm::mdII(MG_AL_SHARE, ALG_LOW_KEY, false).arg(m_data["id"].toString());
                 else
                 {
                     QTimer::singleShot(2*MT_S2MS, this, SLOT(queryUrlTimeout()));
@@ -216,8 +236,6 @@ void MusicSongSharingWidget::confirmButtonClicked()
                     server = MusicUtils::Algorithm::mdII(KW_PL_SHARE, ALG_LOW_KEY, false).arg(m_data["id"].toString());
                 else if(server == "XiaMi")
                     server = MusicUtils::Algorithm::mdII(XM_PL_SHARE, ALG_LOW_KEY, false).arg(m_data["id"].toString());
-                else if(server == "Migu")
-                    server = MusicUtils::Algorithm::mdII(MG_PL_SHARE, ALG_LOW_KEY, false).arg(m_data["id"].toString());
                 else
                 {
                     QTimer::singleShot(2*MT_S2MS, this, SLOT(queryUrlTimeout()));
@@ -276,7 +294,7 @@ void MusicSongSharingWidget::downLoadDataChanged(const QString &playUrl, const Q
     url.replace("#hash=", "%23hash%3D");
     url.replace('#', "%23");
 
-    MusicUtils::Core::openUrl(url, false);
+    MusicUtils::Url::openUrl(url, false);
     QTimer::singleShot(MT_S2MS, this, SLOT(close()));
 }
 

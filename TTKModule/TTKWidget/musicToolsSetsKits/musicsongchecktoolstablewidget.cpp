@@ -24,11 +24,6 @@ MusicSongCheckToolsRenameTableWidget::MusicSongCheckToolsRenameTableWidget(QWidg
     setItemDelegateForColumn(3, new MusicPushButtonDelegate(this));
 }
 
-QString MusicSongCheckToolsRenameTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSongCheckToolsRenameTableWidget::createAllItems(const MusicSongCheckToolsRenames &items)
 {
     setRowCount(items.count());
@@ -129,11 +124,6 @@ MusicSongCheckToolsDuplicateTableWidget::~MusicSongCheckToolsDuplicateTableWidge
     M_CONNECTION_PTR->removeValue(getClassName());
 }
 
-QString MusicSongCheckToolsDuplicateTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSongCheckToolsDuplicateTableWidget::createAllItems(const MusicSongCheckToolsDuplicates &songs)
 {
     setRowCount(songs.count());
@@ -152,7 +142,7 @@ void MusicSongCheckToolsDuplicateTableWidget::createAllItems(const MusicSongChec
         setItem(i, 1, item);
 
                 item = new QTableWidgetItem;
-        item->setText(song.m_song.getMusicTime());
+        item->setText(song.m_song.getMusicPlayTime());
         item->setTextAlignment(Qt::AlignCenter);
         setItem(i, 2, item);
 
@@ -184,6 +174,7 @@ void MusicSongCheckToolsDuplicateTableWidget::listCellClicked(int row, int colum
     {
         case 5: musicPlay(); break;
         case 6: deleteCurrentRow(); break;
+        default: break;
     }
 }
 
@@ -265,11 +256,6 @@ MusicSongCheckToolsQualityTableWidget::~MusicSongCheckToolsQualityTableWidget()
     M_CONNECTION_PTR->removeValue(getClassName());
 }
 
-QString MusicSongCheckToolsQualityTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSongCheckToolsQualityTableWidget::createAllItems(const MusicSongCheckToolsQualitys &songs)
 {
     setRowCount(songs.count());
@@ -288,7 +274,7 @@ void MusicSongCheckToolsQualityTableWidget::createAllItems(const MusicSongCheckT
         setItem(i, 1, item);
 
                 item = new QTableWidgetItem;
-        item->setText(song.m_song.getMusicTime());
+        item->setText(song.m_song.getMusicPlayTime());
         item->setTextAlignment(Qt::AlignCenter);
         setItem(i, 2, item);
 
@@ -329,6 +315,7 @@ void MusicSongCheckToolsQualityTableWidget::listCellClicked(int row, int column)
     {
         case 6: musicPlay(); break;
         case 7: deleteCurrentRow(); break;
+        default: break;
     }
 }
 

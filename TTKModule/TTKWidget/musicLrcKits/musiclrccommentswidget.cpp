@@ -7,17 +7,12 @@ MusicLrcCommentsWidget::MusicLrcCommentsWidget(QWidget *parent)
 
 }
 
-QString MusicLrcCommentsWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicLrcCommentsWidget::initWidget(bool isPain)
 {
     MusicCommentsWidget::initWidget(isPain);
 
     m_commentsThread = M_DOWNLOAD_QUERY_PTR->getSongCommentThread(this);
-    connect(m_commentsThread, SIGNAL(createSearchedItems(MusicPlaylistItem)), SLOT(createSearchedItems(MusicPlaylistItem)));
+    connect(m_commentsThread, SIGNAL(createSearchedItem(MusicResultsItem)), SLOT(createSearchedItem(MusicResultsItem)));
 }
 
 void MusicLrcCommentsWidget::wheelEvent(QWheelEvent *event)

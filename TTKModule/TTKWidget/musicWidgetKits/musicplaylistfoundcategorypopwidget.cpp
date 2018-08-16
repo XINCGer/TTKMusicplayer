@@ -1,11 +1,9 @@
 #include "musicplaylistfoundcategorypopwidget.h"
 #include "musicclickedlabel.h"
 #include "musicuiobject.h"
+#include "musicwidgetheaders.h"
 
-#include <QLabel>
-#include <QGridLayout>
 #include <QSignalMapper>
-#include <QScrollArea>
 
 #define ITEM_MAX_COLUMN     6
 #define ITEM_LABEL_WIDTH    20
@@ -16,12 +14,7 @@ MusicPlaylistFoundCategoryItem::MusicPlaylistFoundCategoryItem(QWidget *parent)
     setStyleSheet(QString());
 }
 
-QString MusicPlaylistFoundCategoryItem::getClassName()
-{
-    return staticMetaObject.className();
-}
-
-void MusicPlaylistFoundCategoryItem::setCategory(const MusicPlaylistCategory &category)
+void MusicPlaylistFoundCategoryItem::setCategory(const MusicResultsCategory &category)
 {
     m_category = category;
 
@@ -62,6 +55,7 @@ void MusicPlaylistFoundCategoryItem::buttonClicked(int index)
 }
 
 
+
 MusicPlaylistFoundCategoryPopWidget::MusicPlaylistFoundCategoryPopWidget(QWidget *parent)
     : MusicToolMenuWidget(parent)
 {
@@ -71,16 +65,11 @@ MusicPlaylistFoundCategoryPopWidget::MusicPlaylistFoundCategoryPopWidget(QWidget
     connect(this, SIGNAL(clicked()), SLOT(popupMenu()));
 }
 
-QString MusicPlaylistFoundCategoryPopWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicPlaylistFoundCategoryPopWidget::setCategory(const QString &server, QObject *obj)
 {
-    MusicPlaylistCategorys categorys;
-    MusicPlaylistCategoryConfigManager manager;
-    manager.readCategoryConfig();
+    MusicResultsCategorys categorys;
+    MusicCategoryConfigManager manager;
+    manager.readCategoryConfig(MusicCategoryConfigManager::Playlist);
     manager.readCategoryConfig(categorys, server);
 
     QVBoxLayout *layout = new QVBoxLayout(m_containWidget);
@@ -97,10 +86,10 @@ void MusicPlaylistFoundCategoryPopWidget::setCategory(const QString &server, QOb
     scrollArea->setWidget(containWidget);
     layout->addWidget(scrollArea);
 
-    foreach(const MusicPlaylistCategory &category, categorys)
+    foreach(const MusicResultsCategory &category, categorys)
     {
         MusicPlaylistFoundCategoryItem *item = new MusicPlaylistFoundCategoryItem(this);
-        connect(item, SIGNAL(categoryChanged(MusicPlaylistCategoryItem)), obj, SLOT(categoryChanged(MusicPlaylistCategoryItem)));
+        connect(item, SIGNAL(categoryChanged(MusicResultsCategoryItem)), obj, SLOT(categoryChanged(MusicResultsCategoryItem)));
         item->setCategory(category);
         containLayout->addWidget(item);
     }

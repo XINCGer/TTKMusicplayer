@@ -7,9 +7,11 @@
 #include "musicremotewidgetforcomplexstyle.h"
 #include "musicremotewidgetforstrip.h"
 #include "musicremotewidgetforripples.h"
+#include "musicremotewidgetforrayswave.h"
 #include "musictinyuiobject.h"
 #include "musicclickedslider.h"
 #include "musicsettingmanager.h"
+#include "musicapplication.h"
 
 MusicRemoteWidget::MusicRemoteWidget(QWidget *parent)
     : MusicAbstractMoveWidget(parent)
@@ -85,7 +87,10 @@ MusicRemoteWidget::MusicRemoteWidget(QWidget *parent)
 
     volumeLayout->addWidget(m_volumeButton);
     volumeLayout->addWidget(m_volumeSlider);
+    m_volumeButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_volumeSlider->setCursor(QCursor(Qt::PointingHandCursor));
+
+    connect(m_volumeButton, SIGNAL(clicked()), MusicApplication::instance(), SLOT(musicVolumeMute()));
     connect(m_volumeSlider, SIGNAL(valueChanged(int)), SLOT(musicVolumeChanged(int)));
 }
 
@@ -100,11 +105,6 @@ MusicRemoteWidget::~MusicRemoteWidget()
     delete m_PlayButton;
     delete m_SettingButton;
     delete m_mainWidget;
-}
-
-QString MusicRemoteWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicRemoteWidget::showPlayStatus(bool status) const
@@ -134,6 +134,7 @@ int MusicRemoteWidget::mapRemoteTypeIndex()
     else if(MObject_cast(MusicRemoteWidgetForComplexStyle*, this)) return ComplexStyle;
     else if(MObject_cast(MusicRemoteWidgetForDiamond*, this)) return Diamond;
     else if(MObject_cast(MusicRemoteWidgetForRipples*, this)) return Ripples;
+    else if(MObject_cast(MusicRemoteWidgetForRaysWave*, this)) return RaysWave;
     else return Null;
 }
 
@@ -205,6 +206,9 @@ void MusicRemoteWidget::contextMenuEvent(QContextMenuEvent *event)
     action = menu.addAction(tr("RipplesRemote"));
     action->setEnabled(!MObject_cast(MusicRemoteWidgetForRipples*, this));
     action->setData(Ripples);
+    action = menu.addAction(tr("RaysWaveRemote"));
+    action->setEnabled(!MObject_cast(MusicRemoteWidgetForRaysWave*, this));
+    action->setData(RaysWave);
     menu.addAction(tr("quit"), this, SLOT(close()));
     connect(&menu, SIGNAL(triggered(QAction*)), SIGNAL(musicRemoteTypeChanged(QAction*)));
 

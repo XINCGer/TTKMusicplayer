@@ -17,11 +17,6 @@ MusicDownLoadQueryThreadAbstract::~MusicDownLoadQueryThreadAbstract()
     deleteAll();
 }
 
-QString MusicDownLoadQueryThreadAbstract::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicDownLoadQueryThreadAbstract::startToSingleSearch(const QString &text)
 {
     Q_UNUSED(text);
@@ -42,10 +37,6 @@ QString MusicDownLoadQueryThreadAbstract::mapQueryServerString() const
         return v.arg(tr("WY"));
     else if(m_queryServer.contains("XiaMi"))
         return v.arg(tr("XM"));
-    else if(m_queryServer.contains("Migu"))
-        return v.arg(tr("MG"));
-    else if(m_queryServer.contains("WuSing"))
-        return v.arg(tr("WS"));
     else if(m_queryServer.contains("YinYueTai"))
         return v.arg(tr("YYT"));
     else
@@ -67,12 +58,12 @@ QString MusicDownLoadQueryThreadAbstract::findTimeStringByAttrs(const MusicObjec
 
 bool MusicDownLoadQueryThreadAbstract::findUrlFileSize(MusicObject::MusicSongAttribute *attr)
 {
-    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return false;
+    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return false;
     if(attr->m_size.isEmpty() || attr->m_size == "-")
     {
         attr->m_size = MusicUtils::Number::size2Label(getUrlFileSize(attr->m_url));
     }
-    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return false;
+    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return false;
 
     return true;
 }
@@ -97,11 +88,8 @@ qint64 MusicDownLoadQueryThreadAbstract::getUrlFileSize(const QString &url)
     QNetworkAccessManager manager;
     QNetworkRequest request;
     request.setUrl(url);
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     MusicSemaphoreLoop loop;
     QNetworkReply *reply = manager.head(request);
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));

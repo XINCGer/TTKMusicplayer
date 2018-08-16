@@ -1,5 +1,5 @@
 #include "musicsongslistabstracttablewidget.h"
-#include "musiccoreutils.h"
+#include "musicurlutils.h"
 #include "musicmessagebox.h"
 #include "musicfileinformationwidget.h"
 #include "musicrightareawidget.h"
@@ -10,10 +10,11 @@
 #include "musicleftareawidget.h"
 
 MusicSongsListAbstractTableWidget::MusicSongsListAbstractTableWidget(QWidget *parent)
-    : MusicSlowMovingTableWidget(parent)
+    : MusicSmoothMovingTableWidget(parent)
 {
     m_playRowIndex = 0;
     m_parentToolIndex = -1;
+    m_musicSongs = nullptr;
     m_hasParentToolIndex = true;
 
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -22,11 +23,6 @@ MusicSongsListAbstractTableWidget::MusicSongsListAbstractTableWidget(QWidget *pa
 MusicSongsListAbstractTableWidget::~MusicSongsListAbstractTableWidget()
 {
 
-}
-
-QString MusicSongsListAbstractTableWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSongsListAbstractTableWidget::setSongsFileName(MusicSongs *songs)
@@ -42,7 +38,7 @@ void MusicSongsListAbstractTableWidget::updateSongsFileName(const MusicSongs &so
 
 void MusicSongsListAbstractTableWidget::selectRow(int index)
 {
-    MusicSlowMovingTableWidget::selectRow(index);
+    MusicSmoothMovingTableWidget::selectRow(index);
 }
 
 int MusicSongsListAbstractTableWidget::allRowsHeight() const
@@ -81,7 +77,7 @@ void MusicSongsListAbstractTableWidget::setDeleteItemAll()
     setDeleteItemAt();
 
     bool state = false;
-    emit isCurrentIndexs(state);
+    emit isCurrentIndex(state);
     if(rowCount() == 0 && state)
     {
         MusicApplication::instance()->musicPlayIndex(-1);
@@ -102,7 +98,7 @@ void MusicSongsListAbstractTableWidget::musicOpenFileDir()
         return;
     }
 
-    if(!MusicUtils::Core::openUrl(QFileInfo(path).absoluteFilePath(), true))
+    if(!MusicUtils::Url::openUrl(QFileInfo(path).absoluteFilePath(), true))
     {
         MusicMessageBox message;
         message.setText(tr("The origin one does not exist!"));

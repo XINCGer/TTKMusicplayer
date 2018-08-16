@@ -1,10 +1,11 @@
 #include "musicaudiorecorderwidget.h"
 #include "ui_musicaudiorecorderwidget.h"
 #include "musictime.h"
-#include "musiccoreutils.h"
+#include "musiccodecutils.h"
 #include "musicwidgetutils.h"
 #include "musicmessagebox.h"
 #include "musicaudiorecordercore.h"
+#include "musicsinglemanager.h"
 
 #include <QMovie>
 
@@ -91,6 +92,7 @@ MusicAudioRecorderWidget::MusicAudioRecorderWidget(QWidget *parent)
 
 MusicAudioRecorderWidget::~MusicAudioRecorderWidget()
 {
+    M_SINGLE_MANAGER_PTR->removeObject(getClassName());
     delete m_recordCore;
     delete m_mpAudioInputSound;
     delete m_mpAudioOutputSound;
@@ -98,11 +100,6 @@ MusicAudioRecorderWidget::~MusicAudioRecorderWidget()
     delete m_mpOutputDevSound;
     delete m_movie;
     delete m_ui;
-}
-
-QString MusicAudioRecorderWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicAudioRecorderWidget::onTimerout()
@@ -119,14 +116,14 @@ void MusicAudioRecorderWidget::initMonitor()
     m_mFormatSound.setCodec("audio/pcm"); //set codec as simple audio/pcm
 
     QAudioDeviceInfo infoIn(QAudioDeviceInfo::defaultInputDevice());
-    if (!infoIn.isFormatSupported(m_mFormatSound))
+    if(!infoIn.isFormatSupported(m_mFormatSound))
     {
         //Default format not supported - trying to use nearest
         m_mFormatSound = infoIn.nearestFormat(m_mFormatSound);
     }
 
     QAudioDeviceInfo infoOut(QAudioDeviceInfo::defaultOutputDevice());
-    if (!infoOut.isFormatSupported(m_mFormatSound))
+    if(!infoOut.isFormatSupported(m_mFormatSound))
     {
         //Default format not supported - trying to use nearest
         m_mFormatSound = infoOut.nearestFormat(m_mFormatSound);
@@ -187,7 +184,7 @@ void MusicAudioRecorderWidget::onRecordSave()
     QString filename = MusicUtils::Widget::getSaveFileDialog(this, "Wav(*.wav)");
     if(!filename.isEmpty())
     {
-        m_recordCore->addWavHeader(MusicUtils::Core::toLocal8Bit(filename));
+        m_recordCore->addWavHeader(MusicUtils::Codec::toLocal8Bit(filename));
     }
 }
 
@@ -201,7 +198,7 @@ void MusicAudioRecorderWidget::onStateChange(QAudio::State state)
 
 void MusicAudioRecorderWidget::createAudioInput()
 {
-    if (m_mpInputDevSound != nullptr)
+    if(m_mpInputDevSound)
     {
         disconnect(m_mpInputDevSound, 0, this, 0);
         m_mpInputDevSound = nullptr;
@@ -214,12 +211,6 @@ void MusicAudioRecorderWidget::createAudioOutput()
 {
     QAudioDeviceInfo outputDevice(QAudioDeviceInfo::defaultOutputDevice());
     m_mpAudioOutputSound = new QAudioOutput(outputDevice, m_mFormatSound, this);
-}
-
-void MusicAudioRecorderWidget::closeEvent(QCloseEvent *event)
-{
-    MusicAbstractMoveWidget::closeEvent(event);
-    emit resetFlag(MusicObject::TT_AudioRecord);
 }
 
 int MusicAudioRecorderWidget::applyVolumeToSample(short iSample)

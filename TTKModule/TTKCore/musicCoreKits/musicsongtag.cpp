@@ -2,8 +2,9 @@
 #include "musictime.h"
 #include "musicformats.h"
 #include "musicversion.h"
-#include "musiccoreutils.h"
+#include "musicqmmputils.h"
 #include "musicwidgetutils.h"
+#include "musicstringutils.h"
 
 #include <QStringList>
 #include <QPluginLoader>
@@ -23,11 +24,6 @@ MusicSongTag::MusicSongTag(const QString &file)
     : MusicSongTag()
 {
     m_filePath = file;
-}
-
-QString MusicSongTag::getClassName()
-{
-    return "MusicSongTag";
 }
 
 bool MusicSongTag::read()
@@ -70,17 +66,17 @@ QString MusicSongTag::getFilePath() const
 
 QString MusicSongTag::getArtist() const
 {
-    return m_parameters[TagReadAndWrite::TAG_ARTIST].toString();
+    return findLegalDataString(TagReadAndWrite::TAG_ARTIST);
 }
 
 QString MusicSongTag::getTitle() const
 {
-    return m_parameters[TagReadAndWrite::TAG_TITLE].toString();
+    return findLegalDataString(TagReadAndWrite::TAG_TITLE);
 }
 
 QString MusicSongTag::getAlbum() const
 {
-    return m_parameters[TagReadAndWrite::TAG_ALBUM].toString();
+    return findLegalDataString(TagReadAndWrite::TAG_ALBUM);
 }
 
 QString MusicSongTag::getComment() const
@@ -106,17 +102,17 @@ QString MusicSongTag::getTrackNum() const
 
 QString MusicSongTag::getGenre() const
 {
-    return m_parameters[TagReadAndWrite::TAG_GENRE].toString();
+    return findLegalDataString(TagReadAndWrite::TAG_GENRE);
 }
 
 QString MusicSongTag::getAlbumArtist() const
 {
-    return m_parameters[TagReadAndWrite::TAG_ALBUMARTIST].toString();
+    return findLegalDataString(TagReadAndWrite::TAG_ALBUMARTIST);
 }
 
 QString MusicSongTag::getComposer() const
 {
-    return m_parameters[TagReadAndWrite::TAG_COMPOSER].toString();
+    return findLegalDataString(TagReadAndWrite::TAG_COMPOSER);
 }
 
 QString MusicSongTag::getChannel() const
@@ -126,7 +122,7 @@ QString MusicSongTag::getChannel() const
 
 QString MusicSongTag::getURL() const
 {
-    return m_parameters[TagReadAndWrite::TAG_URL].toString();
+    return findLegalDataString(TagReadAndWrite::TAG_URL);
 }
 
 /////////////////////////////////////////////
@@ -230,16 +226,22 @@ QString MusicSongTag::getLengthString() const
            m_parameters[TagReadAndWrite::TAG_LENGTH].toULongLong());
 }
 
+QString MusicSongTag::findLegalDataString(TagReadAndWrite::MusicTag type) const
+{
+    QString v = m_parameters[type].toString();
+    return MusicUtils::String::illegalCharactersReplaced(v);
+}
+
 QString MusicSongTag::findPluginPath() const
 {
     QString suffix = QFileInfo(m_filePath).suffix().toLower();
 
-    MusicObject::MStringsListMap formats(MusicFormats::supportFormatsStringMap());
+    MStringsListMap formats(MusicFormats::supportFormatsStringMap());
     foreach(const QString &key, formats.keys())
     {
         if(formats.value(key).contains(suffix))
         {
-            return MusicUtils::Core::pluginPath("Input", key);
+            return MusicUtils::QMMP::pluginPath("Input", key);
         }
     }
 
@@ -257,7 +259,7 @@ bool MusicSongTag::readOtherTaglib()
     {
         int length = 0;
         MetaDataModel *model = decoderfac->createMetaDataModel(m_filePath);
-        if(model != nullptr)
+        if(model)
         {
             QHash<QString, QString> datas = model->audioProperties();
             MusicTime t = MusicTime::fromString(datas.value("Length"), QString("m:ss"));
@@ -348,6 +350,7 @@ bool MusicSongTag::saveOtherTaglib()
                 tagModel->setValue(Qmmp::TITLE, getTitle());
                 tagModel->setValue(Qmmp::YEAR, getYear());
                 tagModel->setValue(Qmmp::GENRE, getGenre());
+                tagModel->setValue(Qmmp::TRACK, getTrackNum());
                 tagModel->save();
             }
 

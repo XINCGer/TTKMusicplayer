@@ -19,6 +19,7 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
+#include "musicsongtag.h"
 #include "musicdatadownloadthread.h"
 
 /*! @brief The class of downloading the type of data by custom tags.
@@ -27,23 +28,18 @@
 class MUSIC_NETWORK_EXPORT MusicDataTagDownloadThread : public MusicDataDownloadThread
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDataTagDownloadThread)
 public:
     /*!
      * Object contsructor provide download URL\ save local path and download type.
      */
     MusicDataTagDownloadThread(const QString &url, const QString &save,
-                               Download_Type type, QObject *parent = 0);
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
+                               MusicObject::DownloadType type, QObject *parent = 0);
 
     /*!
      * Set custom tags.
      */
-    void setTags(const QString &smlUrl, const QString &title,
-                 const QString &artist, const QString &album);
+    void setSongTag(const MusicSongTag &tag);
     /*!
      * Start to download data.
      */
@@ -66,8 +62,7 @@ public Q_SLOTS:
     void downLoadFinished(const QByteArray &data);
 
 protected:
-    QString m_smallPicUrl;
-    QString m_title, m_artist, m_album;
+    MusicSongTag m_musicTag;
 
 };
 

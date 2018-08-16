@@ -20,7 +20,6 @@
  ================================================= */
 
 #include <QMap>
-#include <QObject>
 #include "musicsingleton.h"
 
 #define M_CONNECTION_PTR (MusicSingleton<MusicConnectionPool>::createInstance())
@@ -28,27 +27,23 @@
 /*! @brief The class of the qt signal and slot connection pool.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_CORE_EXPORT MusicConnectionPool : public QObject
+class MUSIC_CORE_EXPORT MusicConnectionPool
 {
-    Q_OBJECT
+    TTK_DECLARE_MODULE(MusicConnectionPool)
 public:
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set connection object and type name.
      */
     inline void setValue(const QString &type, QObject *object)
     {
-        m_para[type] = object;
+        m_parameter[type] = object;
     }
     /*!
      * Get connection object by type name.
      */
     inline QObject* value(const QString &type) const
     {
-        return m_para[type];
+        return m_parameter[type];
     }
     /*!
      * Get connection object by type name in operator[].
@@ -62,21 +57,8 @@ public:
      */
     inline QObject* &operator[](const QString &type)
     {
-        return m_para[type];
+        return m_parameter[type];
     }
-
-    /*!
-     * Set mutiple network connection object.
-     */
-    void setNetworkMultiValue(QObject *object);
-    /*!
-     * Remove mutiple network connection object.
-     */
-    void removeNetworkMultiValue(QObject *object);
-    /*!
-     * Set music data network connection object.
-     */
-    void connectMusicDownload(QObject *object);
 
     /*!
      * Set connection by two object.
@@ -96,8 +78,7 @@ public:
     void removeValue(const QString &name);
 
 protected:
-    QMap<QString, QObject*> m_para;
-    QList<QObject*> m_queueList;
+    QMap<QString, QObject*> m_parameter;
 
     /*!
      * Object contsructor.

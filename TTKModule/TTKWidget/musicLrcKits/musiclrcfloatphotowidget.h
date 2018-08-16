@@ -31,6 +31,7 @@ class QPushButton;
 class MUSIC_LRC_EXPORT MusicLrcFloatPhotoItem : public MusicClickedLabel
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicLrcFloatPhotoItem)
 public:
     /*!
      * Object contsructor.
@@ -39,10 +40,6 @@ public:
 
     virtual ~MusicLrcFloatPhotoItem();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set photo path and pix.
      */
@@ -89,6 +86,7 @@ protected:
      * Override the widget event.
      */
     virtual void contextMenuEvent(QContextMenuEvent *event) override;
+    virtual void enterEvent(QEvent *event) override;
 
     int m_index;
     QString m_pixPath;
@@ -103,6 +101,7 @@ protected:
 class MUSIC_LRC_EXPORT MusicLrcFloatPhotoWidget : public MusicFloatAbstractWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicLrcFloatPhotoWidget)
 public:
     /*!
      * Object contsructor.
@@ -111,10 +110,6 @@ public:
 
     virtual ~MusicLrcFloatPhotoWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Resize window bound by given width and height.
      */
@@ -148,7 +143,7 @@ public Q_SLOTS:
     /*!
      * Update current artist pic.
      */
-    void artHasChanged();
+    void artistNameChanged();
     /*!
      * User selected the plane pic.
      */
@@ -175,7 +170,7 @@ protected:
     void showPhoto() const;
 
     int m_currentIndex;
-    MusicObject::MIntSet m_selectNum;
+    MIntSet m_selectNum;
     QStringList m_artPath;
     QWidget *m_filmBGWidget;
     QCheckBox *m_checkBox;

@@ -11,26 +11,21 @@ MusicKWSongCommentsThread::MusicKWSongCommentsThread(QObject *parent)
     m_pageSize = 20;
 }
 
-QString MusicKWSongCommentsThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicKWSongCommentsThread::startToSearch(const QString &name)
 {
     M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(name));
     MusicSemaphoreLoop loop;
-    MusicDownLoadQueryKWThread *query = new MusicDownLoadQueryKWThread(this);
-    query->setQueryAllRecords(false);
-    query->setQuerySimplify(true);
-    query->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, name);
-    connect(query, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
+    MusicDownLoadQueryKWThread *d = new MusicDownLoadQueryKWThread(this);
+    d->setQueryAllRecords(false);
+    d->setQuerySimplify(true);
+    d->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, name);
+    connect(d, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
     loop.exec();
 
     m_rawData["songID"].clear();
-    if(!query->getMusicSongInfos().isEmpty())
+    if(!d->isEmpty())
     {
-        m_rawData["songID"] = query->getMusicSongInfos().first().m_songId;
+        m_rawData["songID"] = d->getMusicSongInfos().first().m_songId;
         startToPage(0);
     }
 }
@@ -53,11 +48,8 @@ void MusicKWSongCommentsThread::startToPage(int offset)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KW_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -65,7 +57,7 @@ void MusicKWSongCommentsThread::startToPage(int offset)
 
 void MusicKWSongCommentsThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -76,7 +68,7 @@ void MusicKWSongCommentsThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -98,18 +90,17 @@ void MusicKWSongCommentsThread::downLoadFinished()
 
                     if(m_interrupt) return;
 
-                    MusicPlaylistItem comment;
+                    MusicResultsItem comment;
                     value = comm.toMap();
                     comment.m_playCount = value["like_num"].toString();
                     comment.m_updateTime = QString::number(QDateTime::fromString(value["time"].toString(),
                                                      "yyyy-MM-dd hh:mm:ss").toMSecsSinceEpoch());
                     comment.m_description = value["msg"].toString();
 
-                    QUrl name;
-                    comment.m_nickName = name.fromEncoded(value["u_name"].toByteArray(), QUrl::TolerantMode).toString();
+                    comment.m_nickName = QUrl::fromEncoded(value["u_name"].toByteArray(), QUrl::TolerantMode).toString();
                     comment.m_coverUrl = value["u_pic"].toString();
 
-                    emit createSearchedItems(comment);
+                    emit createSearchedItem(comment);
                 }
             }
         }
@@ -126,11 +117,6 @@ MusicKWPlaylistCommentsThread::MusicKWPlaylistCommentsThread(QObject *parent)
     : MusicDownLoadCommentsThread(parent)
 {
     m_pageSize = 20;
-}
-
-QString MusicKWPlaylistCommentsThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicKWPlaylistCommentsThread::startToSearch(const QString &name)
@@ -159,11 +145,8 @@ void MusicKWPlaylistCommentsThread::startToPage(int offset)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KW_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -171,7 +154,7 @@ void MusicKWPlaylistCommentsThread::startToPage(int offset)
 
 void MusicKWPlaylistCommentsThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -182,7 +165,7 @@ void MusicKWPlaylistCommentsThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -204,7 +187,7 @@ void MusicKWPlaylistCommentsThread::downLoadFinished()
 
                     if(m_interrupt) return;
 
-                    MusicPlaylistItem comment;
+                    MusicResultsItem comment;
                     value = comm.toMap();
                     comment.m_playCount = value["like_num"].toString();
                     comment.m_updateTime = QString::number(QDateTime::fromString(value["time"].toString(),
@@ -215,7 +198,7 @@ void MusicKWPlaylistCommentsThread::downLoadFinished()
                     comment.m_nickName = name.fromEncoded(value["u_name"].toByteArray(), QUrl::TolerantMode).toString();
                     comment.m_coverUrl = value["u_pic"].toString();
 
-                    emit createSearchedItems(comment);
+                    emit createSearchedItem(comment);
                 }
             }
         }

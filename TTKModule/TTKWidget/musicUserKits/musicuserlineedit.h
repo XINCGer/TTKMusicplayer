@@ -19,10 +19,8 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QLineEdit>
-#include <QLabel>
-
 #include "musicglobaldefine.h"
+#include "musicwidgetheaders.h"
 
 /*! @brief The class of the user lineedit.
  * @author Greedysky <greedysky@163.com>
@@ -30,14 +28,15 @@
 class MUSIC_USER_EXPORT MusicUserLineEdit : public QLineEdit
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicUserLineEdit)
 public:
     enum LabelType
     {
-        User,       /*!< label type is user*/
-        Passwd,     /*!< label type is password*/
-        PasswdNew,  /*!< label type is new password*/
-        PwdConfirm, /*!< label type is confirm password*/
-        Mail        /*!< label type is mail*/
+        User,           /*!< label type is user*/
+        Passwd,         /*!< label type is password*/
+        PasswdNew,      /*!< label type is new password*/
+        PasswdConfirm,  /*!< label type is confirm password*/
+        Mail            /*!< label type is mail*/
     };
 
     /*!
@@ -45,10 +44,6 @@ public:
      */
     explicit MusicUserLineEdit(QWidget *parent = 0);
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set label and label type.
      */

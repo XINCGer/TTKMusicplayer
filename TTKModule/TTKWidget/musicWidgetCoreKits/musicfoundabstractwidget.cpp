@@ -38,11 +38,6 @@ MusicFoundAbstractWidget::~MusicFoundAbstractWidget()
     delete m_mainWindow;
 }
 
-QString MusicFoundAbstractWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicFoundAbstractWidget::setSongName(const QString &name)
 {
     m_songNameFull = name;
@@ -68,7 +63,10 @@ void MusicFoundAbstractWidget::downLoadFinished(const QByteArray &data)
     {
         QPixmap pix;
         pix.loadFromData(data);
-        m_iconLabel->setPixmap(pix.scaled(m_iconLabel->size()));
+        QPixmap cv(":/image/lb_playlist_cover");
+        pix = pix.scaled(QSize(180, 180));
+        MusicUtils::Widget::fusionPixmap(cv, pix, QPoint(0, 0));
+        m_iconLabel->setPixmap(cv);
     }
 }
 
@@ -102,7 +100,7 @@ void MusicFoundAbstractWidget::playButtonClicked()
 
 void MusicFoundAbstractWidget::downloadButtonClicked()
 {
-    m_foundTableWidget->downloadBatchData();
+    m_foundTableWidget->downloadBatchData(true);
 }
 
 void MusicFoundAbstractWidget::addButtonClicked()
@@ -201,6 +199,15 @@ void MusicFoundAbstractWidget::initSecondWidget()
 
 void MusicFoundAbstractWidget::setSongCountText()
 {
-    MusicObject::MusicSongInformations musicSongInfos(m_foundTableWidget->getMusicSongInfos());
-    m_songButton->setText(tr("songItems") + QString("(%1)").arg(musicSongInfos.count()));
+    MusicDownLoadQueryThreadAbstract *d = m_foundTableWidget->getQueryInput();
+    if(!d)
+    {
+        return;
+    }
+
+    MusicObject::MusicSongInformations musicSongInfos(d->getMusicSongInfos());
+    if(m_songButton)
+    {
+        m_songButton->setText(tr("songItems") + QString("(%1)").arg(musicSongInfos.count()));
+    }
 }

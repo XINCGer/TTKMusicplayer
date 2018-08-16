@@ -2,13 +2,11 @@
 #include "musicbackgroundmanager.h"
 #include "musicinlinefloatuiobject.h"
 #include "musicwidgetutils.h"
+#include "musicwidgetheaders.h"
 
 #include <qmath.h>
-#include <QMenu>
 #include <QTimer>
 #include <QPainter>
-#include <QCheckBox>
-#include <QPushButton>
 
 #define PHOTO_WIDTH     110
 #define PHOTO_HEIGHT    65
@@ -35,11 +33,6 @@ MusicLrcFloatPhotoItem::MusicLrcFloatPhotoItem(int index, QWidget *parent)
 MusicLrcFloatPhotoItem::~MusicLrcFloatPhotoItem()
 {
     delete m_checkBox;
-}
-
-QString MusicLrcFloatPhotoItem::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLrcFloatPhotoItem::setPhoto(const QString &path)
@@ -109,6 +102,20 @@ void MusicLrcFloatPhotoItem::contextMenuEvent(QContextMenuEvent *event)
     }
 }
 
+void MusicLrcFloatPhotoItem::enterEvent(QEvent *event)
+{
+    MusicClickedLabel::enterEvent(event);
+    if(!pixmap()->isNull())
+    {
+        setCursor(Qt::PointingHandCursor);
+    }
+    else
+    {
+        unsetCursor();
+    }
+}
+
+
 
 MusicLrcFloatPhotoWidget::MusicLrcFloatPhotoWidget(QWidget *parent)
     : MusicFloatAbstractWidget(parent)
@@ -137,8 +144,7 @@ MusicLrcFloatPhotoWidget::MusicLrcFloatPhotoWidget(QWidget *parent)
 
     m_confirmButton = new QPushButton(tr("Confirm"), this);
     m_confirmButton->setGeometry(589, 130, 60, 22);
-    m_confirmButton->setStyleSheet(MusicUIObject::MKGInlineFloatSetting + \
-                                   MusicUIObject::MPushButtonStyle08);
+    m_confirmButton->setStyleSheet(MusicUIObject::MKGInlineFloatSetting + MusicUIObject::MPushButtonStyle08);
     m_confirmButton->setCursor(QCursor(Qt::PointingHandCursor));
 
     m_previous = new QPushButton("<", m_filmBGWidget);
@@ -168,7 +174,7 @@ MusicLrcFloatPhotoWidget::MusicLrcFloatPhotoWidget(QWidget *parent)
         connect(item, SIGNAL(itemClicked(int)), SLOT(sendUserSelectArtBg(int)));
         connect(item, SIGNAL(boxClicked(int)), SLOT(userSelectCheckBoxChecked(int)));
     }
-    connect(M_BACKGROUND_PTR, SIGNAL(artHasChanged()), SLOT(artHasChanged()));
+    connect(M_BACKGROUND_PTR, SIGNAL(artistNameChanged()), SLOT(artistNameChanged()));
     connect(m_checkBox, SIGNAL(clicked(bool)), SLOT(selectAllStateChanged(bool)));
 }
 
@@ -180,11 +186,6 @@ MusicLrcFloatPhotoWidget::~MusicLrcFloatPhotoWidget()
     delete m_confirmButton;
     delete m_checkBox;
     delete m_filmBGWidget;
-}
-
-QString MusicLrcFloatPhotoWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLrcFloatPhotoWidget::resizeWindow(int width, int height)
@@ -248,8 +249,14 @@ void MusicLrcFloatPhotoWidget::photoPrevious()
     showPhoto();
 }
 
-void MusicLrcFloatPhotoWidget::artHasChanged()
+void MusicLrcFloatPhotoWidget::artistNameChanged()
 {
+    if(isVisible())
+    {
+        m_currentIndex = 0;
+        close();
+    }
+
     m_selectNum.clear();
     m_artPath = M_BACKGROUND_PTR->getArtPhotoPathList();
     for(int i=0; i<m_artPath.count(); ++i)
@@ -261,7 +268,7 @@ void MusicLrcFloatPhotoWidget::artHasChanged()
 void MusicLrcFloatPhotoWidget::photoNext()
 {
     int page = ceil(m_artPath.count() *1.0 / PHOTO_PERLINE) - 1;
-    if( ++m_currentIndex > (page = (page < 0) ? 0 : page) )
+    if(++m_currentIndex > (page = (page < 0) ? 0 : page))
     {
         m_currentIndex = page;
     }

@@ -143,7 +143,7 @@ void MusicDownLoadKGInterface::readFromMusicSongLrcAndPic(MusicObject::MusicSong
     }
 }
 
-void MusicDownLoadKGInterface::readFromMusicSongAlbumInfo(MusicPlaylistItem *info, const QString &album)
+void MusicDownLoadKGInterface::readFromMusicSongAlbumInfo(MusicResultsItem *info, const QString &album)
 {
     QUrl musicUrl = MusicUtils::Algorithm::mdII(KG_ALBUM_INFO_URL, false).arg(album);
 
@@ -178,9 +178,9 @@ void MusicDownLoadKGInterface::readFromMusicSongAlbumInfo(MusicPlaylistItem *inf
         {
             value = value["data"].toMap();
             info->m_nickName = value["albumname"].toString();
-            info->m_description = info->m_nickName + "<>" +
-                                  value["language"].toString() + "<>" +
-                                  value["company"].toString() + "<>" +
+            info->m_description = info->m_nickName + TTK_STR_SPLITER +
+                                  value["language"].toString() + TTK_STR_SPLITER +
+                                  value["company"].toString() + TTK_STR_SPLITER +
                                   value["publishtime"].toString().left(10);
 //            info->m_coverUrl = value["imgurl"].toString();
         }

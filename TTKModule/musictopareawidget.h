@@ -19,14 +19,13 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QWidget>
 #include <QTimer>
+#include <QWidget>
 #include "musicglobaldefine.h"
 
 class MusicUserWindow;
 class MusicRemoteWidget;
 class MusicBackgroundSkinDialog;
-class MusicDownloadCounterPVThread;
 
 namespace Ui {
     class MusicApplication;
@@ -38,6 +37,7 @@ namespace Ui {
 class MUSIC_GUI_EXPORT MusicTopAreaWidget : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicTopAreaWidget)
 public:
     /*!
      * Object contsructor.
@@ -46,10 +46,6 @@ public:
 
     ~MusicTopAreaWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Get class object instance.
      */
@@ -202,6 +198,10 @@ public Q_SLOTS:
      */
     void musicRipplesRemote();
     /*!
+     * Changed current remote to rayswave mode.
+     */
+    void musicRaysWaveRemote();
+    /*!
      * Delete current remote.
      */
     void musicDeleteRemote();
@@ -244,7 +244,6 @@ protected:
     MusicUserWindow *m_musicUserWindow;
     MusicBackgroundSkinDialog *m_musicBackgroundWidget;
     MusicRemoteWidget *m_musicRemoteWidget;
-    MusicDownloadCounterPVThread *m_counterPVThread;
 
     QImage m_backgroundImage;
     int m_lastRemoteBeforeWallpaper;

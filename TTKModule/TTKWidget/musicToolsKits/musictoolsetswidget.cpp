@@ -5,7 +5,6 @@
 #include "musiclocalsongsmanagerwidget.h"
 #include "musictransformwidget.h"
 #include "musicdesktopwallpaperwidget.h"
-#include "musicnetworkspeedtestwidget.h"
 #include "musicnetworkconnectiontestwidget.h"
 #include "musicconnecttransferwidget.h"
 #include "musicvolumegainwidget.h"
@@ -18,16 +17,8 @@
 #include "musicsoundkmicrowidget.h"
 #include "musicmessagebox.h"
 #include "musicspectrumwidget.h"
-
-#define NEW_OPERATOR(flag, type)  \
-    if((m_toolsFlags & flag) != flag) \
-    { \
-        m_toolsFlags |= flag; \
-        type *w = new type(MusicApplication::instance()); \
-        connect(w, SIGNAL(resetFlag(MusicObject::ToolsType)), SLOT(resetFlag(MusicObject::ToolsType))); \
-        w->raise(); \
-        w->show(); \
-    }
+#include "musicwebradioobject.h"
+#include "musicsinglemanager.h"
 
 MusicToolSetsWidget::MusicToolSetsWidget(QWidget *parent)
     : MusicAbstractMoveWidget(parent),
@@ -59,13 +50,9 @@ MusicToolSetsWidget::MusicToolSetsWidget(QWidget *parent)
 
 MusicToolSetsWidget::~MusicToolSetsWidget()
 {
+    M_SINGLE_MANAGER_PTR->removeObject(getClassName());
     clearAllItems();
     delete m_ui;
-}
-
-QString MusicToolSetsWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicToolSetsWidget::addListWidgetItem()
@@ -82,7 +69,7 @@ void MusicToolSetsWidget::addListWidgetItem()
             m_name = name;
         }
     }ItemPair;
-    MUSIC_DECLARE_LISTS(ItemPair);
+    TTK_DECLARE_LISTS(ItemPair);
 
     ItemPairs pairs;
     pairs << ItemPair(":/tools/lb_localmanager", tr("localmanager"))
@@ -93,12 +80,12 @@ void MusicToolSetsWidget::addListWidgetItem()
           << ItemPair(":/tools/lb_spectrum", tr("spectrum"))
           << ItemPair(":/tools/lb_wallpaper", tr("wallpaper"))
           << ItemPair(":/tools/lb_phone", tr("phone"))
-          << ItemPair(":/tools/lb_speed", tr("speed"))
           << ItemPair(":/tools/lb_connections" ,tr("connections"))
           << ItemPair(":/tools/lb_gain", tr("gain"))
           << ItemPair(":/tools/lb_detect", tr("detect"))
           << ItemPair(":/tools/lb_soundtouch", tr("soundtouch"))
           << ItemPair(":/tools/lb_grabwindow", tr("grabwindow"))
+          << ItemPair(":/tools/lb_radio", tr("radio"))
           << ItemPair(":/tools/lb_ktv", tr("kmicro"));
 
     foreach(const ItemPair &pair, pairs)
@@ -116,12 +103,12 @@ void MusicToolSetsWidget::itemHasClicked(QListWidgetItem *item)
     {
         case 0:
             {
-                NEW_OPERATOR(MusicObject::TT_LocalManager, MusicLocalSongsManagerWidget);
+                M_SINGLE_MANAGER_WIDGET_CLASS(MusicLocalSongsManagerWidget);
                 break;
             }
         case 1:
             {
-                NEW_OPERATOR(MusicObject::TT_AudioRecord, MusicAudioRecorderWidget);
+                M_SINGLE_MANAGER_WIDGET_CLASS(MusicAudioRecorderWidget);
                 break;
             }
         case 2:
@@ -145,13 +132,13 @@ void MusicToolSetsWidget::itemHasClicked(QListWidgetItem *item)
             }
         case 5:
             {
-                NEW_OPERATOR(MusicObject::TT_Spectrum, MusicSpectrumWidget);
+                M_SINGLE_MANAGER_WIDGET_CLASS(MusicSpectrumWidget);
                 break;
             }
         case 6:
             {
 #ifdef Q_OS_WIN
-                NEW_OPERATOR(MusicObject::TT_Wallpaper, MusicDesktopWallpaperWidget);
+                M_SINGLE_MANAGER_WIDGET_CLASS(MusicDesktopWallpaperWidget);
 #else
                 MusicMessageBox message;
                 message.setText(tr("Not Supported On Current Plantform!"));
@@ -166,47 +153,48 @@ void MusicToolSetsWidget::itemHasClicked(QListWidgetItem *item)
             }
         case 8:
             {
-                NEW_OPERATOR(MusicObject::TT_SpeedTest, MusicNetworkSpeedTestWidget);
+                M_SINGLE_MANAGER_WIDGET_CLASS(MusicNetworkConnectionTestWidget);
                 break;
             }
         case 9:
             {
-                NEW_OPERATOR(MusicObject::TT_ConnectionTest, MusicNetworkConnectionTestWidget);
+                M_SINGLE_MANAGER_WIDGET_CLASS(MusicVolumeGainWidget);
                 break;
             }
         case 10:
             {
-                NEW_OPERATOR(MusicObject::TT_SoundGain, MusicVolumeGainWidget);
+                MusicRightAreaWidget::instance()->musicFunctionClicked(MusicRightAreaWidget::IndentifyWidget);
                 break;
             }
         case 11:
             {
-                MusicRightAreaWidget::instance()->musicFunctionClicked(MusicRightAreaWidget::IndentifyWidget);
+                M_SINGLE_MANAGER_WIDGET_CLASS(MusicSoundTouchWidget);
                 break;
             }
         case 12:
             {
-                NEW_OPERATOR(MusicObject::TT_SoundTouch, MusicSoundTouchWidget);
+                M_SINGLE_MANAGER_WIDGET_CLASS(MusicGrabWidget);
                 break;
             }
         case 13:
             {
-                NEW_OPERATOR(MusicObject::TT_GrabWindow, MusicGrabWidget);
+#ifdef Q_OS_WIN
+                M_SINGLE_MANAGER_CORE_CLASS(MusicWebRadioObject);
+#else
+                MusicMessageBox message;
+                message.setText(tr("Not Supported On Current Plantform!"));
+                message.exec();
+#endif
                 break;
             }
         case 14:
             {
-                NEW_OPERATOR(MusicObject::TT_SoundKMicro, MusicSoundKMicroWidget);
+                M_SINGLE_MANAGER_WIDGET_CLASS(MusicSoundKMicroWidget);
                 break;
             }
         default:
             break;
     }
-}
-
-void MusicToolSetsWidget::resetFlag(MusicObject::ToolsType flag)
-{
-    m_toolsFlags &= ~flag;
 }
 
 void MusicToolSetsWidget::show()
@@ -223,4 +211,9 @@ void MusicToolSetsWidget::clearAllItems()
 void MusicToolSetsWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     Q_UNUSED(event);
+    QListWidgetItem *it = m_ui->listItemWidget->currentItem();
+    if(it)
+    {
+        itemHasClicked(it);
+    }
 }

@@ -28,16 +28,17 @@ class MusicBackgroundImage;
  */
 class MUSIC_CORE_EXPORT MusicExtractWrap
 {
+    TTK_DECLARE_MODULE(MusicExtractWrap)
 public:
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
     /*!
      * Transfer file to image data.
      */
     static bool outputThunderSkin(QPixmap &image, const QString &path);
+
+    /*!
+     * Transfer file to normal data.
+     */
+    static bool outputData(const QString &path);
 
     /*!
      * Transfer file to image data.

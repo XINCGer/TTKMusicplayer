@@ -30,6 +30,7 @@ class MusicLocalSongSearchEdit;
 class MUSIC_WIDGET_EXPORT MusicAdvancedSearchedWidget : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicAdvancedSearchedWidget)
 public:
     /*!
      * Object contsructor.
@@ -37,11 +38,6 @@ public:
     explicit MusicAdvancedSearchedWidget(QWidget *parent = 0);
 
     virtual ~MusicAdvancedSearchedWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
 private Q_SLOTS:
     /*!
@@ -62,6 +58,10 @@ protected:
      * Get search key.
      */
     QString getSearchedKeyWork(int type, const QString &url);
+    /*!
+     * Override the widget event.
+     */
+    virtual void contextMenuEvent(QContextMenuEvent *event) override;
 
     QTabWidget *m_tabWidget;
     MusicLocalSongSearchEdit *m_songEdit, *m_artistEdit;

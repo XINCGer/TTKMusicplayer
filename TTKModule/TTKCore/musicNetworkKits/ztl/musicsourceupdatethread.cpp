@@ -3,15 +3,12 @@
 #///QJson import
 #include "qjson/parser.h"
 
+#define VERSION_URL     "TzFTSjRiNlN6TXB3WGZtdENONGdaQzhxdkpNc0ZXZk9VSUtXdlhQQ252bWJLZ0pidE5LcW80WUlHQmQzNWp0OGxXSjFkQT09"
+
 MusicSourceUpdateThread::MusicSourceUpdateThread(QObject *parent)
     : QObject(parent)
 {
 
-}
-
-QString MusicSourceUpdateThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSourceUpdateThread::startToDownload()
@@ -53,6 +50,7 @@ void MusicSourceUpdateThread::downLoadFinished(const QByteArray &data)
     {
         return;
     }
+
     m_rawData = parseData.toMap();
     emit downLoadDataChanged(m_rawData);
 }

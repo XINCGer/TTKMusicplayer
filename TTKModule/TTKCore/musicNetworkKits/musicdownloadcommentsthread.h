@@ -27,16 +27,12 @@
 class MUSIC_NETWORK_EXPORT MusicDownLoadCommentsThread : public MusicDownLoadPagingThread
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownLoadCommentsThread)
 public:
     /*!
      * Object contsructor.
      */
     explicit MusicDownLoadCommentsThread(QObject *parent = 0);
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Start to Search data from name.
@@ -48,7 +44,7 @@ Q_SIGNALS:
     /*!
      * Create the current song comment.
      */
-    void createSearchedItems(const MusicPlaylistItem &comments);
+    void createSearchedItem(const MusicResultsItem &comments);
 
 };
 

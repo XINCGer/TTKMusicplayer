@@ -9,11 +9,6 @@ MusicPlayedlist::MusicPlayedlist(QObject *parent)
     m_playbackMode = MusicObject::PM_PlayOrder;
 }
 
-QString MusicPlayedlist::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 MusicObject::PlayMode MusicPlayedlist::playbackMode() const
 {
     return m_playbackMode;
@@ -166,10 +161,11 @@ void MusicPlayedlist::laterListClear()
 
 bool MusicPlayedlist::removeMedia(int pos)
 {
-    if( pos < 0 || pos >= m_mediaList.count())
+    if(pos < 0 || pos >= m_mediaList.count())
     {
         return false;
     }
+
     m_mediaList.removeAt(pos);
     laterListClear();
     return true;
@@ -189,7 +185,7 @@ int MusicPlayedlist::removeMedia(int toolIndex, const QString &content)
 
 void MusicPlayedlist::setCurrentIndex(int index)
 {
-    if(index == DEFAULT_INDEX_LEVEL1)
+    if(index == DEFAULT_LEVEL_NORMAL)
     {
         switch(m_playbackMode)
         {
@@ -211,6 +207,7 @@ void MusicPlayedlist::setCurrentIndex(int index)
                 break;
             case MusicObject::PM_PlayOnce :
                 break;
+            default: break;
         }
     }
     else

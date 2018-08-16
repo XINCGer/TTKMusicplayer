@@ -2,8 +2,7 @@
 #include "musiclocalsongsmanagerwidget.h"
 #include "musicsettingmanager.h"
 #include "musicapplication.h"
-
-#include <QToolButton>
+#include "musicsinglemanager.h"
 
 MusicMobileDevicesWidget::MusicMobileDevicesWidget(QWidget *parent)
     : QLabel(parent)
@@ -39,15 +38,10 @@ MusicMobileDevicesWidget::~MusicMobileDevicesWidget()
     delete m_openButton;
 }
 
-QString MusicMobileDevicesWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicMobileDevicesWidget::showMobileManager()
 {
     hide();
-    MusicLocalSongsManagerWidget *w = new MusicLocalSongsManagerWidget(MusicApplication::instance());
+    M_SINGLE_MANAGER_WIDGET_NEW(MusicLocalSongsManagerWidget);
 #ifdef Q_OS_WIN
     w->findExtraDevicePath(M_SETTING_PTR->value(MusicSettingManager::ExtraDevicePathChoiced).toString());
 #endif

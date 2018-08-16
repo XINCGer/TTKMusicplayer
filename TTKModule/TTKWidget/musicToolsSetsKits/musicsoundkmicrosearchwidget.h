@@ -28,6 +28,7 @@
 class MUSIC_TOOLSET_EXPORT MusicSoundKMicroSearchTableWidget : public MusicQueryItemTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSoundKMicroSearchTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -37,10 +38,6 @@ public:
     virtual ~MusicSoundKMicroSearchTableWidget();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * Start search query by text.
      */
     virtual void startSearchQuery(const QString &text) override;
@@ -49,15 +46,15 @@ public:
      */
     virtual void musicDownloadLocal(int row) override;
     /*!
-     * Set query MV flag.
+     * Set query Movie flag.
      */
-    void setQueryMVFlag(bool flag);
+    void setQueryMovieFlag(bool flag);
 
 Q_SIGNALS:
     /*!
      * Set current media url.
      */
-    void mvURLChanged(bool mv, const QString &url, const QString &lrcUrl);
+    void mediaUrlChanged(bool mv, const QString &url, const QString &lrcUrl);
 
 public Q_SLOTS:
     /*!
@@ -67,18 +64,31 @@ public Q_SLOTS:
     /*!
      * Create searched items.
      */
-    virtual void createSearchedItems(const MusicSearchedItem &songItem) override;
+    virtual void createSearchedItem(const MusicSearchedItem &songItem) override;
     /*!
      * Item has double clicked.
      */
     virtual void itemDoubleClicked(int row, int column) override;
+    /*!
+     * Table widget list cell enter.
+     */
+    virtual void listCellEntered(int row, int column) override;
     /*!
      * Table widget list cell click.
      */
     virtual void listCellClicked(int row, int column) override;
 
 protected:
-    bool m_queryMv;
+    /*!
+     * Data download to play.
+     */
+    void dataDownloadPlay(int row);
+    /*!
+     * Override the widget event.
+     */
+    virtual void contextMenuEvent(QContextMenuEvent *event) override;
+
+    bool m_queryMovieMode;
 
 };
 
@@ -91,6 +101,7 @@ class MusicLocalSongSearchEdit;
 class MUSIC_TOOLSET_EXPORT MusicSoundKMicroSearchWidget : public MusicAbstractMoveSingleWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSoundKMicroSearchWidget)
 public:
     /*!
      * Object contsructor.
@@ -99,10 +110,6 @@ public:
 
     ~MusicSoundKMicroSearchWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Connect to parent.
      */
@@ -120,10 +127,10 @@ public Q_SLOTS:
     /*!
      * Set query MV flag.
      */
-    void setQueryMVFlag(int flag);
+    void setQueryMovieFlag(int flag);
 
 protected:
-    bool m_queryMv;
+    bool m_queryMovieMode;
     MusicLocalSongSearchEdit *m_searchEdit;
     MusicSoundKMicroSearchTableWidget *m_searchTableWidget;
 

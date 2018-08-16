@@ -28,6 +28,7 @@
 class MUSIC_NETWORK_EXPORT MusicDownloadBackgroundThread : public MusicNetworkAbstract
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownloadBackgroundThread)
 public:
     /*!
      * Object contsructor provide artist name and save local path.
@@ -35,10 +36,6 @@ public:
     MusicDownloadBackgroundThread(const QString &name, const QString &save,
                                   QObject *parent = 0);
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Start to download artist picture from net.
      * Subclass should implement this function.
@@ -52,8 +49,8 @@ public Q_SLOTS:
     virtual void downLoadFinished() override;
 
 protected:
-    QString m_artName, m_savePath;
     int m_index, m_counter;
+    QString m_artName, m_savePath;
 
 };
 

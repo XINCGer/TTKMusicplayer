@@ -31,12 +31,8 @@ class QxtGlobalShortcut;
 class MUSIC_CORE_EXPORT MusicHotKeyManager : public QObject
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicHotKeyManager)
 public:
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
     /*!
      * To connect parent slot object.
      */
@@ -58,6 +54,19 @@ public:
      * Get the string key by given hotKey index.
      */
     QString hotKey(int index);
+
+    /*!
+     * Get the object key by given hotKey index.
+     */
+    QObject* getHotKey(int index);
+    /*!
+     * Add hotKey by given index and string key.
+     */
+    void addHotKey(const QString &key);
+    /*!
+     * Set hotKey by given index and virtual key.
+     */
+    void addHotKey(int key);
 
     /*!
      * Enable or disable the hotkey by index.

@@ -4,8 +4,7 @@
 #include "musicinlinefloatuiobject.h"
 #include "musicrightareawidget.h"
 #include "musicleftareawidget.h"
-
-#include <QPushButton>
+#include "musicwidgetheaders.h"
 
 MusicLrcFloatWidget::MusicLrcFloatWidget(QWidget *parent)
     : MusicFloatAbstractWidget(parent)
@@ -77,11 +76,6 @@ MusicLrcFloatWidget::~MusicLrcFloatWidget()
     delete m_photo;
     delete m_floatPhotoWidget;
     delete m_floatSettingWidget;
-}
-
-QString MusicLrcFloatWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLrcFloatWidget::resizeWindow(int width, int height)

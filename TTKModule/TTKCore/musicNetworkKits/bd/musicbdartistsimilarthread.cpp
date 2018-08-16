@@ -9,11 +9,6 @@ MusicBDArtistSimilarThread::MusicBDArtistSimilarThread(QObject *parent)
 
 }
 
-QString MusicBDArtistSimilarThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicBDArtistSimilarThread::startToSearch(const QString &text)
 {
     if(!m_manager)
@@ -30,11 +25,8 @@ void MusicBDArtistSimilarThread::startToSearch(const QString &text)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -54,19 +46,19 @@ void MusicBDArtistSimilarThread::downLoadFinished()
     if(m_reply->error() == QNetworkReply::NoError)
     {
         QString html(m_reply->readAll());
-        QRegExp regx("<a href=\"/artist/(\\d+).*img class=\"avatar.*src=\"([^\"]+).*title=\"([^\"]+).*</a>");
+        QRegExp regx("<a href=\"/artist/(\\d+).*<img src=\"([^\"]+).*class=\"like-name overdd\".*>([^\"]+)</a>");
         regx.setMinimal(true);
         int pos = html.indexOf(regx);
         while(pos != -1)
         {
             if(m_interrupt) return;
 
-            MusicPlaylistItem info;
+            MusicResultsItem info;
             info.m_id = regx.cap(1);
             info.m_coverUrl = regx.cap(2).remove("\t").remove("\n").remove("@s_0,w_120");
             info.m_name = regx.cap(3);
             info.m_updateTime.clear();
-            emit createSimilarItems(info);
+            emit createSimilarItem(info);
 
             pos += regx.matchedLength();
             pos = regx.indexIn(html, pos);

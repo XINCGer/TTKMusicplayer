@@ -2,12 +2,6 @@
 #include "musicfunctionuiobject.h"
 #include "musicuiobject.h"
 
-#include <QTextEdit>
-#include <QBoxLayout>
-#include <QPushButton>
-#include <QScrollArea>
-#include <QScrollBar>
-
 MusicLrcTranslatedWidget::MusicLrcTranslatedWidget(QWidget *parent)
     : QLabel(parent)
 {
@@ -68,11 +62,6 @@ MusicLrcTranslatedWidget::~MusicLrcTranslatedWidget()
 {
     delete m_titleName;
     delete m_plainText;
-}
-
-QString MusicLrcTranslatedWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLrcTranslatedWidget::setPlainText(const QString &name, const QString &text)

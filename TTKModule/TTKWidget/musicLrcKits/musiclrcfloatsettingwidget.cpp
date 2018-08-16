@@ -4,7 +4,6 @@
 #include "musiclrcdefines.h"
 
 #include <QTimer>
-#include <QPushButton>
 #include <QButtonGroup>
 
 MusicLrcFloatSettingWidget::MusicLrcFloatSettingWidget(QWidget *parent)
@@ -74,11 +73,6 @@ MusicLrcFloatSettingWidget::MusicLrcFloatSettingWidget(QWidget *parent)
 #endif
 }
 
-QString MusicLrcFloatSettingWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicLrcFloatSettingWidget::resizeWindow(int width, int height)
 {
     m_rectIn = QRect(513 + width, 120 + height/2, 165, 210);
@@ -95,6 +89,7 @@ QPushButton *MusicLrcFloatSettingWidget::createPushButton(int index)
         case 1: button->setIcon(QIcon(":/color/lb_indigo")); break;
         case 2: button->setIcon(QIcon(":/color/lb_blue")); break;
         case 3: button->setIcon(QIcon(":/color/lb_orange")); break;
+        default: break;
     }
     button->setGeometry(80 + index*20, 25, 16, 16);
     button->setCursor(QCursor(Qt::PointingHandCursor));

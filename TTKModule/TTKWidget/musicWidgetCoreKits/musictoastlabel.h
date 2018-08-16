@@ -29,6 +29,7 @@
 class MUSIC_WIDGET_EXPORT MusicToastLabel : public QLabel
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicToastLabel)
 public:
     /*!
      * Object contsructor.
@@ -42,10 +43,9 @@ public:
     ~MusicToastLabel();
 
     /*!
-     * Get class object name.
+     * Create default label.
      */
-    static QString getClassName();
-
+    void defaultLabel(QWidget *parent, const QString &text);
     /*!
      * Set text margin in the body.
      */
@@ -78,6 +78,12 @@ public:
      * Popup the toast widget in parent widget.
      */
     void popup(QWidget *parent);
+
+Q_SIGNALS:
+    /*!
+     * Animation close changed.
+     */
+    void animationCloseChanged();
 
 public Q_SLOTS:
     /*!

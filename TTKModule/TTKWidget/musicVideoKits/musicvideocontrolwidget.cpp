@@ -9,9 +9,6 @@
 #include "musicuiobject.h"
 #include "musictime.h"
 
-#include <QPushButton>
-#include <QBoxLayout>
-
 MusicVideoControlWidget::MusicVideoControlWidget(QWidget *parent)
     : QWidget(parent)
 {
@@ -65,7 +62,7 @@ MusicVideoControlWidget::MusicVideoControlWidget(QWidget *parent)
     connect(m_timeSlider, SIGNAL(sliderReleasedAt(int)), SIGNAL(sliderValueChanged(int)));
     connect(m_volumeButton, SIGNAL(musicVolumeChanged(int)), parent, SLOT(volumeChanged(int)));
     connect(m_playButton, SIGNAL(clicked()), parent, SLOT(play()));
-    connect(m_qualityButton, SIGNAL(mvURLChanged(QString)), SIGNAL(mvURLChanged(QString)));
+    connect(m_qualityButton, SIGNAL(mediaUrlChanged(QString)), SIGNAL(mediaUrlChanged(QString)));
 }
 
 MusicVideoControlWidget::~MusicVideoControlWidget()
@@ -80,11 +77,6 @@ MusicVideoControlWidget::~MusicVideoControlWidget()
     delete m_barrageSend;
     delete m_menuBarrage;
     delete m_lineEditBarrage;
-}
-
-QString MusicVideoControlWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicVideoControlWidget::setValue(qint64 position) const

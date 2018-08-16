@@ -30,9 +30,12 @@ MusicToastLabel::~MusicToastLabel()
     m_timer.stop();
 }
 
-QString MusicToastLabel::getClassName()
+void MusicToastLabel::defaultLabel(QWidget *parent, const QString &text)
 {
-    return staticMetaObject.className();
+    setFontSize(15);
+    setFontMargin(20, 20);
+    setText(text);
+    popup(parent);
 }
 
 void MusicToastLabel::setFontMargin(int height, int width)
@@ -98,7 +101,10 @@ void MusicToastLabel::closeAnimation()
     animation->setStartValue(1);
     animation->setEndValue(0);
     animation->start();
+
     connect(animation, SIGNAL(finished()), SLOT(close()));
+    connect(animation, SIGNAL(finished()), SIGNAL(animationCloseChanged()));
+
 }
 
 void MusicToastLabel::paintEvent(QPaintEvent *event)

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.11)
 
 add_definitions(-DMUSIC_LIBRARY)
 
-set(TTK_VERSION "2.6.4.0")
+set(TTK_VERSION "2.7.0.0")
 
 # Find includes in the build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -49,11 +49,12 @@ include_directories(
     ${MUSIC_CORE_NETWORK_DIR}/bd
     ${MUSIC_CORE_NETWORK_DIR}/kg
     ${MUSIC_CORE_NETWORK_DIR}/kw
-    ${MUSIC_CORE_NETWORK_DIR}/mg
     ${MUSIC_CORE_NETWORK_DIR}/nr
     ${MUSIC_CORE_NETWORK_DIR}/qq
     ${MUSIC_CORE_NETWORK_DIR}/radio
-    ${MUSIC_CORE_NETWORK_DIR}/ws
+    ${MUSIC_CORE_NETWORK_DIR}/radio/dj
+    ${MUSIC_CORE_NETWORK_DIR}/radio/mv
+    ${MUSIC_CORE_NETWORK_DIR}/radio/fm
     ${MUSIC_CORE_NETWORK_DIR}/wy
     ${MUSIC_CORE_NETWORK_DIR}/xm
     ${MUSIC_CORE_NETWORK_DIR}/yyt
@@ -215,4 +216,4 @@ add_subdirectory(TTKService)
 add_subdirectory(TTKRun)
 add_subdirectory(TTKTest)
 
-install(FILES "${MUSIC_SCRIPT_DIR}/ttkmusicplayer.appdata.xml" DESTINATION "${MUSIC_INSTALL_DIR}/metainfo")
+install(FILES "${MUSIC_SCRIPT_DIR}/deploy/ttkmusicplayer.appdata.xml" DESTINATION "${MUSIC_INSTALL_DIR}/metainfo")

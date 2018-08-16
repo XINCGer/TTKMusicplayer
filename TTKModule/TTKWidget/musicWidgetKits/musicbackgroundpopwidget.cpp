@@ -1,9 +1,7 @@
 #include "musicbackgroundpopwidget.h"
 #include "musicuiobject.h"
 #include "musicclickedslider.h"
-
-#include <QLabel>
-#include <QBoxLayout>
+#include "musicwidgetheaders.h"
 
 MusicBackgroundPopWidget::MusicBackgroundPopWidget(QWidget *parent)
     : MusicToolMenuWidget(parent)
@@ -14,11 +12,6 @@ MusicBackgroundPopWidget::MusicBackgroundPopWidget(QWidget *parent)
 MusicBackgroundPopWidget::~MusicBackgroundPopWidget()
 {
     delete m_slider;
-}
-
-QString MusicBackgroundPopWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicBackgroundPopWidget::setValue(int value)

@@ -19,8 +19,8 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QLabel>
 #include "musicglobaldefine.h"
+#include "musicwidgetheaders.h"
 
 /*! @brief The class of the lrc translate widget.
  * @author Greedysky <greedysky@163.com>
@@ -28,6 +28,7 @@
 class MUSIC_LRC_EXPORT MusicLrcTranslatedWidget : public QLabel
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicLrcTranslatedWidget)
 public:
     /*!
      * Object contsructor.
@@ -35,11 +36,6 @@ public:
     explicit MusicLrcTranslatedWidget(QWidget *parent = 0);
 
     ~MusicLrcTranslatedWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set current translated string.

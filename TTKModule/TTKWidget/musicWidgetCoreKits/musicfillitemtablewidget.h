@@ -29,6 +29,7 @@ class MusicQueryTableDelegate;
 class MUSIC_WIDGET_EXPORT MusicFillItemTableWidget : public MusicAbstractTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicFillItemTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -38,14 +39,9 @@ public:
     virtual ~MusicFillItemTableWidget();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Get selected items.
      */
-    MusicObject::MIntList getSelectedItems() const;
+    MIntList getSelectedItems() const;
 
 public Q_SLOTS:
     /*!

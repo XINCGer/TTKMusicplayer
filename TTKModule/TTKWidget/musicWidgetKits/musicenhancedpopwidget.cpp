@@ -44,11 +44,6 @@ MusicEnhancedToolButton::~MusicEnhancedToolButton()
     delete m_animation;
 }
 
-QString MusicEnhancedToolButton::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicEnhancedToolButton::setStyleSheet(const QString &styleSheet, bool state)
 {
     m_state = state;
@@ -114,11 +109,6 @@ MusicEnhancedPopWidget::~MusicEnhancedPopWidget()
     qDeleteAll(m_buttons);
 }
 
-QString MusicEnhancedPopWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicEnhancedPopWidget::setEnhancedMusicConfig(int type)
 {
     setObjectName("EnhancedWidget");
@@ -130,6 +120,7 @@ void MusicEnhancedPopWidget::setEnhancedMusicConfig(int type)
         case 2: style += "#EnhancedWidget{ margin-left: -192px; }"; break;
         case 3: style += "#EnhancedWidget{ margin-left: -96px; }"; break;
         case 4: style += "#EnhancedWidget{ margin-left: -144px; }"; break;
+        default: break;
     }
     setStyleSheet( style );
 

@@ -42,6 +42,7 @@ class QPushButton;
 class MUSIC_WIDGET_EXPORT MusicRadioButtonDelegate : public QItemDelegate
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicRadioButtonDelegate)
 public:
     /*!
      * Object contsructor.
@@ -51,25 +52,20 @@ public:
     virtual ~MusicRadioButtonDelegate();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Set delegate item style.
      */
     void setStyleSheet(const QString &style);
     /*!
      * Override size hint.
      */
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &) const;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option,
+                           const QModelIndex &) const override;
     /*!
      * Override paint.
      */
-    void paint(QPainter *painter,
-               const QStyleOptionViewItem &option,
-               const QModelIndex &index) const;
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionViewItem &option,
+                       const QModelIndex &index) const override;
 
 protected:
     QRadioButton *m_radioButton;
@@ -83,6 +79,7 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicCheckBoxDelegate : public QItemDelegate
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicCheckBoxDelegate)
 public:
     /*!
      * Object contsructor.
@@ -92,25 +89,20 @@ public:
     virtual ~MusicCheckBoxDelegate();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Set delegate item style.
      */
     void setStyleSheet(const QString &style);
     /*!
      * Override size hint.
      */
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &) const;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option,
+                           const QModelIndex &) const override;
     /*!
      * Override paint.
      */
-    void paint(QPainter *painter,
-               const QStyleOptionViewItem &option,
-               const QModelIndex &index) const;
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionViewItem &option,
+                       const QModelIndex &index) const override;
 
 protected:
     QCheckBox *m_checkBox;
@@ -124,6 +116,7 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicQueryTableDelegate : public MusicCheckBoxDelegate
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicQueryTableDelegate)
 public:
     /*!
      * Object contsructor.
@@ -133,16 +126,11 @@ public:
     virtual ~MusicQueryTableDelegate();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Override paint.
      */
-    void paint(QPainter *painter,
-               const QStyleOptionViewItem &option,
-               const QModelIndex &index) const;
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionViewItem &option,
+                       const QModelIndex &index) const override;
 
 };
 
@@ -153,6 +141,7 @@ public:
 class MUSIC_WIDGET_EXPORT MusicProgressBarDelegate : public QItemDelegate
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicProgressBarDelegate)
 public:
     /*!
      * Object contsructor.
@@ -162,25 +151,21 @@ public:
     ~MusicProgressBarDelegate();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Set delegate item style.
      */
     void setStyleSheet(const QString &style);
+
     /*!
      * Override size hint.
      */
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &) const;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option,
+                           const QModelIndex &) const override;
     /*!
      * Override paint.
      */
-    void paint(QPainter *painter,
-               const QStyleOptionViewItem &option,
-               const QModelIndex &index) const;
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionViewItem &option,
+                       const QModelIndex &index) const override;
 
 private:
     QProgressBar *m_progress;
@@ -194,6 +179,7 @@ private:
 class MUSIC_WIDGET_EXPORT MusicLabelDelegate : public QItemDelegate
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicLabelDelegate)
 public:
     /*!
      * Object contsructor.
@@ -203,25 +189,21 @@ public:
     virtual ~MusicLabelDelegate();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Set delegate item style.
      */
     void setStyleSheet(const QString &style);
+
     /*!
      * Override size hint.
      */
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &) const;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option,
+                           const QModelIndex &) const override;
     /*!
      * Override paint.
      */
-    void paint(QPainter *painter,
-               const QStyleOptionViewItem &option,
-               const QModelIndex &index) const;
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionViewItem &option,
+                       const QModelIndex &index) const override;
 
 protected:
     QLabel *m_label;
@@ -235,6 +217,7 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicPushButtonDelegate : public QItemDelegate
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicPushButtonDelegate)
 public:
     /*!
      * Object contsructor.
@@ -244,28 +227,47 @@ public:
     virtual ~MusicPushButtonDelegate();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Set delegate item style.
      */
     void setStyleSheet(const QString &style);
+
     /*!
      * Override size hint.
      */
-    QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &) const;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option,
+                           const QModelIndex &) const override;
     /*!
      * Override paint.
      */
-    void paint(QPainter *painter,
-               const QStyleOptionViewItem &option,
-               const QModelIndex &index) const;
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionViewItem &option,
+                       const QModelIndex &index) const override;
 
 protected:
     QPushButton *m_pushButton;
+
+};
+
+
+/*! @brief The class of the rename lineedit item delegate.
+ * @author Greedysky <greedysky@163.com>
+ */
+class MUSIC_WIDGET_EXPORT MusicRenameLineEditDelegate : public QItemDelegate
+{
+    Q_OBJECT
+    TTK_DECLARE_MODULE(MusicRenameLineEditDelegate)
+public:
+    /*!
+     * Object contsructor.
+     */
+    explicit MusicRenameLineEditDelegate(QObject *parent);
+
+    /*!
+     * Override createEditor.
+     */
+    virtual QWidget *createEditor(QWidget *parent,
+                                  const QStyleOptionViewItem &option,
+                                  const QModelIndex &index) const override;
 
 };
 

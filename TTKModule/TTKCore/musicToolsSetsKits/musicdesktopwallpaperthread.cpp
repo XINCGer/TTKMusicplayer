@@ -1,108 +1,112 @@
 #include "musicdesktopwallpaperthread.h"
+#include "musicbackgroundconfigmanager.h"
 #include "musicbackgroundmanager.h"
-#include "musicregeditmanager.h"
+#include "musicextractwrap.h"
 #include "musictime.h"
 
-#include <QFileInfo>
-
-#if defined Q_OS_WIN
-#   include <Windows.h>
-#   if defined Q_CC_MSVC
-#      pragma comment(lib, "user32.lib")
-#   endif
-#endif
+#include <QTimer>
+#include <QPixmap>
 
 MusicDesktopWallpaperThread::MusicDesktopWallpaperThread(QObject *parent)
-    : QThread(parent)
+    : QObject(parent)
 {
-#if defined Q_OS_WIN
-    MusicRegeditManager().getDesktopWallControlPanel(m_originPath, m_originType);
     MusicTime::timeSRand();
-#endif
 
-    m_run = true;
+    m_run = false;
+    m_random = false;
     m_currentImageIndex = 0;
-    m_returnToOrigin = false;
+    m_timer = new QTimer(this);
+    connect(m_timer, SIGNAL(timeout()), SLOT(timeout()));
+
+    setInterval(20*MT_S2MS);
 }
 
 MusicDesktopWallpaperThread::~MusicDesktopWallpaperThread()
 {
-    stopAndQuitThread();
-    if(m_returnToOrigin)
-    {
-        setWallpaper(m_originPath, m_originType);
-    }
+    stop();
+    delete m_timer;
 }
 
-QString MusicDesktopWallpaperThread::getClassName()
+void MusicDesktopWallpaperThread::setInterval(int msec)
 {
-    return staticMetaObject.className();
+    m_timer->setInterval(msec);
 }
+
+bool MusicDesktopWallpaperThread::isRunning() const
+{
+    return m_run;
+}
+
+void MusicDesktopWallpaperThread::setRandom(bool random)
+{
+    m_random = random;
+}
+void MusicDesktopWallpaperThread::setImagePath(const QStringList &list)
+{
+    m_path = list;
+}
+
+#if defined Q_OS_WIN
+HWND MusicDesktopWallpaperThread::findDesktopIconWnd()
+{
+    HWND hWorkerW = FindWindowExW(NULL, NULL, L"WorkerW", NULL);
+    HWND hDefView = NULL;
+
+    while((!hDefView) && hWorkerW)
+    {
+        hDefView = FindWindowExW(hWorkerW, NULL, L"SHELLDLL_DefView", NULL);
+        hWorkerW = FindWindowExW(NULL, hWorkerW, L"WorkerW", NULL);
+    }
+
+    ShowWindow(hWorkerW, 0);
+    return FindWindowW(L"Progman", NULL);
+}
+
+void MusicDesktopWallpaperThread::sendMessageToDesktop()
+{
+     PDWORD_PTR result = NULL;
+     SendMessageTimeoutW(FindWindowW(L"Progman",NULL), 0x52C, 0, 0, SMTO_NORMAL, 1000, result);
+}
+#endif
 
 void MusicDesktopWallpaperThread::start()
 {
     m_run = true;
-    QThread::start();
+    timeout();
+    m_timer->start();
 }
 
-void MusicDesktopWallpaperThread::run()
+void MusicDesktopWallpaperThread::stop()
 {
-    QStringList path = m_paramter.value("Path").toStringList();
-    int time = m_paramter.value("Time").toInt();
-    int type = m_paramter.value("Type").toInt();
-    int func = m_paramter.value("Func").toInt();
-    m_returnToOrigin = m_paramter.value("Close").toBool();
+    m_run = false;
+    m_timer->stop();
+}
 
-    while(m_run)
+void MusicDesktopWallpaperThread::timeout()
+{
+    if(!m_run)
     {
-        if(path.isEmpty())
+        return;
+    }
+
+    if(!m_path.isEmpty())
+    {
+        if(m_random) ///random mode
         {
-            stopAndQuitThread();
-            return;
+            m_currentImageIndex = qrand() % m_path.size();
         }
-        if(m_paramter["Mode"].toInt() == 2)
-        {
-            path.clear();
-            QStringList names = M_BACKGROUND_PTR->getArtPhotoPathList();
-            !names.isEmpty() ? path << names : path << m_originPath;
-        }
-        if(func == 1) ///random mode
-        {
-            m_currentImageIndex = qrand() % path.size();
-        }
-        else if(++m_currentImageIndex >= path.size())
+        else if(++m_currentImageIndex >= m_path.size())
         {
             m_currentImageIndex = 0;
         }
-        setWallpaper(path[m_currentImageIndex], type);
-        sleep(time);
+
+        emit updateBackground(QPixmap(m_path[m_currentImageIndex]));
     }
-}
-
-void MusicDesktopWallpaperThread::setParamters(const MusicObject::MStriantMap &p)
-{
-    m_paramter = p;
-}
-
-void MusicDesktopWallpaperThread::stopAndQuitThread()
-{
-    if(isRunning())
+    else
     {
-        m_run = false;
-        wait();
-    }
-    quit();
-}
+        MusicBackgroundImage image;
+        MusicExtractWrap::outputSkin(&image, M_BACKGROUND_PTR->getBackgroundUrl());
 
-void MusicDesktopWallpaperThread::setWallpaper(const QString &path, int type) const
-{
-#if defined Q_OS_WIN
-    MusicRegeditManager().setDesktopWallControlPanel(path, type);
-    SystemParametersInfo(SPI_SETDESKWALLPAPER, 0,
-                         (TCHAR*)path.toStdWString().c_str(),
-                         SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
-#else
-    Q_UNUSED(path)
-    Q_UNUSED(type)
-#endif
+        emit updateBackground(image.m_pix);
+    }
 }

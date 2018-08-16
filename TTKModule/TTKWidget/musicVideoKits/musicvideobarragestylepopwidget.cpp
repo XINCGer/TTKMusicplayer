@@ -1,10 +1,8 @@
 #include "musicvideobarragestylepopwidget.h"
 #include "musicvideouiobject.h"
 #include "musicuiobject.h"
+#include "musicwidgetheaders.h"
 
-#include <QLabel>
-#include <QBoxLayout>
-#include <QPushButton>
 #include <QButtonGroup>
 
 MusicVideoBarrageStylePopWidget::MusicVideoBarrageStylePopWidget(QWidget *parent)
@@ -19,11 +17,6 @@ MusicVideoBarrageStylePopWidget::~MusicVideoBarrageStylePopWidget()
 {
     delete m_sizeGroup;
     delete m_colorGroup;
-}
-
-QString MusicVideoBarrageStylePopWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 int MusicVideoBarrageStylePopWidget::getBarrageSize() const
@@ -54,6 +47,7 @@ void MusicVideoBarrageStylePopWidget::barrageSizeButtonClicked(int index)
                 buttons[1]->setStyleSheet(MusicUIObject::MKGVideoBtnMiddleOn); break;
         case 2: m_barrageSize = 30;
                 buttons[2]->setStyleSheet(MusicUIObject::MKGVideoBtnBigOn); break;
+        default: break;
     }
 }
 
@@ -87,6 +81,7 @@ void MusicVideoBarrageStylePopWidget::barrageColorButtonClicked(int index)
                 buttons[5]->setStyleSheet(MusicUIObject::MKGVideoBtnBlueOn); break;
         case 6: m_barrageColor = QColor(160, 32, 240);
                 buttons[6]->setStyleSheet(MusicUIObject::MKGVideoBtnPurpleOn); break;
+        default: break;
     }
 }
 

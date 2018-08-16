@@ -20,10 +20,9 @@
  ================================================= */
 
 #include "musicglobaldefine.h"
+#include "musicwidgetheaders.h"
 #include "musicbarragerecordconfigmanager.h"
 
-#include <QLabel>
-#include <QLineEdit>
 #include <QPropertyAnimation>
 
 /*! @brief The class of the barrage animation.
@@ -32,6 +31,7 @@
 class MUSIC_VIDEO_EXPORT MusicBarrageAnimation : public QPropertyAnimation
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicBarrageAnimation)
 public:
     /*!
      * Object contsructor.
@@ -42,10 +42,6 @@ public:
      */
     MusicBarrageAnimation(QObject *target, const QByteArray &propertyName, QObject *parent = 0);
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set animation region size.
      */
@@ -73,6 +69,7 @@ protected:
 class MUSIC_VIDEO_EXPORT MusicBarrageWidget : public QObject
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicBarrageWidget)
 public:
     /*!
      * Object contsructor.
@@ -80,11 +77,6 @@ public:
     explicit MusicBarrageWidget(QObject *parent = 0);
 
     ~MusicBarrageWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Start barrage animation.

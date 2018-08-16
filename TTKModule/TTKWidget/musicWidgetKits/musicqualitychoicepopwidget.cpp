@@ -35,11 +35,6 @@ MusicQualityChoiceTableWidget::~MusicQualityChoiceTableWidget()
     clear();
 }
 
-QString MusicQualityChoiceTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicQualityChoiceTableWidget::createItems()
 {
     setRowCount(5);
@@ -113,7 +108,7 @@ void MusicQualityChoiceTableWidget::createItems()
 void MusicQualityChoiceTableWidget::listCellEntered(int row, int column)
 {
     QTableWidgetItem *it = item(m_previousColorRow, 0);
-    if(it != nullptr)
+    if(it)
     {
        it->setTextColor(PREVIOUS_COLOR);
     }
@@ -121,7 +116,7 @@ void MusicQualityChoiceTableWidget::listCellEntered(int row, int column)
     MusicAbstractTableWidget::listCellEntered(row, column);
 
     it = item(row, 0);
-    if(it != nullptr)
+    if(it)
     {
        setRowColor(row, QColor(20, 20, 20, 200));
        it->setTextColor(HOVER_COLOR);
@@ -150,11 +145,6 @@ MusicQualityChoicePopWidget::MusicQualityChoicePopWidget(QWidget *parent)
 
     setStyleSheet(MusicUIObject::MToolButtonStyle05 + MusicUIObject::MKGBtnQuality +
                   "QToolButton{ margin-left:-45px;}" );
-}
-
-QString MusicQualityChoicePopWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicQualityChoicePopWidget::initWidget()
@@ -211,6 +201,7 @@ void MusicQualityChoicePopWidget::listCellClicked(int row)
                 m_currentQuality = tr("CD");
                 break;
             }
+        default: break;
     }
     setStyleSheet( styleSheet() + style);
 

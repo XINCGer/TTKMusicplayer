@@ -1,7 +1,7 @@
 #include "musicfileinformationwidget.h"
 #include "ui_musicfileinformationwidget.h"
 #include "musicuiobject.h"
-#include "musiccoreutils.h"
+#include "musicurlutils.h"
 #include "musicnumberutils.h"
 #include "musicsongtag.h"
 #include "musicmessagebox.h"
@@ -54,14 +54,9 @@ MusicFileInformationWidget::~MusicFileInformationWidget()
     delete m_ui;
 }
 
-QString MusicFileInformationWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicFileInformationWidget::musicOpenFileDir()
 {
-    if(!MusicUtils::Core::openUrl(QFileInfo(m_path).absoluteFilePath()))
+    if(!MusicUtils::Url::openUrl(QFileInfo(m_path).absoluteFilePath()))
     {
         MusicMessageBox message;
         message.setText(tr("The origin one does not exist!"));

@@ -24,11 +24,6 @@ MusicVideoQualityPopWidget::~MusicVideoQualityPopWidget()
     delete m_actionGroup;
 }
 
-QString MusicVideoQualityPopWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicVideoQualityPopWidget::setQualityActionState()
 {
     QList<QAction*> actions = m_actionGroup->actions();
@@ -64,9 +59,10 @@ void MusicVideoQualityPopWidget::movieQualityChoiced(QAction *action)
         case 1: url = findMVUrlByBitrate(MB_500); break;
         case 2: url = findMVUrlByBitrate(MB_750); break;
         case 3: url = findMVUrlByBitrate(MB_1000); break;
+        default: break;
     }
     setQualityText( url );
-    emit mvURLChanged( url );
+    emit mediaUrlChanged( url );
 }
 
 void MusicVideoQualityPopWidget::initWidget()
@@ -91,7 +87,7 @@ QString MusicVideoQualityPopWidget::findMVUrlByBitrate(int bitrate)
     {
         if(attr.m_bitrate == bitrate)
         {
-            return attr.m_multiParts ? attr.m_url.split(STRING_SPLITER).first() : attr.m_url;
+            return attr.m_multiPart ? attr.m_url.split(TTK_STR_SPLITER).first() : attr.m_url;
         }
     }
     return QString();
@@ -103,7 +99,7 @@ int MusicVideoQualityPopWidget::findMVBitrateByUrl(const QString &url)
     emit getMusicMvInfo(data);
     foreach(const MusicObject::MusicSongAttribute &attr, data)
     {
-        QString aurl = attr.m_multiParts ? attr.m_url.split(STRING_SPLITER).first() : attr.m_url;
+        QString aurl = attr.m_multiPart ? attr.m_url.split(TTK_STR_SPLITER).first() : attr.m_url;
         if(aurl == url)
         {
             return attr.m_bitrate;

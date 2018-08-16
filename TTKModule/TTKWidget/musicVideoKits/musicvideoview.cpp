@@ -1,31 +1,47 @@
 #include "musicvideoview.h"
-#include "musicmessagebox.h"
+#include "musictoastlabel.h"
 #include "musiccoremplayer.h"
 #include "musicbarragewidget.h"
 #include "musicnumberdefine.h"
 #include "musicuiobject.h"
 
-#include <QMenu>
-#include <QTimer>
 #include <QMouseEvent>
 
 MusicViewWidget::MusicViewWidget(QWidget *parent)
     : QWidget(parent)
 {
+    m_clickedTimer = new QTimer(this);
+    m_clickedTimer->setSingleShot(true);
+    m_leftPressed = false;
 
+    connect(m_clickedTimer, SIGNAL(timeout()), SIGNAL(setClick()));
 }
 
-QString MusicViewWidget::getClassName()
+MusicViewWidget::~MusicViewWidget()
 {
-    return staticMetaObject.className();
+    delete m_clickedTimer;
 }
 
 void MusicViewWidget::mousePressEvent(QMouseEvent *event)
 {
     QWidget::mousePressEvent(event);
+    m_leftPressed = false;
     if(event->button() == Qt::LeftButton)
     {
-        emit setClick();
+        m_leftPressed = true;
+        m_clickedTimer->start(300*MT_MS);
+    }
+}
+
+void MusicViewWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    QWidget::mousePressEvent(event);
+    if(m_leftPressed)
+    {
+        if(m_clickedTimer->isActive())
+        {
+            m_clickedTimer->stop();
+        }
     }
 }
 
@@ -34,12 +50,17 @@ void MusicViewWidget::mouseDoubleClickEvent(QMouseEvent *event)
     QWidget::mouseDoubleClickEvent(event);
     if(event->button() == Qt::LeftButton)
     {
+        if(m_clickedTimer->isActive())
+        {
+            m_clickedTimer->stop();
+        }
         emit setFullScreen();
     }
 }
 
 void MusicViewWidget::contextMenuEvent(QContextMenuEvent *event)
 {
+    Q_UNUSED(event);
     QWidget::contextMenuEvent(event);
     QMenu menu(this);
     menu.setStyleSheet(MusicUIObject::MMenuStyle02);
@@ -49,17 +70,16 @@ void MusicViewWidget::contextMenuEvent(QContextMenuEvent *event)
             ->setText(playing ? tr("videoPause") : tr("videoPlay"));
     menu.addAction(tr("videoStop"), parent(), SLOT(stop()));
     menu.exec(QCursor::pos());
-    event->accept();
 }
 
 
+
 MusicVideoView::MusicVideoView(QWidget *parent)
-    : QGraphicsView(parent)
+    : QAbstractScrollArea(parent)
 {
     setObjectName("MusicVideoView");
     setStyleSheet(QString("#MusicVideoView{%1}").arg(MusicUIObject::MBackgroundStyle02));
 
-    m_positionChanged = false;
     m_mediaPlayer = new MusicCoreMPlayer(this);
     m_videoWidget = new MusicViewWidget(this);
     m_barrageCore = new MusicBarrageWidget(this);
@@ -69,7 +89,7 @@ MusicVideoView::MusicVideoView(QWidget *parent)
     connect(m_videoWidget, SIGNAL(mediaIsPlaying(bool&)), SLOT(mediaIsPlaying(bool&)));
 
     m_videoControl = new MusicVideoControlWidget(this);
-    connect(m_videoControl, SIGNAL(mvURLChanged(QString)), parent, SLOT(mvURLChanged(QString)));
+    connect(m_videoControl, SIGNAL(mediaUrlChanged(QString)), parent, SLOT(mediaUrlChanged(QString)));
     connect(m_videoControl, SIGNAL(sliderValueChanged(int)), SLOT(setPosition(int)));
     connect(m_videoControl, SIGNAL(addBarrageChanged(MusicBarrageRecord)), SLOT(addBarrageChanged(MusicBarrageRecord)));
     connect(m_videoControl, SIGNAL(pushBarrageChanged(bool)), SLOT(pushBarrageChanged(bool)));
@@ -79,6 +99,7 @@ MusicVideoView::MusicVideoView(QWidget *parent)
     connect(m_mediaPlayer, SIGNAL(positionChanged(qint64)), SLOT(positionChanged(qint64)));
     connect(m_mediaPlayer, SIGNAL(durationChanged(qint64)), SLOT(durationChanged(qint64)));
     connect(m_mediaPlayer, SIGNAL(mediaChanged(QString)), SLOT(mediaChanged(QString)));
+    connect(m_mediaPlayer, SIGNAL(finished(int)), SLOT(mediaAutionPlayError(int)));
 }
 
 MusicVideoView::~MusicVideoView()
@@ -89,37 +110,30 @@ MusicVideoView::~MusicVideoView()
     delete m_videoWidget;
 }
 
-QString MusicVideoView::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicVideoView::contextMenuEvent(QContextMenuEvent *event)
 {
-    QWidget::contextMenuEvent(event);
+    Q_UNUSED(event);
     QMenu menu(this);
     menu.setStyleSheet(MusicUIObject::MMenuStyle02);
+
     bool playing;
     mediaIsPlaying(playing);
-    menu.addAction(tr("videoPlay"), this, SLOT(play()))
-            ->setText(playing ? tr("videoPause") : tr("videoPlay"));
+    menu.addAction(tr("videoPlay"), this, SLOT(play()))->setText(playing ? tr("videoPause") : tr("videoPlay"));
     menu.addAction(tr("videoStop"), this, SLOT(stop()));
+
     menu.exec(QCursor::pos());
-    event->accept();
 }
 
 void MusicVideoView::setMedia(const QString &data)
 {
-    m_mediaPlayer->setMedia(MusicCoreMPlayer::VideoCategory, data,
-                           (int)m_videoWidget->winId());
+    m_mediaPlayer->setMedia(MusicCoreMPlayer::VideoCategory, data, (int)m_videoWidget->winId());
     m_videoControl->setQualityActionState();
-    QTimer::singleShot(10*MT_S2MS, this, SLOT(stop()));
 }
 
 void MusicVideoView::resizeWindow(int width, int height)
 {
     m_videoWidget->setGeometry(10, 35, 655 + width, 372 + height);
-    m_videoControl->setGeometry(0, 437 + height, 680 + width, 60);
+    m_videoControl->setGeometry(0, 438 + height, 680 + width, 60);
     m_barrageCore->setSize(m_videoWidget->size());
 }
 
@@ -142,24 +156,12 @@ void MusicVideoView::play()
 
 void MusicVideoView::stop()
 {
-    if(!m_positionChanged)
-    {
-        m_mediaPlayer->stop();
-        m_barrageCore->stop();
-
-        MusicMessageBox message;
-        message.setText(tr("Session time out, try again!"));
-        message.exec();
-    }
-    m_positionChanged = false;
+    m_mediaPlayer->stop();
+    m_barrageCore->stop();
 }
 
 void MusicVideoView::positionChanged(qint64 position)
 {
-    if(position != 0)
-    {
-        m_positionChanged = true;
-    }
     m_videoControl->setValue(position);
 }
 
@@ -181,6 +183,17 @@ void MusicVideoView::volumeChanged(int volume)
 void MusicVideoView::mediaChanged(const QString &data)
 {
     m_videoControl->mediaChanged(data);
+}
+
+void MusicVideoView::mediaAutionPlayError(int code)
+{
+    if(DEFAULT_LEVEL_NORMAL == code)
+    {
+        stop();
+
+        MusicToastLabel *toast = new MusicToastLabel(this);
+        toast->defaultLabel(this, tr("Audio Play Time out!"));
+    }
 }
 
 void MusicVideoView::mediaIsPlaying(bool &play)

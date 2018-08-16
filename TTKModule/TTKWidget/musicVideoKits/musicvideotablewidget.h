@@ -22,12 +22,27 @@
 #include "musicquerytablewidget.h"
 #include "musicdownloadquerythreadabstract.h"
 
+Q_DECLARE_METATYPE(MusicObject::MusicSongInformation)
+
+/*! @brief The class of the video item play data item.
+ * @author Greedysky <greedysky@163.com>
+ */
+typedef struct MUSIC_VIDEO_EXPORT MusicVideoItem
+{
+    QString m_name;
+    QString m_url;
+    QString m_id;
+    QString m_server;
+}MusicVideoItem;
+
+
 /*! @brief The class of the video search table widget.
  * @author Greedysky <greedysky@163.com>
  */
 class MUSIC_VIDEO_EXPORT MusicVideoTableWidget : public MusicQueryItemTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicVideoTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -37,10 +52,6 @@ public:
     virtual ~MusicVideoTableWidget();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * Start search query by text.
      */
     virtual void startSearchQuery(const QString &text) override;
@@ -48,6 +59,10 @@ public:
      * Start search query by given id.
      */
     void startSearchSingleQuery(const QString &text);
+    /*!
+     * Start search query by given data.
+     */
+    void startSearchSingleQuery(const QVariant &data);
     /*!
      * Data download to local file.
      */
@@ -61,7 +76,7 @@ Q_SIGNALS:
     /*!
      * Set current media name and url to play.
      */
-    void mvURLNameChanged(const QString &name, const QString &data);
+    void mvURLNameChanged(const MusicVideoItem &item);
 
 public Q_SLOTS:
     /*!
@@ -79,7 +94,7 @@ public Q_SLOTS:
     /*!
      * Create searched items.
      */
-    virtual void createSearchedItems(const MusicSearchedItem &songItem) override;
+    virtual void createSearchedItem(const MusicSearchedItem &songItem) override;
     /*!
      * Item has double clicked.
      */
@@ -104,6 +119,7 @@ protected:
     void downloadLocalMovie(int row);
 
     QString m_currentSongName;
+    bool m_singleRadioMode;
 
 };
 

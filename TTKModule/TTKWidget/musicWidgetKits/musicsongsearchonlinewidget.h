@@ -47,7 +47,7 @@ typedef struct MUSIC_WIDGET_EXPORT MusicDownloadData
     }
 
 }MusicDownloadData;
-MUSIC_DECLARE_LISTS(MusicDownloadData)
+TTK_DECLARE_LISTS(MusicDownloadData)
 
 class QLabel;
 class QPushButton;
@@ -59,6 +59,7 @@ class MusicCoreMPlayer;
 class MUSIC_WIDGET_EXPORT MusicSongSearchOnlineTableWidget : public MusicQueryItemTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongSearchOnlineTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -66,11 +67,6 @@ public:
     explicit MusicSongSearchOnlineTableWidget(QWidget *parent = 0);
 
     virtual ~MusicSongSearchOnlineTableWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set wheather query all quality of records.
@@ -133,7 +129,7 @@ public Q_SLOTS:
     /*!
      * Create searched items.
      */
-    virtual void createSearchedItems(const MusicSearchedItem &songItem) override;
+    virtual void createSearchedItem(const MusicSearchedItem &songItem) override;
     /*!
      * Item has double clicked.
      */
@@ -150,6 +146,10 @@ public Q_SLOTS:
      * Open music song download widget.
      */
     void musicSongDownload(int row);
+    /*!
+     * Media aution play error.
+     */
+    void mediaAutionPlayError(int code);
 
 protected:
     /*!
@@ -164,7 +164,7 @@ protected:
 
     bool m_queryAllRecords;
     int m_previousAuditionRow;
-    MusicCoreMPlayer *m_audition;
+    MusicCoreMPlayer *m_mediaPlayer;
     MusicDownloadData m_downloadData;
 
 };
@@ -177,6 +177,7 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicSongSearchOnlineWidget : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongSearchOnlineWidget)
 public:
     /*!
      * Object contsructor.
@@ -185,10 +186,6 @@ public:
 
     ~MusicSongSearchOnlineWidget();
 
-    /*!
-    * Get class object name.
-    */
-    static QString getClassName();
     /*!
      * Start search query by text.
      */

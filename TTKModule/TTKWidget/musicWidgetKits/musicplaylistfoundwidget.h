@@ -33,6 +33,7 @@ class MusicPlaylistFoundCategoryPopWidget;
 class MUSIC_WIDGET_EXPORT MusicPlaylistFoundItemWidget : public QLabel
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicPlaylistFoundItemWidget)
 public:
     /*!
      * Object contsructor.
@@ -42,20 +43,15 @@ public:
     virtual ~MusicPlaylistFoundItemWidget();
 
     /*!
-     * Get class object name.
+     * Set music results item.
      */
-    static QString getClassName();
-
-    /*!
-     * Set music playlist item.
-     */
-    void setMusicPlaylistItem(const MusicPlaylistItem &item);
+    void setMusicResultsItem(const MusicResultsItem &item);
 
 Q_SIGNALS:
     /*!
-     * Current play list clicked.
+     * Current item clicked.
      */
-    void currentPlayListClicked(const MusicPlaylistItem &item);
+    void currentItemClicked(const MusicResultsItem &item);
 
 public Q_SLOTS:
     /*!
@@ -63,12 +59,12 @@ public Q_SLOTS:
      */
     void downLoadFinished(const QByteArray &data);
     /*!
-     * Current play list clicked.
+     * Current item clicked.
      */
-    void currentPlayListClicked();
+    void currentItemClicked();
 
 protected:
-    MusicPlaylistItem m_itemData;
+    MusicResultsItem m_itemData;
     QPushButton *m_topListenButton, *m_playButton;
     QLabel *m_iconLabel, *m_nameLabel, *m_creatorLabel;
 
@@ -82,6 +78,7 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicPlaylistFoundWidget : public MusicFoundAbstractWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicPlaylistFoundWidget)
 public:
     /*!
      * Object contsructor.
@@ -89,11 +86,6 @@ public:
     explicit MusicPlaylistFoundWidget(QWidget *parent = 0);
 
     virtual ~MusicPlaylistFoundWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set current name to search founds.
@@ -113,11 +105,11 @@ public Q_SLOTS:
     /*!
      * Query all quality musics is finished.
      */
-    void createPlaylistItems(const MusicPlaylistItem &item);
+    void createPlaylistItem(const MusicResultsItem &item);
     /*!
      * Current play list clicked.
      */
-    void currentPlayListClicked(const MusicPlaylistItem &item);
+    void currentPlayListClicked(const MusicResultsItem &item);
     /*!
      * Set current index to playlist menu page.
      */
@@ -125,7 +117,7 @@ public Q_SLOTS:
     /*!
      * Current category changed.
      */
-    void categoryChanged(const MusicPlaylistCategoryItem &category);
+    void categoryChanged(const MusicResultsCategoryItem &category);
     /*!
      * Paging widget button has changed.
      */

@@ -11,26 +11,21 @@ MusicWYSongCommentsThread::MusicWYSongCommentsThread(QObject *parent)
     m_pageSize = 20;
 }
 
-QString MusicWYSongCommentsThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicWYSongCommentsThread::startToSearch(const QString &name)
 {
     M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(name));
     MusicSemaphoreLoop loop;
-    MusicDownLoadQueryWYThread *query = new MusicDownLoadQueryWYThread(this);
-    query->setQueryAllRecords(false);
-    query->setQuerySimplify(true);
-    query->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, name);
-    connect(query, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
+    MusicDownLoadQueryWYThread *d = new MusicDownLoadQueryWYThread(this);
+    d->setQueryAllRecords(false);
+    d->setQuerySimplify(true);
+    d->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, name);
+    connect(d, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
     loop.exec();
 
     m_rawData["songID"] = 0;
-    if(!query->getMusicSongInfos().isEmpty())
+    if(!d->isEmpty())
     {
-        m_rawData["songID"] = query->getMusicSongInfos().first().m_songId.toInt();
+        m_rawData["songID"] = d->getMusicSongInfos().first().m_songId.toInt();
         startToPage(0);
     }
 }
@@ -48,16 +43,13 @@ void MusicWYSongCommentsThread::startToPage(int offset)
     m_interrupt = true;
 
     QNetworkRequest request;
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
     QByteArray parameter = makeTokenQueryUrl(&request,
                MusicUtils::Algorithm::mdII(WY_SG_COMMIT_N_URL, false).arg(m_rawData["songID"].toInt()),
                MusicUtils::Algorithm::mdII(WY_COMMIT_NDT_URL, false).arg(m_rawData["songID"].toInt()).arg(m_pageSize).arg(m_pageSize*offset));
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    setSslConfiguration(&request);
+
     m_reply = m_manager->post(request, parameter);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -65,7 +57,7 @@ void MusicWYSongCommentsThread::startToPage(int offset)
 
 void MusicWYSongCommentsThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -76,7 +68,7 @@ void MusicWYSongCommentsThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
         QJson::Parser parser;
         bool ok;
         QVariant data = parser.parse(bytes, &ok);
@@ -96,7 +88,7 @@ void MusicWYSongCommentsThread::downLoadFinished()
 
                     if(m_interrupt) return;
 
-                    MusicPlaylistItem comment;
+                    MusicResultsItem comment;
                     value = comm.toMap();
                     QVariantMap user = value["user"].toMap();
                     comment.m_nickName = user["nickname"].toString();
@@ -106,7 +98,7 @@ void MusicWYSongCommentsThread::downLoadFinished()
                     comment.m_updateTime = QString::number(value["time"].toLongLong());
                     comment.m_description = value["content"].toString();
 
-                    emit createSearchedItems(comment);
+                    emit createSearchedItem(comment);
                 }
             }
         }
@@ -123,11 +115,6 @@ MusicWYPlaylistCommentsThread::MusicWYPlaylistCommentsThread(QObject *parent)
     : MusicDownLoadCommentsThread(parent)
 {
     m_pageSize = 20;
-}
-
-QString MusicWYPlaylistCommentsThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicWYPlaylistCommentsThread::startToSearch(const QString &name)
@@ -151,16 +138,13 @@ void MusicWYPlaylistCommentsThread::startToPage(int offset)
     m_interrupt = true;
 
     QNetworkRequest request;
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
     QByteArray parameter = makeTokenQueryUrl(&request,
                MusicUtils::Algorithm::mdII(WY_PL_COMMIT_N_URL, false).arg(m_rawData["songID"].toInt()),
                MusicUtils::Algorithm::mdII(WY_COMMIT_NDT_URL, false).arg(m_rawData["songID"].toInt()).arg(m_pageSize).arg(m_pageSize*offset));
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    setSslConfiguration(&request);
+
     m_reply = m_manager->post(request, parameter);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -168,7 +152,7 @@ void MusicWYPlaylistCommentsThread::startToPage(int offset)
 
 void MusicWYPlaylistCommentsThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -179,7 +163,7 @@ void MusicWYPlaylistCommentsThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
         QJson::Parser parser;
         bool ok;
         QVariant data = parser.parse(bytes, &ok);
@@ -199,7 +183,7 @@ void MusicWYPlaylistCommentsThread::downLoadFinished()
 
                     if(m_interrupt) return;
 
-                    MusicPlaylistItem comment;
+                    MusicResultsItem comment;
                     value = comm.toMap();
                     QVariantMap user = value["user"].toMap();
                     comment.m_nickName = user["nickname"].toString();
@@ -209,7 +193,7 @@ void MusicWYPlaylistCommentsThread::downLoadFinished()
                     comment.m_updateTime = QString::number(value["time"].toLongLong());
                     comment.m_description = value["content"].toString();
 
-                    emit createSearchedItems(comment);
+                    emit createSearchedItem(comment);
                 }
             }
         }

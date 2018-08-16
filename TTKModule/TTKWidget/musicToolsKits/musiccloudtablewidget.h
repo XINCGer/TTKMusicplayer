@@ -19,48 +19,16 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include "musicsongslistabstracttablewidget.h"
-#include "musicdownloadrecordconfigmanager.h"
-
-class MusicProgressBarDelegate;
-
-/*! @brief The class of the cloud shared song upload table widget.
- * @author Greedysky <greedysky@163.com>
- */
-class MUSIC_TOOL_EXPORT MusicCloudUploadTableWidget : public MusicAbstractTableWidget
-{
-    Q_OBJECT
-public:
-    /*!
-     * Object contsructor.
-     */
-    explicit MusicCloudUploadTableWidget(QWidget *parent = 0);
-
-    virtual ~MusicCloudUploadTableWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-public Q_SLOTS:
-    /*!
-     * Table widget list cell click.
-     */
-    virtual void listCellClicked(int row, int column) override;
-
-protected:
-    MusicProgressBarDelegate *m_progressBarDelegate;
-
-};
-
+#include "musicclouddataitem.h"
+#include "musicdownloadabstracttablewidget.h"
 
 /*! @brief The class of the cloud shared song download table widget.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_TOOL_EXPORT MusicCloudDownloadTableWidget : public MusicSongsListAbstractTableWidget
+class MUSIC_TOOL_EXPORT MusicCloudDownloadTableWidget : public MusicDownloadAbstractTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicCloudDownloadTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -69,55 +37,59 @@ public:
 
     virtual ~MusicCloudDownloadTableWidget();
 
+protected:
     /*!
-     * Get class object name.
+     * Create item by index and name and size and time.
      */
-    static QString getClassName();
+    virtual void createItem(int index, const MusicSong &record) override;
+
+};
+
+
+/*! @brief The class of the cloud shared song upload table widget.
+ * @author Greedysky <greedysky@163.com>
+ */
+class MUSIC_TOOL_EXPORT MusicCloudUploadTableWidget : public MusicDownloadAbstractTableWidget
+{
+    Q_OBJECT
+    TTK_DECLARE_MODULE(MusicCloudUploadTableWidget)
+public:
+    /*!
+     * Object contsructor.
+     */
+    explicit MusicCloudUploadTableWidget(QWidget *parent = 0);
+
+    virtual ~MusicCloudUploadTableWidget();
 
 Q_SIGNALS:
     /*!
-     * Add current selected song to play lists.
+     * Reupload files to server.
      */
-    void addSongToPlay(const QStringList &names);
+    void reuploadFilesToServer(const QStringList &items);
 
 public Q_SLOTS:
     /*!
-     * Table widget list cell click.
+     * Upload file error occurred.
      */
-    virtual void listCellClicked(int row, int column) override;
+    void uploadFileError(const MusicCloudDataItem &item);
     /*!
-     * List cell double clicked.
+     * Reupload failed file.
      */
-    void listCellDoubleClicked(int row, int column);
+    void reuploadFile();
     /*!
-     * Delete item from list at current row.
+     * Reupload failed files.
      */
-    virtual void setDeleteItemAt() override;
-    /*!
-     * Update download percent\ total time and current time progress.
-     */
-    void downloadProgressChanged(float percent, const QString &total, qint64 time);
-    /*!
-     * Create download item from download name and total time.
-     */
-    void createDownloadItem(const QString &name, qint64 time);
+    void reuploadFiles();
 
 protected:
     /*!
-     * Read all config from file and insert items.
+     * Create item by index and name and size and time.
      */
-    void musicSongsFileName();
+    virtual void createItem(int index, const MusicSong &record) override;
     /*!
      * Override the widget event.
      */
     virtual void contextMenuEvent(QContextMenuEvent *event) override;
-    /*!
-     * Create item by index and name and size and time.
-     */
-    void createItem(int index, const MusicDownloadRecord &record, qint64 time);
-
-    MusicProgressBarDelegate *m_progressBarDelegate;
-    MusicDownloadRecords m_musicRecords;
 
 };
 

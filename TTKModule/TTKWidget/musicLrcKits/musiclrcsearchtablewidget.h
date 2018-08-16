@@ -27,6 +27,7 @@
 class MUSIC_LRC_EXPORT MusicLrcSearchTableWidget : public MusicQueryItemTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicLrcSearchTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -35,10 +36,6 @@ public:
 
     virtual ~MusicLrcSearchTableWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Start search query by text.
      */
@@ -74,7 +71,7 @@ public Q_SLOTS:
     /*!
      * Create searched items.
      */
-    virtual void createSearchedItems(const MusicSearchedItem &songItem) override;
+    virtual void createSearchedItem(const MusicSearchedItem &songItem) override;
     /*!
      * Item has double clicked.
      */

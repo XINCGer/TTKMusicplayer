@@ -6,14 +6,9 @@ MusicBarrageRecordConfigManager::MusicBarrageRecordConfigManager(QObject *parent
 
 }
 
-QString MusicBarrageRecordConfigManager::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicBarrageRecordConfigManager::writeBarrageConfig(const MusicBarrageRecords &records)
 {
-    if( !writeConfig( BARRAGEPATH_FULL ) )
+    if(!writeConfig(BARRAGEPATH_FULL))
     {
         return;
     }
@@ -30,12 +25,12 @@ void MusicBarrageRecordConfigManager::writeBarrageConfig(const MusicBarrageRecor
 
     //Write to file
     QTextStream out(m_file);
-    m_ddom->save(out, 4);
+    m_document->save(out, 4);
 }
 
 void MusicBarrageRecordConfigManager::readBarrageConfig(MusicBarrageRecords &records)
 {
-    QDomNodeList nodelist = m_ddom->elementsByTagName("value");
+    QDomNodeList nodelist = m_document->elementsByTagName("value");
     for(int i=0; i<nodelist.count(); ++i)
     {
         MusicBarrageRecord record;

@@ -36,6 +36,7 @@ class MusicSongCheckToolsQualityCore;
 class MUSIC_TOOLSET_EXPORT MusicSongCheckToolsWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongCheckToolsWidget)
 public:
     /*!
      * Object contsructor.
@@ -43,11 +44,6 @@ public:
     explicit MusicSongCheckToolsWidget(QWidget *parent = 0);
 
     virtual ~MusicSongCheckToolsWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
 Q_SIGNALS:
     /*!
@@ -63,7 +59,7 @@ public Q_SLOTS:
     /*!
      * Item lists changed.
      */
-    void itemListsChanged(const MusicObject::MIntList &items);
+    void itemListsChanged(const MIntList &items);
     /*!
      * Rename button clicked.
      */
@@ -143,7 +139,7 @@ protected:
 
     MusicSongs m_localSongs;
     bool m_selectedItemIdFlag;
-    MusicObject::MIntList m_selectedItemIds;
+    MIntList m_selectedItemIds;
     MusicSongCheckToolsRenameCore *m_renameCore;
     MusicSongCheckToolsDuplicateCore *m_duplicateCore;
     MusicSongCheckToolsQualityCore *m_qualityCore;

@@ -27,7 +27,7 @@
 #define ALG_LOW_KEY         "123asd"
 #define ALG_UA_KEY          "ua11.25.17"
 
-/*! @brief The class of the utils algorithm object namespace.
+/*! @brief The namespace of the utils algorithm.
  * @author Greedysky <greedysky@163.com>
  */
 namespace MusicUtils
@@ -46,23 +46,6 @@ namespace MusicUtils
          * Encode the data into sha1.
          */
         MUSIC_UTILS_EXPORT QByteArray hmacSha1(const QByteArray &data, const QByteArray &key);
-
-        /*!
-         * Encode the data into url.
-         */
-        MUSIC_UTILS_EXPORT void urlEncode(QString &data);
-        /*!
-         * Decode the data into url.
-         */
-        MUSIC_UTILS_EXPORT void urlDecode(QString &data);
-        /*!
-         * Encode the data into url.
-         */
-        MUSIC_UTILS_EXPORT void urlEncode(QByteArray &data);
-        /*!
-         * Decode the data into url.
-         */
-        MUSIC_UTILS_EXPORT void urlDecode(QByteArray &data);
 
         /*!
          * Get mdII(greedysky) algorithm.

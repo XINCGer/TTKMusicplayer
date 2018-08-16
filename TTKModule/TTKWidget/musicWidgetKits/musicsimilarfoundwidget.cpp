@@ -14,11 +14,6 @@ MusicSimilarFoundTableWidget::~MusicSimilarFoundTableWidget()
     clearAllItems();
 }
 
-QString MusicSimilarFoundTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSimilarFoundTableWidget::setQueryInput(MusicDownLoadQueryThreadAbstract *query)
 {
     MusicQueryFoundTableWidget::setQueryInput(query);
@@ -28,14 +23,14 @@ void MusicSimilarFoundTableWidget::setQueryInput(MusicDownLoadQueryThreadAbstrac
     }
 }
 
-void MusicSimilarFoundTableWidget::createSearchedItems(const MusicSearchedItem &songItem)
+void MusicSimilarFoundTableWidget::createSearchedItem(const MusicSearchedItem &songItem)
 {
     if(rowCount() >= 15)
     {
         return;
     }
 
-    MusicQueryFoundTableWidget::createSearchedItems(songItem);
+    MusicQueryFoundTableWidget::createSearchedItem(songItem);
 }
 
 
@@ -45,11 +40,6 @@ MusicSimilarFoundWidget::MusicSimilarFoundWidget(QWidget *parent)
 {
     m_foundTableWidget = new MusicSimilarFoundTableWidget(this);
     m_foundTableWidget->hide();
-}
-
-QString MusicSimilarFoundWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSimilarFoundWidget::setSongName(const QString &name)

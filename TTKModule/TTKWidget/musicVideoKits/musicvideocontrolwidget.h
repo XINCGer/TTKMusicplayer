@@ -19,9 +19,9 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QLabel>
 #include "musicobject.h"
 #include "musicglobaldefine.h"
+#include "musicwidgetheaders.h"
 #include "musicbarragerecordconfigmanager.h"
 
 class QPushButton;
@@ -37,6 +37,7 @@ class MusicLocalSongSearchEdit;
 class MUSIC_VIDEO_EXPORT MusicVideoControlWidget : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicVideoControlWidget)
 public:
     /*!
      * Object contsructor.
@@ -45,10 +46,6 @@ public:
 
     ~MusicVideoControlWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set current video play value.
      */
@@ -78,7 +75,7 @@ Q_SIGNALS:
     /*!
      * Set current media url by selected quality.
      */
-    void mvURLChanged(const QString &data);
+    void mediaUrlChanged(const QString &data);
     /*!
      * Slider value changed at value.
      */

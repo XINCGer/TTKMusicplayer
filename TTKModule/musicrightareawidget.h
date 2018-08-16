@@ -38,6 +38,7 @@ namespace Ui {
 class MUSIC_GUI_EXPORT MusicRightAreaWidget : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicRightAreaWidget)
 public:
     enum MusicFunction
     {
@@ -52,12 +53,16 @@ public:
         SimilarWidget,          /*!< insert similar found widget*/
         AlbumWidget,            /*!< insert album found widget*/
         ArtistWidget,           /*!< insert artist found widget*/
+        ArtistCategoryWidget,   /*!< insert artist category found widget*/
         ToplistWidget,          /*!< insert toplist found widget*/
         PlaylistWidget,         /*!< insert playlist found widget*/
         AdvancedSearchWidget,   /*!< insert advanced search widget*/
         RecommendWidget,        /*!< insert recommend found widget*/
         IndentifyWidget,        /*!< insert indentify songs widget*/
-        KuiSheWidget            /*!< insert kugou kuishe widget*/
+        KuiSheWidget,           /*!< insert kugou kuishe widget*/
+        WebDJRadioWidget,       /*!< insert web dj radio widget*/
+        WebMVRadioWidget,       /*!< insert web mv radio widget*/
+        CloudManagerWidget      /*!< insert cloud manager widget*/
     };
 
     /*!
@@ -67,10 +72,6 @@ public:
 
     ~MusicRightAreaWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Get class object instance.
      */
@@ -137,17 +138,21 @@ public:
      */
     void showSettingWidget() const;
     /*!
-     * Music artist similar function.
+     * Music artist search function.
      */
-    void musicArtistSimilar(const QString &id);
+    void musicArtistSearch(const QString &id);
     /*!
-     * Music artist albums function.
+     * Music album search function.
      */
-    void musicArtistAlbums(const QString &id);
+    void musicAlbumSearch(const QString &id);
     /*!
-     * Music artist mvs function.
+     * Music movie search function.
      */
-    void musicArtistMvs(const QString &id);
+    void musicMovieSearch(const QString &id);
+    /*!
+     * Music movie radio search function.
+     */
+    void musicMovieRadioSearch(const QVariant &data);
     /*!
      * Resize window bound by widgte resize called.
      */
@@ -169,6 +174,10 @@ public Q_SLOTS:
      */
     void musicFunctionClicked(int index);
     /*!
+     * Music function button clicked by extra widget.
+     */
+    void musicFunctionClicked(int index, QWidget *widget);
+    /*!
      * Music song comments widget.
      */
     void musicSongCommentsWidget();
@@ -181,17 +190,25 @@ public Q_SLOTS:
      */
     void musicAlbumFound(const QString &text, const QString &id);
     /*!
-     * Music artist similar function.
+     * Music artist category function.
      */
-    void musicArtistSimilarFound();
+    void musicArtistCategoryFound();
     /*!
-     * Music artist albums function.
+     * Music artist search function.
      */
-    void musicArtistAlbumsFound();
+    void musicArtistSearchFound();
     /*!
-     * Music artist mvs function.
+     * Music album search function.
      */
-    void musicArtistMvsFound();
+    void musicAlbumSearchFound();
+    /*!
+     * Music movie search function.
+     */
+    void musicMovieSearchFound();
+    /*!
+     * Music movie search radio function.
+     */
+    void musicMovieSearchRadioFound();
     /*!
      * Music artist function that by string.
      */
@@ -282,8 +299,13 @@ public Q_SLOTS:
     void musicChangeDownloadCustumWidget();
 
 protected:
-    QString m_rawData;
-    QWidget *m_stackedFuncWidget;
+    /*!
+     * Music function parameter init.
+     */
+    void musicFunctionParameterInit(MusicFunction func);
+
+    QVariant m_rawData;
+    QWidget *m_stackedFuncWidget, *m_stackedAutoWidget;
     Ui::MusicApplication *m_ui;
     MusicSettingWidget *m_settingWidget;
     MusicVideoPlayWidget *m_videoPlayerWidget;

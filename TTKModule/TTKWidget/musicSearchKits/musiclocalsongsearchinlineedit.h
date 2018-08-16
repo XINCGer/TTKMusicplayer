@@ -31,6 +31,7 @@ class MusicDownLoadSongSuggestThread;
 class MUSIC_SEARCH_EXPORT MusicLocalSongSearchInlineEdit : public MusicLocalSongSearchEdit
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicLocalSongSearchInlineEdit)
 public:
     /*!
      * Object contsructor.
@@ -39,10 +40,6 @@ public:
 
     virtual ~MusicLocalSongSearchInlineEdit();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Create all widget in layout.
      */
@@ -60,7 +57,7 @@ public Q_SLOTS:
     /*!
      * Search top list information finished.
      */
-    void searchTopListInfoFinished(const QString &data);
+    void searchToplistInfoFinished(const QString &data);
 
 protected:
     /*!

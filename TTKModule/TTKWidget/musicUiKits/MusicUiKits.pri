@@ -33,7 +33,8 @@ HEADERS  += \
     $$PWD/musictinyuiobject.h \
     $$PWD/musictoolsetsuiobject.h \
     $$PWD/musicvideofloatuiobject.h \
-    $$PWD/musicvideouiobject.h
+    $$PWD/musicvideouiobject.h \
+    $$PWD/musicwidgetheaders.h
 }
 
 contains(CONFIG, MUSIC_BUILD_LIB){
@@ -52,7 +53,6 @@ FORMS    += \
     $$PWD/musicToolsetsKits/musiclocalsongsmanagerwidget.ui \
     $$PWD/musicToolsetsKits/musictimerwidget.ui \
     $$PWD/musicToolsetsKits/musictransformwidget.ui \
-    $$PWD/musicToolsetsKits/musicnetworkspeedtestwidget.ui \
     $$PWD/musicToolsetsKits/musicnetworkconnectiontestwidget.ui \
     $$PWD/musicToolsetsKits/musicvolumegainwidget.ui \
     $$PWD/musicToolsetsKits/musicsoundtouchwidget.ui \
@@ -61,7 +61,7 @@ FORMS    += \
     $$PWD/musicToolsetsKits/musicsongchecktoolsitemselecteddialog.ui \
     $$PWD/musicToolsetsKits/musicsoundkmicrowidget.ui \
     $$PWD/musicToolsetsKits/musicspectrumwidget.ui \
-    $$PWD/musicToolsKits/musicwebmusicradiowidget.ui \
+    $$PWD/musicToolsKits/musicwebmusicradioplaywidget.ui \
     $$PWD/musicToolsKits/musicconnecttransferwidget.ui \
     $$PWD/musicToolsKits/musiccloudfilemanagerdialog.ui \
     $$PWD/musicToolsKits/musiccloudfileinformationwidget.ui \

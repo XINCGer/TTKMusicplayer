@@ -23,7 +23,7 @@ QByteArray MusicUtils::Algorithm::hmacSha1(const QByteArray &data, const QByteAr
     }
 
     QByteArray innerPadding(blockSize, char(0x36));
-    QByteArray outerPadding(blockSize, char(0x5c));
+    QByteArray outerPadding(blockSize, char(0x5C));
 
     for(int i = 0; i < key.length(); i++)
     {
@@ -37,34 +37,6 @@ QByteArray MusicUtils::Algorithm::hmacSha1(const QByteArray &data, const QByteAr
     total.append(MusicUtils::Algorithm::sha1(part));
     QByteArray hashed = MusicUtils::Algorithm::sha1(total);
     return hashed;
-}
-
-void MusicUtils::Algorithm::urlEncode(QString &data)
-{
-    data.replace('+', "%2B");
-    data.replace('/', "%2F");
-    data.replace('=', "%3D");
-}
-
-void MusicUtils::Algorithm::urlDecode(QString &data)
-{
-    data.replace("%2B", "+");
-    data.replace("%2F", "/");
-    data.replace("%3D", "=");
-}
-
-void MusicUtils::Algorithm::urlEncode(QByteArray &data)
-{
-    data.replace('+', "%2B");
-    data.replace('/', "%2F");
-    data.replace('=', "%3D");
-}
-
-void MusicUtils::Algorithm::urlDecode(QByteArray &data)
-{
-    data.replace("%2B", "+");
-    data.replace("%2F", "/");
-    data.replace("%3D", "=");
 }
 
 QString MusicUtils::Algorithm::mdII(const QString &data, bool encode)

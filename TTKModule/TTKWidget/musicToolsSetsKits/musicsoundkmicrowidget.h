@@ -37,6 +37,7 @@ class MusicAudioRecorderCore;
 class MUSIC_TOOLSET_EXPORT MusicSoundKMicroWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSoundKMicroWidget)
 public:
     /*!
      * Object contsructor.
@@ -45,10 +46,6 @@ public:
 
     virtual ~MusicSoundKMicroWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set current button style.
      */
@@ -61,12 +58,6 @@ public:
      * Start seach KMicro.
      */
     void startSeachKMicro(const QString &name);
-
-Q_SIGNALS:
-    /*!
-     * Reset window open flag.
-     */
-    void resetFlag(MusicObject::ToolsType flag);
 
 public Q_SLOTS:
     /*!
@@ -104,7 +95,7 @@ public Q_SLOTS:
     /*!
      * Set current media url.
      */
-    void mvURLChanged(bool mv, const QString &url, const QString &lrcUrl);
+    void mediaUrlChanged(bool mv, const QString &url, const QString &lrcUrl);
     /*!
      * Receive download byte data from net.
      */
@@ -140,7 +131,7 @@ protected:
 
     Ui::MusicSoundKMicroWidget *m_ui;
     qint64 m_intervalTime;
-    bool m_stateButtonOn, m_queryMv;
+    bool m_stateButtonOn, m_queryMovieMode;
     MusicCoreMPlayer *m_mediaPlayer;
     MusicSoundKMicroSearchWidget *m_searchWidget;
     MusicLrcAnalysis *m_analysis;

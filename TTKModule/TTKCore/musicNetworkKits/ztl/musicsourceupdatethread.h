@@ -23,25 +23,19 @@
 #include "musicversion.h"
 #include "musicglobaldefine.h"
 
-#define VERSION_URL     "TzFTSjRiNlN6TXB3WGZtdENONGdaQzhxdkpNc0ZXZk9VSUtXdlhQQ252bWJLZ0pidE5LcW80WUlHQmQzNWp0OGxXSjFkQT09"
-#define DOWNLOAD_URL    "YXhxRk5PeWpscVNYbEZKMmEwbUExdkMxcm9QN1ZybTlZYTcwVmN1aUdTNEJoMFRiM3V5cnE2S3VDbG89"
-
 /*! @brief The class of source data query pdate thread.
  * @author Greedysky <greedysky@163.com>
  */
 class MUSIC_NETWORK_EXPORT MusicSourceUpdateThread : public QObject
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSourceUpdateThread)
 public:
     /*!
      * Object contsructor.
      */
     explicit MusicSourceUpdateThread(QObject *parent = 0);
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Start to download data.
      */

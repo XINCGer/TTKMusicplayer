@@ -30,7 +30,6 @@ set_property(GLOBAL PROPERTY MUSIC_UIS
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musicdesktopwallpaperwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musicfileinformationwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musiclocalsongsmanagerwidget.ui
-    ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musicnetworkspeedtestwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musicnetworkconnectiontestwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musictimerwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musictransformwidget.ui
@@ -44,7 +43,7 @@ set_property(GLOBAL PROPERTY MUSIC_UIS
     ${MUSIC_WIDGET_UI_DIR}/musicToolsKits/musiccloudfileinformationwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsKits/musiccloudfilemanagerdialog.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsKits/musicconnecttransferwidget.ui
-    ${MUSIC_WIDGET_UI_DIR}/musicToolsKits/musicwebmusicradiowidget.ui
+    ${MUSIC_WIDGET_UI_DIR}/musicToolsKits/musicwebmusicradioplaywidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsKits/musictoolsetswidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicUserKits/musicuserdialog.ui
     ${MUSIC_WIDGET_UI_DIR}/musicUserKits/musicusermanagerdialog.ui

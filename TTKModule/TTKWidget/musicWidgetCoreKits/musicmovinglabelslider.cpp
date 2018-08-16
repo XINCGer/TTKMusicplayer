@@ -24,11 +24,6 @@ MusicMovingLabelSlider::~MusicMovingLabelSlider()
     delete m_textLabel;
 }
 
-QString MusicMovingLabelSlider::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicMovingLabelSlider::mousePressEvent(QMouseEvent *event)
 {
     MusicMovingClickedSlider::mousePressEvent(event);
@@ -77,7 +72,7 @@ void MusicMovingLabelSlider::leaveEvent(QEvent *event)
 QPoint MusicMovingLabelSlider::limitLableGeometry(int x, int y, int z)
 {
     QPoint pt;
-    if( 0 < x && x < z)
+    if(0 < x && x < z)
     {
         pt.setX(y + x);
         pt.setY(qint64(x)*maximum()/z);

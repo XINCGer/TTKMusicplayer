@@ -7,15 +7,10 @@ MusicPlaylistFoundCommentsWidget::MusicPlaylistFoundCommentsWidget(QWidget *pare
 
 }
 
-QString MusicPlaylistFoundCommentsWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicPlaylistFoundCommentsWidget::initWidget(bool isPain)
 {
     MusicCommentsWidget::initWidget(isPain);
 
     m_commentsThread = M_DOWNLOAD_QUERY_PTR->getPlaylistCommentThread(this);
-    connect(m_commentsThread, SIGNAL(createSearchedItems(MusicPlaylistItem)), SLOT(createSearchedItems(MusicPlaylistItem)));
+    connect(m_commentsThread, SIGNAL(createSearchedItem(MusicResultsItem)), SLOT(createSearchedItem(MusicResultsItem)));
 }

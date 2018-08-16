@@ -14,14 +14,9 @@ MusicSkinThunderConfigManager::MusicSkinThunderConfigManager(QObject *parent)
 
 }
 
-QString MusicSkinThunderConfigManager::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSkinThunderConfigManager::readSkinRemoteXMLConfig(MusicSkinRemoteGroups &items)
 {
-    QDomNodeList nodelist = m_ddom->elementsByTagName("group");
+    QDomNodeList nodelist = m_document->elementsByTagName("group");
     for(int i=0; i<nodelist.count(); ++i)
     {
         MusicSkinRemoteGroup group;
@@ -73,22 +68,12 @@ MusicDownloadBackgroundRemoteThread::MusicDownloadBackgroundRemoteThread(QObject
 
 }
 
-QString MusicDownloadBackgroundRemoteThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 
 
 MusicDownloadBackgroundThunderThread::MusicDownloadBackgroundThunderThread(QObject *parent)
     : MusicDownloadBackgroundRemoteThread(parent)
 {
 
-}
-
-QString MusicDownloadBackgroundThunderThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicDownloadBackgroundThunderThread::startToDownload()
@@ -117,11 +102,6 @@ MusicDownloadBackgroundBingThread::MusicDownloadBackgroundBingThread(QObject *pa
     : MusicDownloadBackgroundRemoteThread(parent)
 {
 
-}
-
-QString MusicDownloadBackgroundBingThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicDownloadBackgroundBingThread::startToDownload()

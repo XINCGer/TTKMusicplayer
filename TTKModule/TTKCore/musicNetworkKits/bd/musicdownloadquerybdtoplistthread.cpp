@@ -10,11 +10,6 @@ MusicDownLoadQueryBDToplistThread::MusicDownLoadQueryBDToplistThread(QObject *pa
     m_pageSize = 100;
 }
 
-QString MusicDownLoadQueryBDToplistThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicDownLoadQueryBDToplistThread::startToSearch(QueryType type, const QString &toplist)
 {
     if(type == MusicQuery)
@@ -43,11 +38,8 @@ void MusicDownLoadQueryBDToplistThread::startToSearch(const QString &toplist)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -68,7 +60,7 @@ void MusicDownLoadQueryBDToplistThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -79,7 +71,7 @@ void MusicDownLoadQueryBDToplistThread::downLoadFinished()
             if(value["error_code"].toInt() == 22000 && value.contains("song_list"))
             {
                 QVariantMap topInfo = value["billboard"].toMap();
-                MusicPlaylistItem info;
+                MusicResultsItem info;
                 info.m_name = topInfo["name"].toString();
                 info.m_coverUrl = topInfo["pic_s192"].toString();
                 info.m_playCount = "-";
@@ -97,8 +89,8 @@ void MusicDownLoadQueryBDToplistThread::downLoadFinished()
 
                     value = var.toMap();
                     MusicObject::MusicSongInformation musicInfo;
-                    musicInfo.m_singerName = value["author"].toString();
-                    musicInfo.m_songName = value["title"].toString();
+                    musicInfo.m_singerName = MusicUtils::String::illegalCharactersReplaced(value["author"].toString());
+                    musicInfo.m_songName = MusicUtils::String::illegalCharactersReplaced(value["title"].toString());
                     musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["file_duration"].toInt()*1000);
 
                     musicInfo.m_songId = value["song_id"].toString();
@@ -106,11 +98,15 @@ void MusicDownLoadQueryBDToplistThread::downLoadFinished()
                     musicInfo.m_artistId = value["ting_uid"].toString();
                     musicInfo.m_lrcUrl = value["lrclink"].toString();
                     musicInfo.m_smallPicUrl = value["pic_small"].toString().replace("_90", "_500");
-                    musicInfo.m_albumName = value["album_title"].toString();
+                    musicInfo.m_albumName = MusicUtils::String::illegalCharactersReplaced(value["album_title"].toString());
 
-                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    musicInfo.m_year = value["publishtime"].toString();
+                    musicInfo.m_discNumber = "1";
+                    musicInfo.m_trackNumber = value["album_no"].toString();
+
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
                     readFromMusicSongAttribute(&musicInfo, value["all_rate"].toString(), m_searchQuality, m_queryAllRecords);
-                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
 
                     if(musicInfo.m_songAttrs.isEmpty())
                     {
@@ -123,7 +119,7 @@ void MusicDownLoadQueryBDToplistThread::downLoadFinished()
                     item.m_albumName = musicInfo.m_albumName;
                     item.m_time = musicInfo.m_timeLength;
                     item.m_type = mapQueryServerString();
-                    emit createSearchedItems(item);
+                    emit createSearchedItem(item);
                     m_musicSongInfos << musicInfo;
                 }
             }

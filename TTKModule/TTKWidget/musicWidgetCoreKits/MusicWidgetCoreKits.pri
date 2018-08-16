@@ -28,7 +28,7 @@ HEADERS  += \
     $$PWD/musicfillitemtablewidget.h \
     $$PWD/musicquerytablewidget.h \
     $$PWD/musicqueryfoundtablewidget.h \
-    $$PWD/musicslowmovingtablewidget.h \
+    $$PWD/musicsmoothmovingtablewidget.h \
     $$PWD/musicitemdelegate.h \
     $$PWD/musiccolordialog.h \
     $$PWD/musicmarqueewidget.h \
@@ -57,7 +57,9 @@ HEADERS  += \
     $$PWD/musicresizegrabitemwidget.h \
     $$PWD/musiccodeareawidget.h \
     $$PWD/musiclayoutanimationwidget.h \
-    $$PWD/musiccommentswidget.h
+    $$PWD/musiccommentswidget.h \
+    $$PWD/musicdownloadabstracttablewidget.h \
+    $$PWD/musicfunctiontoolboxwidget.h
 
 }
 
@@ -71,7 +73,7 @@ SOURCES += \
     $$PWD/musicfillitemtablewidget.cpp \
     $$PWD/musicquerytablewidget.cpp \
     $$PWD/musicqueryfoundtablewidget.cpp \
-    $$PWD/musicslowmovingtablewidget.cpp \
+    $$PWD/musicsmoothmovingtablewidget.cpp \
     $$PWD/musicitemdelegate.cpp \
     $$PWD/musiccolordialog.cpp \
     $$PWD/musicmarqueewidget.cpp \
@@ -100,6 +102,8 @@ SOURCES += \
     $$PWD/musicresizegrabitemwidget.cpp \
     $$PWD/musiccodeareawidget.cpp \
     $$PWD/musiclayoutanimationwidget.cpp \
-    $$PWD/musiccommentswidget.cpp
+    $$PWD/musiccommentswidget.cpp \
+    $$PWD/musicdownloadabstracttablewidget.cpp \
+    $$PWD/musicfunctiontoolboxwidget.cpp
 
 }

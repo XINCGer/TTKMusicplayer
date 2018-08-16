@@ -19,10 +19,9 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QLabel>
-#include <QPushButton>
 #include "musicobject.h"
 #include "musicglobaldefine.h"
+#include "musicwidgetheaders.h"
 
 class QMovie;
 class QStackedWidget;
@@ -37,6 +36,7 @@ class MusicIdentifySongsThread;
 class MUSIC_TOOLSET_EXPORT MusicIdentifySongsWidget : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicIdentifySongsThread)
 public:
     /*!
      * Object contsructor.
@@ -45,10 +45,6 @@ public:
 
     ~MusicIdentifySongsWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Get query song id keys.
      */
@@ -107,7 +103,7 @@ protected:
     QLabel *m_detectedLabel, *m_lrcLabel;
     QMovie *m_detectedMovie;
     QPushButton *m_detectedButton;
-    MusicCoreMPlayer *m_songPlayer;
+    MusicCoreMPlayer *m_mediaPlayer;
     MusicLrcAnalysis *m_analysis;
     MusicAudioRecorderCore *m_recordCore;
     MusicIdentifySongsThread *m_detectedThread;

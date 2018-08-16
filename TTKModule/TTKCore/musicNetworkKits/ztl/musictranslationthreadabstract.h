@@ -27,20 +27,13 @@
 class MUSIC_NETWORK_EXPORT MusicTranslationThreadAbstract : public MusicNetworkAbstract
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicTranslationThreadAbstract)
 public:
     /*!
      * Object contsructor.
      */
     explicit MusicTranslationThreadAbstract(QObject *parent = 0);
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
-     * Set the current raw data.
-     */
-    void setRawData(const QVariantMap &data);
     /*!
      * Release the network object.
      */

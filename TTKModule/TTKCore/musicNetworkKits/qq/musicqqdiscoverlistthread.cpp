@@ -9,11 +9,6 @@ MusicQQDiscoverListThread::MusicQQDiscoverListThread(QObject *parent)
 
 }
 
-QString MusicQQDiscoverListThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicQQDiscoverListThread::startToSearch()
 {
     if(!m_manager)
@@ -22,7 +17,7 @@ void MusicQQDiscoverListThread::startToSearch()
     }
 
     M_LOGGER_INFO(QString("%1 startToSearch").arg(getClassName()));
-    m_topListInfo.clear();
+    m_toplistInfo.clear();
     QUrl musicUrl = MusicUtils::Algorithm::mdII(QQ_SONG_TOPLIST_C_URL, false).arg(4);
     deleteAll();
     m_interrupt = true;
@@ -31,11 +26,8 @@ void MusicQQDiscoverListThread::startToSearch()
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(QQ_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -43,7 +35,7 @@ void MusicQQDiscoverListThread::startToSearch()
 
 void MusicQQDiscoverListThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -89,17 +81,17 @@ void MusicQQDiscoverListThread::downLoadFinished()
                             continue;
                         }
                         QVariantMap artistMap = artistValue.toMap();
-                        m_topListInfo = artistMap["name"].toString();
+                        m_toplistInfo = artistMap["name"].toString();
                     }
 
-                    m_topListInfo += " - " + value["songname"].toString();
+                    m_toplistInfo += " - " + value["songname"].toString();
                     break;
                 }
             }
         }
     }
 
-    emit downLoadDataChanged(m_topListInfo);
+    emit downLoadDataChanged(m_toplistInfo);
     deleteAll();
     M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
 }

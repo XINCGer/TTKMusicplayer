@@ -41,6 +41,7 @@ const QString KW_ARTIST_NINFO_URL  = "eWJjZXJ2OTFjOGZNcHdneEF2aVFtaDhOcytwQWNNbm
 const QString KW_AR_ALBUM_URL      = "bTVGSVc1djhoNFFna24vUzNQb0FCQjdsbVIvMHgxNUpsbHJwZndGbmFmR1dENUdTRmw1bVFLTjdJUzJwV2FJYVAxajhOREpZekdGR1IrSW13ZWd6S0Z4YUJsYVFId054Y3hhaWl0dmFucUlwYXIwSkk1K3daeElITVNKQ0JDM0Q5bW5TWFdlVU5nMUNqQ29wcEdoWUd0MlJxN2VIb2F3dW5Mb1NiZz09";
 const QString KW_AR_MV_URL         = "b0FaUGp1UFFwbngwdWFSQXU1L2hEWEFyUWJLa1JLTjY5OFlHSHZWZ1dCa1N4SDQxcGdJWXQ5NmkxaWo0NEhidWhWSWNFMzFLS1FlNWZYTWhHelUvWTdOMUlDWGV0N1liMDBKNjlCQVFpclJJS0NpRDZ6YmkvTVpSS3VRNVNlMHk3eThoUG04R1cxTmpOT2RRdHZXM0YxbzBTVTh1WVNGNA==";
 const QString KW_AR_SIM_URL        = "c25YQzhiU3dwRXc1djFtY2k4UCtNRDBmMVJmTFVGc3hvTE5pcmpVdkZxWGc0QzNLREcrNXhkZUtUZ0d5c0RoLw==";
+const QString KW_AR_LIST_URL       = "NEtJeVhYZFJ4NE4reDlqU2paYVhpUlZqVWtWWXBnbUVnTGVFRVdkbzBTb2dldXhtdnpaNlhVTHZzSk1yaU0wTHowZTR2dWxiYzg4c2xybmtsNU1FU2w1aFZKcTdsWERvMzVKUVdNSWNQemdUQ1FLMVF3V3RUdE1iVTZmQ1FRK3g=";
 /////////////////////////////////////////////////////////////////////////////
 const QString KW_MV_URL            = "TjhtdUUydHowZVp1d2RsUVl1UGg0QWkzTjhqZ1NGTWVLNmxqZytTQzV5T291VytwcUpSczNPMGdQV1U9";
 const QString KW_MV_HOME_URL       = "a3gvOXZGUzF6Sko4TDlWcVRBMFMrdy8yMURLS0JFR0xFVEdJcVE9PQ==";
@@ -50,7 +51,7 @@ const QString KW_MV_ATTR_URL       = "cnkyNURUa0E0RkpHdVZWamlOZDRVaGVNcVViSHUrSn
 ///////////////////////////////////////////////////////////////////////////
 const QString KW_SG_COMMIT_URL     = "R29Ob2xrOUcxbXhpMlF6YmRzZ2kxZVFrRmJPcEdzbk0weUNQazNGUEFXSjl4QXdhWU1kUXdNQ3ExOWxGRE5uOERTblpCNk9pZWdnVmRLTHJkK25GckxxbzhpYmh3UHVTbi9DK1RoYm5qaVdZV2o4MXo2cXBwL1ZLTFprY0dyZENDUDhiT0E9PQ==";
 ///////////////////////////////////////////////////////////////////////////
-const QString KW_SONG_TOPLIST_URL  = "UjQydzFlazUwM1BRNm1DbXhlcHZjR3RpRzY0QWV2Sm93dmQ2d1JuQVFLbmtHSmFpakk1TGcvUG1iYVYzc2k1VTJBNlgvYWxUK1BZVnVnWUpZSEY4L0xSVkQveDdoMnI5";
+const QString KW_SONG_TOPLIST_URL  = "VE56cUdwVjgxMkFMMC80VThzN25sQmZFTzFPNWdaOHZPZEM2YlNyeUxwTndnd0ZTVGtqTUM4cTlQaG5nbWNtRDIzc3lPdVJ6eXFXQkZTRjkvWktnMDZocEdXRStIcHpRMW9CZTJscDZYVnRoUkN2RE12SkRDWVNSMHVkYXVVVGs=";
 ///////////////////////////////////////////////////////////////////////////
 const QString KW_PL_COMMIT_URL     = "b09RdlBRdzh4bjB4QXZCbXlXcE5ENEpUMzhEUGY5cVNCUVAwVUJucjg4YS9tWXhsZ2dINmZDOXFhOUlJVmVOaWVBNWlsaE9JRy9UalllVit2dk1IZG5ST1dhUGFNSXg0ZmVxdlpzUEZINUhXdzJML1hDOVhqYjQ2Y2Raek5oRGNDaGx3Wmc9PQ==";
 const QString KW_PLAYLIST_URL      = "OTc4ZUwvTFdHbW0rekNzWGx6aHR1QXg5TnhKRUdmQ2drYlBpdWFRVjhQUkJVN0NaMDl6NmJFZTY5Yy91eHpWWVh3VlFXYzA4clZDRjZrQWdWSExtRnhqNFRZY0xzNnc1R0hhRStpeFQ4QzlKNUk1a1JrdlJtcFU0YkpvUlpSNGUzZFNiR253azVxUlArMEVpS081RlZPMlZLZEE9";

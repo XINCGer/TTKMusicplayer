@@ -7,12 +7,13 @@
 #include "musicconnectionpool.h"
 #include "musicsongtag.h"
 #include "musicotherdefine.h"
+#include "musicsinglemanager.h"
+
 #ifdef MUSIC_GREATER_NEW
 #  include <QtConcurrent/QtConcurrent>
 #else
 #  include <QtConcurrentRun>
 #endif
-#include <QFileDialog>
 #include <QButtonGroup>
 #include <QFileSystemWatcher>
 #include <QStyledItemDelegate>
@@ -49,9 +50,9 @@ MusicLocalSongsManagerWidget::MusicLocalSongsManagerWidget(QWidget *parent)
     connect(m_ui->watchDirButton, SIGNAL(clicked()), SLOT(watchDirSelected()));
 
     m_ui->auditionButton->setStyleSheet(MusicUIObject::MToolButtonStyle01 + MusicUIObject::MToolButtonStyle02 +
-                                      "QToolButton{ image:url(:/contextMenu/btn_audition);}");
+                                      "QToolButton{ image:url(:/contextMenu/btn_audition); }");
     m_ui->addButton->setStyleSheet(MusicUIObject::MToolButtonStyle01 + MusicUIObject::MToolButtonStyle02 +
-                                 "QToolButton{ image:url(:/contextMenu/btn_add);}");
+                                 "QToolButton{ image:url(:/contextMenu/btn_add); }");
 
     m_ui->auditionButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_ui->addButton->setCursor(QCursor(Qt::PointingHandCursor));
@@ -124,7 +125,8 @@ MusicLocalSongsManagerWidget::MusicLocalSongsManagerWidget(QWidget *parent)
 MusicLocalSongsManagerWidget::~MusicLocalSongsManagerWidget()
 {
     m_runTypeChanged = false;
-    M_CONNECTION_PTR->removeValue(getClassName() );
+    M_CONNECTION_PTR->removeValue(getClassName());
+    M_SINGLE_MANAGER_PTR->removeObject(getClassName());
     clearAllItems();
     m_thread->stopAndQuitThread();
     delete m_thread;
@@ -132,16 +134,11 @@ MusicLocalSongsManagerWidget::~MusicLocalSongsManagerWidget()
     delete m_ui;
 }
 
-QString MusicLocalSongsManagerWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicLocalSongsManagerWidget::findExtraDevicePath(const QString &dir)
 {
-    MusicUtils::Widget::setComboboxText(m_ui->filterComboBox, dir);
+    MusicUtils::Widget::setComboBoxText(m_ui->filterComboBox, dir);
     m_thread->setFindFilePath(dir);
-    filterScanChanged(DEFAULT_INDEX_LEVEL0);
+    filterScanChanged(DEFAULT_LEVEL_LOWER);
 }
 
 void MusicLocalSongsManagerWidget::selectedAllItems(bool check)
@@ -300,7 +297,7 @@ void MusicLocalSongsManagerWidget::filterScanChanged(int index)
 
 void MusicLocalSongsManagerWidget::musicSearchIndexChanged(int, int index)
 {
-    MusicObject::MIntList searchResult;
+    MIntList searchResult;
     for(int j=0; j<m_fileNames.count(); ++j)
     {
         if(m_fileNames[j].fileName().contains(m_ui->searchLineEdit->text().trimmed(), Qt::CaseInsensitive))
@@ -433,12 +430,6 @@ void MusicLocalSongsManagerWidget::show()
     MusicAbstractMoveWidget::show();
 }
 
-void MusicLocalSongsManagerWidget::closeEvent(QCloseEvent *event)
-{
-    MusicAbstractMoveWidget::closeEvent(event);
-    emit resetFlag(MusicObject::TT_LocalManager);
-}
-
 void MusicLocalSongsManagerWidget::clearAllItems()
 {
     ///Remove all the original item
@@ -452,6 +443,7 @@ void MusicLocalSongsManagerWidget::clearAllItems()
         case 0: m_ui->songlistsTable->clear(); break;
         case 1:
         case 2: m_ui->songInfoTable->clear(); break;
+        default: break;
     }
 }
 
@@ -476,7 +468,7 @@ void MusicLocalSongsManagerWidget::addDrivesList()
 
 void MusicLocalSongsManagerWidget::itemsSelected()
 {
-    MusicObject::MIntSet auditionRow; //if selected multi rows
+    MIntSet auditionRow; //if selected multi rows
     foreach(QTableWidgetItem *item, m_ui->songlistsTable->selectedItems())
     {
         if(!m_searchfileListCache.isEmpty())
@@ -492,7 +484,7 @@ void MusicLocalSongsManagerWidget::itemsSelected()
     m_ui->searchLineEdit->clear();
     m_searchfileListCache.clear();
 
-    MusicObject::MIntList auditionList = auditionRow.toList();
+    MIntList auditionList = auditionRow.toList();
     qSort(auditionList);
 
     QStringList names;
@@ -564,14 +556,5 @@ void MusicLocalSongsManagerWidget::controlEnable(bool state)
 
 void MusicLocalSongsManagerWidget::loadingLabelState(bool state)
 {
-    if(state)
-    {
-        m_ui->loadingLabel->show();
-        m_ui->loadingLabel->start();
-    }
-    else
-    {
-        m_ui->loadingLabel->hide();
-        m_ui->loadingLabel->stop();
-    }
+    m_ui->loadingLabel->run(state);
 }

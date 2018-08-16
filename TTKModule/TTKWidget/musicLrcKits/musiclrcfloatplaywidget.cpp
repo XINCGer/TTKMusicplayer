@@ -2,9 +2,7 @@
 #include "musicuiobject.h"
 #include "musicfunctionuiobject.h"
 #include "musicapplication.h"
-
-#include <QBoxLayout>
-#include <QToolButton>
+#include "musicwidgetheaders.h"
 
 MusicLrcFloatPlayWidget::MusicLrcFloatPlayWidget(QWidget *parent)
     : MusicFloatAbstractWidget(parent)
@@ -51,11 +49,6 @@ MusicLrcFloatPlayWidget::~MusicLrcFloatPlayWidget()
     delete m_musicPrevious;
     delete m_musicNext;
     delete m_musicKey;
-}
-
-QString MusicLrcFloatPlayWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLrcFloatPlayWidget::resizeWindow(int width, int height)

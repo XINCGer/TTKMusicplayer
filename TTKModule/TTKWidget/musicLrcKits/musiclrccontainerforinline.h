@@ -19,7 +19,6 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QBoxLayout>
 #include "musiclrccontainer.h"
 
 class MusicLrcFloatWidget;
@@ -27,7 +26,7 @@ class MusicLrcFloatPlayWidget;
 class MusicClickedLabel;
 class MusicLrcCommentsWidget;
 class MusicLrcTranslatedWidget;
-class MusicLayoutAnimationWidget;
+class MusicVLayoutAnimationWidget;
 
 /*! @brief The class of the inline lrc container.
  * @author Greedysky <greedysky@163.com>
@@ -35,6 +34,7 @@ class MusicLayoutAnimationWidget;
 class MUSIC_LRC_EXPORT MusicLrcContainerForInline : public MusicLrcContainer
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicLrcContainerForInline)
 public:
     /*!
      * Object contsructor.
@@ -42,11 +42,6 @@ public:
     explicit MusicLrcContainerForInline(QWidget *parent = 0);
 
     virtual ~MusicLrcContainerForInline();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Start timer clock to draw lrc.
@@ -261,7 +256,7 @@ protected:
     MusicClickedLabel *m_noLrcCurrentInfo;
     MusicLrcCommentsWidget *m_commentsWidget;
     MusicLrcTranslatedWidget *m_translatedWidget;
-    MusicLayoutAnimationWidget *m_layoutWidget;
+    MusicVLayoutAnimationWidget *m_layoutWidget;
 
 };
 

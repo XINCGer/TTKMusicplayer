@@ -9,11 +9,6 @@ MusicQQSongSuggestThread::MusicQQSongSuggestThread(QObject *parent)
 
 }
 
-QString MusicQQSongSuggestThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicQQSongSuggestThread::startToSearch(const QString &text)
 {
     if(!m_manager)
@@ -30,11 +25,8 @@ void MusicQQSongSuggestThread::startToSearch(const QString &text)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(QQ_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -54,7 +46,7 @@ void MusicQQSongSuggestThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -77,7 +69,7 @@ void MusicQQSongSuggestThread::downLoadFinished()
                     }
 
                     value = var.toMap();
-                    MusicPlaylistItem item;
+                    MusicResultsItem item;
                     item.m_name = value["name"].toString();
                     item.m_nickName = value["singer"].toString();
                     m_items << item;

@@ -4,11 +4,11 @@
 #include "musicconnectionpool.h"
 #include "musicuiobject.h"
 #include "musicplayer.h"
+#include "musicwidgetheaders.h"
 ///qmmp incldue
 #include "effect.h"
 #include "effectfactory.h"
 ///
-#include <QBoxLayout>
 #include <QStyledItemDelegate>
 
 MusicSoundEffectsItemWidget::MusicSoundEffectsItemWidget(QWidget *parent)
@@ -74,11 +74,6 @@ MusicSoundEffectsItemWidget::~MusicSoundEffectsItemWidget()
     delete m_textLabel;
     delete m_openButton;
     delete m_settingButton;
-}
-
-QString MusicSoundEffectsItemWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSoundEffectsItemWidget::setText(const QString &text)
@@ -240,11 +235,6 @@ MusicSoundEffectsWidget::~MusicSoundEffectsWidget()
     writeSoundEffect();
 
     delete m_ui;
-}
-
-QString MusicSoundEffectsWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSoundEffectsWidget::setParentConnect(QObject *object)

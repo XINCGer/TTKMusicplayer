@@ -14,23 +14,21 @@
 #include "musictoolsetsuiobject.h"
 #include "musicmessagebox.h"
 #include "musicaudiorecordercore.h"
-#include "musiccoreutils.h"
+#include "musiccodecutils.h"
 #include "musicotherdefine.h"
 #include "musictime.h"
+#include "musicsinglemanager.h"
 
 #ifdef Q_CC_GNU
     #pragma GCC diagnostic ignored "-Wparentheses"
 #endif
 
 MusicSoundKMicroWidget::MusicSoundKMicroWidget(QWidget *parent)
-    : MusicAbstractMoveWidget(parent),
+    : MusicAbstractMoveWidget(false, parent),
     m_ui(new Ui::MusicSoundKMicroWidget)
 {
     m_ui->setupUi(this);
 
-#if defined MUSIC_GREATER_NEW
-    setAttribute(Qt::WA_TranslucentBackground, false);
-#endif
 //    setAttribute(Qt::WA_DeleteOnClose, true);
 //    setAttribute(Qt::WA_QuitOnClose, true);
 
@@ -47,7 +45,7 @@ MusicSoundKMicroWidget::MusicSoundKMicroWidget(QWidget *parent)
     m_ui->timeSlider->setStyleSheet(MusicUIObject::MSliderStyle01);
     m_ui->transferButton->setStyleSheet(MusicUIObject::MKGRecordTransfer);
 
-    m_queryMv = true;
+    m_queryMovieMode = true;
     m_stateButtonOn = true;
     m_intervalTime = 0;
     m_recordCore = nullptr;
@@ -64,7 +62,7 @@ MusicSoundKMicroWidget::MusicSoundKMicroWidget(QWidget *parent)
     m_ui->volumeButton->setValue(100);
     m_ui->volumeButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_mediaPlayer = new MusicCoreMPlayer(this);
-    m_searchWidget = new MusicSoundKMicroSearchWidget;
+    m_searchWidget = new MusicSoundKMicroSearchWidget(this);
     m_searchWidget->connectTo(this);
     m_searchWidget->show();
 
@@ -93,7 +91,7 @@ MusicSoundKMicroWidget::MusicSoundKMicroWidget(QWidget *parent)
     connect(m_ui->winTipsButton, SIGNAL(clicked()), SLOT(tipsButtonChanged()));
     connect(m_ui->stateButton, SIGNAL(clicked()), SLOT(stateButtonChanged()));
     connect(m_ui->playButton, SIGNAL(clicked()), SLOT(playButtonChanged()));
-    connect(m_mediaPlayer, SIGNAL(finished()), SLOT(playFinished()));
+    connect(m_mediaPlayer, SIGNAL(finished(int)), SLOT(playFinished()));
     connect(m_mediaPlayer, SIGNAL(positionChanged(qint64)), SLOT(positionChanged(qint64)));
     connect(m_mediaPlayer, SIGNAL(durationChanged(qint64)), SLOT(durationChanged(qint64)));
     connect(m_ui->timeSlider, SIGNAL(sliderReleasedAt(int)), SLOT(setPosition(int)));
@@ -104,11 +102,6 @@ MusicSoundKMicroWidget::MusicSoundKMicroWidget(QWidget *parent)
 MusicSoundKMicroWidget::~MusicSoundKMicroWidget()
 {
     delete m_ui;
-}
-
-QString MusicSoundKMicroWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSoundKMicroWidget::setButtonStyle(bool style) const
@@ -139,7 +132,7 @@ void MusicSoundKMicroWidget::positionChanged(qint64 position)
     m_ui->timeLabel->setText(QString("%1/%2").arg(MusicTime::msecTime2LabelJustified(position*MT_S2MS))
                                              .arg(MusicTime::msecTime2LabelJustified(m_ui->timeSlider->maximum())));
 
-    if(!m_queryMv && !m_analysis->isEmpty())
+    if(!m_queryMovieMode && !m_analysis->isEmpty())
     {
         QString currentLrc, laterLrc;
         if(m_analysis->findText(m_ui->timeSlider->value(), m_ui->timeSlider->maximum(), currentLrc, laterLrc, m_intervalTime))
@@ -157,8 +150,7 @@ void MusicSoundKMicroWidget::positionChanged(qint64 position)
 
 void MusicSoundKMicroWidget::durationChanged(qint64 duration)
 {
-    m_ui->loadingLabel->stop();
-    m_ui->loadingLabel->hide();
+    m_ui->loadingLabel->run(false);
     m_ui->timeSlider->setRange(0, duration*MT_S2MS);
     m_ui->timeLabel->setText(QString("00:00/%1").arg(MusicTime::msecTime2LabelJustified(duration*MT_S2MS)));
 
@@ -179,7 +171,7 @@ void MusicSoundKMicroWidget::playFinished()
         QString filename = MusicUtils::Widget::getSaveFileDialog(this, "Wav(*.wav)");
         if(!filename.isEmpty())
         {
-            m_recordCore->addWavHeader(MusicUtils::Core::toLocal8Bit(filename));
+            m_recordCore->addWavHeader(MusicUtils::Codec::toLocal8Bit(filename));
         }
     }
 }
@@ -204,7 +196,7 @@ void MusicSoundKMicroWidget::playButtonChanged()
         default: break;
     }
 
-    if(!m_queryMv)
+    if(!m_queryMovieMode)
     {
         if(m_mediaPlayer->state() == MusicObject::PS_PlayingState)
         {
@@ -240,14 +232,14 @@ void MusicSoundKMicroWidget::tipsButtonChanged()
     }
 }
 
-void MusicSoundKMicroWidget::mvURLChanged(bool mv, const QString &url, const QString &lrcUrl)
+void MusicSoundKMicroWidget::mediaUrlChanged(bool mv, const QString &url, const QString &lrcUrl)
 {
     setButtonStyle(false);
 
     m_ui->loadingLabel->show();
     m_ui->loadingLabel->start();
 
-    if(m_queryMv = mv)
+    if(m_queryMovieMode = mv)
     {
         m_ui->stackedWidget->setCurrentIndex(SOUND_KMICRO_INDEX_0);
         m_mediaPlayer->setMedia(MusicCoreMPlayer::VideoCategory, url, (int)m_ui->videoPage->winId());
@@ -321,7 +313,7 @@ void MusicSoundKMicroWidget::recordButtonClicked()
 void MusicSoundKMicroWidget::closeEvent(QCloseEvent *event)
 {
     MusicAbstractMoveWidget::closeEvent(event);
-    emit resetFlag(MusicObject::TT_SoundKMicro);
+    M_SINGLE_MANAGER_PTR->removeObject(getClassName());
 
     qDeleteAll(m_musicLrcContainer);
     delete m_analysis;
@@ -344,7 +336,7 @@ void MusicSoundKMicroWidget::mouseMoveEvent(QMouseEvent *event)
 
 void MusicSoundKMicroWidget::multiMediaChanged()
 {
-    if(m_queryMv)
+    if(m_queryMovieMode)
     {
         m_mediaPlayer->setMultiVoice(m_stateButtonOn ? 0 : 1);
     }

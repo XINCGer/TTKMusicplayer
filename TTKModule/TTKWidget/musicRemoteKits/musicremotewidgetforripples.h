@@ -29,6 +29,7 @@ class MusicMarqueeWidget;
 class MUSIC_REMOTE_EXPORT MusicRemoteWidgetForRipples : public MusicRemoteWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicRemoteWidgetForRipples)
 public:
     /*!
      * Object contsructor.
@@ -38,10 +39,6 @@ public:
     virtual ~MusicRemoteWidgetForRipples();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * Set current song text.
      */
     virtual void setLabelText(const QString &value) override;
@@ -50,7 +47,7 @@ protected:
     /*!
      * Enable ripples control.
      */
-    void enableRipples(bool enable);
+    void enablePlugin(bool enable);
 
     MusicMarqueeWidget *m_songNameLabel;
 

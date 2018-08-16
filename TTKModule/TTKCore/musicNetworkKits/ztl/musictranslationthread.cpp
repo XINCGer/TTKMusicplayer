@@ -16,11 +16,6 @@ MusicTranslationThread::~MusicTranslationThread()
     deleteAll();
 }
 
-QString MusicTranslationThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicTranslationThread::startToDownload(const QString &data)
 {
     startToDownload(MusicTranslationThread::Type_Auto, MusicTranslationThread::Type_Zh, data);
@@ -31,15 +26,7 @@ void MusicTranslationThread::startToDownload(TranslationType from, TranslationTy
     QNetworkRequest request;
     request.setUrl( MusicUtils::Algorithm::mdII(TRANSLATION_URL, false).arg(mapTypeFromEnumToString(from))
                                            .arg(data).arg(mapTypeFromEnumToString(to)) );
-#ifndef QT_NO_SSL
-    connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
-                       SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
-    M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
-
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
 
     m_reply = m_manager->get( request );
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));

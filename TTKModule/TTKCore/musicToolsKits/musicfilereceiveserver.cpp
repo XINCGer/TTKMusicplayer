@@ -19,11 +19,6 @@ MusicFileReceiveServer::~MusicFileReceiveServer()
     delete m_file;
 }
 
-QString MusicFileReceiveServer::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicFileReceiveServer::setSavePathDir(const QString &dir)
 {
     m_saveDir = dir;
@@ -41,14 +36,14 @@ void MusicFileReceiveServer::readPendingDatagrams()
         m_receiveSocket->readDatagram(datagram.data(), datagram.size(),
                                       &sender, &senderPort);
 
-        if(datagram.contains(STRING_SPLITER))
+        if(datagram.contains(TTK_STR_SPLITER))
         {
             if(m_saveDir.isEmpty())
             {
                 M_LOGGER_ERROR("The Save Path Is Empty!");
                 return;
             }
-            QString path = QString(datagram).split(STRING_SPLITER).first();
+            QString path = QString(datagram).split(TTK_STR_SPLITER).first();
             m_file->close();
             m_file->setFileName(m_saveDir + "/" + QFileInfo(path).fileName() );
             m_file->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Unbuffered);

@@ -15,11 +15,6 @@ MusicNetworkProxy::~MusicNetworkProxy()
     delete m_testSocket;
 }
 
-QString MusicNetworkProxy::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicNetworkProxy::setHostName(const QString &name)
 {
     m_hostName = name;
@@ -72,7 +67,7 @@ QString MusicNetworkProxy::password() const
 
 void MusicNetworkProxy::testProxy()
 {
-    if( !m_testSocket )
+    if(!m_testSocket)
     {
         m_testSocket = new QTcpSocket(this);
         connect(m_testSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
@@ -91,7 +86,7 @@ void MusicNetworkProxy::applyProxy()
         proxy.setHostName(m_hostName);
     }
 
-    if( m_port != -1)
+    if(m_port != -1)
     {
         proxy.setPort(m_port);
     }

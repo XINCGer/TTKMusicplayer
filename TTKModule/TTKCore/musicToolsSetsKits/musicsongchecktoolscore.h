@@ -11,6 +11,7 @@
 class MUSIC_TOOLSET_EXPORT MusicSongCheckToolsRenameCore : public QThread
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongCheckToolsRenameCore)
 public:
     /*!
      * Object contsructor.
@@ -18,11 +19,6 @@ public:
     explicit MusicSongCheckToolsRenameCore(QObject *parent = 0);
 
     ~MusicSongCheckToolsRenameCore();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set music song check tool mode.
@@ -35,7 +31,7 @@ public:
     /*!
      * Set item lists.
      */
-    inline void setItemLists(const MusicObject::MIntList &items) { m_itemIDs = items; }
+    inline void setItemLists(const MIntList &items) { m_itemIDs = items; }
 
     /*!
      * Set find file path by given path.
@@ -65,7 +61,7 @@ public Q_SLOTS:
 protected:
     bool m_run;
     MusicSongs *m_songItems;
-    MusicObject::MIntList m_itemIDs;
+    MIntList m_itemIDs;
     MusicSongCheckToolsRenames m_datas;
     MusicObject::MusicSongCheckToolsMode m_operateMode;
 
@@ -78,17 +74,13 @@ protected:
 class MUSIC_TOOLSET_EXPORT MusicSongCheckToolsDuplicateCore : public QThread
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongCheckToolsDuplicateCore)
 public:
     explicit MusicSongCheckToolsDuplicateCore(QObject *parent = 0);
     /*!
      * Object contsructor.
      */
     ~MusicSongCheckToolsDuplicateCore();
-
-    static QString getClassName();
-    /*!
-     * Get class object name.
-     */
 
     inline void setMode(MusicObject::MusicSongCheckToolsMode mode) { m_operateMode = mode; }
     /*!
@@ -98,7 +90,7 @@ public:
     /*!
      * Get music song check tool mode.
      */
-    inline void setItemLists(const MusicObject::MIntList &items) { m_itemIDs = items; }
+    inline void setItemLists(const MIntList &items) { m_itemIDs = items; }
     /*!
      * Set item lists.
      */
@@ -131,7 +123,7 @@ public Q_SLOTS:
 protected:
     bool m_run;
     MusicSongs *m_songItems;
-    MusicObject::MIntList m_itemIDs;
+    MIntList m_itemIDs;
     MusicSongCheckToolsDuplicates m_datas;
     MusicObject::MusicSongCheckToolsMode m_operateMode;
 
@@ -144,17 +136,13 @@ protected:
 class MUSIC_TOOLSET_EXPORT MusicSongCheckToolsQualityCore : public QThread
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongCheckToolsQualityCore)
 public:
     explicit MusicSongCheckToolsQualityCore(QObject *parent = 0);
     /*!
      * Object contsructor.
      */
     ~MusicSongCheckToolsQualityCore();
-
-    static QString getClassName();
-    /*!
-     * Get class object name.
-     */
 
     void setQualitySongs(MusicSongs *songs);
     /*!

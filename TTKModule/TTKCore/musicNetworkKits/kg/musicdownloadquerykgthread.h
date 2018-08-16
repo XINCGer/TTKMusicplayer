@@ -29,6 +29,7 @@ class MUSIC_NETWORK_EXPORT MusicDownLoadQueryKGThread : public MusicDownLoadQuer
                                                         private MusicDownLoadKGInterface
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownLoadQueryKGThread)
 public:
     /*!
      * Object contsructor.
@@ -36,14 +37,13 @@ public:
     explicit MusicDownLoadQueryKGThread(QObject *parent = 0);
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Start to search data from name and type.
      */
     virtual void startToSearch(QueryType type, const QString &text) override;
+    /*!
+     * Start to search data from name and type bt paging.
+     */
+    virtual void startToPage(int offset) override;
     /*!
      * Start to search data by given id.
      */

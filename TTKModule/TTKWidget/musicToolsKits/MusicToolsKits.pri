@@ -26,13 +26,22 @@ HEADERS  += \
     $$PWD/musicconnectmobilewidget.h \
     $$PWD/musicconnecttransferwidget.h \
     $$PWD/musicconnecttransfertablewidget.h \
-    $$PWD/musicwebmusicradiolistview.h  \
     $$PWD/musicwebmusicradiowidget.h \
+    $$PWD/musicwebmusicradioplaywidget.h \
+    $$PWD/musicwebdjradiocategorywidget.h \
+    $$PWD/musicwebdjradiowidget.h \
+    $$PWD/musicwebdjradiofoundwidget.h \
+    $$PWD/musicwebdjradioinfowidget.h \
+    $$PWD/musicwebmvradiofoundwidget.h \
+    $$PWD/musicwebmvradiofoundcategorypopwidget.h \
+    $$PWD/musicwebmvradioinfowidget.h \
+    $$PWD/musicwebradioview.h \
     $$PWD/musiccloudsharedsongwidget.h \
-    $$PWD/musiccloudfilemanagerdialog.h \
-    $$PWD/musiccloudtablewidget.h \
+    $$PWD/musiccloudmanagerwidget.h \
     $$PWD/musicdownloadrecordwidget.h \
-    $$PWD/musiccloudfileinformationwidget.h
+    $$PWD/musiccloudfileinformationwidget.h \
+    $$PWD/musiccloudtoolboxwidget.h \
+    $$PWD/musiccloudtablewidget.h
 
 }
 
@@ -44,12 +53,21 @@ SOURCES += \
     $$PWD/musicconnectmobilewidget.cpp \
     $$PWD/musicconnecttransferwidget.cpp \
     $$PWD/musicconnecttransfertablewidget.cpp \
-    $$PWD/musicwebmusicradiolistview.cpp \
     $$PWD/musicwebmusicradiowidget.cpp \
+    $$PWD/musicwebmusicradioplaywidget.cpp \
+    $$PWD/musicwebdjradiocategorywidget.cpp \
+    $$PWD/musicwebdjradiowidget.cpp \
+    $$PWD/musicwebdjradiofoundwidget.cpp \
+    $$PWD/musicwebdjradioinfowidget.cpp \
+    $$PWD/musicwebmvradiofoundwidget.cpp \
+    $$PWD/musicwebmvradiofoundcategorypopwidget.cpp \
+    $$PWD/musicwebmvradioinfowidget.cpp \
+    $$PWD/musicwebradioview.cpp \
     $$PWD/musiccloudsharedsongwidget.cpp \
-    $$PWD/musiccloudfilemanagerdialog.cpp \
-    $$PWD/musiccloudtablewidget.cpp \
+    $$PWD/musiccloudmanagerwidget.cpp \
     $$PWD/musicdownloadrecordwidget.cpp \
-    $$PWD/musiccloudfileinformationwidget.cpp
+    $$PWD/musiccloudfileinformationwidget.cpp \
+    $$PWD/musiccloudtoolboxwidget.cpp \
+    $$PWD/musiccloudtablewidget.cpp
 
 }

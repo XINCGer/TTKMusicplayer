@@ -4,9 +4,8 @@
 #include "musictinyuiobject.h"
 #include "musicuiobject.h"
 #include "musicwidgetutils.h"
+#include "musicwidgetheaders.h"
 
-#include <QHBoxLayout>
-#include <QToolButton>
 #include <QPropertyAnimation>
 
 MusicSongsListFunctionWidget::MusicSongsListFunctionWidget(QWidget *parent)
@@ -52,11 +51,6 @@ MusicSongsListFunctionWidget::~MusicSongsListFunctionWidget()
 {
     delete m_mainWidget;
     delete m_animation;
-}
-
-QString MusicSongsListFunctionWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSongsListFunctionWidget::active()

@@ -7,9 +7,6 @@
 #include "musicrightareawidget.h"
 #include "musictopareawidget.h"
 
-#include <QLabel>
-#include <QBoxLayout>
-#include <QToolButton>
 #include <QWidgetAction>
 
 MusicSystemTrayMenu::MusicSystemTrayMenu(QWidget *parent)
@@ -53,11 +50,6 @@ MusicSystemTrayMenu::~MusicSystemTrayMenu()
     delete m_showLrcAction;
     delete m_lockLrcAction;
     delete m_loginAction;
-}
-
-QString MusicSystemTrayMenu::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSystemTrayMenu::setLabelText(const QString &text) const

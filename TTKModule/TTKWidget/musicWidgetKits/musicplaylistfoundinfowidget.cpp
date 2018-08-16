@@ -30,11 +30,6 @@ MusicPlaylistFoundInfoWidget::~MusicPlaylistFoundInfoWidget()
     delete m_commentsWidget;
 }
 
-QString MusicPlaylistFoundInfoWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicPlaylistFoundInfoWidget::resizeWindow()
 {
     m_foundTableWidget->resizeWindow();
@@ -62,7 +57,7 @@ void MusicPlaylistFoundInfoWidget::setSongNameById(const QString &id)
     Q_UNUSED(id);
 }
 
-void MusicPlaylistFoundInfoWidget::setMusicPlaylistItem(const MusicPlaylistItem &item, QObject *obj)
+void MusicPlaylistFoundInfoWidget::setMusicResultsItem(const MusicResultsItem &item, QObject *obj)
 {
     delete m_statusLabel;
     m_statusLabel = nullptr;
@@ -104,7 +99,7 @@ void MusicPlaylistFoundInfoWidget::setMusicPlaylistItem(const MusicPlaylistItem 
 
     m_iconLabel = new QLabel(topFuncWidget);
     m_iconLabel->setPixmap(QPixmap(":/image/lb_warning").scaled(180, 180));
-    m_iconLabel->setFixedSize(180, 180);
+    m_iconLabel->setFixedSize(210, 180);
 
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
     connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));

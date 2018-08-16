@@ -29,16 +29,12 @@
 class MUSIC_CORE_EXPORT MusicKWMusicInfoConfigManager : public MusicAbstractXml
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicKWMusicInfoConfigManager)
 public:
     /*!
      * Object contsructor.
      */
     explicit MusicKWMusicInfoConfigManager(QObject *parent = 0);
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Read music info datas into xml file.
@@ -55,6 +51,7 @@ class MUSIC_NETWORK_EXPORT MusicDownLoadQueryKWThread : public MusicDownLoadQuer
                                                         private MusicDownLoadKWInterface
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownLoadQueryKWThread)
 public:
     /*!
      * Object contsructor.
@@ -62,13 +59,13 @@ public:
     explicit MusicDownLoadQueryKWThread(QObject *parent = 0);
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * Start to search data from name and type.
      */
     virtual void startToSearch(QueryType type, const QString &text) override;
+    /*!
+     * Start to search data from name and type bt paging.
+     */
+    virtual void startToPage(int offset) override;
     /*!
      * Start to search data by given id.
      */

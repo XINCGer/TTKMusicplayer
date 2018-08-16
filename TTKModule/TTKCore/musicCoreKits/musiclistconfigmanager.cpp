@@ -6,11 +6,6 @@ MusicListConfigManager::MusicListConfigManager(QObject *parent)
 
 }
 
-QString MusicListConfigManager::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicListConfigManager::writeMusicSongsConfig(const MusicSongItems &musics)
 {
     writeMusicSongsConfig(musics, MUSICPATH_FULL);
@@ -19,7 +14,7 @@ void MusicListConfigManager::writeMusicSongsConfig(const MusicSongItems &musics)
 void MusicListConfigManager::writeMusicSongsConfig(const MusicSongItems &musics, const QString &path)
 {
     //Open wirte file
-    if( musics.isEmpty() || !writeConfig( path ) )
+    if(musics.isEmpty() || !writeConfig(path))
     {
         return;
     }
@@ -37,18 +32,18 @@ void MusicListConfigManager::writeMusicSongsConfig(const MusicSongItems &musics,
         {
             writeDomElementMutilText(pathDom, "value", MusicXmlAttributes() << MusicXmlAttribute("name", song.getMusicName())
                                      << MusicXmlAttribute("playCount", song.getMusicPlayCount())
-                                     << MusicXmlAttribute("time", song.getMusicTime()), song.getMusicPath());
+                                     << MusicXmlAttribute("time", song.getMusicPlayTime()), song.getMusicPath());
         }
     }
 
     //Write to file
     QTextStream out(m_file);
-    m_ddom->save(out, 4);
+    m_document->save(out, 4);
 }
 
 void MusicListConfigManager::readMusicSongsConfig(MusicSongItems &musics)
 {
-    QDomNodeList nodes = m_ddom->elementsByTagName("musicList");
+    QDomNodeList nodes = m_document->elementsByTagName("musicList");
     for(int i=0; i<nodes.count(); ++i)
     {
         QDomNode node = nodes.at(i);

@@ -35,11 +35,6 @@ MusicLrcMakerWidgetItem::MusicLrcMakerWidgetItem(QWidget *ui, QObject *parent)
     setFont(ft);
 }
 
-QString MusicLrcMakerWidgetItem::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 bool MusicLrcMakerWidgetItem::biggerThan(int value) const
 {
     return m_currentIndex > value;
@@ -131,7 +126,7 @@ void MusicLrcMakerWidgetItem::paintEvent(QPaintEvent *event)
     {
         m_intervalCount -= m_itemDelta;
     }
-    if( m_leftDirection && m_intervalCount < 0)
+    if(m_leftDirection && m_intervalCount < 0)
     {
         m_intervalCount += m_itemDelta;
     }
@@ -187,11 +182,6 @@ MusicLrcMakerWidget::~MusicLrcMakerWidget()
     resetToOriginPlayMode();
     M_CONNECTION_PTR->removeValue(getClassName());
     delete m_ui;
-}
-
-QString MusicLrcMakerWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLrcMakerWidget::setCurrentSongName(const QString &name)
@@ -392,7 +382,7 @@ void MusicLrcMakerWidget::setCurrentThirdWidget()
 
     if(m_times.count() == m_plainText.count())
     {
-        MusicObject::MIntStringMap data;
+        MIntStringMap data;
         for(int i=0; i<m_times.count(); ++i)
         {
             data.insert(m_times.value(i), m_plainText[i]);
@@ -504,6 +494,7 @@ void MusicLrcMakerWidget::createCurrentLine(int key)
                     }
                     break;
                 }
+            default: break;
         }
     }
     m_ui->makeTextEdit->setTextCursor(cursor);
@@ -744,6 +735,7 @@ void MusicLrcMakerWidget::resetToOriginPlayMode()
             w->musicPlayOneLoop(); break;
         case MusicObject::PM_PlayOnce:
             w->musicPlayItemOnce(); break;
+        default: break;
     }
 }
 

@@ -10,11 +10,6 @@ MusicDownLoadQueryQQRecommendThread::MusicDownLoadQueryQQRecommendThread(QObject
     m_queryServer = "QQ";
 }
 
-QString MusicDownLoadQueryQQRecommendThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicDownLoadQueryQQRecommendThread::startToSearch(const QString &id)
 {
     if(!m_manager)
@@ -32,11 +27,8 @@ void MusicDownLoadQueryQQRecommendThread::startToSearch(const QString &id)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(QQ_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -57,7 +49,7 @@ void MusicDownLoadQueryQQRecommendThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -86,10 +78,10 @@ void MusicDownLoadQueryQQRecommendThread::downLoadFinished()
                             continue;
                         }
                         QVariantMap name = var.toMap();
-                        musicInfo.m_singerName = name["name"].toString();
+                        musicInfo.m_singerName = MusicUtils::String::illegalCharactersReplaced(name["name"].toString());
                         musicInfo.m_artistId = name["mid"].toString();
                     }
-                    musicInfo.m_songName = value["name"].toString();
+                    musicInfo.m_songName = MusicUtils::String::illegalCharactersReplaced(value["name"].toString());
                     musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["interval"].toInt()*1000);
 
                     m_rawData["songID"] = value["id"].toString();
@@ -97,15 +89,19 @@ void MusicDownLoadQueryQQRecommendThread::downLoadFinished()
 
                     QVariantMap albumMap = value["album"].toMap();
                     musicInfo.m_albumId = albumMap["mid"].toString();
-                    musicInfo.m_albumName = albumMap["name"].toString();
+                    musicInfo.m_albumName = MusicUtils::String::illegalCharactersReplaced(albumMap["name"].toString());
                     musicInfo.m_lrcUrl = MusicUtils::Algorithm::mdII(QQ_SONG_LRC_URL, false).arg(musicInfo.m_songId);
                     musicInfo.m_smallPicUrl = MusicUtils::Algorithm::mdII(QQ_SONG_PIC_URL, false)
                                 .arg(musicInfo.m_albumId.right(2).left(1))
                                 .arg(musicInfo.m_albumId.right(1)).arg(musicInfo.m_albumId);
 
-                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    musicInfo.m_year = value["time_public"].toString();
+                    musicInfo.m_discNumber = value["index_cd"].toString();
+                    musicInfo.m_trackNumber = value["index_album"].toString();
+
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
                     readFromMusicSongAttributePlus(&musicInfo, value["file"].toMap());
-                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
 
                     if(musicInfo.m_songAttrs.isEmpty())
                     {
@@ -118,7 +114,7 @@ void MusicDownLoadQueryQQRecommendThread::downLoadFinished()
                     item.m_albumName = musicInfo.m_albumName;
                     item.m_time = musicInfo.m_timeLength;
                     item.m_type = mapQueryServerString();
-                    emit createSearchedItems(item);
+                    emit createSearchedItem(item);
                     m_musicSongInfos << musicInfo;
                 }
             }

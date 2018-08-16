@@ -43,6 +43,7 @@ class MusicAudioRecorderCore;
 class MUSIC_TOOLSET_EXPORT MusicAudioRecorderWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicAudioRecorderWidget)
 public:
     /*!
      * Object contsructor.
@@ -50,17 +51,6 @@ public:
     explicit MusicAudioRecorderWidget(QWidget *parent = 0);
 
     virtual ~MusicAudioRecorderWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-Q_SIGNALS:
-    /*!
-     * Reset window open flag.
-     */
-    void resetFlag(MusicObject::ToolsType flag);
 
 public Q_SLOTS:
     /*!
@@ -105,10 +95,6 @@ public Q_SLOTS:
     void show();
 
 protected:
-    /*!
-     * Override the widget event.
-     */
-    virtual void closeEvent(QCloseEvent *event) override;
     /*!
      * Apply volume to sample.
      */

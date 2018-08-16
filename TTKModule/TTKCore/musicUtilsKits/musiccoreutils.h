@@ -23,7 +23,7 @@
 #include "musicnumberdefine.h"
 #include "musicglobaldefine.h"
 
-/*! @brief The class of the utils core object namespace.
+/*! @brief The namespace of the utils algorithm.
  * @author Greedysky <greedysky@163.com>
  */
 namespace MusicUtils
@@ -42,6 +42,10 @@ namespace MusicUtils
          * Get file suffix path.
          */
         MUSIC_UTILS_EXPORT QString fileSuffix(const QString &name);
+        /*!
+         * Get file suffix path.
+         */
+        MUSIC_UTILS_EXPORT QString fileSuffix(const QString &name, const QString &prefix);
 
         /*!
          * Get given dir size.
@@ -52,9 +56,17 @@ namespace MusicUtils
          */
         MUSIC_UTILS_EXPORT void checkCacheSize(quint64 cacheSize, bool disabled, const QString &path);
         /*!
-         * To find file by dir path.
+         * Get all files in given dir.
          */
-        MUSIC_UTILS_EXPORT QFileInfoList findFile(const QString &path, const QStringList &filter);
+        MUSIC_UTILS_EXPORT QFileInfoList getFileListByDir(const QString &dpath, bool recursively);
+        /*!
+         * Get all files in given dir.
+         */
+        MUSIC_UTILS_EXPORT QFileInfoList getFileListByDir(const QString &dpath, const QStringList &filter, bool recursively);
+        /*!
+         * Dir remove recursively.
+         */
+        MUSIC_UTILS_EXPORT bool removeRecursively(const QString &dir);
 
         /*!
          * Get Language Name by given index.
@@ -62,62 +74,13 @@ namespace MusicUtils
         MUSIC_UTILS_EXPORT QString getLanguageName(int index);
 
         /*!
-         * Dir remove recursively.
+         * App version check.
          */
-        MUSIC_UTILS_EXPORT bool removeRecursively(const QString &dir);
-
+        MUSIC_UTILS_EXPORT bool appVersionCheck(const QStringList &ol, const QStringList &dl, int depth);
         /*!
-         * Open file from local by path or net url.
+         * App version check.
          */
-        MUSIC_UTILS_EXPORT bool openUrl(const QString &exe, const QString &path);
-
-        /*!
-         * Open file from local by path or net url.
-         */
-        MUSIC_UTILS_EXPORT bool openUrl(const QString &path, bool local = true);
-
-        /*!
-         * Set string to unicode string by format.
-         */
-        MUSIC_UTILS_EXPORT QString toUnicode(const char *chars, const char *format = "GBK");
-        /*!
-         * Set string to unicode string by format.
-         */
-        MUSIC_UTILS_EXPORT QString toUnicode(const QByteArray &chars, const char *format = "GBK");
-        /*!
-         * Set string from unicode string by format.
-         */
-        MUSIC_UTILS_EXPORT QByteArray fromUnicode(const QString &chars, const char *format = "GBK");
-        /*!
-         * Set local codec by format.
-         */
-        MUSIC_UTILS_EXPORT void setLocalCodec(const char *format = "utf-8");
-        /*!
-         * Trasform string to local 8bit char.
-         */
-        MUSIC_UTILS_EXPORT const char *toLocal8Bit(const QString &str);
-        /*!
-         * Trasform string to utf8 char.
-         */
-        MUSIC_UTILS_EXPORT const char *toUtf8(const QString &str);
-
-        /*!
-         * Get qmmp plugin dir path.
-         */
-        MUSIC_UTILS_EXPORT QString pluginPath(const QString &module, const QString &format);
-        /*!
-         * Mid config file transfer operator.
-         */
-        MUSIC_UTILS_EXPORT void midTransferFile();
-        /*!
-         * Music version check.
-         */
-
-        MUSIC_UTILS_EXPORT bool musicVersionCheck(const QStringList &ol, const QStringList &dl, int depth);
-        /*!
-         * Music version check.
-         */
-        MUSIC_UTILS_EXPORT bool musicVersionCheck(const QString &o, const QString &d);
+        MUSIC_UTILS_EXPORT bool appVersionCheck(const QString &o, const QString &d);
 
     }
 }

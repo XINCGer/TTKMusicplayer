@@ -27,16 +27,12 @@
 class MUSIC_NETWORK_EXPORT MusicDownLoadSongSuggestThread : public MusicDownLoadPagingThread
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownLoadSongSuggestThread)
 public:
     /*!
      * Object contsructor.
      */
     explicit MusicDownLoadSongSuggestThread(QObject *parent = 0);
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Start to Search data from name.
@@ -47,10 +43,10 @@ public:
     /*!
      * Get suggest list items.
      */
-    inline MusicPlaylistItems getSearchedItems() const { return m_items; }
+    inline const MusicResultsItems &getSearchedItems() const { return m_items; }
 
 protected:
-    MusicPlaylistItems m_items;
+    MusicResultsItems m_items;
 
 };
 

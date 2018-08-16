@@ -21,11 +21,6 @@ MusicLrcAnalysis::~MusicLrcAnalysis()
     delete m_translationThread;
 }
 
-QString MusicLrcAnalysis::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 MusicLrcAnalysis::State MusicLrcAnalysis::setLrcData(const QByteArray &data)
 {
     m_currentLrcIndex = 0;
@@ -50,7 +45,7 @@ MusicLrcAnalysis::State MusicLrcAnalysis::setLrcData(const QByteArray &data)
         }
     }
 
-    if (m_lrcContainer.isEmpty())
+    if(m_lrcContainer.isEmpty())
     {
         return LrcEmpty;
     }
@@ -64,7 +59,7 @@ MusicLrcAnalysis::State MusicLrcAnalysis::setLrcData(const QByteArray &data)
         m_lrcContainer.insert(0, QString());
     }
 
-    MusicObject::MIntStringMapIterator it(m_lrcContainer);
+    MIntStringMapIterator it(m_lrcContainer);
     while(it.hasNext())
     {
         it.next();
@@ -78,9 +73,9 @@ MusicLrcAnalysis::State MusicLrcAnalysis::setLrcData(const QByteArray &data)
     return OpenFileSuccess;
 }
 
-MusicLrcAnalysis::State MusicLrcAnalysis::setLrcData(const MusicObject::MIntStringMap &data)
+MusicLrcAnalysis::State MusicLrcAnalysis::setLrcData(const MIntStringMap &data)
 {
-    if (data.isEmpty())
+    if(data.isEmpty())
     {
         return LrcEmpty;
     }
@@ -98,7 +93,7 @@ MusicLrcAnalysis::State MusicLrcAnalysis::setLrcData(const MusicObject::MIntStri
         m_lrcContainer.insert(0, QString());
     }
 
-    MusicObject::MIntStringMapIterator it(m_lrcContainer);
+    MIntStringMapIterator it(m_lrcContainer);
     while(it.hasNext())
     {
         it.next();
@@ -143,13 +138,17 @@ MusicLrcAnalysis::State MusicLrcAnalysis::transKrcFileToTime(const QString &krcF
 
     QString getAllText = QString(krc.getDecodeString());
     //The lyrics by line into the lyrics list
+#ifdef Q_OS_WIN
     foreach(const QString &oneLine, getAllText.split("\r\n"))
+#else
+    foreach(const QString &oneLine, getAllText.split("\n"))
+#endif
     {
         matchLrcLine(oneLine);
     }
 
     //If the lrcContainer is empty
-    if (m_lrcContainer.isEmpty())
+    if(m_lrcContainer.isEmpty())
     {
         return LrcEmpty;
     }
@@ -163,7 +162,7 @@ MusicLrcAnalysis::State MusicLrcAnalysis::transKrcFileToTime(const QString &krcF
        m_lrcContainer.insert(0, QString());
     }
 
-    MusicObject::MIntStringMapIterator it(m_lrcContainer);
+    MIntStringMapIterator it(m_lrcContainer);
     while(it.hasNext())
     {
         it.next();
@@ -323,6 +322,7 @@ void MusicLrcAnalysis::matchLrcLine(const QString &oneLine)
             case Type14:
                     matchLrcLine(temp, cap, "\\d{2}(?=\\.)", "\\d{2}(?=\\])");
                     break;
+            default: break;
         }
         pos += regex.matchedLength();
         pos = regex.indexIn(oneLine, pos); //Matching all
@@ -422,8 +422,8 @@ qint64 MusicLrcAnalysis::setSongSpeedChanged(qint64 time)
 
 void MusicLrcAnalysis::revertLrcTime(qint64 pos)
 {
-    MusicObject::MIntStringMapIterator it(m_lrcContainer);
-    MusicObject::MIntStringMap copy;
+    MIntStringMapIterator it(m_lrcContainer);
+    MIntStringMap copy;
     while(it.hasNext())
     {
         it.next();
@@ -434,7 +434,7 @@ void MusicLrcAnalysis::revertLrcTime(qint64 pos)
 
 void MusicLrcAnalysis::saveLrcTimeChanged()
 {
-    MusicObject::MIntStringMapIterator it(m_lrcContainer);
+    MIntStringMapIterator it(m_lrcContainer);
     QByteArray data;
     data.append(QString("[by: %1]\n[offset:0]\n").arg(APPNAME));
     while(it.hasNext())
@@ -530,7 +530,7 @@ qint64 MusicLrcAnalysis::findTime(int index) const
 {
     if(index + m_lineMax < m_currentShowLrcContainer.count())
     {
-        MusicObject::MIntStringMapIterator it(m_lrcContainer);
+        MIntStringMapIterator it(m_lrcContainer);
         for(int i=0; i<index + 1; ++i)
         {
             if(it.hasNext())

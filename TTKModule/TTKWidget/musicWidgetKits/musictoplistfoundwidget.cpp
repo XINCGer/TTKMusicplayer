@@ -6,23 +6,18 @@
 #include "musicsettingmanager.h"
 #include "musictoplistfoundcategorypopwidget.h"
 
-MusicTopListFoundTableWidget::MusicTopListFoundTableWidget(QWidget *parent)
+MusicToplistFoundTableWidget::MusicToplistFoundTableWidget(QWidget *parent)
     : MusicQueryFoundTableWidget(parent)
 {
 
 }
 
-MusicTopListFoundTableWidget::~MusicTopListFoundTableWidget()
+MusicToplistFoundTableWidget::~MusicToplistFoundTableWidget()
 {
     clearAllItems();
 }
 
-QString MusicTopListFoundTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
-void MusicTopListFoundTableWidget::setQueryInput(MusicDownLoadQueryThreadAbstract *query)
+void MusicToplistFoundTableWidget::setQueryInput(MusicDownLoadQueryThreadAbstract *query)
 {
     MusicQueryFoundTableWidget::setQueryInput(query);
     if(parent()->metaObject()->indexOfSlot("queryAllFinished()") != -1)
@@ -33,30 +28,25 @@ void MusicTopListFoundTableWidget::setQueryInput(MusicDownLoadQueryThreadAbstrac
 
 
 
-MusicTopListFoundWidget::MusicTopListFoundWidget(QWidget *parent)
+MusicToplistFoundWidget::MusicToplistFoundWidget(QWidget *parent)
     : MusicFoundAbstractWidget(parent)
 {
     m_categoryButton = nullptr;
 
-    m_foundTableWidget = new MusicTopListFoundTableWidget(this);
+    m_foundTableWidget = new MusicToplistFoundTableWidget(this);
     m_foundTableWidget->hide();
     m_downloadThread = M_DOWNLOAD_QUERY_PTR->getToplistThread(this);
     m_foundTableWidget->setQueryInput(m_downloadThread);
 
-    connect(m_downloadThread, SIGNAL(createToplistInfoItem(MusicPlaylistItem)), SLOT(createToplistInfoItem(MusicPlaylistItem)));
+    connect(m_downloadThread, SIGNAL(createToplistInfoItem(MusicResultsItem)), SLOT(createToplistInfoItem(MusicResultsItem)));
 }
 
-MusicTopListFoundWidget::~MusicTopListFoundWidget()
+MusicToplistFoundWidget::~MusicToplistFoundWidget()
 {
     delete m_categoryButton;
 }
 
-QString MusicTopListFoundWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
-void MusicTopListFoundWidget::setSongName(const QString &name)
+void MusicToplistFoundWidget::setSongName(const QString &name)
 {
     MusicFoundAbstractWidget::setSongName(name);
 
@@ -66,12 +56,12 @@ void MusicTopListFoundWidget::setSongName(const QString &name)
     createLabels();
 }
 
-void MusicTopListFoundWidget::setSongNameById(const QString &id)
+void MusicToplistFoundWidget::setSongNameById(const QString &id)
 {
     Q_UNUSED(id);
 }
 
-void MusicTopListFoundWidget::resizeWindow()
+void MusicToplistFoundWidget::resizeWindow()
 {
     m_foundTableWidget->resizeWindow();
 
@@ -94,12 +84,12 @@ void MusicTopListFoundWidget::resizeWindow()
     }
 }
 
-void MusicTopListFoundWidget::queryAllFinished()
+void MusicToplistFoundWidget::queryAllFinished()
 {
     setSongCountText();
 }
 
-void MusicTopListFoundWidget::createLabels()
+void MusicToplistFoundWidget::createLabels()
 {
     delete m_statusLabel;
     m_statusLabel = nullptr;
@@ -138,8 +128,7 @@ void MusicTopListFoundWidget::createLabels()
 
     m_iconLabel = new QLabel(topFuncWidget);
     m_iconLabel->setPixmap(QPixmap(":/image/lb_warning").scaled(180, 180));
-    m_iconLabel->setFixedSize(180, 180);
-
+    m_iconLabel->setFixedSize(210, 180);
     ////////////////////////////////////////////////////////////////////////////
     QWidget *topLineWidget = new QWidget(topFuncWidget);
     QVBoxLayout *topLineLayout = new QVBoxLayout(topLineWidget);
@@ -198,7 +187,7 @@ void MusicTopListFoundWidget::createLabels()
     m_resizeWidgets << nameLabel << playCountLabel << updateTimeLabel << descriptionLabel;
 }
 
-void MusicTopListFoundWidget::createToplistInfoItem(const MusicPlaylistItem &item)
+void MusicToplistFoundWidget::createToplistInfoItem(const MusicResultsItem &item)
 {
     if(!m_resizeWidgets.isEmpty())
     {
@@ -227,7 +216,7 @@ void MusicTopListFoundWidget::createToplistInfoItem(const MusicPlaylistItem &ite
     }
 }
 
-void MusicTopListFoundWidget::categoryChanged(const MusicPlaylistCategoryItem &category)
+void MusicToplistFoundWidget::categoryChanged(const MusicResultsCategoryItem &category)
 {
     if(m_categoryButton)
     {

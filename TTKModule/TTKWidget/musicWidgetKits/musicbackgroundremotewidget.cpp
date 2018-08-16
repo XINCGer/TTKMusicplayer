@@ -1,11 +1,10 @@
 #include "musicbackgroundremotewidget.h"
 #include "musicdownloadqueuecache.h"
 #include "musicextractwrap.h"
+#include "musicwidgetheaders.h"
 
 #include <QDir>
-#include <QPushButton>
 #include <QButtonGroup>
-#include <QBoxLayout>
 
 MusicBackgroundRemoteWidget::MusicBackgroundRemoteWidget(QWidget *parent)
     : QWidget(parent)
@@ -21,7 +20,7 @@ MusicBackgroundRemoteWidget::MusicBackgroundRemoteWidget(QWidget *parent)
     m_currentIndex = -1;
     m_queryThread = nullptr;
 
-    m_downloadQueue = new MusicDownloadQueueCache(MusicDownLoadThreadAbstract::Download_BigBG, this);
+    m_downloadQueue = new MusicDownloadQueueCache(MusicObject::DownloadBigBG, this);
     connect(m_downloadQueue, SIGNAL(downLoadDataChanged(QString)), SLOT(downLoadDataChanged(QString)));
 
 }
@@ -32,11 +31,6 @@ MusicBackgroundRemoteWidget::~MusicBackgroundRemoteWidget()
     delete m_listWidget;
     delete m_downloadQueue;
     delete m_queryThread;
-}
-
-QString MusicBackgroundRemoteWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicBackgroundRemoteWidget::abort()
@@ -104,11 +98,6 @@ MusicBackgroundThunderWidget::MusicBackgroundThunderWidget(QWidget *parent)
 MusicBackgroundThunderWidget::~MusicBackgroundThunderWidget()
 {
     delete m_functionsWidget;
-}
-
-QString MusicBackgroundThunderWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicBackgroundThunderWidget::init()
@@ -271,11 +260,6 @@ MusicBackgroundDailyWidget::MusicBackgroundDailyWidget(QWidget *parent)
 {
     m_currentIndex = 0;
     connect(m_listWidget, SIGNAL(itemClicked(QString)), parent, SLOT(dailyBackgroundListWidgetItemClicked(QString)));
-}
-
-QString MusicBackgroundDailyWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicBackgroundDailyWidget::init()

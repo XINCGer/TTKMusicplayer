@@ -28,6 +28,7 @@
 class MUSIC_WIDGET_EXPORT MusicVolumeGainTableWidget : public MusicAbstractTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicVolumeGainTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -35,11 +36,6 @@ public:
     explicit MusicVolumeGainTableWidget(QWidget *parent = 0);
 
     virtual ~MusicVolumeGainTableWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
 public Q_SLOTS:
     /*!
@@ -60,6 +56,7 @@ class QProcess;
 class MUSIC_TOOLSET_EXPORT MusicVolumeGainWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicVolumeGainWidget)
 public:
     /*!
      * Object contsructor.
@@ -67,17 +64,6 @@ public:
     explicit MusicVolumeGainWidget(QWidget *parent = 0);
 
     virtual ~MusicVolumeGainWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-Q_SIGNALS:
-    /*!
-     * Reset window open flag.
-     */
-    void resetFlag(MusicObject::ToolsType flag);
 
 public Q_SLOTS:
     /*!
@@ -124,10 +110,6 @@ private Q_SLOTS:
     void applyOutput();
 
 protected:
-    /*!
-     * Override the widget event.
-     */
-    virtual void closeEvent(QCloseEvent *event) override;
     /*!
      * Create table item finished.
      */

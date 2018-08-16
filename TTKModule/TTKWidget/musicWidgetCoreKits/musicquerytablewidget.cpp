@@ -3,6 +3,7 @@
 #include "musicitemdelegate.h"
 #include "musicgiflabelwidget.h"
 
+#include <qmath.h>
 #include <QActionGroup>
 
 MusicQueryTableWidget::MusicQueryTableWidget(QWidget *parent)
@@ -16,28 +17,17 @@ MusicQueryTableWidget::~MusicQueryTableWidget()
     delete m_downLoadManager;
 }
 
-QString MusicQueryTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicQueryTableWidget::setQueryInput(MusicDownLoadQueryThreadAbstract *query)
 {
     delete m_downLoadManager;
     m_downLoadManager = query;
     connect(m_downLoadManager, SIGNAL(clearAllItems()), SLOT(clearAllItems()));
-    connect(m_downLoadManager, SIGNAL(createSearchedItems(MusicSearchedItem)), SLOT(createSearchedItems(MusicSearchedItem)));
+    connect(m_downLoadManager, SIGNAL(createSearchedItem(MusicSearchedItem)), SLOT(createSearchedItem(MusicSearchedItem)));
 }
 
 MusicDownLoadQueryThreadAbstract *MusicQueryTableWidget::getQueryInput()
 {
     return m_downLoadManager;
-}
-
-const MusicObject::MusicSongInformations& MusicQueryTableWidget::getMusicSongInfos() const
-{
-    Q_ASSERT(m_downLoadManager);
-    return m_downLoadManager->getMusicSongInfos();
 }
 
 void MusicQueryTableWidget::contextMenuEvent(QContextMenuEvent *event)
@@ -53,6 +43,7 @@ MusicQueryItemTableWidget::MusicQueryItemTableWidget(QWidget *parent)
     m_loadingLabel = new MusicGifLabelWidget(MusicGifLabelWidget::Gif_Cicle_Blue, this);
     m_actionGroup = new QActionGroup(this);
     m_labelDelegate = new MusicLabelDelegate(this);
+
     connect(m_actionGroup, SIGNAL(triggered(QAction*)), SLOT(actionGroupClick(QAction*)));
     connect(this, SIGNAL(cellDoubleClicked(int,int)), SLOT(itemDoubleClicked(int,int)));
 }
@@ -64,17 +55,31 @@ MusicQueryItemTableWidget::~MusicQueryItemTableWidget()
     delete m_labelDelegate;
 }
 
-QString MusicQueryItemTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicQueryItemTableWidget::startSearchQuery(const QString &text)
 {
     Q_UNUSED(text);
     MusicDownLoadQueryThreadAbstract *d = M_DOWNLOAD_QUERY_PTR->getQueryThread(this);
     connect(d, SIGNAL(downLoadDataChanged(QString)), SLOT(createFinishedItem()));
     setQueryInput( d );
+}
+
+void MusicQueryItemTableWidget::listCellClicked(int row, int column)
+{
+    MusicQueryTableWidget::listCellClicked(row, column);
+
+    if(rowCount() > 0 && row == rowCount() - 1)
+    {
+        QTableWidgetItem *it = item(row, 0);
+        if(it && it->data(MUSIC_TEXTS_ROLE).toString() == tr("More Data"))
+        {
+            setItemDelegateForRow(row, nullptr);
+            clearSpans();
+            removeRow(row);
+
+            m_loadingLabel->run(true);
+            m_downLoadManager->startToPage(m_downLoadManager->getPageIndex() + 1);
+        }
+    }
 }
 
 void MusicQueryItemTableWidget::clearAllItems()
@@ -89,7 +94,7 @@ void MusicQueryItemTableWidget::clearAllItems()
 void MusicQueryItemTableWidget::actionGroupClick(QAction *action)
 {
     int row = currentRow();
-    if( row < 0 || (row >= rowCount() - 1))
+    if(row < 0 || (row >= rowCount() - 1))
     {
         return;
     }
@@ -102,14 +107,14 @@ void MusicQueryItemTableWidget::actionGroupClick(QAction *action)
         case 0: musicDownloadLocal(row); break;
         case 1: emit restartSearchQuery(songName); break;
         case 2: emit restartSearchQuery(artistName); break;
-        case 3: emit restartSearchQuery(songName + "-" + artistName); break;
+        case 3: emit restartSearchQuery(artistName + " - " + songName); break;
+        default: break;
     }
 }
 
 void MusicQueryItemTableWidget::createFinishedItem()
 {
-    m_loadingLabel->hide();
-    m_loadingLabel->stop();
+    m_loadingLabel->run(false);
 
     setRowCount(rowCount() + 1);
     int count = rowCount() - 1;
@@ -122,7 +127,9 @@ void MusicQueryItemTableWidget::createFinishedItem()
     QTableWidgetItem *it = item(count, 0);
     if(it)
     {
-        it->setData(MUSIC_TEXTS_ROLE, tr("No More Data"));
+        int total = ceil(m_downLoadManager->getPageTotal()*1.0/m_downLoadManager->getPageSize());
+        bool more = (total > m_downLoadManager->getPageIndex() + 1);
+        it->setData(MUSIC_TEXTS_ROLE, more ? tr("More Data") : tr("No More Data"));
         setItemDelegateForRow(count, m_labelDelegate);
     }
 }
@@ -134,13 +141,17 @@ void MusicQueryItemTableWidget::createContextMenu(QMenu &menu)
 
     menu.addSeparator();
 
-    QString songName = currentRow() != -1 && rowCount() > 0 ?
-                item(currentRow(), 1)->toolTip() : QString();
-    QString artistName = currentRow() != -1 && rowCount() > 0 ?
-                item(currentRow(), 2)->toolTip() : QString();
-    m_actionGroup->addAction(menu.addAction(tr("search '%1'").arg(songName)))->setData(1);
-    m_actionGroup->addAction(menu.addAction(tr("search '%1'").arg(artistName)))->setData(2);
-    m_actionGroup->addAction(menu.addAction(tr("search '%1 - %2'").arg(songName).arg(artistName)))->setData(3);
+    int row = currentRow();
+    MusicObject::MusicSongInformations musicSongInfos(m_downLoadManager->getMusicSongInfos());
+    if(row < 0 || row >= musicSongInfos.count())
+    {
+        return;
+    }
+
+    MusicObject::MusicSongInformation *info = &musicSongInfos[row];
+    m_actionGroup->addAction(menu.addAction(tr("search '%1'").arg(info->m_songName)))->setData(1);
+    m_actionGroup->addAction(menu.addAction(tr("search '%1'").arg(info->m_singerName)))->setData(2);
+    m_actionGroup->addAction(menu.addAction(tr("search '%1 - %2'").arg(info->m_singerName).arg(info->m_songName)))->setData(3);
 }
 
 void MusicQueryItemTableWidget::resizeEvent(QResizeEvent *event)

@@ -29,16 +29,12 @@ class MUSIC_NETWORK_EXPORT MusicDownLoadQueryXMPlaylistThread : public MusicDown
                                                                 private MusicDownLoadXMInterface
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownLoadQueryXMPlaylistThread)
 public:
     /*!
      * Object contsructor.
      */
     explicit MusicDownLoadQueryXMPlaylistThread(QObject *parent = 0);
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Start to Search data from name and type.
@@ -55,7 +51,7 @@ public:
     /*!
      * Get playlist info.
      */
-    virtual void getPlaylistInfo(MusicPlaylistItem &item) override;
+    virtual void getPlaylistInfo(MusicResultsItem &item) override;
 
 public Q_SLOTS:
     /*!

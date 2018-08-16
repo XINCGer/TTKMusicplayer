@@ -19,12 +19,12 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QDialog>
+#include <QFileInfo>
 #include <QMouseEvent>
 #include "musicobject.h"
 #include "musicuiobject.h"
+#include "musicwidgetheaders.h"
 #include "musicabstractmovewidget.h"
-#include <QFileInfo>
 
 class QFileSystemWatcher;
 class MusicLocalSongsManagerThread;
@@ -39,6 +39,7 @@ class MusicLocalSongsManagerWidget;
 class MUSIC_TOOLSET_EXPORT MusicLocalSongsManagerWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicLocalSongsManagerWidget)
 public:
     /*!
      * Object contsructor.
@@ -48,20 +49,11 @@ public:
     virtual ~MusicLocalSongsManagerWidget();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Find extra device path.
      */
     void findExtraDevicePath(const QString &dir);
 
 Q_SIGNALS:
-    /*!
-     * Reset window open flag.
-     */
-    void resetFlag(MusicObject::ToolsType flag);
     /*!
      * Add current selected song to play lists.
      */
@@ -136,10 +128,6 @@ public Q_SLOTS:
 
 protected:
     /*!
-     * Override the widget event.
-     */
-    virtual void closeEvent(QCloseEvent *event) override;
-    /*!
      * Clear All Items.
      */
     void clearAllItems();
@@ -176,7 +164,7 @@ protected:
     Ui::MusicLocalSongsManagerWidget *m_ui;
     QFileInfoList m_fileNames;
     MusicLocalSongsManagerThread *m_thread;
-    MusicObject::MIntsListMap m_searchfileListCache;
+    MIntsListMap m_searchfileListCache;
     QFileSystemWatcher *m_fileSystemWatcher;
 
 };

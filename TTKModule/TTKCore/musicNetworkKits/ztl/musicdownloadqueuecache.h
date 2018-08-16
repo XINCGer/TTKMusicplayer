@@ -29,7 +29,7 @@ typedef struct MUSIC_NETWORK_EXPORT MusicDownloadQueueData
     QString m_url;        ///*download url*/
     QString m_savePath;   ///*save local path*/
 }MusicDownloadQueueData;
-MUSIC_DECLARE_LISTS(MusicDownloadQueueData)
+TTK_DECLARE_LISTS(MusicDownloadQueueData)
 
 /*! @brief The class to download data from cache queue.
  * @author Greedysky <greedysky@163.com>
@@ -37,29 +37,25 @@ MUSIC_DECLARE_LISTS(MusicDownloadQueueData)
 class MUSIC_NETWORK_EXPORT MusicDownloadQueueCache : public MusicDownLoadThreadAbstract
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownloadQueueCache)
 public:
     /*!
      * Object contsructor.
      */
-    explicit MusicDownloadQueueCache(Download_Type type, QObject *parent = 0);
+    explicit MusicDownloadQueueCache(MusicObject::DownloadType  type, QObject *parent = 0);
 
     /*!
      * Object contsructor.
      */
     MusicDownloadQueueCache(const MusicDownloadQueueData &data,
-                            Download_Type type, QObject *parent = 0);
+                            MusicObject::DownloadType  type, QObject *parent = 0);
     /*!
      * Object contsructor.
      */
     MusicDownloadQueueCache(const MusicDownloadQueueDatas &datas,
-                            Download_Type type, QObject *parent = 0);
+                            MusicObject::DownloadType  type, QObject *parent = 0);
 
     ~MusicDownloadQueueCache();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Add image download url and save path to download queue.

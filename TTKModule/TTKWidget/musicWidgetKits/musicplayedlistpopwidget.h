@@ -27,8 +27,31 @@ class QScrollArea;
 class MusicPlayedlist;
 class MusicSongsListPlayedTableWidget;
 
-#define PairItem(a, b) std::pair<int, int>(a, b);
-typedef QList< std::pair<int, int> > PairList;
+#define PlayedPairItem(a, b) std::pair<int, int>(a, b);
+typedef QList< std::pair<int, int> > PlayedPairList;
+
+
+/*! @brief The class of the played list top container widget.
+ * @author Greedysky <greedysky@163.com>
+ */
+class MUSIC_WIDGET_EXPORT MusicPlayedListTopContainerWidget : public QWidget
+{
+    Q_OBJECT
+    TTK_DECLARE_MODULE(MusicPlayedListTopContainerWidget)
+public:
+    /*!
+     * Object contsructor.
+     */
+    explicit MusicPlayedListTopContainerWidget(QWidget *parent = 0);
+
+protected:
+    /*!
+     * Override the widget event.
+     */
+    virtual void paintEvent(QPaintEvent *event) override;
+
+};
+
 
 /*! @brief The class of the played list pop widget.
  * @author Greedysky <greedysky@163.com>
@@ -36,6 +59,7 @@ typedef QList< std::pair<int, int> > PairList;
 class MUSIC_WIDGET_EXPORT MusicPlayedListPopWidget : public MusicToolMenuWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicPlayedListPopWidget)
 public:
     /*!
      * Object contsructor.
@@ -44,10 +68,6 @@ public:
 
     virtual ~MusicPlayedListPopWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Get class object instance.
      */
@@ -69,7 +89,7 @@ public:
     /*!
      * Get current played list.
      */
-    void resetToolIndex(const PairList &indexs);
+    void resetToolIndex(const PlayedPairList &indexs);
 
     /*!
      * Remove music from data list.

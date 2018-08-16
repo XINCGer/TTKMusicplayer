@@ -13,16 +13,11 @@ MusicXMMVInfoConfigManager::MusicXMMVInfoConfigManager(QObject *parent)
 
 }
 
-QString MusicXMMVInfoConfigManager::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicXMMVInfoConfigManager::readMVInfoConfig(MusicObject::MusicSongInformation *info)
 {
     info->m_timeLength = MusicTime::msecTime2LabelJustified(readXmlTextByTagName("duration").toInt()*1000);
 
-    QDomNodeList resultlist = m_ddom->elementsByTagName("video");
+    QDomNodeList resultlist = m_document->elementsByTagName("video");
     for(int i=0; i<resultlist.count(); ++i)
     {
         QDomNodeList infolist = resultlist.at(i).childNodes();
@@ -65,11 +60,7 @@ MusicDownLoadQueryXMMovieThread::MusicDownLoadQueryXMMovieThread(QObject *parent
     : MusicDownLoadQueryMovieThread(parent)
 {
     m_queryServer = "XiaMi";
-}
-
-QString MusicDownLoadQueryXMMovieThread::getClassName()
-{
-    return staticMetaObject.className();
+    m_pageSize = 30;
 }
 
 void MusicDownLoadQueryXMMovieThread::startToSearch(QueryType type, const QString &text)
@@ -86,16 +77,13 @@ void MusicDownLoadQueryXMMovieThread::startToSearch(QueryType type, const QStrin
     m_interrupt = true;
 
     QNetworkRequest request;
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
     makeTokenQueryUrl(&request,
-                      MusicUtils::Algorithm::mdII(XM_SONG_DATA_URL, false).arg(text).arg(1).arg(30),
+                      MusicUtils::Algorithm::mdII(XM_SONG_DATA_URL, false).arg(text).arg(1).arg(m_pageSize),
                       MusicUtils::Algorithm::mdII(XM_SONG_URL, false));
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -119,11 +107,8 @@ void MusicDownLoadQueryXMMovieThread::startToPage(int offset)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(XM_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(pageDownLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -181,14 +166,14 @@ void MusicDownLoadQueryXMMovieThread::downLoadFinished()
 
                     value = var.toMap();
                     MusicObject::MusicSongInformation musicInfo;
-                    musicInfo.m_singerName = value["singers"].toString();
-                    musicInfo.m_songName = value["songName"].toString();
+                    musicInfo.m_singerName = MusicUtils::String::illegalCharactersReplaced(value["singers"].toString());
+                    musicInfo.m_songName = MusicUtils::String::illegalCharactersReplaced(value["songName"].toString());
                     musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["length"].toInt());
 
                     musicInfo.m_songId = value["mvId"].toString();
-                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
                     readFromMusicMVAttribute(&musicInfo, false);
-                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
 
                     if(musicInfo.m_songAttrs.isEmpty())
                     {
@@ -200,7 +185,7 @@ void MusicDownLoadQueryXMMovieThread::downLoadFinished()
                     item.m_singerName = musicInfo.m_singerName;
                     item.m_time = musicInfo.m_timeLength;
                     item.m_type = mapQueryServerString();
-                    emit createSearchedItems(item);
+                    emit createSearchedItem(item);
                     m_musicSongInfos << musicInfo;
                 }
             }
@@ -211,12 +196,12 @@ void MusicDownLoadQueryXMMovieThread::downLoadFinished()
     if(m_queryExtraMovie && m_currentType == MovieQuery)
     {
         MusicSemaphoreLoop loop;
-        MusicDownLoadQueryYYTThread *yyt = new MusicDownLoadQueryYYTThread(this);
-        connect(yyt, SIGNAL(createSearchedItems(MusicSearchedItem)), SIGNAL(createSearchedItems(MusicSearchedItem)));
-        connect(yyt, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
-        yyt->startToSearch(MusicDownLoadQueryYYTThread::MovieQuery, m_searchText);
+        MusicDownLoadQueryYYTThread *d = new MusicDownLoadQueryYYTThread(this);
+        connect(d, SIGNAL(createSearchedItem(MusicSearchedItem)), SIGNAL(createSearchedItem(MusicSearchedItem)));
+        connect(d, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
+        d->startToSearch(MusicDownLoadQueryYYTThread::MovieQuery, m_searchText);
         loop.exec();
-        m_musicSongInfos << yyt->getMusicSongInfos();
+        m_musicSongInfos << d->getMusicSongInfos();
     }
 
     emit downLoadDataChanged(QString());
@@ -239,7 +224,7 @@ void MusicDownLoadQueryXMMovieThread::pageDownLoadFinished()
     {
         QByteArray bytes = m_reply->readAll();///Get all the data obtained by request
 
-        m_pageTotal = MU_MAX;
+        m_pageTotal = DEFAULT_LEVEL_HIGHER;
         QString html(bytes);
         QRegExp regx;
         regx.setMinimal(true);
@@ -264,7 +249,7 @@ void MusicDownLoadQueryXMMovieThread::pageDownLoadFinished()
             {
                 if(m_interrupt) return;
 
-                MusicPlaylistItem info;
+                MusicResultsItem info;
                 info.m_id = partial.cap(2).remove("/mv/");
                 info.m_coverUrl = partial.cap(1).remove("@1e_1c_100Q_160w_90h").replace("https://", "http://");
                 info.m_name = partial.cap(3);
@@ -295,9 +280,9 @@ void MusicDownLoadQueryXMMovieThread::singleDownLoadFinished()
 
     MusicObject::MusicSongInformation musicInfo;
     musicInfo.m_songId = m_searchText;
-    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
     readFromMusicMVAttribute(&musicInfo, true);
-    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
 
     if(!musicInfo.m_songAttrs.isEmpty())
     {
@@ -306,7 +291,7 @@ void MusicDownLoadQueryXMMovieThread::singleDownLoadFinished()
         item.m_singerName = musicInfo.m_singerName;
         item.m_time = musicInfo.m_timeLength;
         item.m_type = mapQueryServerString();
-        emit createSearchedItems(item);
+        emit createSearchedItem(item);
         m_musicSongInfos << musicInfo;
     }
 
@@ -328,11 +313,8 @@ void MusicDownLoadQueryXMMovieThread::readFromMusicMVAttribute(MusicObject::Musi
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(XM_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     MusicSemaphoreLoop loop;
     QNetworkReply *reply = m_manager->get(request);
     QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
@@ -398,11 +380,8 @@ void MusicDownLoadQueryXMMovieThread::readFromMusicMVAttribute(MusicObject::Musi
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(XM_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     MusicSemaphoreLoop loop;
     QNetworkReply *reply = m_manager->get(request);
     QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
@@ -439,10 +418,10 @@ void MusicDownLoadQueryXMMovieThread::readFromMusicMVAttribute(MusicObject::Musi
 
         if(urls.count() > 1)
         {
-            attr->m_multiParts = true;
+            attr->m_multiPart = true;
         }
         attr->m_size = MusicUtils::Number::size2Label(attr->m_size.toLongLong());
-        attr->m_url = urls.join(STRING_SPLITER);
+        attr->m_url = urls.join(TTK_STR_SPLITER);
         attr->m_format = MusicUtils::Core::fileSuffix(attr->m_url);
     }
 }

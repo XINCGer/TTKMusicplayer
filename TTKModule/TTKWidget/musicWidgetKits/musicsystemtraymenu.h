@@ -19,13 +19,10 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QMenu>
 #include "musicglobaldefine.h"
+#include "musicwidgetheaders.h"
 
-class QLabel;
 class MusicClickedSlider;
-class QWidgetAction;
-class QToolButton;
 
 /*! @brief The class of the system tray menu widget.
  * @author Greedysky <greedysky@163.com>
@@ -33,6 +30,7 @@ class QToolButton;
 class MUSIC_WIDGET_EXPORT MusicSystemTrayMenu : public QMenu
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSystemTrayMenu)
 public:
     /*!
      * Object contsructor.
@@ -41,10 +39,6 @@ public:
 
     ~MusicSystemTrayMenu();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set tray menu song text.
      */

@@ -4,20 +4,15 @@ MusicNetworkAbstract::MusicNetworkAbstract(QObject *parent)
     : QObject(parent)
 {
     m_interrupt = false;
-    m_stateCode = Init;
+    m_stateCode = MusicObject::NetworkInit;
     m_reply = nullptr;
     m_manager = nullptr;
 }
 
 MusicNetworkAbstract::~MusicNetworkAbstract()
 {
-    m_stateCode = Success;
+    m_stateCode = MusicObject::NetworkSuccess;
     deleteAll();
-}
-
-QString MusicNetworkAbstract::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicNetworkAbstract::deleteAll()
@@ -65,3 +60,15 @@ void MusicNetworkAbstract::sslErrorsString(QNetworkReply *reply, const QList<QSs
     reply->ignoreSslErrors();
 }
 #endif
+
+void MusicNetworkAbstract::setSslConfiguration(QNetworkRequest *request, QSslSocket::PeerVerifyMode m)
+{
+#ifndef QT_NO_SSL
+    QSslConfiguration sslConfig = request->sslConfiguration();
+    sslConfig.setPeerVerifyMode(m);
+    request->setSslConfiguration(sslConfig);
+#else
+    Q_UNUSED(request);
+    Q_UNUSED(m);
+#endif
+}

@@ -43,34 +43,23 @@ typedef uint32_t xxtea_uint;
  */
 class MUSIC_CORE_EXPORT MusicCryptographicHash
 {
+    TTK_DECLARE_MODULE(MusicCryptographicHash)
 public:
-    enum Priority
-    {
-        Lower = 1,  /*!< Priority Lower*/
-        Low,        /*!< Priority Low*/
-        Normal,     /*!< Priority Normal*/
-        High,       /*!< Priority High*/
-        Higher      /*!< Priority Higher*/
-    };
-
     /*!
      * Object contsructor.
      */
     MusicCryptographicHash();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * encrypt by QString data.
      */
-    QString encrypt(const QString &data, const QString &key, Priority p = Lower);
+    QString encrypt(const QString &data, const QString &key);
     /*!
      * decrypt by QString data.
      */
-    QString decrypt(const QString &data, const QString &key, Priority p = Lower);
+    QString decrypt(const QString &data, const QString &key);
 
+protected:
     /*!
      * XXTEA encrypt by std::string data.
      */
@@ -89,7 +78,6 @@ public:
      */
     QString xxteaDecrypt(const QString &data, const QString &key);
 
-protected:
     /*!
      * Check current char is base64.
      */

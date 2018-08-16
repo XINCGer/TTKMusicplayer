@@ -36,6 +36,7 @@ class MusicClickedSlider;
 class MUSIC_REMOTE_EXPORT MusicRemoteWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicRemoteWidget)
 public:
     enum RemoteType
     {
@@ -46,7 +47,8 @@ public:
         SimpleStyle,    /*!< Romote SimpleStyle type*/
         ComplexStyle,   /*!< Romote ComplexStyle type*/
         Diamond,        /*!< Romote Diamond type*/
-        Ripples         /*!< Romote Ripples type*/
+        Ripples,        /*!< Romote Ripples type*/
+        RaysWave        /*!< Romote RaysWave type*/
     };
 
     /*!
@@ -56,10 +58,6 @@ public:
 
     virtual ~MusicRemoteWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set current play state button.
      */

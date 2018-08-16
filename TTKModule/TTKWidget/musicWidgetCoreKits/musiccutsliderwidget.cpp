@@ -21,15 +21,10 @@ MusicMoveButton::MusicMoveButton(QWidget *parent)
 #endif
 }
 
-QString MusicMoveButton::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicMoveButton::mousePressEvent(QMouseEvent *event)
 {
 //    QWidget::mousePressEvent(event);
-    if( event->button() == Qt::LeftButton )
+    if(event->button() == Qt::LeftButton)
     {
         m_leftButtonPress = true;
     }
@@ -39,11 +34,12 @@ void MusicMoveButton::mousePressEvent(QMouseEvent *event)
 void MusicMoveButton::mouseMoveEvent(QMouseEvent *event)
 {
 //    QWidget::mouseMoveEvent(event);
-    if( !m_leftButtonPress )
+    if(!m_leftButtonPress)
     {
         event->ignore();
         return;
     }
+
     int xpos = event->globalX() - m_pressAt.x();
     m_pressAt = event->globalPos();
     move( x() + xpos, y());
@@ -82,11 +78,6 @@ MusicCutSliderWidget::~MusicCutSliderWidget()
 {
     delete m_leftControl;
     delete m_rightControl;
-}
-
-QString MusicCutSliderWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicCutSliderWidget::setPosition(qint64 position)

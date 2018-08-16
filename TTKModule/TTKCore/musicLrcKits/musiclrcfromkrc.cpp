@@ -1,7 +1,7 @@
 #include "musiclrcfromkrc.h"
 #include "musicnumberdefine.h"
 #include "musicobject.h"
-#include "musiccoreutils.h"
+#include "musiccodecutils.h"
 
 #ifdef Q_CC_GNU
 #   pragma GCC diagnostic ignored "-Wwrite-strings"
@@ -28,18 +28,13 @@ MusicLrcFromKrc::~MusicLrcFromKrc()
     delete[] m_resultBytes;
 }
 
-QString MusicLrcFromKrc::getClassName()
-{
-    return "MusicLrcFromKrc";
-}
-
 bool MusicLrcFromKrc::decode(const QString &input, const QString &output)
 {
     FILE *fp;
     struct stat st;
     size_t dstsize;
 
-    fp = fopen(MusicUtils::Core::toLocal8Bit(input), "rb");
+    fp = fopen(MusicUtils::Codec::toLocal8Bit(input), "rb");
     if(!fp)
     {
         M_LOGGER_ERROR("open file error !");
@@ -155,7 +150,7 @@ int MusicLrcFromKrc::isfilter(char *tok)
     {
         return 1;
     }
-    else if (!sncasecmp(tok, const_cast<char*>(std::string("[sign").c_str()), 5))
+    else if(!sncasecmp(tok, const_cast<char*>(std::string("[sign").c_str()), 5))
     {
         return 1;
     }

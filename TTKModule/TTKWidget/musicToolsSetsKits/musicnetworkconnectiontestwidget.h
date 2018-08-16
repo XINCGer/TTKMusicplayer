@@ -30,6 +30,7 @@ class MusicNetworkTestThread;
 class MUSIC_TOOLSET_EXPORT MusicNetworkConnectionItem : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicNetworkConnectionItem)
 public:
     /*!
      * Object contsructor.
@@ -37,11 +38,6 @@ public:
     explicit MusicNetworkConnectionItem(QWidget *parent = 0);
 
     ~MusicNetworkConnectionItem();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set label text name.
@@ -90,6 +86,7 @@ class MusicNetworkConnectionTestWidget;
 class MUSIC_TOOLSET_EXPORT MusicNetworkConnectionTestWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicNetworkConnectionTestWidget)
 public:
     /*!
      * Object contsructor.
@@ -97,18 +94,6 @@ public:
     explicit MusicNetworkConnectionTestWidget(QWidget *parent = 0);
 
     virtual ~MusicNetworkConnectionTestWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-
-Q_SIGNALS:
-    /*!
-     * Reset window open flag.
-     */
-    void resetFlag(MusicObject::ToolsType flag);
 
 public Q_SLOTS:
     /*!
@@ -125,11 +110,6 @@ public Q_SLOTS:
     void testFinshed();
 
 protected:
-    /*!
-     * Override the widget event.
-     */
-    virtual void closeEvent(QCloseEvent *event) override;
-
     int m_countIndex;
     Ui::MusicNetworkConnectionTestWidget *m_ui;
     QList<MusicNetworkConnectionItem*> m_connectionItems;

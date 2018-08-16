@@ -80,11 +80,6 @@ MusicConnectTransferWidget::~MusicConnectTransferWidget()
     delete m_ui;
 }
 
-QString MusicConnectTransferWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicConnectTransferWidget::openTransferFiles(int mode)
 {
     if(mode == 1)
@@ -143,7 +138,7 @@ void MusicConnectTransferWidget::createAllItems(const MusicSongs &songs)
 QStringList MusicConnectTransferWidget::getSelectedFiles()
 {
     QStringList names;
-    MusicObject::MIntList list(m_ui->playListTableWidget->getSelectedItems());
+    MIntList list(m_ui->playListTableWidget->getSelectedItems());
     if(list.isEmpty())
     {
         MusicMessageBox message;
@@ -177,7 +172,7 @@ QString MusicConnectTransferWidget::getRemovableDrive()
     foreach(const QFileInfo &driver, drives)
     {
         QString path = driver.absoluteDir().absolutePath();
-        if(GetDriveTypeA(path.toStdString().c_str()) == DRIVE_REMOVABLE)
+        if(GetDriveTypeW(path.toStdWString().c_str()) == DRIVE_REMOVABLE)
         {
             return path;
         }
@@ -293,7 +288,7 @@ void MusicConnectTransferWidget::switchDiffDevice()
 
 void MusicConnectTransferWidget::musicSearchIndexChanged(int, int index)
 {
-    MusicObject::MIntList searchResult;
+    MIntList searchResult;
     for(int j=0; j<m_currentSongs.count(); ++j)
     {
         if(m_currentSongs[j].getMusicName().contains(m_ui->searchLineEdit->text().trimmed(), Qt::CaseInsensitive))

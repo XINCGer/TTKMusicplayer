@@ -32,11 +32,6 @@ MusicPlayer::~MusicPlayer()
     delete m_music;
 }
 
-QString MusicPlayer::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 bool MusicPlayer::isPlaying() const
 {
     return m_state == MusicObject::PS_PlayingState;
@@ -111,7 +106,7 @@ void MusicPlayer::setMusicEnhanced(Enhanced type)
 {
     m_musicEnhanced = type;
 
-    if(m_musicEnhanced == Music3D)
+    if(m_musicEnhanced == Enhanced3D)
     {
         m_volumeMusic3D = volume();
     }
@@ -185,7 +180,7 @@ void MusicPlayer::stop()
     m_state = MusicObject::PS_StoppedState;
 }
 
-void MusicPlayer::setEqEffect(const MusicObject::MIntList &hz)
+void MusicPlayer::setEqEffect(const MIntList &hz)
 {
     if(hz.count() != 11)
     {
@@ -206,7 +201,7 @@ void MusicPlayer::setEnaleEffect(bool enable)
 {
     if(enable == false)
     {
-        setEqEffect(MusicObject::MIntList()<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0);
+        setEqEffect(MIntList()<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0<< 0);
     }
 }
 
@@ -219,7 +214,7 @@ void MusicPlayer::setEqInformation()
         QStringList eqValue = M_SETTING_PTR->value(MusicSettingManager::EqualizerValueChoiced).toString().split(',');
         if(eqValue.count() == 11)
         {
-            MusicObject::MIntList hz;
+            MIntList hz;
             hz << eqValue[0].toInt() << eqValue[1].toInt() << eqValue[2].toInt()
                << eqValue[3].toInt() << eqValue[4].toInt() << eqValue[5].toInt()
                << eqValue[6].toInt() << eqValue[7].toInt() << eqValue[8].toInt()
@@ -249,7 +244,7 @@ void MusicPlayer::update()
 {
     emit positionChanged( position() );
 
-    if(m_musicEnhanced == Music3D && !m_music->isMuted())
+    if(m_musicEnhanced == Enhanced3D && !m_music->isMuted())
     {
         ///3D music settings
         setEnaleEffect(false);
@@ -284,7 +279,7 @@ void MusicPlayer::update()
 void MusicPlayer::getCurrentDuration()
 {
     qint64 dur = duration();
-    if( (dur == 0 || m_duration == dur) && m_tryTimes++ < 10 )
+    if((dur == 0 || m_duration == dur) && m_tryTimes++ < 10)
     {
         QTimer::singleShot(50*MT_MS, this, SLOT(getCurrentDuration()));
     }
@@ -299,16 +294,16 @@ void MusicPlayer::setMusicEnhancedCase()
     switch(m_musicEnhanced)
     {
         case EnhancedOff:
-            setEqEffect(MusicObject::MIntList()<<  0<<  0<<  0<<  0<<  0<<  0<<  0<<  0<<  0<<  0<<  0);
+            setEqEffect(MIntList()<<  0<<  0<<  0<<  0<<  0<<  0<<  0<<  0<<  0<<  0<<  0);
             break;
-        case MusicVocal:
-            setEqEffect(MusicObject::MIntList()<<  0<<  0<<  4<<  1<< -5<< -1<<  2<< -2<< -4<< -4<<  0);
+        case EnhancedVocal:
+            setEqEffect(MIntList()<<  0<<  0<<  4<<  1<< -5<< -1<<  2<< -2<< -4<< -4<<  0);
             break;
-        case MusicNICAM:
-            setEqEffect(MusicObject::MIntList()<<  6<<-12<<-12<< -9<< -6<< -3<<-12<< -9<< -6<< -3<<-12);
+        case EnhancedNICAM:
+            setEqEffect(MIntList()<<  6<<-12<<-12<< -9<< -6<< -3<<-12<< -9<< -6<< -3<<-12);
             break;
-        case MusicSubwoofer:
-            setEqEffect(MusicObject::MIntList()<<  6<<  6<<-10<<-10<<  0<<  0<< -3<< -5<< -7<< -9<<-11);
+        case EnhancedSubwoofer:
+            setEqEffect(MIntList()<<  6<<  6<<-10<<-10<<  0<<  0<< -3<< -5<< -7<< -9<<-11);
             break;
         default:
             break;

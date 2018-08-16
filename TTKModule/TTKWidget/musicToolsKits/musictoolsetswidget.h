@@ -33,6 +33,7 @@ class MusicToolSetsWidget;
 class MUSIC_TOOL_EXPORT MusicToolSetsWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicToolSetsWidget)
 public:
     /*!
      * Object contsructor.
@@ -40,12 +41,6 @@ public:
     explicit MusicToolSetsWidget(QWidget *parent = 0);
 
     virtual ~MusicToolSetsWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
 
 public Q_SLOTS:
     /*!
@@ -56,10 +51,6 @@ public Q_SLOTS:
      * Add tool sets list into list widget.
      */
     void addListWidgetItem();
-    /*!
-     * Reset window open flag.
-     */
-    void resetFlag(MusicObject::ToolsType flag);
     /*!
      * Override show function.
      */
@@ -76,7 +67,6 @@ protected:
     virtual void contextMenuEvent(QContextMenuEvent *event) override;
 
     Ui::MusicToolSetsWidget *m_ui;
-    MusicObject::ToolsTypes m_toolsFlags;
 
 };
 

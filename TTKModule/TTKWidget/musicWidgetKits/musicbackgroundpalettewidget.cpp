@@ -6,8 +6,8 @@
 #include "musicotherdefine.h"
 #include "musiccolordialog.h"
 #include "musicuiobject.h"
+#include "musicwidgetheaders.h"
 
-#include <QGridLayout>
 #include <QMouseEvent>
 
 #define COLOR_COL  10
@@ -22,11 +22,6 @@ MusicBackgroundPalette::MusicBackgroundPalette(QWidget *parent)
 MusicBackgroundPalette::~MusicBackgroundPalette()
 {
     QFile::remove(MUSIC_COLOR_FILE);
-}
-
-QString MusicBackgroundPalette::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicBackgroundPalette::setPixmap(const QColor &color)
@@ -184,11 +179,6 @@ MusicBackgroundPaletteWidget::~MusicBackgroundPaletteWidget()
     delete m_ui;
 }
 
-QString MusicBackgroundPaletteWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicBackgroundPaletteWidget::updateBackground(const QString &text)
 {
     MusicBackgroundImage image;
@@ -249,7 +239,7 @@ void MusicBackgroundPaletteWidget::currentColorToMemory(const QString &path)
 
 int MusicBackgroundPaletteWidget::exec()
 {
-    m_previousBackground = M_BACKGROUND_PTR->getMBackground();
+    m_previousBackground = M_BACKGROUND_PTR->getBackgroundUrl();
     updateBackground(m_previousBackground);
     return MusicAbstractMoveDialog::exec();
 }

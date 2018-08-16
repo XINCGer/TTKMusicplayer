@@ -5,16 +5,10 @@ MusicTranslationThreadAbstract::MusicTranslationThreadAbstract(QObject *parent)
 {
     m_reply = nullptr;
     m_manager = new QNetworkAccessManager(this);
-}
-
-QString MusicTranslationThreadAbstract::getClassName()
-{
-    return staticMetaObject.className();
-}
-
-void MusicTranslationThreadAbstract::setRawData(const QVariantMap &data)
-{
-    m_rawData = data;
+#ifndef QT_NO_SSL
+    connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
+    M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
+#endif
 }
 
 void MusicTranslationThreadAbstract::deleteAll()

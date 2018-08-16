@@ -3,11 +3,6 @@
 
 #include <QStringList>
 
-QString MusicHotKeyManager::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicHotKeyManager::connectParentObject(QObject *object)
 {
     for(int i=0; i<8; ++i)
@@ -71,6 +66,25 @@ QString MusicHotKeyManager::hotKey(int index)
         return QString();
     }
     return m_hotkeys[index]->shortcut().toString();
+}
+
+QObject* MusicHotKeyManager::getHotKey(int index)
+{
+    if(index >= m_hotkeys.count())
+    {
+        return nullptr;
+    }
+    return m_hotkeys[index];
+}
+
+void MusicHotKeyManager::addHotKey(const QString &key)
+{
+    m_hotkeys << (new QxtGlobalShortcut(QKeySequence(key)));
+}
+
+void MusicHotKeyManager::addHotKey(int key)
+{
+    m_hotkeys << (new QxtGlobalShortcut(QKeySequence(key)));
 }
 
 void MusicHotKeyManager::setEnabled(int index, bool enabled)

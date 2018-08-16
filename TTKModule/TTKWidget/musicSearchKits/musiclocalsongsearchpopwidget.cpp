@@ -1,10 +1,9 @@
 #include "musiclocalsongsearchpopwidget.h"
 #include "musiclocalsongsearchrecordconfigmanager.h"
 #include "musictime.h"
+#include "musicwidgetheaders.h"
 
 #include <QPainter>
-#include <QBoxLayout>
-#include <QPushButton>
 
 #define ROW_HEIGHT 30
 
@@ -21,11 +20,6 @@ MusicLocalSongSearchPopTableWidget::MusicLocalSongSearchPopTableWidget(QWidget *
 MusicLocalSongSearchPopTableWidget::~MusicLocalSongSearchPopTableWidget()
 {
     clearAllItems();
-}
-
-QString MusicLocalSongSearchPopTableWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLocalSongSearchPopTableWidget::clearAllItems()
@@ -100,11 +94,6 @@ MusicLocalSongSearchPopWidget::~MusicLocalSongSearchPopWidget()
 {
     delete m_popTableWidget;
     delete m_clearButton;
-}
-
-QString MusicLocalSongSearchPopWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLocalSongSearchPopWidget::createItems()

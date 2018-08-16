@@ -2,9 +2,9 @@
 #include "musicbackgroundmanager.h"
 #include "musicbackgroundconfigmanager.h"
 #include "musicextractwrap.h"
+#include "musicwidgetheaders.h"
 
 #include <QPainter>
-#include <QBoxLayout>
 
 #define WIDTH  4
 #define HEIGHT 4
@@ -33,11 +33,6 @@ MusicAbstractMoveWidget::MusicAbstractMoveWidget(bool transparent, QWidget *pare
 MusicAbstractMoveWidget::~MusicAbstractMoveWidget()
 {
     M_BACKGROUND_PTR->removeObserver(this);
-}
-
-QString MusicAbstractMoveWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicAbstractMoveWidget::backgroundChanged()
@@ -75,7 +70,7 @@ void MusicAbstractMoveWidget::paintEvent(QPaintEvent *event)
 void MusicAbstractMoveWidget::mousePressEvent(QMouseEvent *event)
 {
     QWidget::mousePressEvent(event);
-    if( event->button() == Qt::LeftButton && !m_moveOption)///Press the left key
+    if(event->button() == Qt::LeftButton && !m_moveOption)///Press the left key
     {
         m_leftButtonPress = true;
     }
@@ -85,11 +80,12 @@ void MusicAbstractMoveWidget::mousePressEvent(QMouseEvent *event)
 void MusicAbstractMoveWidget::mouseMoveEvent(QMouseEvent *event)
 {
     QWidget::mouseMoveEvent(event);
-    if( !m_leftButtonPress )///Not press the left key
+    if(!m_leftButtonPress)///Not press the left key
     {
         event->ignore();
         return;
     }
+
     int xpos = event->globalX() - m_pressAt.x();
     int ypos = event->globalY() - m_pressAt.y();
     m_pressAt = event->globalPos();
@@ -113,13 +109,13 @@ void MusicAbstractMoveWidget::setBackgroundPixmap(const QSize &size)
 {
     QLabel *label = MStatic_cast(QLabel*, m_background);
     MusicBackgroundImage image;
-    if(MusicExtractWrap::outputSkin(&image, M_BACKGROUND_PTR->getMBackground()))
+    if(MusicExtractWrap::outputSkin(&image, M_BACKGROUND_PTR->getBackgroundUrl()))
     {
         label->setPixmap(image.m_pix.scaled(size));
     }
     else
     {
-        label->setPixmap(QPixmap(M_BACKGROUND_PTR->getMBackground()).scaled(size));
+        label->setPixmap(QPixmap(M_BACKGROUND_PTR->getBackgroundUrl()).scaled(size));
     }
 }
 
@@ -144,9 +140,4 @@ MusicAbstractMoveSingleWidget::MusicAbstractMoveSingleWidget(bool transparent, Q
 MusicAbstractMoveSingleWidget::~MusicAbstractMoveSingleWidget()
 {
     delete m_container;
-}
-
-QString MusicAbstractMoveSingleWidget::getClassName()
-{
-    return staticMetaObject.className();
 }

@@ -22,11 +22,6 @@ MusicRemoteWidgetForCircle::MusicRemoteWidgetForCircle(QWidget *parent)
     mainWidgetLayout->addWidget(m_volumeWidget);
 }
 
-QString MusicRemoteWidgetForCircle::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicRemoteWidgetForCircle::paintEvent(QPaintEvent* event)
 {
     MusicRemoteWidget::paintEvent(event);
@@ -36,6 +31,7 @@ void MusicRemoteWidgetForCircle::paintEvent(QPaintEvent* event)
     path.addEllipse(15, 15, 135, 135);
     path.addEllipse(32, 32, 100, 100);
     path.setFillRule(Qt::OddEvenFill);
+    painter.translate(-2, -2);
     painter.fillPath(path, QBrush(QColor(0, 0, 0, 50)));
     painter.end();
 }

@@ -17,8 +17,6 @@
 
 #include <QMovie>
 #include <QShortcut>
-#include <QBoxLayout>
-#include <QStackedWidget>
 
 MusicIdentifySongsWidget::MusicIdentifySongsWidget(QWidget *parent)
     : QWidget(parent)
@@ -37,7 +35,7 @@ MusicIdentifySongsWidget::MusicIdentifySongsWidget(QWidget *parent)
     connect(m_timer, SIGNAL(timeout()), SLOT(detectedTimeOut()));
 
     m_lrcLabel = nullptr;
-    m_songPlayer = nullptr;
+    m_mediaPlayer = nullptr;
     m_analysis = nullptr;
     m_recordCore = new MusicAudioRecorderCore(this);
     m_detectedThread = new MusicIdentifySongsThread(this);
@@ -53,7 +51,7 @@ MusicIdentifySongsWidget::MusicIdentifySongsWidget(QWidget *parent)
 MusicIdentifySongsWidget::~MusicIdentifySongsWidget()
 {
     delete m_timer;
-    delete m_songPlayer;
+    delete m_mediaPlayer;
     delete m_analysis;
     delete m_recordCore;
     delete m_detectedThread;
@@ -61,11 +59,6 @@ MusicIdentifySongsWidget::~MusicIdentifySongsWidget()
     delete m_detectedLabel;
     delete m_detectedMovie;
     delete m_mainWindow;
-}
-
-QString MusicIdentifySongsWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicIdentifySongsWidget::getKey()
@@ -77,10 +70,7 @@ void MusicIdentifySongsWidget::getKey()
     else
     {
         MusicToastLabel *toast = new MusicToastLabel(this);
-        toast->setFontSize(15);
-        toast->setFontMargin(20, 20);
-        toast->setText(tr("Init Error!"));
-        toast->popup(this);
+        toast->defaultLabel(this, tr("Init Error!"));
     }
 }
 
@@ -117,9 +107,9 @@ void MusicIdentifySongsWidget::detectedButtonClicked()
 void MusicIdentifySongsWidget::reDetectButtonClicked()
 {
     m_mainWindow->setCurrentIndex(IDENTIFY_SONGS_INDEX_0);
-    if(m_songPlayer)
+    if(m_mediaPlayer)
     {
-        m_songPlayer->stop();
+        m_mediaPlayer->stop();
     }
 }
 
@@ -145,14 +135,14 @@ void MusicIdentifySongsWidget::detectedTimeOut()
 
 void MusicIdentifySongsWidget::musicSongPlay()
 {
-    if(!m_songPlayer)
+    if(!m_mediaPlayer)
     {
         return;
     }
 
     if(!m_currentSong.m_songAttrs.isEmpty())
     {
-        m_songPlayer->setMedia(MusicCoreMPlayer::MusicCategory, m_currentSong.m_songAttrs.first().m_url);
+        m_mediaPlayer->setMedia(MusicCoreMPlayer::MusicCategory, m_currentSong.m_songAttrs.first().m_url);
     }
 }
 
@@ -181,7 +171,7 @@ void MusicIdentifySongsWidget::musicSongShare()
 
 void MusicIdentifySongsWidget::positionChanged(qint64 position)
 {
-    if(!m_songPlayer)
+    if(!m_mediaPlayer)
     {
         return;
     }
@@ -268,10 +258,10 @@ void MusicIdentifySongsWidget::createDetectedSuccessedWidget()
     }
     else
     {
-        m_songPlayer = new MusicCoreMPlayer(this);
+        m_mediaPlayer = new MusicCoreMPlayer(this);
         m_analysis = new  MusicLrcAnalysis(this);
         m_analysis->setLineMax(11);
-        connect(m_songPlayer, SIGNAL(positionChanged(qint64)), SLOT(positionChanged(qint64)));
+        connect(m_mediaPlayer, SIGNAL(positionChanged(qint64)), SLOT(positionChanged(qint64)));
     }
     MusicSongIdentify songIdentify(m_detectedThread->getIdentifySongs().first());
 
@@ -293,14 +283,14 @@ void MusicIdentifySongsWidget::createDetectedSuccessedWidget()
     textLabel->setAlignment(Qt::AlignCenter);
     /////////////////////////////////////////////////////////////////////
     MusicSemaphoreLoop loop;
-    MusicDownLoadQueryThreadAbstract *down = M_DOWNLOAD_QUERY_PTR->getQueryThread(this);
-    connect(down, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
-    down->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, textLabel->text().trimmed());
+    MusicDownLoadQueryThreadAbstract *d = M_DOWNLOAD_QUERY_PTR->getQueryThread(this);
+    connect(d, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
+    d->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, textLabel->text().trimmed());
     loop.exec();
 
-    if(!down->getMusicSongInfos().isEmpty())
+    if(!d->isEmpty())
     {
-        foreach(const MusicObject::MusicSongInformation &info, down->getMusicSongInfos())
+        foreach(const MusicObject::MusicSongInformation &info, d->getMusicSongInfos())
         {
             if(info.m_singerName.toLower().trimmed().contains(songIdentify.m_singerName.toLower().trimmed(), Qt::CaseInsensitive) &&
                info.m_songName.toLower().trimmed().contains(songIdentify.m_songName.toLower().trimmed(), Qt::CaseInsensitive) )
@@ -318,10 +308,9 @@ void MusicIdentifySongsWidget::createDetectedSuccessedWidget()
         QString name = ART_DIR_FULL + m_currentSong.m_singerName + SKN_FILE;
         if(!QFile::exists(name))
         {
-            MusicDataDownloadThread *smallPic = new MusicDataDownloadThread(m_currentSong.m_smallPicUrl, name,
-                                                                            MusicDownLoadThreadAbstract::Download_SmlBG, this);
-            connect(smallPic, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
-            smallPic->startToDownload();
+            MusicDataDownloadThread *download = new MusicDataDownloadThread(m_currentSong.m_smallPicUrl, name, MusicObject::DownloadSmallBG, this);
+            connect(download, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
+            download->startToDownload();
             loop.exec();
         }
         iconLabel->setPixmap(QPixmap(name).scaled(iconLabel->size()));
@@ -378,17 +367,16 @@ void MusicIdentifySongsWidget::createDetectedSuccessedWidget()
         QString name = MusicUtils::Core::lrcPrefix() + m_currentSong.m_singerName + " - " + m_currentSong.m_songName + LRC_FILE;
         if(!QFile::exists(name))
         {
-            MusicDownLoadThreadAbstract* lrcDownload = M_DOWNLOAD_QUERY_PTR->getDownloadLrcThread(m_currentSong.m_lrcUrl, name,
-                                                                        MusicDownLoadThreadAbstract::Download_Lrc, this);
-            connect(lrcDownload, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
-            lrcDownload->startToDownload();
+            MusicDownLoadThreadAbstract *d = M_DOWNLOAD_QUERY_PTR->getDownloadLrcThread(m_currentSong.m_lrcUrl, name, MusicObject::DownloadLrc, this);
+            connect(d, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
+            d->startToDownload();
             loop.exec();
         }
         m_analysis->transLrcFileToTime(name);
 
         if(!m_currentSong.m_songAttrs.isEmpty())
         {
-            m_songPlayer->setMedia(MusicCoreMPlayer::MusicCategory, m_currentSong.m_songAttrs.first().m_url);
+            m_mediaPlayer->setMedia(MusicCoreMPlayer::MusicCategory, m_currentSong.m_songAttrs.first().m_url);
         }
     }
 

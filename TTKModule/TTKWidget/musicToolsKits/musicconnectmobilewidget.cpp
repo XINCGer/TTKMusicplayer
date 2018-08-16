@@ -7,10 +7,7 @@
 
 #include "qrencode/qrcodewidget.h"
 
-#include <QLabel>
 #include <QPainter>
-#include <QBoxLayout>
-#include <QPushButton>
 
 MusicConnectMobileWidget::MusicConnectMobileWidget(QWidget *parent)
     : QWidget(parent)
@@ -32,11 +29,6 @@ MusicConnectMobileWidget::MusicConnectMobileWidget(QWidget *parent)
 MusicConnectMobileWidget::~MusicConnectMobileWidget()
 {
     delete m_stackedWidget;
-}
-
-QString MusicConnectMobileWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicConnectMobileWidget::contextMenuEvent(QContextMenuEvent *event)

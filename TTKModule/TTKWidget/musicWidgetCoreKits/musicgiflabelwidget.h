@@ -30,6 +30,7 @@ class QTimer;
 class MUSIC_WIDGET_EXPORT MusicGifLabelWidget : public QLabel
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicGifLabelWidget)
 public:
     enum Type
     {
@@ -69,11 +70,11 @@ public:
      * Set the gif interval.
      */
     void setInterval(int value);
-
     /*!
      * Get the gif interval.
      */
     int getInterval() const;
+
     /*!
      * Set the gif infinited mode.
      */
@@ -84,6 +85,15 @@ public:
     bool getInfinited() const;
 
     /*!
+     * Run the gif.
+     */
+    void run(bool run);
+    /*!
+     * Get current running state.
+     */
+    inline bool isRunning() const { return m_isRunning; }
+
+    /*!
      * Start the gif.
      */
     void start();
@@ -91,10 +101,6 @@ public:
      * Stop the gif.
      */
     void stop();
-    /*!
-     * Get current running state.
-     */
-    inline bool isRunning() const { return m_isRunning; }
 
 public Q_SLOTS:
     /*!
@@ -104,6 +110,10 @@ public Q_SLOTS:
 
 protected:
     /*!
+     * Override the widget event.
+     */
+    virtual void paintEvent(QPaintEvent *event) override;
+    /*!
      * Infinited mode check.
      */
     bool infinitedModeCheck();
@@ -111,7 +121,48 @@ protected:
     int m_index;
     Type m_type;
     QTimer *m_timer;
+    QPixmap m_renderer;
     bool m_isRunning, m_infinited;
+
+};
+
+
+/*! @brief The class of the float gif label mask widget.
+ * @author Greedysky <greedysky@163.com>
+ */
+class MUSIC_WIDGET_EXPORT MusicGifLabelMaskWidget : public QWidget
+{
+    Q_OBJECT
+    TTK_DECLARE_MODULE(MusicGifLabelMaskWidget)
+public:
+    /*!
+     * Object contsructor.
+     */
+    explicit MusicGifLabelMaskWidget(QWidget *parent = 0);
+
+    ~MusicGifLabelMaskWidget();
+
+    /*!
+     * Set the gif type.
+     */
+    void setType(MusicGifLabelWidget::Type type);
+    /*!
+     * Get the gif type.
+     */
+    MusicGifLabelWidget::Type getType() const;
+
+    /*!
+     * Run the gif.
+     */
+    void run(bool run);
+
+protected:
+    /*!
+     * Override the widget event.
+     */
+    virtual void paintEvent(QPaintEvent *event) override;
+
+    MusicGifLabelWidget *m_gifLabel;
 
 };
 

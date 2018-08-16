@@ -1,40 +1,31 @@
 #include "musicdatatagdownloadthread.h"
 #include "musicdownloadsourcethread.h"
 #include "musicsemaphoreloop.h"
-#include "musicsongtag.h"
+#include "musicsettingmanager.h"
 
 #include <QImage>
 
 MusicDataTagDownloadThread::MusicDataTagDownloadThread(const QString &url, const QString &save,
-                                                       Download_Type type, QObject *parent)
+                                                       MusicObject::DownloadType type, QObject *parent)
     : MusicDataDownloadThread(url, save, type, parent)
 {
     m_needUpdate = false;
 }
 
-QString MusicDataTagDownloadThread::getClassName()
+void MusicDataTagDownloadThread::setSongTag(const MusicSongTag &tag)
 {
-    return staticMetaObject.className();
-}
-
-void MusicDataTagDownloadThread::setTags(const QString &smlUrl, const QString &title, const QString &artist, const QString &album)
-{
-    m_smallPicUrl = smlUrl;
-    m_title = title;
-    m_artist = artist;
-    m_album = album;
+    m_musicTag = tag;
 }
 
 void MusicDataTagDownloadThread::startToDownload()
 {
-    if( m_file && (!m_file->exists() || m_file->size() < 4) )
+    if(m_file && (!m_file->exists() || m_file->size() < 4))
     {
-        if( m_file->open(QIODevice::WriteOnly) )
+        if(m_file->open(QIODevice::WriteOnly))
         {
             m_manager = new QNetworkAccessManager(this);
 #ifndef QT_NO_SSL
-            connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
-                               SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
+            connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
             M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
 #endif
             startRequest(m_url);
@@ -65,7 +56,7 @@ void MusicDataTagDownloadThread::downLoadFinished()
         MusicSemaphoreLoop loop;
         MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
         connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
-        download->startToDownload(m_smallPicUrl);
+        download->startToDownload(m_musicTag.getComment());
         connect(this, SIGNAL(finished()), &loop, SLOT(quit()));
         loop.exec();
     }
@@ -79,10 +70,18 @@ void MusicDataTagDownloadThread::downLoadFinished(const QByteArray &data)
     MusicSongTag tag;
     if(tag.read(m_savePathName))
     {
-        tag.setTitle(m_title);
-        tag.setArtist(m_artist);
-        tag.setAlbum(m_album);
-        tag.setCover(data);
+        if(M_SETTING_PTR->value(MusicSettingManager::OtherInfoWChoiced).toBool())
+        {
+            tag.setTitle(m_musicTag.getTitle());
+            tag.setArtist(m_musicTag.getArtist());
+            tag.setAlbum(m_musicTag.getAlbum());
+            tag.setTrackNum(m_musicTag.getTrackNum());
+            tag.setYear(m_musicTag.getYear());
+        }
+        if(M_SETTING_PTR->value(MusicSettingManager::OtherAlbumCoverWChoiced).toBool())
+        {
+            tag.setCover(data);
+        }
         tag.save();
         M_LOGGER_INFO("write tag has finished!");
     }

@@ -28,6 +28,7 @@
 class MUSIC_WIDGET_EXPORT MusicToplistFoundCategoryItem : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicToplistFoundCategoryItem)
 public:
     /*!
      * Object contsructor.
@@ -35,20 +36,15 @@ public:
     explicit MusicToplistFoundCategoryItem(QWidget *parent = 0);
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Set current category.
      */
-    void setCategory(const MusicPlaylistCategory &category);
+    void setCategory(const MusicResultsCategory &category);
 
 Q_SIGNALS:
     /*!
      * Current category changed.
      */
-    void categoryChanged(const MusicPlaylistCategoryItem &category);
+    void categoryChanged(const MusicResultsCategoryItem &category);
 
 public Q_SLOTS:
     /*!
@@ -57,7 +53,7 @@ public Q_SLOTS:
     void buttonClicked(int index);
 
 protected:
-    MusicPlaylistCategory m_category;
+    MusicResultsCategory m_category;
 
 };
 
@@ -69,16 +65,13 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicToplistFoundCategoryPopWidget : public MusicToolMenuWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicToplistFoundCategoryPopWidget)
 public:
     /*!
      * Object contsructor.
      */
     explicit MusicToplistFoundCategoryPopWidget(QWidget *parent = 0);
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set current category by input server.
      */

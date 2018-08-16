@@ -2,8 +2,7 @@
 #include "ui_musicsongchecktoolsitemselecteddialog.h"
 #include "musicitemdelegate.h"
 #include "musicuiobject.h"
-
-#include <QScrollBar>
+#include "musicwidgetheaders.h"
 
 MusicSongCheckToolsItemSelectedTableWidget::MusicSongCheckToolsItemSelectedTableWidget(QWidget *parent)
     : MusicFillItemTableWidget(parent)
@@ -22,11 +21,6 @@ MusicSongCheckToolsItemSelectedTableWidget::MusicSongCheckToolsItemSelectedTable
 #else
     headerview->resizeSection(1, 222);
 #endif
-}
-
-QString MusicSongCheckToolsItemSelectedTableWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSongCheckToolsItemSelectedTableWidget::createAllItems(MusicSongItems *items)
@@ -56,9 +50,9 @@ void MusicSongCheckToolsItemSelectedTableWidget::createAllItems(MusicSongItems *
     }
 }
 
-MusicObject::MIntList MusicSongCheckToolsItemSelectedTableWidget::getSelectedItems() const
+MIntList MusicSongCheckToolsItemSelectedTableWidget::getSelectedItems() const
 {
-    MusicObject::MIntList list;
+    MIntList list;
     for(int i=0; i<rowCount(); ++i)
     {
         QTableWidgetItem *it = item(i, 0);
@@ -116,11 +110,6 @@ MusicSongCheckToolsItemSelectedDialog::MusicSongCheckToolsItemSelectedDialog(QWi
 MusicSongCheckToolsItemSelectedDialog::~MusicSongCheckToolsItemSelectedDialog()
 {
     delete m_ui;
-}
-
-QString MusicSongCheckToolsItemSelectedDialog::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSongCheckToolsItemSelectedDialog::createAllItems(MusicSongItems *items)

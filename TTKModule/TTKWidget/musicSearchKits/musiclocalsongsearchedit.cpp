@@ -1,7 +1,6 @@
 #include "musiclocalsongsearchedit.h"
 #include "musicuiobject.h"
 
-#include <QMenu>
 #include <QKeyEvent>
 
 MusicLocalSongSearchEdit::MusicLocalSongSearchEdit(QWidget *parent)
@@ -9,11 +8,6 @@ MusicLocalSongSearchEdit::MusicLocalSongSearchEdit(QWidget *parent)
 {
     setStyleSheet(MusicUIObject::MLineEditStyle03);
     setPlaceholderText(tr("please input search text"));
-}
-
-QString MusicLocalSongSearchEdit::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLocalSongSearchEdit::contextMenuEvent(QContextMenuEvent *event)
@@ -56,5 +50,6 @@ void MusicLocalSongSearchEdit::keyReleaseEvent(QKeyEvent *event)
                 emit enterFinished(text());
             }
             break;
+        default: break;
     }
 }

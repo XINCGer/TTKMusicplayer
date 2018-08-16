@@ -1,6 +1,7 @@
 #include "musicbdcommentsthread.h"
 #include "musicdownloadquerybdthread.h"
 #include "musicsemaphoreloop.h"
+#include "musicurlutils.h"
 
 #///QJson import
 #include "qjson/parser.h"
@@ -12,27 +13,22 @@ MusicBDSongCommentsThread::MusicBDSongCommentsThread(QObject *parent)
     m_pageSize = 20;
 }
 
-QString MusicBDSongCommentsThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicBDSongCommentsThread::startToSearch(const QString &name)
 {
     M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(name));
 
     MusicSemaphoreLoop loop;
-    MusicDownLoadQueryBDThread *query = new MusicDownLoadQueryBDThread(this);
-    query->setQueryAllRecords(false);
-    query->setQuerySimplify(true);
-    query->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, name);
-    connect(query, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
+    MusicDownLoadQueryBDThread *d = new MusicDownLoadQueryBDThread(this);
+    d->setQueryAllRecords(false);
+    d->setQuerySimplify(true);
+    d->startToSearch(MusicDownLoadQueryThreadAbstract::MusicQuery, name);
+    connect(d, SIGNAL(downLoadDataChanged(QString)), &loop, SLOT(quit()));
     loop.exec();
 
     m_rawData["songID"] = 0;
-    if(!query->getMusicSongInfos().isEmpty())
+    if(!d->isEmpty())
     {
-        m_rawData["songID"] = query->getMusicSongInfos().first().m_songId.toInt();
+        m_rawData["songID"] = d->getMusicSongInfos().first().m_songId.toInt();
         startToPage(0);
     }
 }
@@ -54,18 +50,15 @@ void MusicBDSongCommentsThread::startToPage(int offset)
     QString data = MusicUtils::Algorithm::mdII(BD_SG_COMMIT_DATA_URL, false).arg(m_pageSize*offset).arg(m_pageSize).arg(m_rawData["songID"].toInt());
     QString eKey = QAesWrap::encrypt(data.toUtf8(), key.toUtf8(), key.toUtf8());
     QString sign = MusicUtils::Algorithm::md5(QString("baidu_taihe_music" + eKey + time).toUtf8()).toHex();
-    MusicUtils::Algorithm::urlEncode(eKey);
+    MusicUtils::Url::urlEncode(eKey);
     QUrl musicUrl = MusicUtils::Algorithm::mdII(BD_COMMIT_URL, false).arg(time).arg(sign).arg(eKey);
 
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -73,7 +66,7 @@ void MusicBDSongCommentsThread::startToPage(int offset)
 
 void MusicBDSongCommentsThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -84,7 +77,7 @@ void MusicBDSongCommentsThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -107,7 +100,7 @@ void MusicBDSongCommentsThread::downLoadFinished()
 
                     if(m_interrupt) return;
 
-                    MusicPlaylistItem comment;
+                    MusicResultsItem comment;
                     value = comm.toMap();
                     comment.m_playCount = QString::number(value["zan_num"].toLongLong());
                     comment.m_updateTime = QString::number(value["ctime"].toLongLong()*1000);
@@ -117,7 +110,7 @@ void MusicBDSongCommentsThread::downLoadFinished()
                     comment.m_nickName = user["username"].toString();
                     comment.m_coverUrl = user["userpic"].toString();
 
-                    emit createSearchedItems(comment);
+                    emit createSearchedItem(comment);
                 }
             }
         }
@@ -134,11 +127,6 @@ MusicBDPlaylistCommentsThread::MusicBDPlaylistCommentsThread(QObject *parent)
     : MusicDownLoadCommentsThread(parent)
 {
     m_pageSize = 20;
-}
-
-QString MusicBDPlaylistCommentsThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicBDPlaylistCommentsThread::startToSearch(const QString &name)
@@ -175,11 +163,8 @@ void MusicBDPlaylistCommentsThread::startToPage(int offset)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -187,7 +172,7 @@ void MusicBDPlaylistCommentsThread::startToPage(int offset)
 
 void MusicBDPlaylistCommentsThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -198,7 +183,7 @@ void MusicBDPlaylistCommentsThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -221,7 +206,7 @@ void MusicBDPlaylistCommentsThread::downLoadFinished()
 
                     if(m_interrupt) return;
 
-                    MusicPlaylistItem comment;
+                    MusicResultsItem comment;
                     value = comm.toMap();
                     comment.m_playCount= QString::number(value["zan_num"].toLongLong());
                     comment.m_updateTime = QString::number(value["ctime"].toLongLong()*1000);
@@ -231,7 +216,7 @@ void MusicBDPlaylistCommentsThread::downLoadFinished()
                     comment.m_nickName = user["username"].toString();
                     comment.m_coverUrl= user["userpic"].toString();
 
-                    emit createSearchedItems(comment);
+                    emit createSearchedItem(comment);
                 }
             }
         }

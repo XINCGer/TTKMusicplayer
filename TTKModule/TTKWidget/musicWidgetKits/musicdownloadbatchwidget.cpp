@@ -7,7 +7,6 @@
 #include "musicdatatagdownloadthread.h"
 
 #include <QTimer>
-#include <QComboBox>
 #include <QScrollBar>
 #include <QStyledItemDelegate>
 
@@ -43,11 +42,6 @@ MusicDownloadBatchTableItem::~MusicDownloadBatchTableItem()
     delete m_qulity;
 }
 
-QString MusicDownloadBatchTableItem::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicDownloadBatchTableItem::createItem(const MusicObject::MusicSongInformation &info)
 {
     m_songName->setToolTip(info.m_songName);
@@ -56,8 +50,7 @@ void MusicDownloadBatchTableItem::createItem(const MusicObject::MusicSongInforma
     m_singer->setToolTip(info.m_singerName);
     m_singer->setText(MusicUtils::Widget::elidedText(m_singer->font(), m_singer->toolTip(), Qt::ElideRight, m_singer->width() - 10));
 
-    m_smallPicUrl = info.m_smallPicUrl;
-    m_album = info.m_albumName;
+    m_songInfo = info;
 
     MusicObject::MusicSongAttributes attrs(info.m_songAttrs);
     qSort(attrs);
@@ -99,56 +92,21 @@ void MusicDownloadBatchTableItem::createItem(const MusicObject::MusicSongInforma
     m_qulity->setCurrentIndex(0);
 }
 
-void MusicDownloadBatchTableItem::startToDownload()
+void MusicDownloadBatchTableItem::startToDownload(MusicDownLoadQueryThreadAbstract::QueryType type)
 {
     if(!M_NETWORK_PTR->isOnline() || m_qulity->currentIndex() < 0)
     {
         return;
     }
 
-    MusicObject::MusicSongAttribute musicAttr = m_qulity->itemData(m_qulity->currentIndex()).value<MusicObject::MusicSongAttribute>();
-    QString musicSong = m_singer->toolTip() + " - " + m_songName->toolTip();
-    QString downloadPrefix = M_SETTING_PTR->value(MusicSettingManager::DownloadMusicPathDirChoiced).toString();
-    QString downloadName = QString("%1%2.%3").arg(downloadPrefix).arg(musicSong).arg(musicAttr.m_format);
-    ////////////////////////////////////////////////
-    MusicDownloadRecords records;
-    MusicDownloadRecordConfigManager down(MusicDownloadRecordConfigManager::Normal, this);
-    if(!down.readDownloadXMLConfig())
+    if(type == MusicDownLoadQueryThreadAbstract::MusicQuery)
     {
-        return;
+        startToDownloadMusic();
     }
-
-    down.readDownloadConfig( records );
-    MusicDownloadRecord record;
-    record.m_name = musicSong;
-    record.m_path = QFileInfo(downloadName).absoluteFilePath();
-    record.m_size = musicAttr.m_size;
-    records << record;
-    down.writeDownloadConfig( records );
-    ////////////////////////////////////////////////
-    QFile file(downloadName);
-    if(file.exists())
+    else if(type == MusicDownLoadQueryThreadAbstract::MovieQuery)
     {
-        for(int i=1; i<99; ++i)
-        {
-            if(!QFile::exists(downloadName))
-            {
-                break;
-            }
-            if(i != 1)
-            {
-                musicSong.chop(3);
-            }
-            musicSong += QString("(%1)").arg(i);
-            downloadName = QString("%1%2.%3").arg(downloadPrefix).arg(musicSong).arg(musicAttr.m_format);
-        }
+        startToDownloadMovie();
     }
-    ////////////////////////////////////////////////
-    MusicDataTagDownloadThread *downSong = new MusicDataTagDownloadThread( musicAttr.m_url, downloadName,
-                                                                           MusicDownLoadThreadAbstract::Download_Music, this);
-    connect(downSong, SIGNAL(downLoadDataChanged(QString)), m_supperClass, SLOT(dataDownloadFinished()));
-    downSong->setTags(m_smallPicUrl, m_songName->toolTip(), m_singer->toolTip(), m_album);
-    downSong->startToDownload();
 }
 
 void MusicDownloadBatchTableItem::setCurrentQuality(int bitrate)
@@ -205,6 +163,98 @@ void MusicDownloadBatchTableItem::currentQualityChanged(int index)
     }
 }
 
+void MusicDownloadBatchTableItem::startToDownloadMusic()
+{
+    MusicObject::MusicSongAttribute musicAttr = m_qulity->itemData(m_qulity->currentIndex()).value<MusicObject::MusicSongAttribute>();
+    QString musicSong = m_singer->toolTip() + " - " + m_songName->toolTip();
+    QString downloadPrefix = M_SETTING_PTR->value(MusicSettingManager::DownloadMusicPathDirChoiced).toString();
+    QString downloadName = QString("%1%2.%3").arg(downloadPrefix).arg(musicSong).arg(musicAttr.m_format);
+    ////////////////////////////////////////////////
+    MusicSongs records;
+    MusicDownloadRecordConfigManager down(MusicObject::RecordNormalDownload, this);
+    if(!down.readDownloadXMLConfig())
+    {
+        return;
+    }
+
+    down.readDownloadConfig( records );
+    MusicSong record;
+    record.setMusicName(musicSong);
+    record.setMusicPath(QFileInfo(downloadName).absoluteFilePath());
+    record.setMusicSizeStr(musicAttr.m_size);
+    record.setMusicAddTimeStr("-1");
+    records << record;
+    down.writeDownloadConfig( records );
+    ////////////////////////////////////////////////
+    QFile file(downloadName);
+    if(file.exists())
+    {
+        for(int i=1; i<99; ++i)
+        {
+            if(!QFile::exists(downloadName))
+            {
+                break;
+            }
+            if(i != 1)
+            {
+                musicSong.chop(3);
+            }
+            musicSong += QString("(%1)").arg(i);
+            downloadName = QString("%1%2.%3").arg(downloadPrefix).arg(musicSong).arg(musicAttr.m_format);
+        }
+    }
+    ////////////////////////////////////////////////
+    MusicDataTagDownloadThread *downSong = new MusicDataTagDownloadThread(musicAttr.m_url, downloadName, MusicObject::DownloadMusic, this);
+    downSong->setRecordType(MusicObject::RecordNormalDownload);
+    connect(downSong, SIGNAL(downLoadDataChanged(QString)), m_supperClass, SLOT(dataDownloadFinished()));
+
+    MusicSongTag tag;
+    tag.setComment(m_songInfo.m_smallPicUrl);
+    tag.setTitle(m_songInfo.m_songName);
+    tag.setArtist(m_songInfo.m_singerName);
+    tag.setAlbum(m_songInfo.m_albumName);
+    tag.setTrackNum(m_songInfo.m_trackNumber);
+    tag.setYear(m_songInfo.m_year);
+    downSong->setSongTag(tag);
+    downSong->startToDownload();
+}
+
+void MusicDownloadBatchTableItem::startToDownloadMovie()
+{
+    MusicObject::MusicSongAttribute musicAttr = m_qulity->itemData(m_qulity->currentIndex()).value<MusicObject::MusicSongAttribute>();
+    QString musicSong = m_singer->toolTip() + " - " + m_songName->toolTip();
+    QString downloadPrefix = MOVIE_DIR_FULL;
+    ////////////////////////////////////////////////
+    QStringList urls = musicAttr.m_multiPart ? musicAttr.m_url.split(TTK_STR_SPLITER) : QStringList(musicAttr.m_url);
+    for(int ul=0; ul<urls.count(); ++ul)
+    {
+        ////////////////////////////////////////////////
+        QString downloadName = (urls.count() == 1) ? QString("%1%2.%3").arg(downloadPrefix).arg(musicSong).arg(musicAttr.m_format)
+                                    : QString("%1%2.part%3.%4").arg(downloadPrefix).arg(musicSong).arg(ul+1).arg(musicAttr.m_format);
+        QFile file(downloadName);
+        if(file.exists())
+        {
+            for(int i=1; i<99; ++i)
+            {
+                if(!QFile::exists(downloadName))
+                {
+                    break;
+                }
+                if(i != 1)
+                {
+                    musicSong.chop(3);
+                }
+                musicSong += QString("(%1)").arg(i);
+                downloadName = (urls.count() == 1) ? QString("%1%2.%3").arg(downloadPrefix).arg(musicSong).arg(musicAttr.m_format)
+                                  : QString("%1%2.part%3.%4").arg(downloadPrefix).arg(musicSong).arg(ul+1).arg(musicAttr.m_format);
+            }
+        }
+        ////////////////////////////////////////////////
+        MusicDataDownloadThread *download = new MusicDataDownloadThread(urls[ul], downloadName, MusicObject::DownloadVideo, this);
+        download->startToDownload();
+    }
+}
+
 
 
 MusicDownloadBatchTableWidget::MusicDownloadBatchTableWidget(QWidget *parent)
@@ -219,18 +269,13 @@ MusicDownloadBatchTableWidget::MusicDownloadBatchTableWidget(QWidget *parent)
 
     MusicUtils::Widget::setTransparent(this, 255);
     verticalScrollBar()->setStyleSheet(MusicUIObject::MScrollBarStyle03);
-    setStyleSheet( styleSheet() + MusicUIObject::MTableWidgetStyle02);
+    setStyleSheet(styleSheet() + MusicUIObject::MTableWidgetStyle02);
 
 }
 
 MusicDownloadBatchTableWidget::~MusicDownloadBatchTableWidget()
 {
     clearAllItems();
-}
-
-QString MusicDownloadBatchTableWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicDownloadBatchTableWidget::setParentObject(QWidget *parent)
@@ -262,11 +307,11 @@ void MusicDownloadBatchTableWidget::createItem(const MusicObject::MusicSongInfor
     setCellWidget(index, 0, item);
 }
 
-void MusicDownloadBatchTableWidget::startToDownload()
+void MusicDownloadBatchTableWidget::startToDownload(MusicDownLoadQueryThreadAbstract::QueryType type)
 {
     foreach(MusicDownloadBatchTableItem *item, m_items)
     {
-        item->startToDownload();
+        item->startToDownload(type);
     }
 }
 
@@ -327,6 +372,8 @@ MusicDownloadBatchWidget::MusicDownloadBatchWidget(QWidget *parent)
 
     m_ui->qualityBox->setCurrentIndex(0);
 
+    m_queryType = MusicDownLoadQueryThreadAbstract::MusicQuery;
+
     m_ui->tableWidget->setParentObject(this);
     m_ui->downloadButton->setStyleSheet(MusicUIObject::MPushButtonStyle06);
 #ifdef Q_OS_UNIX
@@ -343,13 +390,10 @@ MusicDownloadBatchWidget::~MusicDownloadBatchWidget()
     delete m_ui;
 }
 
-QString MusicDownloadBatchWidget::getClassName()
+void MusicDownloadBatchWidget::setSongName(const MusicObject::MusicSongInformations &infos, MusicDownLoadQueryThreadAbstract::QueryType type)
 {
-    return staticMetaObject.className();
-}
+    m_queryType = type;
 
-void MusicDownloadBatchWidget::setSongName(const MusicObject::MusicSongInformations &infos)
-{
     foreach(const MusicObject::MusicSongInformation &info, infos)
     {
         m_ui->tableWidget->createItem(info);
@@ -365,6 +409,6 @@ void MusicDownloadBatchWidget::show()
 
 void MusicDownloadBatchWidget::startToDownload()
 {
-    m_ui->tableWidget->startToDownload();
+    m_ui->tableWidget->startToDownload(m_queryType);
     hide();
 }

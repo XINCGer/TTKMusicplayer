@@ -1,8 +1,7 @@
 #include "musicopenfilewidget.h"
 #include "musicclickedlabel.h"
 #include "musicwidgetutils.h"
-
-#include <QGridLayout>
+#include "musicwidgetheaders.h"
 
 MusicOpenFileWidget::MusicOpenFileWidget(QWidget *parent)
     : QWidget(parent)
@@ -31,11 +30,6 @@ MusicOpenFileWidget::MusicOpenFileWidget(QWidget *parent)
     setLayout(layout);
 
     resize(150, 50);
-}
-
-QString MusicOpenFileWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicOpenFileWidget::adjustRect(int w, int h)

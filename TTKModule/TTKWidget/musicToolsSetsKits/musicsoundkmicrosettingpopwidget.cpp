@@ -1,11 +1,8 @@
 #include "musicsoundkmicrosettingpopwidget.h"
 #include "musicaudiorecordercore.h"
 #include "musicuiobject.h"
+#include "musicwidgetheaders.h"
 
-#include <QLabel>
-#include <QSlider>
-#include <QCheckBox>
-#include <QComboBox>
 #include <QAudioDeviceInfo>
 #include <QAbstractItemView>
 #include <QStyledItemDelegate>
@@ -20,11 +17,6 @@ MusicSoundKMicroSettingPopWidget::~MusicSoundKMicroSettingPopWidget()
 {
     delete m_inputComboBox;
     delete m_outputComboBox;
-}
-
-QString MusicSoundKMicroSettingPopWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSoundKMicroSettingPopWidget::initWidget()

@@ -11,11 +11,6 @@ MusicDownloadSourceThread::~MusicDownloadSourceThread()
     deleteAll();
 }
 
-QString MusicDownloadSourceThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicDownloadSourceThread::startToDownload(const QString &url)
 {
     m_manager = new QNetworkAccessManager(this);
@@ -23,13 +18,9 @@ void MusicDownloadSourceThread::startToDownload(const QString &url)
     QNetworkRequest request;
     request.setUrl(url);
 #ifndef QT_NO_SSL
-    connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
-                       SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
+    connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
     M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
-
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
+    setSslConfiguration(&request);
 #endif
 
     m_reply = m_manager->get( request );
@@ -48,14 +39,28 @@ void MusicDownloadSourceThread::downLoadFinished()
         }
         else
         {
-            emit downLoadByteDataChanged(m_reply->readAll());
+            if(m_rawData.isEmpty())
+            {
+                emit downLoadByteDataChanged(m_reply->readAll());
+            }
+            else
+            {
+                emit downLoadExtDataChanged(m_reply->readAll(), m_rawData);
+            }
             deleteAll();
         }
     }
     else
     {
         M_LOGGER_ERROR("Download source data error");
-        emit downLoadByteDataChanged(QByteArray());
+        if(m_rawData.isEmpty())
+        {
+            emit downLoadByteDataChanged(QByteArray());
+        }
+        else
+        {
+            emit downLoadExtDataChanged(QByteArray(), m_rawData);
+        }
         deleteAll();
     }
 }
@@ -63,7 +68,14 @@ void MusicDownloadSourceThread::downLoadFinished()
 void MusicDownloadSourceThread::replyError(QNetworkReply::NetworkError)
 {
     M_LOGGER_ERROR("Abnormal network connection");
-    emit downLoadByteDataChanged(QByteArray());
+    if(m_rawData.isEmpty())
+    {
+        emit downLoadByteDataChanged(QByteArray());
+    }
+    else
+    {
+        emit downLoadExtDataChanged(QByteArray(), m_rawData);
+    }
     deleteAll();
 }
 
@@ -71,7 +83,14 @@ void MusicDownloadSourceThread::replyError(QNetworkReply::NetworkError)
 void MusicDownloadSourceThread::sslErrors(QNetworkReply* reply, const QList<QSslError> &errors)
 {
     sslErrorsString(reply, errors);
-    emit downLoadByteDataChanged(QByteArray());
+    if(m_rawData.isEmpty())
+    {
+        emit downLoadByteDataChanged(QByteArray());
+    }
+    else
+    {
+        emit downLoadExtDataChanged(QByteArray(), m_rawData);
+    }
     deleteAll();
 }
 #endif

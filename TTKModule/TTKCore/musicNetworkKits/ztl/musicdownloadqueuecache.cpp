@@ -3,13 +3,13 @@
 
 #include <QStringList>
 
-MusicDownloadQueueCache::MusicDownloadQueueCache(Download_Type type, QObject *parent)
+MusicDownloadQueueCache::MusicDownloadQueueCache(MusicObject::DownloadType  type, QObject *parent)
     : MusicDownloadQueueCache(MusicDownloadQueueData(), type, parent)
 {
 
 }
 
-MusicDownloadQueueCache::MusicDownloadQueueCache(const MusicDownloadQueueData &data, Download_Type type, QObject *parent)
+MusicDownloadQueueCache::MusicDownloadQueueCache(const MusicDownloadQueueData &data, MusicObject::DownloadType  type, QObject *parent)
     : MusicDownLoadThreadAbstract(data.m_url, data.m_savePath, type, parent)
 {
     m_request = nullptr;
@@ -19,17 +19,14 @@ MusicDownloadQueueCache::MusicDownloadQueueCache(const MusicDownloadQueueData &d
     m_manager = new QNetworkAccessManager(this);
     m_request = new QNetworkRequest();
 #ifndef QT_NO_SSL
-    connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
-                       SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
+    connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
     M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
-
-    QSslConfiguration sslConfig = m_request->sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    m_request->setSslConfiguration(sslConfig);
+    setSslConfiguration(m_request);
 #endif
+
 }
 
-MusicDownloadQueueCache::MusicDownloadQueueCache(const MusicDownloadQueueDatas &datas, Download_Type type, QObject *parent)
+MusicDownloadQueueCache::MusicDownloadQueueCache(const MusicDownloadQueueDatas &datas, MusicObject::DownloadType  type, QObject *parent)
     : MusicDownloadQueueCache(MusicDownloadQueueData(), type, parent)
 {
     addImageQueue(datas);
@@ -43,11 +40,6 @@ MusicDownloadQueueCache::~MusicDownloadQueueCache()
         m_request = nullptr;
     }
     deleteAll();
-}
-
-QString MusicDownloadQueueCache::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicDownloadQueueCache::startToDownload()

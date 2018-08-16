@@ -19,15 +19,16 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
+#include "musicvideotablewidget.h"
 #include "musicabstractmovewidget.h"
 
 class QLabel;
 class QPushButton;
 class QToolButton;
 class QStackedWidget;
+class QParallelAnimationGroup;
 class MusicVideoView;
 class MusicVideoFloatWidget;
-class MusicVideoTableWidget;
 class MusicLocalSongSearchEdit;
 
 /*! @brief The class of the video play widget.
@@ -36,6 +37,7 @@ class MusicLocalSongSearchEdit;
 class MUSIC_VIDEO_EXPORT MusicVideoPlayWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicVideoPlayWidget)
 public:
     /*!
      * Object contsructor.
@@ -43,11 +45,6 @@ public:
     explicit MusicVideoPlayWidget(QWidget *parent = 0);
 
     ~MusicVideoPlayWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set the window is popup or not.
@@ -98,13 +95,13 @@ public Q_SLOTS:
      */
     void searchButtonClicked();
     /*!
-     * Window top state changed.
-     */
-    void windowTopStateChanged();
-    /*!
      * Video research button searched by name.
      */
     void videoResearchButtonSearched(const QString &name);
+    /*!
+     * Video research button searched by name.
+     */
+    void videoResearchButtonSearched(const QVariant &data);
     /*!
      * Video search query by given id.
      */
@@ -112,11 +109,11 @@ public Q_SLOTS:
     /*!
      * Set current media url by selected quality.
      */
-    void mvURLChanged(const QString &data);
+    void mediaUrlChanged(const QString &url);
     /*!
      * Set current media name and url to play.
      */
-    void mvURLNameChanged(const QString &name, const QString &data);
+    void mvURLNameChanged(const MusicVideoItem &item);
 
     /*!
      * Fresh button clicked.
@@ -135,24 +132,38 @@ public Q_SLOTS:
      */
     void shareButtonClicked();
 
+private Q_SLOTS:
+    /*!
+     * Leave Timeout.
+     */
+    void leaveTimeout();
+
 protected:
     /*!
      * Override the widget event.
      */
     virtual void resizeEvent(QResizeEvent *event) override;
+    virtual void enterEvent(QEvent *event) override;
+    virtual void leaveEvent(QEvent *event) override;
     virtual void contextMenuEvent(QContextMenuEvent *event) override;
     /*!
      * Set current title text(song name).
      */
     void setTitleText(const QString &text);
+    /*!
+     * Start to turn on animation.
+     */
+    void start(int topst, int topend, int ctrlst, int ctrlend);
 
-    bool m_windowPopup;
+    QTimer *m_leaverTimer;
+    QParallelAnimationGroup *m_leaverAnimation;
+
     QWidget *m_topWidget;
     QLabel *m_textLabel;
-    QString m_currentMediaName;
     QToolButton *m_backButton;
-    QPushButton *m_searchButton, *m_closeButton, *m_winTopButton;
+    QPushButton *m_searchButton, *m_closeButton;
     QStackedWidget *m_stackedWidget;
+    MusicVideoItem m_videoItem;
     MusicVideoView *m_videoView;
     MusicVideoTableWidget *m_videoTable;
     MusicLocalSongSearchEdit *m_searchEdit;

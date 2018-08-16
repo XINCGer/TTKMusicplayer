@@ -21,6 +21,7 @@
 
 #include <QNetworkReply>
 #include <QSslConfiguration>
+#include "musicnetworkdefines.h"
 #include "musicalgorithmutils.h"
 
 /*! @brief The class of abstract downloading data.
@@ -29,15 +30,8 @@
 class MUSIC_NETWORK_EXPORT MusicNetworkAbstract : public QObject
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicNetworkAbstract)
 public:
-    typedef enum StateCode
-    {
-        Init = 0xFFFFF00,   /*!< Network state init*/
-        Success = 0,        /*!< Network state success*/
-        Error = -1,         /*!< Network state error*/
-        UnKnow = 2,         /*!< Network state unknow*/
-    }StateCode;
-
     /*!
      * Object contsructor.
      */
@@ -45,10 +39,6 @@ public:
 
     virtual ~MusicNetworkAbstract();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Release the network object.
      */
@@ -63,7 +53,20 @@ public:
      */
     inline bool networkAbort() { return m_interrupt; }
 
+    /*!
+     * Set the current raw data.
+     */
+    inline void setRawData(const QVariantMap &data) { m_rawData = data; }
+    /*!
+     * Get the current raw data.
+     */
+    inline const QVariantMap& getRawData() const { return m_rawData; }
+
 Q_SIGNALS:
+    /*!
+     * Send raw data changed.
+     */
+    void rawDataChanged(const QVariantMap &data);
     /*!
      * Send download data from net.
      */
@@ -91,7 +94,13 @@ public Q_SLOTS:
 #endif
 
 protected:
-    StateCode m_stateCode;
+    /*!
+     * Set request ssl configuration.
+     */
+    void setSslConfiguration(QNetworkRequest *request, QSslSocket::PeerVerifyMode m = QSslSocket::VerifyNone);
+
+    QVariantMap m_rawData;
+    MusicObject::NetworkCode m_stateCode;
     volatile bool m_interrupt;
     QNetworkReply *m_reply;
     QNetworkAccessManager *m_manager;

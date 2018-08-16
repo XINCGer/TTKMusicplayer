@@ -66,6 +66,8 @@ namespace MusicUIObject
 
     const QString MColorStyle12_S = "#323232";
 
+    const QString MColorStyle13 = " \
+            color:black;";
 
 ///Background
 //////////////////////////////////////////////////////
@@ -191,7 +193,11 @@ namespace MusicUIObject
 ///ToolButton
 //////////////////////////////////////////////////////
     const QString MToolButtonStyle01 = " \
-            QToolButton{ background-color:transparent;}";
+            QToolButton{  background-color:transparent;  " +
+#ifdef Q_OS_UNIX
+            QString("border-style:falt;") +
+ #endif
+            QString("}");
 
     const QString MToolButtonStyle02 = " \
             QToolButton::hover{ border:1px solid #000000;}";

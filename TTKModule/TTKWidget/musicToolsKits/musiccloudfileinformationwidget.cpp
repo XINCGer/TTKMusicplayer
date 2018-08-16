@@ -3,7 +3,7 @@
 #include "musicuiobject.h"
 #include "musicnumberutils.h"
 
-#include "qiniu/qnsimplelistdata.h"
+#include "qiniu/qndataitem.h"
 
 MusicCloudFileInformationWidget::MusicCloudFileInformationWidget(QWidget *parent)
     : MusicAbstractMoveDialog(parent),
@@ -21,11 +21,6 @@ MusicCloudFileInformationWidget::MusicCloudFileInformationWidget(QWidget *parent
 MusicCloudFileInformationWidget::~MusicCloudFileInformationWidget()
 {
     delete m_ui;
-}
-
-QString MusicCloudFileInformationWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicCloudFileInformationWidget::setFileInformation(QNDataItem *data)

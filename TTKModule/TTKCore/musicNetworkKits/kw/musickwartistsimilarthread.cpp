@@ -10,11 +10,6 @@ MusicKWArtistSimilarThread::MusicKWArtistSimilarThread(QObject *parent)
 
 }
 
-QString MusicKWArtistSimilarThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicKWArtistSimilarThread::startToSearch(const QString &text)
 {
     if(!m_manager)
@@ -31,11 +26,8 @@ void MusicKWArtistSimilarThread::startToSearch(const QString &text)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KW_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -62,12 +54,12 @@ void MusicKWArtistSimilarThread::downLoadFinished()
         {
             if(m_interrupt) return;
 
-            MusicPlaylistItem info;
+            MusicResultsItem info;
             info.m_id = getArtistIdName(regx.cap(2));
             info.m_coverUrl = regx.cap(1);
             info.m_name = regx.cap(2);
             info.m_updateTime.clear();
-            emit createSimilarItems(info);
+            emit createSimilarItem(info);
 
             pos += regx.matchedLength();
             pos = regx.indexIn(html, pos);
@@ -93,11 +85,8 @@ QString MusicKWArtistSimilarThread::getArtistNameById(const QString &id)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KW_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     QNetworkAccessManager manager;
     MusicSemaphoreLoop loop;
     QNetworkReply *reply = manager.get(request);
@@ -136,11 +125,8 @@ QString MusicKWArtistSimilarThread::getArtistIdName(const QString &name)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(KW_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     QNetworkAccessManager manager;
     MusicSemaphoreLoop loop;
     QNetworkReply *reply = manager.get(request);

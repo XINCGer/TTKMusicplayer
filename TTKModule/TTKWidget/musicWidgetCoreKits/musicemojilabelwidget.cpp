@@ -2,10 +2,9 @@
 #include "musictinyuiobject.h"
 #include "musicclickedlabel.h"
 #include "musicuiobject.h"
+#include "musicwidgetheaders.h"
 
 #include <QFile>
-#include <QBoxLayout>
-#include <QToolButton>
 #include <QButtonGroup>
 #include <QSignalMapper>
 
@@ -79,7 +78,11 @@ MusicEMOJILabelWidget::MusicEMOJILabelWidget(QWidget *parent)
     QFile file(":/emoji/db");
     if(file.open(QFile::ReadOnly))
     {
+#ifdef Q_OS_WIN
        m_datas = QString(file.readAll()).split("\r\n");
+#else
+       m_datas = QString(file.readAll()).split("\n");
+#endif
     }
     file.close();
 }
@@ -88,11 +91,6 @@ MusicEMOJILabelWidget::~MusicEMOJILabelWidget()
 {
     qDeleteAll(m_labelItems);
     qDeleteAll(m_buttonItems);
-}
-
-QString MusicEMOJILabelWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicEMOJILabelWidget::buttonClicked(int index)

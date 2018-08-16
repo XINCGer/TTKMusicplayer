@@ -36,6 +36,7 @@ namespace Ui {
 class MUSIC_GUI_EXPORT MusicLeftAreaWidget : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicLeftAreaWidget)
 public:
     /*!
      * Object contsructor.
@@ -43,10 +44,7 @@ public:
     explicit MusicLeftAreaWidget(QWidget *parent = 0);
 
     ~MusicLeftAreaWidget();
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
+
     /*!
      * Get class object instance.
      */
@@ -55,6 +53,11 @@ public:
      * Set up app ui.
      */
     void setupUi(Ui::MusicApplication* ui);
+
+    /*!
+     * Execute outer radio by type.
+     */
+    void radioExecuteOuter(const QString &path);
     /*!
      * Reset current music love icon state.
      */
@@ -91,10 +94,6 @@ public Q_SLOTS:
      * To download music data from net finished.
      */
     void musicDownloadSongFinished();
-    /*!
-     * All files upload finsihed.
-     */
-    void cloudSharedSongUploadAllDone();
     /*!
      * Show full container or not.
      */

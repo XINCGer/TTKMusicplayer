@@ -23,15 +23,15 @@
 #include "musicglobaldefine.h"
 
 ///////////////////////////////////////////////////////////////////////////
-const QString WY_COOKIE_URL          = "bDNKYmtpNXZxSG5tMytPcmE3d2plSHdWQzBCMGtnNXZWVW96bmczWmdab2p2NzlXTkNPdEsvWGJLbFZGVnN4d1pjTFU1cUF1MjlDQkxJQnhRNTlkVEx6emlLemtNcEdsNC90UTdLVUV1NFo3U1JYSmhUNjdQU1NrbzliYmlvNTFaTVdsZlZPdEFucWUwQ21JaUJHMU9VTTNxZWdNUGEyQ3dQcndiZ0FrTVpIYWRwNlVhLzhhenBwNlhXMjVwblNN";
+const QString WY_COOKIE_URL          = "M2g1Q0hEb2JJeDNROGtJcDE3ZEFpR0J2TFFJOGtvbms1Sk4zTjBDV3p6b3hOVXZMSllpQmNFRFlxdVJvdHk0T0owNVpJTjBhejlqS2M1OVZPRXNQdWg2eCtPR3l5cG5nNkdpUUIrUHZpUzhRRTBNMFZWUnZ4SmlTaXdZOHoxQVBlTjg2UGZtUkJmWVhRNlU5TEs2aHJ2MVg3WVdqYjZrdWRwdnBPVlVJNHlPKzdVbCs=";
 const QString WY_UA_URL_1            = "N1hBb3hrWFVaNnNTejltZUpIeUhieG9xN0FuV0J3QmkzOElteHZYNkQzL1Z2VEIzVDdsMVlURmhUVFlZT3NSU3BSQzVmUDFWNzBIbEwvaHJ4UFg0ODVzUVBXQzZNcjVheWZEcmF2ZitwSm1WUFV1Y1ozZXdCUXBsdXFoZ1ZyTTNURGVHUTZYQmRMQXJDZ2ZrQ3lNTU0rb3UxMkJmQUpxYXdaYVlCdC9kdm84PQ==";
 ///////////////////////////////////////////////////////////////////////////
 const QString WY_BASE_URL            = "MVNVTXo4bW9WdHhXR1dXeTZmU3k5dmFOcGlua1VOMlE=";
 const QString WY_ENCRYPT_STRING      = "3go8&$8*3*3h0k(2)2";
 const QString WY_SECKRY              = "411571dca16717d9af5ef1ac97a8d21cb740329890560688b1b624de43f49fdd7702493835141b06ae45f1326e264c98c24ce87199c1a776315e5f25c11056b02dd92791fcc012bff8dd4fc86e37888d5ccc060f7837b836607dbb28bddc703308a0ba67c24c6420dd08eec2b8111067486c907b6e53c027ae1e56c188bc568e";
 ///////////////////////////////////////////////////////////////////////////
-const QString WY_SONG_SEARCH_URL     = "b2dKQmJVWmxNRXlqYU1saWFpbXV5Y1NkenZvN29UVFh4WjhScXpST0Nic3VDNDJkZ0QrWUxnPT0=";
-const QString WY_SONG_SQUERY_URL     = "UUs1NUMwUk9yeExmUFVCakUrS29NNm5OQ05lYUV3ZzJPS3NLVW9lZXhNaGwrd2Za";
+const QString WY_SONG_SEARCH_N_URL   = "STg2eHNFN0FLWnRzeDNlQXRlaHIvVlJ6b2k5a2s3Y2JmMG9lUEQzTytuNG5JenowY3ZleC9SbXFyak1ta29pYzA3dytZZz09";
+const QString WY_SONG_SEARCH_NDT_URL = "ZEhwSlR5d1o1dENWUjk3Q09uckZpSG5QTGtEWnMwaUp3Ky9xYlE1S3lRVCtyNzNDNnp3bGQ2QzVCdE9FWlRuMVAxQ21uQT09";
 const QString WY_SONG_MV_NDT_URL     = "dmt4VnNDdWErYjRYUXBnOWdubVBIQT09";
 const QString WY_SONG_MV_N_URL       = "dFowcHhjYXk3UWRkZlo2eW40NkY2TEU4VzRoMC84TFh4Wm93N1hCbWk5V21WQnZnYzIrVUhvYmVtK0xtUW90cGpidHBqdz09";
 const QString WY_SONG_PATH_URL       = "SXZWVUpDL0FCM1pUODJsaDNGZjN4OFlVZk1JQzdXOXRpWVJTSTVEUEZJZkI3YUJOMUdLQ3lnPT0=";
@@ -51,6 +51,8 @@ const QString WY_AR_MV_DATA_N_URL    = "OE95dm9DdmtycVlzcnZaaWRhRFpHYjNBenl0bmFK
 const QString WY_AR_MV_N_URL         = "eFdablNDbDlZVzVvYlo4UU9waEFVRlluRUFzdXA4TXFzVE9RMllXWVdQUXE2WjlsRi9DMzc0VlNXQlU9";
 const QString WY_AR_SIM_DATA_N_URL   = "OHhrOUw5Y0JLYmxHaG82bUp6YXVLNHV5UnlVPQ==";
 const QString WY_AR_SIM_N_URL        = "TmVISndYN2pvQzUrS0Q4OEkySnBvT092Q2R4c1Iwa2ovUkdxZ1RuUGRERXhDVEFUMDBPbmUwSklvTVZPQXRUdnZ4QlZDUT09";
+const QString WY_AR_LIST_N_URL       = "dkxWWG8wQTVVa0xkY1dydjlwTWtNNGtSb3RBWWZqbURVZGtCWHMraFlSNVVRWG9rSnEwSzI4M3o4SDg9";
+const QString WY_AR_LIST_DATA_N_URL  = "RXo2OUZ0SnBtU21DenNuSk91UDcxSHIxeGw1MmsyOU1uMVNQcUNIVERZVVpGYm9yTFAyeVhlODlaK1FjV2hvdU1mdHNhTnhTUERkQUJwS3kzckhvZVE9PQ==";
 ///////////////////////////////////////////////////////////////////////////
 const QString WY_ALBUM_N_URL         = "QzJrMDNKTGlpVHpvY2taYm5BSWZGVTZWM09xYW5STDdXRFE5eTEzczhLZHB1RWljWlIxOVhRUXVDcmpuVjJsQnhqcmZRZE9UU0JZPQ==";
 ///////////////////////////////////////////////////////////////////////////
@@ -70,6 +72,9 @@ const QString WY_RCM_N_URL           = "VklDaWtHcm5waU1raUxyRUNKMjR3Mk4zRmpMSzRh
 ///////////////////////////////////////////////////////////////////////////
 const QString WY_SUGGEST_NDT_URL     = "ajU1Wm14WjV3KzhBeTdpSlNmVE5lUT09";
 const QString WY_SUGGEST_N_URL       = "alpUZU5qWnJJc2NHTDdiN0xDTm5NZnpxN2s0c21BTHU2eUFOcTNiOVFSeHE1dms1UXFhQWZHVGpjY0l4OVhGL0RoeWYvUT09";
+///////////////////////////////////////////////////////////////////////////
+const QString WY_AUT_NDT_URL         = "YzNwMndvcTdqSFBoeDJhT3A5TE5pUDJINGIyaFhMYTh5VXltVWdNZWRIZ1BlcTFkVS9DUmMveFZDUnlwakNHUnUzOHBVaU03a3BiREt4VXc=";
+const QString WY_AUT_N_URL           = "VWJSRUlWTDlpMEIxRnArU0o5Q21tS2hsbGp5RzBWdWliczlmdElZbG9HcEF6eVRDb2t5RWYxL2N2b1l3QmYyOA==";
 ///////////////////////////////////////////////////////////////////////////
 
 

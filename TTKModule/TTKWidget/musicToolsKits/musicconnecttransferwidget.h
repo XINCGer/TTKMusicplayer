@@ -35,6 +35,7 @@ class MusicFileSenderServer;
 class MUSIC_TOOL_EXPORT MusicConnectTransferWidget : public MusicAbstractMoveDialog
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicConnectTransferWidget)
 public:
     /*!
      * Object contsructor.
@@ -43,10 +44,6 @@ public:
 
     virtual ~MusicConnectTransferWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Open transfer files by mode.
      */
@@ -118,7 +115,7 @@ protected:
     int m_currentIndex;
     MusicSongs m_currentSongs;
     QButtonGroup *m_buttonGroup;
-    MusicObject::MIntsListMap m_searchfileListCache;
+    MIntsListMap m_searchfileListCache;
     MusicFileSenderServer *m_sendServer;
 
 };

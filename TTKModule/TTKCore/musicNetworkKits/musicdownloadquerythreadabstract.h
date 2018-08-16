@@ -20,6 +20,7 @@
  ================================================= */
 
 #include "musicobject.h"
+#include "musicstringutils.h"
 #include "musicdownloadpagingthread.h"
 
 /*! @brief The class of the searched data item.
@@ -42,12 +43,12 @@ typedef struct MUSIC_NETWORK_EXPORT MusicSearchedItem
         m_type = "-";
     }
 }MusicSearchedItem;
-MUSIC_DECLARE_LISTS(MusicSearchedItem)
+TTK_DECLARE_LISTS(MusicSearchedItem)
 
-/*! @brief The class of the playlist data item.
+/*! @brief The class of the search song results data item.
  * @author Greedysky <greedysky@163.com>
  */
-typedef struct MUSIC_NETWORK_EXPORT MusicPlaylistItem
+typedef struct MUSIC_NETWORK_EXPORT MusicResultsItem
 {
     QString m_id;
     QString m_name;
@@ -58,7 +59,7 @@ typedef struct MUSIC_NETWORK_EXPORT MusicPlaylistItem
     QString m_updateTime;
     QString m_tags;
 
-    MusicPlaylistItem()
+    MusicResultsItem()
     {
         m_id = "-";
         m_name = "-";
@@ -74,8 +75,8 @@ typedef struct MUSIC_NETWORK_EXPORT MusicPlaylistItem
     {
         return m_name == "-" && m_nickName == "-" && m_coverUrl == "-" && m_description == "-";
     }
-}MusicPlaylistItem;
-MUSIC_DECLARE_LISTS(MusicPlaylistItem)
+}MusicResultsItem;
+TTK_DECLARE_LISTS(MusicResultsItem)
 
 /*! @brief The class to abstract query download data from net.
  * @author Greedysky <greedysky@163.com>
@@ -83,6 +84,7 @@ MUSIC_DECLARE_LISTS(MusicPlaylistItem)
 class MUSIC_NETWORK_EXPORT MusicDownLoadQueryThreadAbstract : public MusicDownLoadPagingThread
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownLoadQueryThreadAbstract)
 public:
     enum QueryType
     {
@@ -98,11 +100,6 @@ public:
     explicit MusicDownLoadQueryThreadAbstract(QObject *parent = 0);
 
     virtual ~MusicDownLoadQueryThreadAbstract();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Start to search data from name and type.
@@ -160,9 +157,17 @@ public:
      */
     inline QString getSearchedText() const { return m_searchText;}
     /*!
-     * Return the current song container.
+     * Set the current song container.
+     */
+    inline void setMusicSongInfos(const MusicObject::MusicSongInformations &infos) { m_musicSongInfos = infos; }
+    /*!
+     * Get the current song container.
      */
     inline const MusicObject::MusicSongInformations& getMusicSongInfos() const { return m_musicSongInfos; }
+    /*!
+     * Check the current song container is empty.
+     */
+    inline bool isEmpty() const { return m_musicSongInfos.isEmpty(); }
     /*!
      * Map query server string.
      */
@@ -176,7 +181,7 @@ Q_SIGNALS:
     /*!
      * Create the current items by song name\ artist name and time.
      */
-    void createSearchedItems(const MusicSearchedItem &songItem);
+    void createSearchedItem(const MusicSearchedItem &songItem);
 
 protected:
     /*!

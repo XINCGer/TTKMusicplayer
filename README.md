@@ -1,6 +1,6 @@
 # TTKMusicPlayer
 ![TTKMusicplayer](https://img.shields.io/badge/Greedysky-TTKMusicPlayer-green.svg?style=flat-square)
-![Version](https://img.shields.io/badge/Version-2.6.4.0-blue.svg?style=flat-square)
+![Version](https://img.shields.io/badge/Version-2.7.0.0-blue.svg?style=flat-square)
 ![License](https://img.shields.io/badge/License-GPL%20V3-yellowgreen.svg?style=flat-square)
 
 ![LOGO](https://github.com/Greedysky/Resource/blob/master/Screen/logo_pic.png?raw=true)
@@ -24,9 +24,9 @@ Compiler tutorial I have written in the wiki.(See here <u>https://github.com/Gre
  
 | Platform | Qt & Compiler       | Status                                                                                      |
 | :---:    | :---:               | :---:                                                                                       |
-| Linux    | 4.8.7 GCC & 5.x GCC    | ![Linux](https://img.shields.io/wercker/ci/wercker/docs.svg)                            |
-| Windows  | 4.8.7 GCC & 5.x GCC       | ![Windows](https://img.shields.io/wercker/ci/wercker/docs.svg) |
-| Windows  | 5.x MSVC       | ![Windows](https://img.shields.io/wercker/ci/wercker/docs.svg) |
+| Linux    | 4.8.7 GCC & 5.x GCC    | ![Linux](https://img.shields.io/teamcity/codebetter/bt428.svg)                            |
+| Windows  | 4.8.7 GCC & 5.x GCC       | ![Windows](https://img.shields.io/teamcity/codebetter/bt428.svg) |
+| Windows  | 5.x MSVC       | ![Windows](https://img.shields.io/teamcity/codebetter/bt428.svg) |
 | OS X     | 5.x Clang     | ![OSX](https://img.shields.io/badge/build-unknown-lightgrey.svg?style=flat-square)                           |
  
 # For Developers
@@ -41,25 +41,25 @@ You Can See Here: **<u>https://greedysky.github.io/ttkdocs/html/index.html</u>**
 
 Download
 ---
-Github: **<u>https://github.com/Greedysky/TTKMusicplayer</u>**
-
-Oschina: **<u>http://git.oschina.net/greedysky/Musicplayer</u>**
+OSChina: **<u>http://git.oschina.net/greedysky/Musicplayer</u>**
 
 Qmmp Player You Can See Here: **<u>http://qmmp.ylsoftware.com</u>**
 
-Qmmp Source You Can See Here: **<u>https://github.com/Greedysky/TTKMusicplayer/tree/plugins</u>**
+Qmmp Source You Can See Here: **<u>https://github.com/Greedysky/qmmp</u>**
 
-Qmmp Source You Can See Here(extra): **<u>https://github.com/Greedysky/qmmp</u>**
+Qmmp Source Mod You Can See Here: **<u>https://github.com/Greedysky/TTKMusicplayer/tree/plugins</u>**
 
-Qmmp Core Library URL: **<u>http://pan.baidu.com/s/1bv4iSY</u>**
+Qmmp Core Mod Library URL: **<u>http://pan.baidu.com/s/1bv4iSY</u>**
+
+Player Base URL: **<u>http://pan.baidu.com/s/1gdB5QLH</u>**
+
+Skin Download URL: **<u>http://pan.baidu.com/s/1mh7AeG4</u>**
 
 Executable Download URL: **<u>http://download.csdn.net/album/detail/3094</u>**
 
 Executable Download URL(extra): **<u>http://pan.baidu.com/s/1kVOHN0b</u>**
 
 Mobile branch : **<u>https://github.com/Greedysky/TTKMusicplayer/tree/mobile</u>**
-
-Skin Download URL: **<u>http://pan.baidu.com/s/1mh7AeG4</u>**
 
 KuGou Resource Download URL: **<u>https://github.com/Greedysky/KugouResource</u>**
 

@@ -33,6 +33,7 @@ class MusicGifLabelWidget;
 class MUSIC_WIDGET_EXPORT MusicQueryTableWidget : public MusicFillItemTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicQueryTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -42,11 +43,6 @@ public:
     virtual ~MusicQueryTableWidget();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Set network query input.
      */
     virtual void setQueryInput(MusicDownLoadQueryThreadAbstract *query);
@@ -54,10 +50,6 @@ public:
      * Get network query input.
      */
     MusicDownLoadQueryThreadAbstract *getQueryInput();
-    /*!
-     * Return the current song container.
-     */
-    const MusicObject::MusicSongInformations& getMusicSongInfos() const;
     /*!
      * Start search query by text.
      * Subclass should implement this function.
@@ -73,7 +65,7 @@ Q_SIGNALS:
     /*!
      * Add current network music to download to local.
      */
-    void muiscSongToPlayListChanged(const QString &name, const QString &time,
+    void musicSongToPlayListChanged(const QString &name, const QString &time,
                                     const QString &format, bool play);
     /*!
      * Show download state type.
@@ -94,7 +86,7 @@ public Q_SLOTS:
      * Create searched items.
      * Subclass should implement this function.
      */
-    virtual void createSearchedItems(const MusicSearchedItem &songItem) = 0;
+    virtual void createSearchedItem(const MusicSearchedItem &songItem) = 0;
 
 protected:
     /*!
@@ -114,6 +106,7 @@ class MusicLabelDelegate;
 class MUSIC_WIDGET_EXPORT MusicQueryItemTableWidget : public MusicQueryTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicQueryItemTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -123,15 +116,15 @@ public:
     virtual ~MusicQueryItemTableWidget();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * Start search query by text.
      */
     virtual void startSearchQuery(const QString &text);
 
 public Q_SLOTS:
+    /*!
+     * Table widget list cell click.
+     */
+    virtual void listCellClicked(int row, int column) override;
     /*!
      * Clear All Items.
      */

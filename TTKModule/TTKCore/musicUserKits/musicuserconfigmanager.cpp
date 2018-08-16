@@ -6,14 +6,9 @@ MusicUserConfigManager::MusicUserConfigManager(QObject *parent)
 
 }
 
-QString MusicUserConfigManager::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicUserConfigManager::writeUserXMLConfig(const MusicUserRecords &records)
 {
-    if( !writeConfig( USERPATH_FULL ) )
+    if(!writeConfig(USERPATH_FULL))
     {
         return;
     }
@@ -23,26 +18,31 @@ void MusicUserConfigManager::writeUserXMLConfig(const MusicUserRecords &records)
 
     foreach(const MusicUserRecord &record, records)
     {
-        writeDomElementMutilText(musicPlayer, "username", MusicXmlAttributes() << MusicXmlAttribute("name", record.m_userName)
-                                   << MusicXmlAttribute("userRp", record.m_rememberPWD) << MusicXmlAttribute("userAl", record.m_autoLogin),
-                                   record.m_password);
+        writeDomElementMutilText(musicPlayer, "userName", MusicXmlAttributes() <<
+                                 MusicXmlAttribute("name", record.m_uid) <<
+                                 MusicXmlAttribute("remember", record.m_rememberFlag ? 1 : 0) <<
+                                 MusicXmlAttribute("auto", record.m_autoFlag ? 1 : 0) <<
+                                 MusicXmlAttribute("type", record.m_server),
+                                 record.m_password);
     }
 
     //Write to file
     QTextStream out(m_file);
-    m_ddom->save(out, 4);
+    m_document->save(out, 4);
 }
 
 void MusicUserConfigManager::readUserConfig(MusicUserRecords &records)
 {
-    QDomNodeList nodelist = m_ddom->elementsByTagName("username");
+    QDomNodeList nodelist = m_document->elementsByTagName("userName");
     for(int i=0; i<nodelist.count(); ++i)
     {
         MusicUserRecord record;
-        record.m_userName = nodelist.at(i).toElement().attribute("name");
-        record.m_rememberPWD = nodelist.at(i).toElement().attribute("userRp");
-        record.m_autoLogin = nodelist.at(i).toElement().attribute("userAl");
-        record.m_password =  nodelist.at(i).toElement().text();
+        QDomElement element = nodelist.at(i).toElement();
+        record.m_uid = element.attribute("name");
+        record.m_rememberFlag = (element.attribute("remember") == "1");
+        record.m_autoFlag = (element.attribute("auto") == "1");
+        record.m_server = element.attribute("type").toInt();
+        record.m_password =  element.text();
         records << record;
     }
 }

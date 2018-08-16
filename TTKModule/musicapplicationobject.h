@@ -26,6 +26,7 @@ class QDeviceWatcher;
 class MusicTimerAutoObject;
 class MusicMobileDevicesWidget;
 class QPropertyAnimation;
+class MusicDownloadCounterPVThread;
 
 /*! @brief The class of the app object widget.
  * @author Greedysky <greedysky@163.com>
@@ -33,6 +34,7 @@ class QPropertyAnimation;
 class MUSIC_GUI_EXPORT MusicApplicationObject : public QObject
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicApplicationObject)
 public:
     /*!
      * Object contsructor.
@@ -42,17 +44,13 @@ public:
     ~MusicApplicationObject();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * Get class object instance.
      */
     static MusicApplicationObject *instance();
     /*!
      * Get current window is to top.
      */
-    bool getWindowToTop() const {return m_setWindowToTop;}
+    inline bool getWindowToTop() const { return m_setWindowToTop; }
     /*!
      * Get settings parameters.
      */
@@ -107,6 +105,10 @@ public Q_SLOTS:
      */
     void musicTimerWidget();
     /*!
+     * Show spectrum widget.
+     */
+    void musicSpectrumWidget();
+    /*!
      * Set current window to top.
      */
     void musicSetWindowToTop();
@@ -156,6 +158,7 @@ protected:
     MusicMobileDevicesWidget *m_mobileDeviceWidget;
     QDeviceWatcher *m_deviceWatcher;
     QWidget *m_quitContainer;
+    MusicDownloadCounterPVThread *m_counterPVThread;
 
     static MusicApplicationObject *m_instance;
 };

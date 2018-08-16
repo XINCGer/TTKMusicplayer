@@ -19,8 +19,8 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QStackedWidget>
-#include "musicglobaldefine.h"
+#include "musicwidgetheaders.h"
+#include "musicdatabaseobject.h"
 
 class MusicUserModel;
 class MusicUserDialog;
@@ -36,6 +36,7 @@ class MusicUserWindow;
 class MUSIC_USER_EXPORT MusicUserWindow : public QStackedWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicUserWindow)
 public:
     /*!
      * Object contsructor.
@@ -44,10 +45,6 @@ public:
 
     ~MusicUserWindow();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Check if the user is login now.
      */
@@ -61,7 +58,7 @@ public Q_SLOTS:
     /*!
      * User login state changed.
      */
-    void userStateChanged(const QString &uid, const QString &icon);
+    void userStateChanged(const MusicUserUIDItem &uid, const QString &icon);
     /*!
      * Send user to login.
      */
@@ -82,7 +79,7 @@ protected:
     bool disConnectDatabase();
 
     Ui::MusicUserWindow *m_ui;
-    MusicUserModel* m_userModel;
+    MusicUserModel *m_userModel;
     MusicUserManagerDialog *m_userManager;
 
 };

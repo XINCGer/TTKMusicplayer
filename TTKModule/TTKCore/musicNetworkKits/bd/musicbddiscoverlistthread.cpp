@@ -9,11 +9,6 @@ MusicBDDiscoverListThread::MusicBDDiscoverListThread(QObject *parent)
     m_pageSize = 100;
 }
 
-QString MusicBDDiscoverListThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicBDDiscoverListThread::startToSearch()
 {
     if(!m_manager)
@@ -22,7 +17,7 @@ void MusicBDDiscoverListThread::startToSearch()
     }
 
     M_LOGGER_INFO(QString("%1 startToSearch").arg(getClassName()));
-    m_topListInfo.clear();
+    m_toplistInfo.clear();
     QUrl musicUrl = MusicUtils::Algorithm::mdII(BD_SONG_TOPLIST_URL, false).arg(2).arg(m_pageSize).arg(0);
     deleteAll();
     m_interrupt = true;
@@ -31,11 +26,8 @@ void MusicBDDiscoverListThread::startToSearch()
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -79,7 +71,7 @@ void MusicBDDiscoverListThread::downLoadFinished()
                     }
 
                     value = var.toMap();
-                    m_topListInfo = QString("%1 - %2").arg(value["author"].toString())
+                    m_toplistInfo = QString("%1 - %2").arg(value["author"].toString())
                                                       .arg(value["title"].toString());
                     break;
                 }
@@ -87,7 +79,7 @@ void MusicBDDiscoverListThread::downLoadFinished()
         }
     }
 
-    emit downLoadDataChanged(m_topListInfo);
+    emit downLoadDataChanged(m_toplistInfo);
     deleteAll();
     M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
 }

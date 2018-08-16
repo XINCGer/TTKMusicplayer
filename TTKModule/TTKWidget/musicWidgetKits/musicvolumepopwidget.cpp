@@ -3,9 +3,9 @@
 #include "musicuiobject.h"
 #include "musicnumberdefine.h"
 #include "musicclickedslider.h"
+#include "musicwidgetheaders.h"
 
 #include <QTimer>
-#include <QHBoxLayout>
 
 MusicVolumePopWidget::MusicVolumePopWidget(QWidget *parent)
     : MusicToolMenuWidget(parent)
@@ -20,11 +20,6 @@ MusicVolumePopWidget::MusicVolumePopWidget(QWidget *parent)
 MusicVolumePopWidget::~MusicVolumePopWidget()
 {
     delete m_volumeSlider;
-}
-
-QString MusicVolumePopWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicVolumePopWidget::setValue(int value)

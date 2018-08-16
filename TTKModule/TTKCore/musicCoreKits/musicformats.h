@@ -27,6 +27,7 @@
  */
 class MUSIC_CORE_EXPORT MusicFormats
 {
+    TTK_DECLARE_MODULE(MusicFormats)
 public:
     /*!
      * Get player supported formats.
@@ -35,7 +36,7 @@ public:
     /*!
      * Get player supported formats.
      */
-    static MusicObject::MStringsListMap supportFormatsStringMap();
+    static MStringsListMap supportFormatsStringMap();
     /*!
      * Get player supported formats filter.
      */

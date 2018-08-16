@@ -79,7 +79,7 @@ MusicApplication::MusicApplication(QWidget *parent)
 
     m_playControl = true;//The default in the suspended state
     m_quitWindowClose = false;
-    m_currentMusicSongTreeIndex = DEFAULT_INDEX_LEVEL0;
+    m_currentMusicSongTreeIndex = DEFAULT_LEVEL_LOWER;
 
     connect(m_musicPlayer, SIGNAL(positionChanged(qint64)), SLOT(positionChanged(qint64)));
     connect(m_musicPlayer, SIGNAL(durationChanged(qint64)), SLOT(durationChanged(qint64)));
@@ -115,11 +115,6 @@ MusicApplication::~MusicApplication()
     delete m_leftAreaWidget;
     delete m_applicationObject;
     delete m_ui;
-}
-
-QString MusicApplication::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 MusicApplication *MusicApplication::instance()
@@ -163,7 +158,7 @@ QString MusicApplication::getCurrentFilePath() const
 
 bool MusicApplication::checkMusicListCurrentIndex() const
 {
-    return (m_musicPlayList->currentIndex() == DEFAULT_INDEX_LEVEL0);
+    return (m_musicPlayList->currentIndex() == DEFAULT_LEVEL_LOWER);
 }
 
 void MusicApplication::musicLoadCurrentSongLrc()
@@ -171,7 +166,7 @@ void MusicApplication::musicLoadCurrentSongLrc()
     //display current ArtTheme pic
     m_topAreaWidget->musicBgThemeDownloadFinished();
     //Loading the current song lrc
-    if( checkMusicListCurrentIndex() )
+    if(checkMusicListCurrentIndex())
     {
         return;
     }
@@ -183,6 +178,21 @@ void MusicApplication::musicLoadCurrentSongLrc()
 
     //reset current song lrc index.
     QTimer::singleShot(MT_S2MS, this, SLOT(resetCurrentSongLrcIndex()));
+}
+
+void MusicApplication::radioExecuteOuter(const QString &path)
+{
+    m_leftAreaWidget->radioExecuteOuter(path);
+}
+
+void MusicApplication::musicImportSongsSettingPathOuter(const QStringList &path, bool play)
+{
+    musicImportSongsSettingPath(path);
+
+    if(play)
+    {
+        musicPlayIndex(m_musicPlayList->mediaCount() - 1, 0);
+    }
 }
 
 void MusicApplication::musicImportSongsSettingPath(const QStringList &items)
@@ -199,7 +209,7 @@ void MusicApplication::musicImportSongsSettingPath(const QStringList &items)
     foreach(const QString &path, items)
     {
         suffix = QFileInfo(path).suffix();
-        if( !sfx.contains(suffix.toLower()) )
+        if(!sfx.contains(suffix.toLower()))
         {
             failedFiles << path;
             files.removeOne(path);
@@ -233,7 +243,7 @@ QString MusicApplication::musicDownloadContains(bool &contains) const
 {
     contains = false;
     QString path;
-    if(m_musicSongTreeWidget->getCurrentPlayToolIndex() != DEFAULT_INDEX_LEVEL0)
+    if(m_musicSongTreeWidget->getCurrentPlayToolIndex() != DEFAULT_LEVEL_LOWER)
     {
         MusicPlayedItem item = m_musicPlayList->currentItem();
         if(item.isValid())
@@ -249,7 +259,7 @@ QString MusicApplication::musicDownloadContains(bool &contains) const
 
 bool MusicApplication::musicLovestContains() const
 {
-    if(m_musicSongTreeWidget->getCurrentPlayToolIndex() != DEFAULT_INDEX_LEVEL0)
+    if(m_musicSongTreeWidget->getCurrentPlayToolIndex() != DEFAULT_LEVEL_LOWER)
     {
         MusicPlayedItem item = m_musicPlayList->currentItem();
         MusicSongItems items(m_musicSongTreeWidget->getMusicLists());
@@ -266,7 +276,7 @@ bool MusicApplication::musicLovestContains() const
 
 bool MusicApplication::musicListLovestContains(int index) const
 {
-    if(m_musicSongTreeWidget->currentIndex() != DEFAULT_INDEX_LEVEL0 && index > DEFAULT_INDEX_LEVEL0)
+    if(m_musicSongTreeWidget->currentIndex() != DEFAULT_LEVEL_LOWER && index > DEFAULT_LEVEL_LOWER)
     {
         MusicSongItems items(m_musicSongTreeWidget->getMusicLists());
         if(m_musicSongTreeWidget->currentIndex() < items.count())
@@ -353,7 +363,7 @@ void MusicApplication::showCurrentSong(int index)
     m_currentMusicSongTreeIndex = item.m_toolIndex;
     m_musicSongTreeWidget->setCurrentMusicSongTreeIndex(item.m_toolIndex);
 
-    if(index > DEFAULT_INDEX_LEVEL0) //The list to end
+    if(index > DEFAULT_LEVEL_LOWER) //The list to end
     {
         name = getCurrentFileName();
         ///detecting whether the file has been downloaded
@@ -552,11 +562,10 @@ void MusicApplication::musicImportSongsOnlyDir()
     dialog.setViewMode(QFileDialog::Detail);
     if(dialog.exec())
     {
-        QList<QFileInfo> file(dialog.directory().entryInfoList());
         QStringList fileList;
-        foreach(const QFileInfo &info, file)
+        foreach(const QFileInfo &info, MusicUtils::Core::getFileListByDir(dialog.directory().absolutePath(), true))
         {
-            if( MusicFormats::supportFormatsString().contains(info.suffix().toLower()) )
+            if(MusicFormats::supportFormatsString().contains(info.suffix().toLower()))
             {
                fileList << info.absoluteFilePath();
             }
@@ -594,7 +603,7 @@ void MusicApplication::musicExportSongsItemList(int index)
         }
 
         MusicPlayListManager manager;
-        manager.setMusicSongItems(fileName, items[index]);
+        manager.setMusicSongItem(fileName, items[index]);
     }
 }
 
@@ -684,7 +693,7 @@ void MusicApplication::musicActionVolumeSub()
 {
     int currentVol = m_musicPlayer->volume();
     currentVol -= 15;
-    if( currentVol < 0)
+    if(currentVol < 0)
     {
         currentVol = 0;   //reset music volume
     }
@@ -695,7 +704,7 @@ void MusicApplication::musicActionVolumePlus()
 {
     int currentVol = m_musicPlayer->volume();
     currentVol += 15;
-    if( currentVol > 100)
+    if(currentVol > 100)
     {
         currentVol = 100;   //reset music volume
     }
@@ -755,10 +764,7 @@ void MusicApplication::musicAddSongToLovestListAt(bool state)
     }
 
     MusicToastLabel *toast = new MusicToastLabel(this);
-    toast->setFontSize(25);
-    toast->setFontMargin(20, 20);
-    toast->setText(!contains ? tr("add music to lovest list done!") : tr("remove music to lovest list done!"));
-    toast->popup(this);
+    toast->defaultLabel(this, !contains ? tr("add music to lovest list done!") : tr("remove music to lovest list done!"));
 }
 
 void MusicApplication::musicWindowConciseChanged()
@@ -770,11 +776,6 @@ void MusicApplication::musicWindowConciseChanged()
 void MusicApplication::musicEnhancedMusicChanged(int type)
 {
     m_musicPlayer->setMusicEnhanced(MStatic_cast(MusicPlayer::Enhanced, type));
-}
-
-void MusicApplication::musicImportPlay()
-{
-    musicPlayIndex(m_musicPlayList->mediaCount() - 1, 0);
 }
 
 void MusicApplication::musicCreateRightMenu()
@@ -800,7 +801,7 @@ void MusicApplication::musicCreateRightMenu()
     actions << musicPlaybackMode.addAction(tr("ListCycle"), this, SLOT(musicPlayListLoop()));
     actions << musicPlaybackMode.addAction(tr("SingleCycle"), this, SLOT(musicPlayOneLoop()));
     actions << musicPlaybackMode.addAction(tr("PlayOnce"), this, SLOT(musicPlayItemOnce()));
-    int index = DEFAULT_INDEX_LEVEL0;
+    int index = DEFAULT_LEVEL_LOWER;
     switch(mode)
     {
         case MusicObject::PM_PlayOrder: index = 0; break;
@@ -810,7 +811,7 @@ void MusicApplication::musicCreateRightMenu()
         case MusicObject::PM_PlayOnce: index = 4; break;
         default: break;
     }
-    if(index > DEFAULT_INDEX_LEVEL0 && index < actions.count())
+    if(index > DEFAULT_LEVEL_LOWER && index < actions.count())
     {
         actions[index]->setIcon(QIcon(":/contextMenu/btn_selected"));
     }
@@ -818,18 +819,20 @@ void MusicApplication::musicCreateRightMenu()
     rightClickMenu.addSeparator();
     QMenu musicRemoteControl(tr("RemoteControl"), &rightClickMenu);
     rightClickMenu.addMenu(&musicRemoteControl);
+    musicRemoteControl.addAction(tr("CircleRemote"), m_topAreaWidget, SLOT(musicCircleRemote()));
     musicRemoteControl.addAction(tr("SquareRemote"), m_topAreaWidget, SLOT(musicSquareRemote()));
     musicRemoteControl.addAction(tr("RectangleRemote"), m_topAreaWidget, SLOT(musicRectangleRemote()));
-    musicRemoteControl.addAction(tr("DiamondRemote"), m_topAreaWidget, SLOT(musicDiamondRemote()));
     musicRemoteControl.addAction(tr("SimpleStyleRemote"), m_topAreaWidget, SLOT(musicSimpleStyleRemote()));
     musicRemoteControl.addAction(tr("ComplexStyleRemote"), m_topAreaWidget, SLOT(musicComplexStyleRemote()));
+    musicRemoteControl.addAction(tr("DiamondRemote"), m_topAreaWidget, SLOT(musicDiamondRemote()));
     musicRemoteControl.addAction(tr("RipplesRemote"), m_topAreaWidget, SLOT(musicRipplesRemote()));
-    musicRemoteControl.addAction(tr("CircleRemote"), m_topAreaWidget, SLOT(musicCircleRemote()));
+    musicRemoteControl.addAction(tr("RaysWaveRemote"), m_topAreaWidget, SLOT(musicRaysWaveRemote()));
     musicRemoteControl.addAction(tr("DeleteRemote"), m_topAreaWidget, SLOT(musicDeleteRemote()));
 
     rightClickMenu.addAction(QIcon(":/contextMenu/btn_equalizer"), tr("Equalizer"), m_applicationObject, SLOT(musicSetEqualizer()));
     rightClickMenu.addAction(tr("SoundEffect"), m_applicationObject, SLOT(musicSetSoundEffect()));
     rightClickMenu.addAction(tr("TimingSettings"), m_applicationObject, SLOT(musicTimerWidget()));
+    rightClickMenu.addAction(tr("MusicSpectrum"), m_applicationObject, SLOT(musicSpectrumWidget()));
     rightClickMenu.addSeparator();
 
     QAction *window = rightClickMenu.addAction(tr("windowTop"), m_applicationObject, SLOT(musicSetWindowToTop()));
@@ -842,7 +845,7 @@ void MusicApplication::musicCreateRightMenu()
     actions.clear();
     actions << musicDownload.addAction(tr("Full Download"), MusicRightAreaWidget::instance(), SLOT(musicChangeDownloadFulllyWidget()));
     actions << musicDownload.addAction(tr("Custom"), MusicRightAreaWidget::instance(), SLOT(musicChangeDownloadCustumWidget()));
-    if(index > DEFAULT_INDEX_LEVEL0 && index < actions.count())
+    if(index > DEFAULT_LEVEL_LOWER && index < actions.count())
     {
         actions[index]->setIcon(QIcon(":/contextMenu/btn_selected"));
     }
@@ -891,7 +894,7 @@ void MusicApplication::setDeleteItemAt(const QStringList &path, bool remove, boo
     if(current)
     {
         MusicPlayedItem item = m_musicPlayList->currentItem();
-        MusicObject::MIntList index;
+        MIntList index;
         foreach(const QString &p, path)
         {
             int idx = -1;
@@ -933,7 +936,7 @@ void MusicApplication::setDeleteItemAt(const QStringList &path, bool remove, boo
         {
             oldIndex -= index.count();
         }
-        if( oldIndex == m_musicPlayList->mediaCount()) ///Play index error correction
+        if(oldIndex == m_musicPlayList->mediaCount()) ///Play index error correction
         {
             --oldIndex;
         }
@@ -1120,7 +1123,7 @@ void MusicApplication::setMusicPlayIndex()
 
 void MusicApplication::readXMLConfigFromText()
 {
-    int value = DEFAULT_INDEX_LEVEL0;
+    int value = DEFAULT_LEVEL_LOWER;
 
     //Path configuration song
     MusicSongItems songs;
@@ -1175,7 +1178,7 @@ void MusicApplication::readXMLConfigFromText()
     //music hotkey
     if(M_SETTING_PTR->value(MusicSettingManager::HotkeyEnableChoiced).toBool())
     {
-        QStringList hotkeys = M_SETTING_PTR->value(MusicSettingManager::HotkeyStringChoiced).toString().split(STRING_SPLITER);
+        QStringList hotkeys = M_SETTING_PTR->value(MusicSettingManager::HotkeyStringChoiced).toString().split(TTK_STR_SPLITER);
         if(hotkeys.count() != M_HOTKEY_PTR->count())
         {
             hotkeys = M_HOTKEY_PTR->getDefaultKeys();
@@ -1212,7 +1215,7 @@ void MusicApplication::readXMLConfigFromText()
     //add new music file to playlist
     value = keyList[1].toInt();
     m_musicPlayList->addMedia(value, m_musicSongTreeWidget->getMusicSongsFilePath(value));
-    if(DEFAULT_INDEX_LEVEL0 < value && value < songs.count())
+    if(DEFAULT_LEVEL_LOWER < value && value < songs.count())
     {
         m_ui->musicPlayedList->append(songs[value].m_songs);
     }
@@ -1221,7 +1224,7 @@ void MusicApplication::readXMLConfigFromText()
     {
         QTimer::singleShot(MT_MS, m_musicSongTreeWidget, SLOT(setCurrentIndex()));
         int index = keyList[2].toInt();
-        m_currentMusicSongTreeIndex = (index == DEFAULT_INDEX_LEVEL0) ? DEFAULT_INDEX_LEVEL0 : value;
+        m_currentMusicSongTreeIndex = (index == DEFAULT_LEVEL_LOWER) ? DEFAULT_LEVEL_LOWER : value;
         m_musicPlayList->blockSignals(true);
         m_musicPlayList->setCurrentIndex(m_currentMusicSongTreeIndex, m_musicSongTreeWidget->mapFilePathBySongIndex(m_currentMusicSongTreeIndex, index));
         m_musicPlayList->blockSignals(false);

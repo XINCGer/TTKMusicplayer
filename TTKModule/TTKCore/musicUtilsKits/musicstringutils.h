@@ -22,7 +22,7 @@
 #include "musicnumberdefine.h"
 #include "musicglobaldefine.h"
 
-/*! @brief The class of the utils string object namespace.
+/*! @brief The namespace of the utils algorithm.
  * @author Greedysky <greedysky@163.com>
  */
 namespace MusicUtils
@@ -46,6 +46,19 @@ namespace MusicUtils
          * Get song name.
          */
         MUSIC_UTILS_EXPORT QString songName(const QString &value, const QString &key = "-");
+
+        /*!
+         * Illegal characters check.
+         */
+        MUSIC_UTILS_EXPORT QStringList illegalCharacters();
+        /*!
+         * Illegal characters check.
+         */
+        MUSIC_UTILS_EXPORT bool illegalCharactersCheck(const QString &value);
+        /*!
+         * Illegal characters replaced.
+         */
+        MUSIC_UTILS_EXPORT QString illegalCharactersReplaced(const QString &value);
 
         /*!
          * Transform colors string to color list.

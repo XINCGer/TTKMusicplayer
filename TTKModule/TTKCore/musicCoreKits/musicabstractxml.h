@@ -41,7 +41,7 @@ typedef struct MUSIC_CORE_EXPORT MusicXmlAttribute
         m_value = value;
     }
 }MusicXmlAttribute;
-MUSIC_DECLARE_LISTS(MusicXmlAttribute)
+TTK_DECLARE_LISTS(MusicXmlAttribute)
 
 /*! @brief The class of the base class of xml interface.
  * @author Greedysky <greedysky@163.com>
@@ -49,6 +49,7 @@ MUSIC_DECLARE_LISTS(MusicXmlAttribute)
 class MUSIC_CORE_EXPORT MusicAbstractXml : public QObject
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicAbstractXml)
 public:
     /*!
      * Object contsructor.
@@ -56,11 +57,6 @@ public:
     explicit MusicAbstractXml(QObject *parent = 0);
 
     ~MusicAbstractXml();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Read datas from xml file by given name.
@@ -104,7 +100,7 @@ public:
     /*!
      * Read xml attributes by tagName and default name "value".
      */
-    MusicObject::MStriantMap readXmlAttributesByTagName(const QString &tagName) const;
+    MStriantMap readXmlAttributesByTagName(const QString &tagName) const;
     /*!
      * Create processing instruction in header.
      */
@@ -156,7 +152,7 @@ public:
 
 protected:
     QFile *m_file;
-    QDomDocument *m_ddom;
+    QDomDocument *m_document;
 
 };
 

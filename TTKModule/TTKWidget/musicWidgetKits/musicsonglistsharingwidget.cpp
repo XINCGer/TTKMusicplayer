@@ -6,6 +6,7 @@
 
 #include <QClipboard>
 #include <QApplication>
+#include <QButtonGroup>
 
 MusicSongListSharingWidget::MusicSongListSharingWidget(QWidget *parent)
     : MusicAbstractMoveDialog(parent),
@@ -55,11 +56,6 @@ MusicSongListSharingWidget::~MusicSongListSharingWidget()
     delete m_ui;
 }
 
-QString MusicSongListSharingWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 int MusicSongListSharingWidget::exec()
 {
     setBackgroundPixmap(m_ui->background, size());
@@ -77,10 +73,7 @@ void MusicSongListSharingWidget::writeMainCopyButtonClicked()
     clipboard->setText(m_ui->writeMainLabel2->text());
 
     MusicToastLabel *toast = new MusicToastLabel(this);
-    toast->setFontSize(15);
-    toast->setFontMargin(20, 20);
-    toast->setText(tr("Copy Finished!"));
-    toast->popup(this);
+    toast->defaultLabel(this, tr("Copy Finished!"));
 }
 
 void MusicSongListSharingWidget::readMainButtonClicked()

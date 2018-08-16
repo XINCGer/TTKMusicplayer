@@ -14,15 +14,9 @@ MusicQQBackgroundThread::MusicQQBackgroundThread(const QString &name, const QStr
 {
     m_manager = new QNetworkAccessManager(this);
 #ifndef QT_NO_SSL
-    connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
-                       SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
+    connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
     M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
 #endif
-}
-
-QString MusicQQBackgroundThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicQQBackgroundThread::deleteAll()
@@ -44,11 +38,8 @@ void MusicQQBackgroundThread::startToDownload()
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(QQ_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadDataFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -126,11 +117,10 @@ void MusicQQBackgroundThread::downLoadUrlFinished()
             if(m_counter < 5)
             {
                 M_LOGGER_ERROR(url);
-                MusicDataDownloadThread *down = new MusicDataDownloadThread(url, QString("%1%2%3%4").arg(BACKGROUND_DIR_FULL)
-                                        .arg(m_savePath).arg(m_counter++).arg(SKN_FILE),
-                                        MusicDownLoadThreadAbstract::Download_BigBG, this);
-                connect(down, SIGNAL(downLoadDataChanged(QString)), SLOT(downLoadFinished()));
-                down->startToDownload();
+                MusicDataDownloadThread *download = new MusicDataDownloadThread(url, QString("%1%2%3%4").arg(BACKGROUND_DIR_FULL)
+                                                        .arg(m_savePath).arg(m_counter++).arg(SKN_FILE), MusicObject::DownloadBigBG, this);
+                connect(download, SIGNAL(downLoadDataChanged(QString)), SLOT(downLoadFinished()));
+                download->startToDownload();
             }
         }
     }
@@ -147,11 +137,8 @@ void MusicQQBackgroundThread::downLoadUrl(const QString &id)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(QQ_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadUrlFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));

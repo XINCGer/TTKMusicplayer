@@ -28,9 +28,11 @@
 namespace Ui {
 class MusicDownloadWidget;
 }
+
 class QLabel;
 
 #define TABLE_ITEM_ROLE Qt::UserRole + 1
+
 /*! @brief The class of the music song atrribute.
  * @author Greedysky <greedysky@163.com>
  */
@@ -69,6 +71,7 @@ typedef struct MUSIC_WIDGET_EXPORT MusicDownloadTableItemRole
 class MUSIC_WIDGET_EXPORT MusicDownloadTableItem : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownloadTableItem)
 public:
     /*!
      * Object contsructor.
@@ -77,10 +80,6 @@ public:
 
     ~MusicDownloadTableItem();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set current item icon.
      */
@@ -106,6 +105,7 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicDownloadTableWidget : public MusicAbstractTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownloadTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -114,10 +114,6 @@ public:
 
     virtual ~MusicDownloadTableWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Clear All Items.
      */
@@ -148,6 +144,7 @@ protected:
 class MUSIC_WIDGET_EXPORT MusicDownloadWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownloadWidget)
 public:
     /*!
      * Object contsructor.
@@ -157,18 +154,13 @@ public:
     virtual ~MusicDownloadWidget();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * Set current name to search and download musics.
      */
     void setSongName(const QString &name, MusicDownLoadQueryThreadAbstract::QueryType type);
     /*!
      * Set current name to search and download musics.
      */
-    void setSongName(const MusicObject::MusicSongInformation &info,
-                     MusicDownLoadQueryThreadAbstract::QueryType type);
+    void setSongName(const MusicObject::MusicSongInformation &info, MusicDownLoadQueryThreadAbstract::QueryType type);
 
 Q_SIGNALS:
     /*!

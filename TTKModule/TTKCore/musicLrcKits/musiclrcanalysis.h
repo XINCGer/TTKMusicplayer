@@ -33,6 +33,7 @@ class MusicTranslationThreadAbstract;
 class MUSIC_LRC_EXPORT MusicLrcAnalysis : public QObject
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicLrcAnalysis)
 public:
     enum State
     {
@@ -68,11 +69,6 @@ public:
     ~MusicLrcAnalysis();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-    /*!
      * Set current line maximum value.
      */
     inline void setLineMax(int max) { m_lineMax = max;}
@@ -92,7 +88,7 @@ public:
     /*!
      * Set lrc container data from other raw data.
      */
-    State setLrcData(const MusicObject::MIntStringMap &data);
+    State setLrcData(const MIntStringMap &data);
     /*!
      * Analysis lrc file to map return the state.
      */
@@ -201,7 +197,7 @@ protected:
 
     int m_lineMax, m_currentLrcIndex;
     QString m_currentLrcFileName;
-    MusicObject::MIntStringMap m_lrcContainer;
+    MIntStringMap m_lrcContainer;
     QStringList m_currentShowLrcContainer;
     MusicTranslationThreadAbstract *m_translationThread;
 

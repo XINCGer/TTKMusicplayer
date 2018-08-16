@@ -19,21 +19,11 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
+#include "ttkprivate.h"
+#include "qndataitem.h"
 #include <QtNetwork/QNetworkReply>
-#include "musicprivate.h"
-#include "musicextrasglobaldefine.h"
 
 class QNSimpleListDataPrivate;
-
-typedef struct MUSIC_EXTRAS_EXPORT QNDataItem
-{
-    QString m_name;
-    QString m_hash;
-    QString m_mimeType;
-    int m_size;
-    qint64 m_putTime;
-}QNDataItem;
-MUSIC_DECLARE_LISTS(QNDataItem)
 
 /*! @brief The namespace of the qiniu simple list data.
  * @author Jemy Graw <jemygraw@gmail.com>
@@ -69,7 +59,7 @@ private Q_SLOTS:
     void handleError(QNetworkReply::NetworkError error);
 
 private:
-    MUSIC_DECLARE_PRIVATE(QNSimpleListData)
+    TTK_DECLARE_PRIVATE(QNSimpleListData)
 
 };
 

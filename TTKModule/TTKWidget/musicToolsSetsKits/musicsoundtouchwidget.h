@@ -34,6 +34,7 @@ class MusicAudioRecorderCore;
 class MUSIC_TOOLSET_EXPORT MusicSoundTouchWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSoundTouchWidget)
 public:
     /*!
      * Object contsructor.
@@ -41,17 +42,6 @@ public:
     explicit MusicSoundTouchWidget(QWidget *parent = 0);
 
     virtual ~MusicSoundTouchWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-Q_SIGNALS:
-    /*!
-     * Reset window open flag.
-     */
-    void resetFlag(MusicObject::ToolsType flag);
 
 public Q_SLOTS:
     /*!
@@ -103,10 +93,6 @@ private Q_SLOTS:
     void finished(int code);
 
 protected:
-    /*!
-     * Override the widget event.
-     */
-    virtual void closeEvent(QCloseEvent *event) override;
     /*!
      * Set label text.
      */

@@ -27,21 +27,18 @@ class MusicToplistFoundCategoryPopWidget;
 /*! @brief The class of the toplist music found table widget.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_WIDGET_EXPORT MusicTopListFoundTableWidget : public MusicQueryFoundTableWidget
+class MUSIC_WIDGET_EXPORT MusicToplistFoundTableWidget : public MusicQueryFoundTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicToplistFoundTableWidget)
 public:
     /*!
      * Object contsructor.
      */
-    explicit MusicTopListFoundTableWidget(QWidget *parent = 0);
+    explicit MusicToplistFoundTableWidget(QWidget *parent = 0);
 
-    virtual ~MusicTopListFoundTableWidget();
+    virtual ~MusicToplistFoundTableWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set network query input.
      */
@@ -53,21 +50,17 @@ public:
 /*! @brief The class of toplist music found widget.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_WIDGET_EXPORT MusicTopListFoundWidget : public MusicFoundAbstractWidget
+class MUSIC_WIDGET_EXPORT MusicToplistFoundWidget : public MusicFoundAbstractWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicToplistFoundWidget)
 public:
     /*!
      * Object contsructor.
      */
-    explicit MusicTopListFoundWidget(QWidget *parent = 0);
+    explicit MusicToplistFoundWidget(QWidget *parent = 0);
 
-    virtual ~MusicTopListFoundWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
+    virtual ~MusicToplistFoundWidget();
 
     /*!
      * Set current name to search founds.
@@ -91,11 +84,11 @@ public Q_SLOTS:
     /*!
      * Create the current toplist info item.
      */
-    void createToplistInfoItem(const MusicPlaylistItem &item);
+    void createToplistInfoItem(const MusicResultsItem &item);
     /*!
      * Current category changed.
      */
-    void categoryChanged(const MusicPlaylistCategoryItem &category);
+    void categoryChanged(const MusicResultsCategoryItem &category);
 
 protected:
     /*!

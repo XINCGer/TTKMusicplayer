@@ -24,29 +24,24 @@ MusicLrcSearchTableWidget::~MusicLrcSearchTableWidget()
     clearAllItems();
 }
 
-QString MusicLrcSearchTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicLrcSearchTableWidget::startSearchQuery(const QString &text)
 {
-    if(!M_NETWORK_PTR->isOnline())
-    {   //no network connection
+    if(!M_NETWORK_PTR->isOnline())   //no network connection
+    {
         clearAllItems();
         emit showDownLoadInfoFor(MusicObject::DW_DisConnection);
         return;
     }
+
     MusicQueryItemTableWidget::startSearchQuery(text);
     connect(m_downLoadManager, SIGNAL(downLoadDataChanged(QString)), SIGNAL(resolvedSuccess()));
-    m_loadingLabel->show();
-    m_loadingLabel->start();
+    m_loadingLabel->run(true);
     m_downLoadManager->startToSearch(MusicDownLoadQueryThreadAbstract::LrcQuery, text);
 }
 
 void MusicLrcSearchTableWidget::musicDownloadLocal(int row)
 {
-    if( row < 0 || (row >= rowCount() - 1))
+    if(row < 0 || (row >= rowCount() - 1))
     {
         MusicMessageBox message;
         message.setText(tr("Please Select One Item First!"));
@@ -56,12 +51,11 @@ void MusicLrcSearchTableWidget::musicDownloadLocal(int row)
 
     MusicObject::MusicSongInformations musicSongInfos(m_downLoadManager->getMusicSongInfos());
     ///download lrc
-    MusicDownLoadThreadAbstract *lrcDownload = M_DOWNLOAD_QUERY_PTR->getDownloadLrcThread(musicSongInfos[row].m_lrcUrl,
+    MusicDownLoadThreadAbstract *d = M_DOWNLOAD_QUERY_PTR->getDownloadLrcThread(musicSongInfos[row].m_lrcUrl,
                              MusicUtils::Core::lrcPrefix() + m_downLoadManager->getSearchedText() + LRC_FILE,
-                             MusicDownLoadThreadAbstract::Download_Lrc, this);
-    connect(lrcDownload, SIGNAL(downLoadDataChanged(QString)),
-                         SIGNAL(lrcDownloadStateChanged(QString)));
-    lrcDownload->startToDownload();
+                             MusicObject::DownloadLrc, this);
+    connect(d, SIGNAL(downLoadDataChanged(QString)), SIGNAL(lrcDownloadStateChanged(QString)));
+    d->startToDownload();
 }
 
 void MusicLrcSearchTableWidget::listCellEntered(int row, int column)
@@ -97,7 +91,7 @@ void MusicLrcSearchTableWidget::clearAllItems()
     setColumnCount(7);
 }
 
-void MusicLrcSearchTableWidget::createSearchedItems(const MusicSearchedItem &songItem)
+void MusicLrcSearchTableWidget::createSearchedItem(const MusicSearchedItem &songItem)
 {
     int count = rowCount();
     setRowCount(count + 1);

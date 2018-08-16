@@ -1,8 +1,8 @@
 #include "musicpagingwidgetobject.h"
 #include "musicclickedlabel.h"
 #include "musicuiobject.h"
+#include "musicwidgetheaders.h"
 
-#include <QBoxLayout>
 #include <QSignalMapper>
 #include <QFontMetrics>
 
@@ -19,11 +19,6 @@ MusicPagingWidgetObject::~MusicPagingWidgetObject()
 {
     qDeleteAll(m_pagingItems);
     delete m_pagingWidget;
-}
-
-QString MusicPagingWidgetObject::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 QWidget* MusicPagingWidgetObject::getCreatePagingWidget()

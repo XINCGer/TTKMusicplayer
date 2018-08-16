@@ -26,6 +26,7 @@ class QPropertyAnimation;
 class MusicOpenFileWidget;
 class MusicSongsListPlayWidget;
 class MusicSongsListItemInfoWidget;
+class MusicRenameLineEditDelegate;
 
 /*! @brief The class of the songs list table widget.
  * @author Greedysky <greedysky@163.com>
@@ -33,6 +34,7 @@ class MusicSongsListItemInfoWidget;
 class MUSIC_WIDGET_EXPORT MusicSongsListTableWidget : public MusicSongsListAbstractTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongsListTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -40,11 +42,6 @@ public:
     explicit MusicSongsListTableWidget(int index, QWidget *parent = 0);
 
     virtual ~MusicSongsListTableWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Update songs file names in table.
@@ -57,7 +54,7 @@ public:
     /*!
      * Set current searched file indexs.
      */
-    void setMusicSongsSearchedFileName(MusicSongs *songs, const MusicObject::MIntList &fileIndexs);
+    void setMusicSongsSearchedFileName(MusicSongs *songs, const MIntList &fileIndexs);
 
     /*!
      * Select the current play row.
@@ -105,7 +102,7 @@ Q_SIGNALS:
     /*!
      * Delete items from indexs and check remove file or not.
      */
-    void deleteItemAt(const MusicObject::MIntList &index, bool fileRemove);
+    void deleteItemAt(const MIntList &index, bool fileRemove);
     /*!
      * Swap the current play index when user drag and drop.
      */
@@ -216,6 +213,7 @@ protected:
     bool m_leftButtonPressed, m_listHasSearched;
     bool m_renameActived, m_deleteItemWithFile;
     QTableWidgetItem *m_renameItem;
+    MusicRenameLineEditDelegate *m_renameLineEditDelegate;
     MusicSort *m_musicSort;
 
 };

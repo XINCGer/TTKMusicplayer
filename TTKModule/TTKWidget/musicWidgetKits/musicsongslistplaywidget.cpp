@@ -11,10 +11,9 @@
 #include "musicleftareawidget.h"
 #include "musictinyuiobject.h"
 #include "musicsplititemclickedlabel.h"
+#include "musicwidgetheaders.h"
 
-#include <QMenu>
 #include <QTimer>
-#include <QPushButton>
 
 MusicSongsListPlayWidget::MusicSongsListPlayWidget(int index, QWidget *parent)
     : QWidget(parent), m_renameLine(nullptr)
@@ -118,11 +117,6 @@ MusicSongsListPlayWidget::~MusicSongsListPlayWidget()
     delete m_moreButton;
 }
 
-QString MusicSongsListPlayWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSongsListPlayWidget::insertTimerLabel(const QString &time, const QString &total)
 {
     if(m_totalTimeLabel.contains("00:00"))
@@ -134,7 +128,7 @@ void MusicSongsListPlayWidget::insertTimerLabel(const QString &time, const QStri
 
 void MusicSongsListPlayWidget::updateCurrentArtist()
 {
-    if(!m_noCover && M_SETTING_PTR->value(MusicSettingManager::OtherAlbumChoiced).toBool())
+    if(!m_noCover && M_SETTING_PTR->value(MusicSettingManager::OtherAlbumCoverChoiced).toBool())
     {
         return;
     }
@@ -190,7 +184,7 @@ void MusicSongsListPlayWidget::setParameter(const QString &name, const QString &
     }
     m_timeLabel->setText("00:00" + m_totalTimeLabel);
 
-    if(state && M_SETTING_PTR->value(MusicSettingManager::OtherAlbumChoiced).toBool())
+    if(state && M_SETTING_PTR->value(MusicSettingManager::OtherAlbumCoverChoiced).toBool())
     {
         QPixmap pix = tag.getCover();
         if(pix.isNull())

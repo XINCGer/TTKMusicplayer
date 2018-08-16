@@ -23,10 +23,38 @@
 #include "musicabstractmovewidget.h"
 
 class MusicDesktopWallpaperThread;
+class MusicTransitionAnimationLabel;
 
 namespace Ui {
 class MusicDesktopWallpaperWidget;
 }
+
+/*! @brief The class of the desktop wallpaper item.
+ * @author Greedysky <greedysky@163.com>
+ */
+class MUSIC_TOOLSET_EXPORT MusicDesktopWallpaperItem : public QWidget
+{
+    Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDesktopWallpaperItem)
+public:
+    /*!
+     * Object contsructor.
+     */
+    explicit MusicDesktopWallpaperItem(QWidget *parent = 0);
+
+    ~MusicDesktopWallpaperItem();
+
+public Q_SLOTS:
+    /*!
+     * Update background pixmap.
+     */
+    void updateBackground(const QPixmap &pix);
+
+protected:
+    MusicTransitionAnimationLabel *m_background;
+
+};
+
 
 /*! @brief The class of the desktop wallpaper widget.
  * @author Greedysky <greedysky@163.com>
@@ -34,6 +62,7 @@ class MusicDesktopWallpaperWidget;
 class MUSIC_TOOLSET_EXPORT MusicDesktopWallpaperWidget : public MusicAbstractMoveWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDesktopWallpaperWidget)
 public:
     /*!
      * Object contsructor.
@@ -41,17 +70,6 @@ public:
     explicit MusicDesktopWallpaperWidget(QWidget *parent = 0);
 
     ~MusicDesktopWallpaperWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-
-Q_SIGNALS:
-    /*!
-     * Reset window open flag.
-     */
-    void resetFlag(MusicObject::ToolsType flag);
 
 public Q_SLOTS:
     /*!
@@ -93,10 +111,6 @@ public Q_SLOTS:
 
 protected:
     /*!
-     * Override the widget event.
-     */
-    virtual void closeEvent(QCloseEvent *event) override;
-    /*!
      * Create all widget style in layout.
      */
     void initWidgetStyle() const;
@@ -104,14 +118,10 @@ protected:
      * Init parameters.
      */
     void initParameters() const;
-    /*!
-     * Set auto thread to show wallpaper.
-     */
-    void setAutoStart(bool autoStart) const;
 
     Ui::MusicDesktopWallpaperWidget *m_ui;
     int m_currentMode;
-    QStringList m_path;
+    MusicDesktopWallpaperItem *m_wallItem;
     MusicDesktopWallpaperThread *m_wallThread;
 
 };

@@ -13,6 +13,10 @@
 #include "musiclrcmanager.h"
 #include "musicregeditmanager.h"
 #include "musicotherdefine.h"
+#include "musicversion.h"
+#include "musicsourceupdatewidget.h"
+#include "musicsinglemanager.h"
+#include "musicapplication.h"
 //qmmp
 #include "qmmpsettings.h"
 
@@ -32,11 +36,6 @@ MusicFunctionTableWidget::MusicFunctionTableWidget(QWidget *parent)
 
     setRowCount(3);
     m_listIndex = 0;
-}
-
-QString MusicFunctionTableWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicFunctionTableWidget::addFunctionItems(int index, const MusicFunctionItems &items)
@@ -142,11 +141,6 @@ MusicSettingWidget::~MusicSettingWidget()
     delete m_ui;
 }
 
-QString MusicSettingWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSettingWidget::initControllerParameter()
 {
     //Set init parameter
@@ -171,7 +165,7 @@ void MusicSettingWidget::initControllerParameter()
     m_ui->languageComboBox->setCurrentIndex(M_SETTING_PTR->value(MusicSettingManager::CurrentLanIndexChoiced).toInt());
 
     ///////////////////////////////////////////////////////////////////////////
-    QStringList hotkeys = M_SETTING_PTR->value(MusicSettingManager::HotkeyStringChoiced).toString().split(STRING_SPLITER);
+    QStringList hotkeys = M_SETTING_PTR->value(MusicSettingManager::HotkeyStringChoiced).toString().split(TTK_STR_SPLITER);
     if(hotkeys.count() != M_HOTKEY_PTR->count())
     {
         hotkeys = M_HOTKEY_PTR->getDefaultKeys();
@@ -192,12 +186,13 @@ void MusicSettingWidget::initControllerParameter()
                      m_ui->otherHerImgRadioBox->click() : m_ui->otherNorImgRadioBox->click();
     m_ui->otherUpdateCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::OtherUpdateChoiced).toBool());
     m_ui->otherSearchCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::OtherSearchChoiced).toBool());
-    m_ui->otherAlbumCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::OtherAlbumChoiced).toBool());
+    m_ui->otherAlbumCoverCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::OtherAlbumCoverChoiced).toBool());
     m_ui->otherInfoCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::OtherInfoChoiced).toBool());
+    m_ui->otherAlbumCoverWCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::OtherAlbumCoverWChoiced).toBool());
+    m_ui->otherInfoWCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::OtherInfoWChoiced).toBool());
     m_ui->otherSideByCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::OtherSideByChoiced).toBool());
     m_ui->otherLrcKTVCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::OtherLrcKTVModeChoiced).toBool());
-    m_ui->otherSongFormatComboBox->setCurrentIndex(M_SETTING_PTR->value(MusicSettingManager::OtherSongFormat).toInt());
-
+    m_ui->otherVersionValue->setText(QString("V") + TTKMUSIC_VERSION_STR);
     ////////////////////////////////////////////////
     m_ui->downloadDirEdit->setText(M_SETTING_PTR->value(MusicSettingManager::DownloadMusicPathDirChoiced).toString());
     m_ui->downloadLrcDirEdit->setText(M_SETTING_PTR->value(MusicSettingManager::DownloadLrcPathDirChoiced).toString());
@@ -205,8 +200,8 @@ void MusicSettingWidget::initControllerParameter()
     M_SETTING_PTR->value(MusicSettingManager::DownloadCacheLimitChoiced).toInt() == 1 ?
                      m_ui->downloadCacheAutoRadioBox->click() : m_ui->downloadCacheManRadioBox->click();
 
-    MusicUtils::Widget::setComboboxText(m_ui->downloadLimitSpeedComboBox, M_SETTING_PTR->value(MusicSettingManager::DownloadDLoadLimitChoiced).toString());
-    MusicUtils::Widget::setComboboxText(m_ui->uploadLimitSpeedComboBox, M_SETTING_PTR->value(MusicSettingManager::DownloadULoadLimitChoiced).toString());
+    MusicUtils::Widget::setComboBoxText(m_ui->downloadLimitSpeedComboBox, M_SETTING_PTR->value(MusicSettingManager::DownloadDLoadLimitChoiced).toString());
+    MusicUtils::Widget::setComboBoxText(m_ui->uploadLimitSpeedComboBox, M_SETTING_PTR->value(MusicSettingManager::DownloadULoadLimitChoiced).toString());
     M_SETTING_PTR->value(MusicSettingManager::DownloadLimitChoiced).toInt() == 1 ?
                      m_ui->downloadFullRadioBox->click() : m_ui->downloadLimitRadioBox->click();
 
@@ -338,6 +333,11 @@ void MusicSettingWidget::downloadDirSelected(int index)
             index == 0 ? m_ui->downloadDirEdit->setText(path + "/") : m_ui->downloadLrcDirEdit->setText(path + "/");
         }
     }
+}
+
+void MusicSettingWidget::otherVersionUpdateChanged()
+{
+    MusicSourceUpdateWidget(this).exec();
 }
 
 void MusicSettingWidget::changeDesktopLrcWidget()
@@ -473,8 +473,7 @@ void MusicSettingWidget::testNetworkConnection()
 
 void MusicSettingWidget::checkNetworkConnection()
 {
-    MusicNetworkConnectionTestWidget *w = new MusicNetworkConnectionTestWidget(this);
-    w->show();
+    M_SINGLE_MANAGER_WIDGET_CLASS2(MusicNetworkConnectionTestWidget, this);
 }
 
 void MusicSettingWidget::testNetworkConnectionStateChanged(const QString &name)
@@ -516,7 +515,7 @@ void MusicSettingWidget::commitTheResults()
         M_HOTKEY_PTR->setHotKey(5, m_ui->item_S12->text());
         M_HOTKEY_PTR->setHotKey(6, m_ui->item_S14->text());
         M_HOTKEY_PTR->setHotKey(7, m_ui->item_S16->text());
-        M_SETTING_PTR->setValue(MusicSettingManager::HotkeyStringChoiced, M_HOTKEY_PTR->getKeys().join(STRING_SPLITER));
+        M_SETTING_PTR->setValue(MusicSettingManager::HotkeyStringChoiced, M_HOTKEY_PTR->getKeys().join(TTK_STR_SPLITER));
     }
     M_HOTKEY_PTR->enabledAll(m_ui->globalHotkeyBox->isChecked());
     M_SETTING_PTR->setValue(MusicSettingManager::HotkeyEnableChoiced, m_ui->globalHotkeyBox->isChecked());
@@ -525,10 +524,12 @@ void MusicSettingWidget::commitTheResults()
     M_SETTING_PTR->setValue(MusicSettingManager::OtherBgLosslessChoiced, m_ui->otherHerImgRadioBox->isChecked());
     M_SETTING_PTR->setValue(MusicSettingManager::OtherUpdateChoiced, m_ui->otherUpdateCheckBox->isChecked());
     M_SETTING_PTR->setValue(MusicSettingManager::OtherSearchChoiced, m_ui->otherSearchCheckBox->isChecked());
-    M_SETTING_PTR->setValue(MusicSettingManager::OtherAlbumChoiced, m_ui->otherAlbumCheckBox->isChecked());
+    M_SETTING_PTR->setValue(MusicSettingManager::OtherAlbumCoverChoiced, m_ui->otherAlbumCoverCheckBox->isChecked());
     M_SETTING_PTR->setValue(MusicSettingManager::OtherInfoChoiced, m_ui->otherInfoCheckBox->isChecked());
+    M_SETTING_PTR->setValue(MusicSettingManager::OtherAlbumCoverWChoiced, m_ui->otherAlbumCoverWCheckBox->isChecked());
+    M_SETTING_PTR->setValue(MusicSettingManager::OtherInfoWChoiced, m_ui->otherInfoWCheckBox->isChecked());
     M_SETTING_PTR->setValue(MusicSettingManager::OtherSideByChoiced, m_ui->otherSideByCheckBox->isChecked());
-    M_SETTING_PTR->setValue(MusicSettingManager::OtherSongFormat, m_ui->otherSongFormatComboBox->currentIndex());
+    M_SETTING_PTR->setValue(MusicSettingManager::OtherSongFormat, /*m_ui->otherSongFormatComboBox->currentIndex()*/0);
     M_SETTING_PTR->setValue(MusicSettingManager::OtherLrcKTVModeChoiced, m_ui->otherLrcKTVCheckBox->isChecked());
 
 
@@ -663,25 +664,29 @@ void MusicSettingWidget::initOtherSettingWidget()
     m_ui->otherHerImgRadioBox->setStyleSheet(MusicUIObject::MRadioButtonStyle01);
     m_ui->otherUpdateCheckBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
     m_ui->otherSearchCheckBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
-    m_ui->otherAlbumCheckBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
+    m_ui->otherAlbumCoverCheckBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
     m_ui->otherInfoCheckBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
+    m_ui->otherAlbumCoverWCheckBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
+    m_ui->otherInfoWCheckBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
     m_ui->otherSideByCheckBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
     m_ui->otherLrcKTVCheckBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
+
+    m_ui->otherVersionUpdateButton->setStyleSheet(MusicUIObject::MPushButtonStyle04);
+    m_ui->otherVersionUpdateButton->setCursor(QCursor(Qt::PointingHandCursor));
+    connect(m_ui->otherVersionUpdateButton, SIGNAL(clicked()), SLOT(otherVersionUpdateChanged()));
 #ifdef Q_OS_UNIX
     m_ui->otherNorImgRadioBox->setFocusPolicy(Qt::NoFocus);
     m_ui->otherHerImgRadioBox->setFocusPolicy(Qt::NoFocus);
     m_ui->otherUpdateCheckBox->setFocusPolicy(Qt::NoFocus);
     m_ui->otherSearchCheckBox->setFocusPolicy(Qt::NoFocus);
-    m_ui->otherAlbumCheckBox->setFocusPolicy(Qt::NoFocus);
+    m_ui->otherAlbumCoverCheckBox->setFocusPolicy(Qt::NoFocus);
     m_ui->otherInfoCheckBox->setFocusPolicy(Qt::NoFocus);
+    m_ui->otherAlbumCoverWCheckBox->setFocusPolicy(Qt::NoFocus);
+    m_ui->otherInfoWCheckBox->setFocusPolicy(Qt::NoFocus);
     m_ui->otherSideByCheckBox->setFocusPolicy(Qt::NoFocus);
     m_ui->otherLrcKTVCheckBox->setFocusPolicy(Qt::NoFocus);
+    m_ui->otherVersionUpdateButton->setFocusPolicy(Qt::NoFocus);
 #endif
-
-    m_ui->otherSongFormatComboBox->setItemDelegate(new QStyledItemDelegate(m_ui->otherSongFormatComboBox));
-    m_ui->otherSongFormatComboBox->setStyleSheet(MusicUIObject::MComboBoxStyle01 + MusicUIObject::MItemView01);
-    m_ui->otherSongFormatComboBox->view()->setStyleSheet(MusicUIObject::MScrollBarStyle01);
-    m_ui->otherSongFormatComboBox->addItems(QStringList() << tr("Singer - Song") << tr("Song - Singer"));
 
     m_ui->otherNorImgRadioBox->click();
 }
@@ -734,10 +739,6 @@ void MusicSettingWidget::initDownloadWidget()
     m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_baidu"), tr("baiduMusic"));
     m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_kuwo"), tr("kuwoMusic"));
     m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_kugou"), tr("kugouMusic"));
-    m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_migu"), tr("miguMusic"));
-    m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_5sing"), tr("5singMusic(yc)"));
-    m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_5sing"), tr("5singMusic(fc)"));
-    m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_5sing"), tr("5singMusic(bz)"));
 
     /////////////////////////////////////////////////////////////
     QButtonGroup *buttonGroup = new QButtonGroup(this);
@@ -850,7 +851,7 @@ void MusicSettingWidget::initInlineLrcWidget()
 
 void MusicSettingWidget::initSoundEffectWidget()
 {
-    m_ui->outputTypeComboBox->setItemDelegate(new QStyledItemDelegate(m_ui->downloadServerComboBox));
+    m_ui->outputTypeComboBox->setItemDelegate(new QStyledItemDelegate(m_ui->outputTypeComboBox));
     m_ui->outputTypeComboBox->setStyleSheet(MusicUIObject::MComboBoxStyle01 + MusicUIObject::MItemView01);
     m_ui->outputTypeComboBox->view()->setStyleSheet(MusicUIObject::MScrollBarStyle01);
     foreach(const QAudioDeviceInfo &info, QAudioDeviceInfo::availableDevices(QAudio::AudioOutput))
@@ -928,7 +929,7 @@ void MusicSettingWidget::initNetworkWidget()
     m_ui->proxyUsernameEdit->setStyleSheet(MusicUIObject::MLineEditStyle01);
     m_ui->proxyAreaEdit->setStyleSheet(MusicUIObject::MLineEditStyle01);
 
-    m_ui->proxyTypeComboBox->setItemDelegate(new QStyledItemDelegate(m_ui->downloadServerComboBox));
+    m_ui->proxyTypeComboBox->setItemDelegate(new QStyledItemDelegate(m_ui->proxyTypeComboBox));
     m_ui->proxyTypeComboBox->setStyleSheet(MusicUIObject::MComboBoxStyle01 + MusicUIObject::MItemView01);
     m_ui->proxyTypeComboBox->view()->setStyleSheet(MusicUIObject::MScrollBarStyle01);
 

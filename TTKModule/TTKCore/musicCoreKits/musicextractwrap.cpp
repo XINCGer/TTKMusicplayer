@@ -3,6 +3,7 @@
 #include "musicnumberdefine.h"
 #include "musicotherdefine.h"
 #include "musicwidgetutils.h"
+#include "musiccoreutils.h"
 
 #include "ttkzip/zip.h"
 #include "ttkzip/unzip.h"
@@ -14,11 +15,6 @@
 #  pragma GCC diagnostic ignored "-Wsign-compare"
 #endif
 
-QString MusicExtractWrap::getClassName()
-{
-    return "MusicExtractWrap";
-}
-
 bool MusicExtractWrap::outputThunderSkin(QPixmap &image, const QString &path)
 {
     unzFile zFile = unzOpen64(path.toLocal8Bit().constData());
@@ -29,8 +25,9 @@ bool MusicExtractWrap::outputThunderSkin(QPixmap &image, const QString &path)
 
     unz_file_info64 fileInfo;
     unz_global_info64 gInfo;
-    if (unzGetGlobalInfo64(zFile, &gInfo) != UNZ_OK)
+    if(unzGetGlobalInfo64(zFile, &gInfo) != UNZ_OK)
     {
+        unzClose(zFile);
         return false;
     }
 
@@ -80,6 +77,76 @@ bool MusicExtractWrap::outputThunderSkin(QPixmap &image, const QString &path)
     return true;
 }
 
+bool MusicExtractWrap::outputData(const QString &path)
+{
+    unzFile zFile = unzOpen64(path.toLocal8Bit().constData());
+    if(nullptr == zFile)
+    {
+        return false;
+    }
+
+    QDir dir(path);
+    QString diName = QFileInfo(path).absolutePath() + "/" + QFileInfo(path).baseName() + "/";
+    dir.mkpath(diName);
+    dir.cd(diName);
+
+    unz_file_info64 fileInfo;
+    unz_global_info64 gInfo;
+    if(unzGetGlobalInfo64(zFile, &gInfo) != UNZ_OK)
+    {
+        unzClose(zFile);
+        return false;
+    }
+
+    for(int i=0; i<gInfo.number_entry; ++i)
+    {
+        char file[WIN_NAME_MAX_LENGTH] = {0};
+        char ext[WIN_NAME_MAX_LENGTH] = {0};
+        char com[MH_KB] = {0};
+
+        if(unzGetCurrentFileInfo64(zFile, &fileInfo, file, sizeof(file), ext, WIN_NAME_MAX_LENGTH, com, MH_KB) != UNZ_OK)
+        {
+            break;
+        }
+
+        if(QString(file).contains("/"))
+        {
+            dir.mkpath(QFileInfo(file).path());
+        }
+
+        if(unzOpenCurrentFile(zFile) != UNZ_OK)
+        {
+            break;
+        }
+
+        char dt[MH_KB] = {0};
+        int size = 0;
+
+        QFile fileName(diName + file);
+        fileName.open(QFile::WriteOnly);
+        while(true)
+        {
+            size= unzReadCurrentFile(zFile, dt, sizeof(dt));
+            if(size <= 0)
+            {
+                break;
+            }
+            fileName.write(dt, size);
+        }
+
+        fileName.close();
+        unzCloseCurrentFile(zFile);
+
+        if(i < gInfo.number_entry - 1 && unzGoToNextFile(zFile) != UNZ_OK)
+        {
+            return false;
+        }
+    }
+    unzClose(zFile);
+
+    return true;
+}
+
 bool MusicExtractWrap::outputSkin(MusicBackgroundImage *image, const QString &path)
 {
     unzFile zFile = unzOpen64(path.toLocal8Bit().constData());
@@ -90,8 +157,9 @@ bool MusicExtractWrap::outputSkin(MusicBackgroundImage *image, const QString &pa
 
     unz_file_info64 fileInfo;
     unz_global_info64 gInfo;
-    if (unzGetGlobalInfo64(zFile, &gInfo) != UNZ_OK)
+    if(unzGetGlobalInfo64(zFile, &gInfo) != UNZ_OK)
     {
+        unzClose(zFile);
         return false;
     }
 
@@ -207,8 +275,9 @@ bool MusicExtractWrap::outputText(QByteArray &data, const QString &path)
 
     unz_file_info64 fileInfo;
     unz_global_info64 gInfo;
-    if (unzGetGlobalInfo64(zFile, &gInfo) != UNZ_OK)
+    if(unzGetGlobalInfo64(zFile, &gInfo) != UNZ_OK)
     {
+        unzClose(zFile);
         return false;
     }
 

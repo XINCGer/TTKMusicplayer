@@ -1,5 +1,4 @@
 #include "musicsongslistplayedtablewidget.h"
-#include "musicfileinformationwidget.h"
 #include "musicsongsharingwidget.h"
 #include "musicconnecttransferwidget.h"
 #include "musicsongslistplayedwidget.h"
@@ -10,7 +9,6 @@
 
 #include <qmath.h>
 #include <QScrollBar>
-#include <QContextMenuEvent>
 
 MusicSongsListPlayedTableWidget::MusicSongsListPlayedTableWidget(QWidget *parent)
     : MusicSongsListAbstractTableWidget(parent)
@@ -30,18 +28,13 @@ MusicSongsListPlayedTableWidget::MusicSongsListPlayedTableWidget(QWidget *parent
     m_hasParentToolIndex = false;
     m_musicSongsPlayWidget = nullptr;
 
-    MusicUtils::Widget::setTransparent(this, 0xff);
+    MusicUtils::Widget::setTransparent(this, 0xFF);
 }
 
 MusicSongsListPlayedTableWidget::~MusicSongsListPlayedTableWidget()
 {
     clearAllItems();
     delete m_musicSongsPlayWidget;
-}
-
-QString MusicSongsListPlayedTableWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSongsListPlayedTableWidget::clearPlayLaterState()
@@ -92,7 +85,7 @@ void MusicSongsListPlayedTableWidget::updateSongsFileName(const MusicSongs &song
                           item = new QTableWidgetItem;
         setItem(i, 3, item);
 
-                          item = new QTableWidgetItem(songs[i].getMusicTime());
+                          item = new QTableWidgetItem(songs[i].getMusicPlayTime());
         item->setTextColor(QColor(MusicUIObject::MColorStyle12_S));
         item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         setItem(i, 4, item);
@@ -183,7 +176,7 @@ void MusicSongsListPlayedTableWidget::replacePlayWidgetRow()
     setItem(m_playRowIndex, 2, new QTableWidgetItem);
     setItem(m_playRowIndex, 3, new QTableWidgetItem);
 
-    item = new QTableWidgetItem( (*m_musicSongs)[m_playRowIndex].getMusicTime() );
+    item = new QTableWidgetItem( (*m_musicSongs)[m_playRowIndex].getMusicPlayTime() );
     item->setTextColor(QColor(MusicUIObject::MColorStyle12_S));
     item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     setItem(m_playRowIndex, 4, item);
@@ -198,32 +191,34 @@ void MusicSongsListPlayedTableWidget::listCellEntered(int row, int column)
 {
     ///clear previous table item state
     QTableWidgetItem *it = item(m_previousColorRow, 2);
-    if(it != nullptr)
+    if(it)
     {
         it->setIcon(QIcon());
     }
+
     it = item(m_previousColorRow, 3);
-    if(it != nullptr)
+    if(it)
     {
         it->setIcon(QIcon());
     }
+
     it = item(m_previousColorRow, 4);
-    if(it != nullptr)
+    if(it)
     {
         it->setIcon(QIcon());
-        it->setText((*m_musicSongs)[m_previousColorRow].getMusicTime());
+        it->setText((*m_musicSongs)[m_previousColorRow].getMusicPlayTime());
     }
 
     ///draw new table item state
-    if((it = item(row, 2)) != nullptr)
+    if((it = item(row, 2)))
     {
         it->setIcon(QIcon(":/contextMenu/btn_download"));
     }
-    if((it = item(row, 3)) != nullptr)
+    if((it = item(row, 3)))
     {
         it->setIcon(QIcon(":/tiny/btn_delete_normal"));
     }
-    if((it = item(row, 4)) != nullptr)
+    if((it = item(row, 4)))
     {
         it->setText(QString());
         it->setIcon(QIcon(":/tiny/btn_more_normal"));
@@ -293,7 +288,7 @@ void MusicSongsListPlayedTableWidget::setDeleteItemAt()
 
 void MusicSongsListPlayedTableWidget::contextMenuEvent(QContextMenuEvent *event)
 {
-    MusicSongsListAbstractTableWidget::contextMenuEvent(event);
+    Q_UNUSED(event);
     QMenu rightClickMenu(this);
 
     rightClickMenu.setStyleSheet(MusicUIObject::MMenuStyle02);
@@ -313,5 +308,4 @@ void MusicSongsListPlayedTableWidget::contextMenuEvent(QContextMenuEvent *event)
     rightClickMenu.addSeparator();
 
     rightClickMenu.exec(QCursor::pos());
-    event->accept();
 }

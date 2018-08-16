@@ -19,7 +19,7 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QGraphicsView>
+#include <QAbstractScrollArea>
 #include "musicglobaldefine.h"
 #include "musicvideocontrolwidget.h"
 
@@ -32,16 +32,13 @@ class MusicBarrageWidget;
 class MUSIC_VIDEO_EXPORT MusicViewWidget : public QWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicViewWidget)
 public:
     /*!
      * Object contsructor.
      */
     explicit MusicViewWidget(QWidget *parent = 0);
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
+    ~MusicViewWidget();
 
 Q_SIGNALS:
     /*!
@@ -62,17 +59,21 @@ protected:
      * Override the widget event.
      */
     virtual void mousePressEvent(QMouseEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
     virtual void contextMenuEvent(QContextMenuEvent *event) override;
 
+    QTimer *m_clickedTimer;
+    bool m_leftPressed;
 };
 
 /*! @brief The class of the video view widget.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_VIDEO_EXPORT MusicVideoView : public QGraphicsView
+class MUSIC_VIDEO_EXPORT MusicVideoView : public QAbstractScrollArea
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicVideoView)
 public:
     /*!
      * Object contsructor.
@@ -82,10 +83,6 @@ public:
     ~MusicVideoView();
 
     /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
      * Set video play data.
      */
     void setMedia(const QString &data);
@@ -93,6 +90,10 @@ public:
      * Resize widget size or not.
      */
     void resizeWindow(int width, int height);
+    /*!
+     * Get control bar widget.
+     */
+    MusicVideoControlWidget *controlBarWidget() const { return m_videoControl; }
 
 public Q_SLOTS:
     /*!
@@ -126,6 +127,10 @@ private Q_SLOTS:
      */
     void mediaChanged(const QString &data);
     /*!
+     * Media aution play error.
+     */
+    void mediaAutionPlayError(int code);
+    /*!
      * Current media is playing.
      */
     void mediaIsPlaying(bool &play);
@@ -145,14 +150,11 @@ protected:
      */
     virtual void contextMenuEvent(QContextMenuEvent *event) override;
 
-
-    bool m_positionChanged;
     MusicViewWidget *m_videoWidget;
     MusicCoreMPlayer *m_mediaPlayer;
     MusicVideoControlWidget *m_videoControl;
     MusicBarrageWidget *m_barrageCore;
 
 };
-
 
 #endif // MUSICVIDEOVIEW_H

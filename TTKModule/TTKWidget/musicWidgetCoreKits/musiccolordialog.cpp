@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QToolTip>
 #include <QMouseEvent>
+#include <QButtonGroup>
 
 MusicHlPalette::MusicHlPalette(QWidget *parent)
     : QWidget(parent)
@@ -13,11 +14,6 @@ MusicHlPalette::MusicHlPalette(QWidget *parent)
     setMouseTracking(true);
 
     m_dblSaturation = 1.0;
-}
-
-QString MusicHlPalette::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 QColor MusicHlPalette::color() const
@@ -138,11 +134,6 @@ MusicHlSaturationPalette::MusicHlSaturationPalette(QWidget *parent)
     m_dblVernierX = 0;
     m_dblVernierPercentX = 0;
     m_dblSaturation = 0;
-}
-
-QString MusicHlSaturationPalette::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 double MusicHlSaturationPalette::saturation() const
@@ -281,11 +272,6 @@ MusicColorDialog::~MusicColorDialog()
     delete m_ui;
 }
 
-QString MusicColorDialog::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 QColor MusicColorDialog::getColor(QWidget *parent)
 {
     MusicColorDialog dialog(parent);
@@ -304,6 +290,7 @@ void MusicColorDialog::buttonClicked(int index)
         case 0:
         case 2: m_status = 0; break;
         case 1: m_status = 1; break;
+        default: break;
     }
     close();
 }

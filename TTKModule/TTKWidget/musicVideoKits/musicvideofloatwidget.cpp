@@ -1,7 +1,6 @@
 #include "musicvideofloatwidget.h"
 #include "musicvideofloatuiobject.h"
-
-#include <QPushButton>
+#include "musicwidgetheaders.h"
 
 MusicVideoFloatWidget::MusicVideoFloatWidget(QWidget *parent)
     : MusicFloatAbstractWidget(parent)
@@ -58,11 +57,6 @@ MusicVideoFloatWidget::~MusicVideoFloatWidget()
     delete m_share;
 }
 
-QString MusicVideoFloatWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicVideoFloatWidget::resizeWindow(int width, int height)
 {
     m_rectIn = QRect(566 + width, 138 + height/2, 125, 210);
@@ -77,7 +71,7 @@ void MusicVideoFloatWidget::setText(Type type, const QString &text)
         case SearchType: m_search->setText(text); break;
         case FreshType: m_fresh->setText(text); break;
         case FullscreenType: m_fullscreen->setText(text); break;
-        case DownloadType: m_download->setText(text); break;
+        case DownloadType : m_download->setText(text); break;
         case ShareType: m_share->setText(text); break;
         default: break;
     }
@@ -90,7 +84,7 @@ QString MusicVideoFloatWidget::getText(Type type) const
         case SearchType: return m_search->text().trimmed();
         case FreshType: return m_fresh->text().trimmed();
         case FullscreenType: return m_fullscreen->text().trimmed();
-        case DownloadType: return m_download->text().trimmed();
+        case DownloadType : return m_download->text().trimmed();
         case ShareType: return m_share->text();
         default: return QString();
     }

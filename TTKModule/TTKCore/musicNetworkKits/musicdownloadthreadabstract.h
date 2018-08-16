@@ -31,29 +31,16 @@
 class MUSIC_NETWORK_EXPORT MusicDownLoadThreadAbstract : public MusicNetworkAbstract
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownLoadThreadAbstract)
 public:
-    enum Download_Type
-    {
-        Download_Music, /*!< type of dwonlaod music*/
-        Download_Lrc,   /*!< type of dwonlaod lrc*/
-        Download_SmlBG, /*!< type of dwonlaod small background*/
-        Download_BigBG, /*!< type of dwonlaod big background*/
-        Download_Video, /*!< type of dwonlaod video*/
-        Download_Other  /*!< type of dwonlaod other user mod*/
-    };
-
     /*!
      * Object contsructor provide download URL\ save local path and download type.
      */
     MusicDownLoadThreadAbstract(const QString &url, const QString &save,
-                                Download_Type type, QObject *parent = 0);
+                                MusicObject::DownloadType type, QObject *parent = 0);
 
     virtual ~MusicDownLoadThreadAbstract();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Release the network object.
      */
@@ -93,7 +80,7 @@ protected:
 
     QFile *m_file;
     QString m_url, m_savePathName;
-    Download_Type m_downloadType;
+    MusicObject::DownloadType m_downloadType;
     qint64 m_hasReceived, m_currentReceived, m_totalSize;
     QTimer m_timer;
 

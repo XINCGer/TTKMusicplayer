@@ -4,7 +4,7 @@
 #include "musicsettingmanager.h"
 #include "musicleftareawidget.h"
 #include "musicapplication.h"
-#include "musiccoreutils.h"
+#include "musicurlutils.h"
 
 MusicDownloadResetWidget::MusicDownloadResetWidget(QWidget *parent)
     : MusicAbstractMoveWidget(parent),
@@ -44,11 +44,6 @@ MusicDownloadResetWidget::~MusicDownloadResetWidget()
     delete m_ui;
 }
 
-QString MusicDownloadResetWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicDownloadResetWidget::setSongName(const QString &name)
 {
     m_currentName = name;
@@ -81,7 +76,7 @@ void MusicDownloadResetWidget::openFileLocation()
     QString path = MusicApplication::instance()->musicDownloadContains(exist);
     if(exist)
     {
-        MusicUtils::Core::openUrl( path, true );
+        MusicUtils::Url::openUrl( path, true );
     }
     close();
 }
@@ -91,11 +86,6 @@ MusicDownloadMgmtWidget::MusicDownloadMgmtWidget(QObject *parent)
     : QObject(parent)
 {
     m_parentClass = MStatic_cast(QWidget*, parent);
-}
-
-QString MusicDownloadMgmtWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicDownloadMgmtWidget::setSongName(const QString &name, MusicDownLoadQueryThreadAbstract::QueryType type)

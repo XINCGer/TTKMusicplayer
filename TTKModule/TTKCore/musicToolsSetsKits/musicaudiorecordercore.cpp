@@ -1,6 +1,7 @@
 #include "musicaudiorecordercore.h"
 #include "musicmessagebox.h"
-#include "musiccoreutils.h"
+#include "musiccodecutils.h"
+#include "musicobject.h"
 
 #define OPEN_FILE_ERROR     -1
 #define SAVE_FILE_ERROR     -2
@@ -53,11 +54,6 @@ MusicAudioRecorderCore::~MusicAudioRecorderCore()
     delete m_mpAudioOutputFile;
 }
 
-QString MusicAudioRecorderCore::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 int MusicAudioRecorderCore::addWavHeader(const char *filename)
 {
     HEADER destionFileHeader;
@@ -93,14 +89,14 @@ int MusicAudioRecorderCore::addWavHeader(const char *filename)
 
     FILE *fp_s = nullptr;
     FILE *fp_d = nullptr;
-    fp_s = fopen(MusicUtils::Core::toLocal8Bit(m_mpOutputFile->fileName()), "rb");
-    if (fp_s == nullptr)
+    fp_s = fopen(MusicUtils::Codec::toLocal8Bit(m_mpOutputFile->fileName()), "rb");
+    if(fp_s == nullptr)
     {
         return OPEN_FILE_ERROR;
     }
     fp_d = fopen(filename, "wb+");
 
-    if (fp_d == nullptr)
+    if(fp_d == nullptr)
     {
         return SAVE_FILE_ERROR;
     }
@@ -116,7 +112,7 @@ int MusicAudioRecorderCore::addWavHeader(const char *filename)
     {
         char readBuf[4096];
         int nRead = fread(readBuf, 1, 4096, fp_s);
-        if (nRead > 0)
+        if(nRead > 0)
         {
             fwrite(readBuf, 1, nRead, fp_d);
         }
@@ -214,14 +210,14 @@ void MusicAudioRecorderCore::onRecordPlay()
 
 void MusicAudioRecorderCore::onRecordStop()
 {
-    if(m_mpAudioInputFile != nullptr)
+    if(m_mpAudioInputFile)
     {
         m_mpAudioInputFile->stop();
         delete m_mpAudioInputFile;
         m_mpAudioInputFile = nullptr;
     }
 
-    if(m_mpAudioOutputFile != nullptr)
+    if(m_mpAudioOutputFile)
     {
         m_mpAudioOutputFile->stop();
         delete m_mpAudioOutputFile;

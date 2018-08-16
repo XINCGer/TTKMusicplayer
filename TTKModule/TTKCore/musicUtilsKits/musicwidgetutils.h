@@ -25,7 +25,7 @@ class QComboBox;
 #include "musicnumberdefine.h"
 #include "musicglobaldefine.h"
 
-/*! @brief The class of the utils widget object namespace.
+/*! @brief The namespace of the utils algorithm.
  * @author Greedysky <greedysky@163.com>
  */
 namespace MusicUtils
@@ -50,9 +50,9 @@ namespace MusicUtils
          */
         MUSIC_UTILS_EXPORT void setTransparent(QWidget *widget, int alpha);
         /*!
-         * Set Combobox text.
+         * Set ComboBox text.
          */
-        MUSIC_UTILS_EXPORT void setComboboxText(QComboBox *object, const QString &text);
+        MUSIC_UTILS_EXPORT void setComboBoxText(QComboBox *object, const QString &text);
         /*!
          * Set widget to round by ratioX and ratioY.
          */
@@ -105,7 +105,7 @@ namespace MusicUtils
         /*!
          * Image color burn transform.
          */
-        MUSIC_UTILS_EXPORT uint colorBurnTransform(int c, int delta);
+        MUSIC_UTILS_EXPORT int colorBurnTransform(int c, int delta);
 
         /*!
          * Get open file dialog.

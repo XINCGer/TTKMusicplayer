@@ -7,10 +7,6 @@
 #include "musicalgorithmutils.h"
 #include "musicmessagebox.h"
 
-#include <QLabel>
-#include <QBoxLayout>
-#include <QPushButton>
-
 MusicAdvancedSearchedWidget::MusicAdvancedSearchedWidget(QWidget *parent)
     : QWidget(parent)
 {
@@ -106,7 +102,6 @@ MusicAdvancedSearchedWidget::MusicAdvancedSearchedWidget(QWidget *parent)
     mainLayout->addStretch(1);
 
     updateServerPlaceholderText();
-
 }
 
 MusicAdvancedSearchedWidget::~MusicAdvancedSearchedWidget()
@@ -114,16 +109,10 @@ MusicAdvancedSearchedWidget::~MusicAdvancedSearchedWidget()
     delete m_tabWidget;
 }
 
-QString MusicAdvancedSearchedWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
-
 void MusicAdvancedSearchedWidget::searchButtonClicked()
 {
     int server = M_SETTING_PTR->value(MusicSettingManager::DownloadServerChoiced).toInt();
-    if(server > 6 || server < 0)
+    if(server > 5 || server < 0)
     {
         MusicMessageBox message;
         message.setText(tr("Current server not support search!"));
@@ -248,15 +237,6 @@ void MusicAdvancedSearchedWidget::updateServerPlaceholderText()
                 m_movieEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KG_MV_SHARE, ALG_LOW_KEY, false).arg("630600"));
                 break;
             }
-        case 6:
-            {
-                m_songEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(MG_SG_SHARE, ALG_LOW_KEY, false).arg("6005660HAJF"));
-                m_artistEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(MG_AR_SHARE, ALG_LOW_KEY, false).arg("1212"));
-                m_albumEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(MG_AL_SHARE, ALG_LOW_KEY, false).arg("1003463541"));
-                m_playlistEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(MG_PL_SHARE, ALG_LOW_KEY, false).arg("1818063"));
-                m_movieEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(MG_MV_SHARE, ALG_LOW_KEY, false).arg("1106499464").arg("60061905518"));
-                break;
-            }
         default: break;
     }
 }
@@ -308,22 +288,13 @@ QString MusicAdvancedSearchedWidget::getSearchedKeyWork(int type, const QString 
                 key = (url.indexOf(regx) != -1) ? regx.cap(1) : url;
                 break;
             }
-        case 6:
-            {
-                QRegExp regx;
-                if(type == 0)
-                    regx.setPattern("200000000(\\w+).html");
-                else if(type == 3)
-                    regx.setPattern("/(\\w+).html");
-                else if(type == 4)
-                    regx.setPattern("=(\\w+)");
-                else
-                    regx.setPattern("/(\\d+)");
-                key = (url.indexOf(regx) != -1) ? regx.cap(1) : url;
-                break;
-            }
         default: break;
     }
 
     return key;
+}
+
+void MusicAdvancedSearchedWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    Q_UNUSED(event);
 }

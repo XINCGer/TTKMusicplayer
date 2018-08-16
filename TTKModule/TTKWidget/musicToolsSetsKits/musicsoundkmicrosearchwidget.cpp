@@ -6,11 +6,8 @@
 #include "musicmessagebox.h"
 #include "musicuiobject.h"
 #include "musicitemdelegate.h"
+#include "musicdownloadwidget.h"
 
-#include <QLabel>
-#include <QBoxLayout>
-#include <QPushButton>
-#include <QRadioButton>
 #include <QButtonGroup>
 
 MusicSoundKMicroSearchTableWidget::MusicSoundKMicroSearchTableWidget(QWidget *parent)
@@ -24,7 +21,9 @@ MusicSoundKMicroSearchTableWidget::MusicSoundKMicroSearchTableWidget(QWidget *pa
     headerview->resizeSection(3, 24);
     headerview->resizeSection(4, 24);
 
-    m_queryMv = true;
+    m_queryMovieMode = true;
+    viewport()->setStyleSheet(MusicUIObject::MBackgroundStyle02);
+    m_defaultBkColor = Qt::black;
 }
 
 MusicSoundKMicroSearchTableWidget::~MusicSoundKMicroSearchTableWidget()
@@ -32,23 +31,18 @@ MusicSoundKMicroSearchTableWidget::~MusicSoundKMicroSearchTableWidget()
     clearAllItems();
 }
 
-QString MusicSoundKMicroSearchTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSoundKMicroSearchTableWidget::startSearchQuery(const QString &text)
 {
-    if(!M_NETWORK_PTR->isOnline())
-    {   //no network connection
+    if(!M_NETWORK_PTR->isOnline())   //no network connection
+    {
         clearAllItems();
         emit showDownLoadInfoFor(MusicObject::DW_DisConnection);
         return;
     }
 
-    m_loadingLabel->show();
-    m_loadingLabel->start();
-    if(m_queryMv)
+    m_loadingLabel->run(true);
+
+    if(m_queryMovieMode)
     {
         MusicDownLoadQueryKWMovieThread *d = new MusicDownLoadQueryKWMovieThread(this);
         d->setQueryExtraMovie(false);
@@ -67,7 +61,7 @@ void MusicSoundKMicroSearchTableWidget::startSearchQuery(const QString &text)
 
 void MusicSoundKMicroSearchTableWidget::musicDownloadLocal(int row)
 {
-    if( row < 0 || (row >= rowCount() - 1))
+    if(row < 0 || (row >= rowCount() - 1))
     {
         MusicMessageBox message;
         message.setText(tr("Please Select One Item First!"));
@@ -76,15 +70,15 @@ void MusicSoundKMicroSearchTableWidget::musicDownloadLocal(int row)
     }
 
     MusicObject::MusicSongInformations musicSongInfos(m_downLoadManager->getMusicSongInfos());
-    foreach(const MusicObject::MusicSongAttribute &attr, musicSongInfos[row].m_songAttrs)
-    {
-        emit mvURLChanged(m_queryMv, attr.m_url, m_queryMv ? QString() : musicSongInfos[row].m_lrcUrl);
-    }
+    MusicDownloadWidget *download = new MusicDownloadWidget(this);
+    download->setSongName(musicSongInfos[row], m_queryMovieMode ?
+                          MusicDownLoadQueryThreadAbstract::MovieQuery : MusicDownLoadQueryThreadAbstract::MusicQuery);
+    download->show();
 }
 
-void MusicSoundKMicroSearchTableWidget::setQueryMVFlag(bool flag)
+void MusicSoundKMicroSearchTableWidget::setQueryMovieFlag(bool flag)
 {
-    m_queryMv = flag;
+    m_queryMovieMode = flag;
 }
 
 void MusicSoundKMicroSearchTableWidget::clearAllItems()
@@ -93,7 +87,7 @@ void MusicSoundKMicroSearchTableWidget::clearAllItems()
     setColumnCount(5);
 }
 
-void MusicSoundKMicroSearchTableWidget::createSearchedItems(const MusicSearchedItem &songItem)
+void MusicSoundKMicroSearchTableWidget::createSearchedItem(const MusicSearchedItem &songItem)
 {
     int count = rowCount();
     setRowCount(count + 1);
@@ -101,6 +95,7 @@ void MusicSoundKMicroSearchTableWidget::createSearchedItems(const MusicSearchedI
     QHeaderView *headerview = horizontalHeader();
     QTableWidgetItem *item = new QTableWidgetItem;
     item->setData(MUSIC_CHECK_ROLE, false);
+    item->setBackgroundColor(m_defaultBkColor);
     setItem(count, 0, item);
 
                       item = new QTableWidgetItem;
@@ -130,7 +125,18 @@ void MusicSoundKMicroSearchTableWidget::itemDoubleClicked(int row, int column)
     {
         return;
     }
-    musicDownloadLocal(row);
+
+    dataDownloadPlay(row);
+}
+
+void MusicSoundKMicroSearchTableWidget::listCellEntered(int row, int column)
+{
+    MusicQueryItemTableWidget::listCellEntered(row, column);
+    QTableWidgetItem *it = item(row, 0);
+    if(it)
+    {
+        it->setBackgroundColor(m_defaultBkColor);
+    }
 }
 
 void MusicSoundKMicroSearchTableWidget::listCellClicked(int row, int column)
@@ -139,19 +145,46 @@ void MusicSoundKMicroSearchTableWidget::listCellClicked(int row, int column)
     switch(column)
     {
         case 4:
-            musicDownloadLocal(row);
+            dataDownloadPlay(row);
             break;
         default:
             break;
     }
 }
 
+void MusicSoundKMicroSearchTableWidget::dataDownloadPlay(int row)
+{
+    if(row < 0 || (row >= rowCount() - 1))
+    {
+        MusicMessageBox message;
+        message.setText(tr("Please Select One Item First!"));
+        message.exec();
+        return;
+    }
+
+    MusicObject::MusicSongInformations musicSongInfos(m_downLoadManager->getMusicSongInfos());
+    foreach(const MusicObject::MusicSongAttribute &attr, musicSongInfos[row].m_songAttrs)
+    {
+        emit mediaUrlChanged(m_queryMovieMode, attr.m_url, m_queryMovieMode ? QString() : musicSongInfos[row].m_lrcUrl);
+    }
+}
+
+void MusicSoundKMicroSearchTableWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    MusicQueryItemTableWidget::contextMenuEvent(event);
+    QMenu rightClickMenu(this);
+    createContextMenu(rightClickMenu);
+
+    rightClickMenu.exec(QCursor::pos());
+}
+
+
 
 MusicSoundKMicroSearchWidget::MusicSoundKMicroSearchWidget(QWidget *parent)
     : MusicAbstractMoveSingleWidget(parent)
 {
     ///Remove the title bar
-    setWindowFlags( windowFlags() | Qt::WindowStaysOnTopHint | Qt::Tool);
+    setWindowFlags(windowFlags() | Qt::Tool);
     blockMoveOption(true);
 
     raise();
@@ -187,7 +220,7 @@ MusicSoundKMicroSearchWidget::MusicSoundKMicroSearchWidget(QWidget *parent)
     QButtonGroup *group = new QButtonGroup(this);
     group->addButton(mvButton, 0);
     group->addButton(songButton, 1);
-    connect(group, SIGNAL(buttonClicked(int)), SLOT(setQueryMVFlag(int)));
+    connect(group, SIGNAL(buttonClicked(int)), SLOT(setQueryMovieFlag(int)));
     searchLayout->addWidget(mvButton);
     searchLayout->addWidget(songButton);
     searchLayout->addWidget(m_searchEdit);
@@ -205,7 +238,7 @@ MusicSoundKMicroSearchWidget::MusicSoundKMicroSearchWidget(QWidget *parent)
     layout->addWidget(m_searchTableWidget);
     m_container->setLayout(layout);
 
-    m_queryMv = true;
+    m_queryMovieMode = true;
     mvButton->setChecked(true);
 
     connect(searchButton, SIGNAL(clicked()), SLOT(startToSearch()));
@@ -218,15 +251,9 @@ MusicSoundKMicroSearchWidget::~MusicSoundKMicroSearchWidget()
     delete m_searchTableWidget;
 }
 
-QString MusicSoundKMicroSearchWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSoundKMicroSearchWidget::connectTo(QObject *obj)
 {
-    connect(m_searchTableWidget, SIGNAL(mvURLChanged(bool,QString,QString)), obj,
-                                 SLOT(mvURLChanged(bool,QString,QString)));
+    connect(m_searchTableWidget, SIGNAL(mediaUrlChanged(bool,QString,QString)), obj, SLOT(mediaUrlChanged(bool,QString,QString)));
 }
 
 void MusicSoundKMicroSearchWidget::startSeachKMicro(const QString &name)
@@ -237,10 +264,10 @@ void MusicSoundKMicroSearchWidget::startSeachKMicro(const QString &name)
 
 void MusicSoundKMicroSearchWidget::startToSearch()
 {
-    m_searchTableWidget->setQueryMVFlag(m_queryMv);
+    m_searchTableWidget->setQueryMovieFlag(m_queryMovieMode);
     m_searchTableWidget->startSearchQuery(m_searchEdit->text());
 }
-void MusicSoundKMicroSearchWidget::setQueryMVFlag(int flag)
+void MusicSoundKMicroSearchWidget::setQueryMovieFlag(int flag)
 {
-    m_queryMv = (flag == 0);
+    m_queryMovieMode = (flag == 0);
 }

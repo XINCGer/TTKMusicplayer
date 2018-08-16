@@ -1,5 +1,6 @@
 #include "musicdownloadquerybdplaylistthread.h"
 #include "musicsemaphoreloop.h"
+#include "musicotherdefine.h"
 #include "musictime.h"
 #///QJson import
 #include "qjson/parser.h"
@@ -9,11 +10,6 @@ MusicDownLoadQueryBDPlaylistThread::MusicDownLoadQueryBDPlaylistThread(QObject *
 {
     m_pageSize = 20;
     m_queryServer = "Baidu";
-}
-
-QString MusicDownLoadQueryBDPlaylistThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicDownLoadQueryBDPlaylistThread::startToSearch(QueryType type, const QString &playlist)
@@ -47,11 +43,8 @@ void MusicDownLoadQueryBDPlaylistThread::startToPage(int offset)
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -65,24 +58,21 @@ void MusicDownLoadQueryBDPlaylistThread::startToSearch(const QString &playlist)
     }
 
     M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(playlist));
-    QUrl musicUrl =  MusicUtils::Algorithm::mdII(BD_PLAYLIST_ATTR_URL, false).arg(playlist);
+    QUrl musicUrl = MusicUtils::Algorithm::mdII(BD_PLAYLIST_ATTR_URL, false).arg(playlist);
     m_interrupt = true;
 
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     QNetworkReply *reply = m_manager->get(request);
     connect(reply, SIGNAL(finished()), SLOT(getDetailsFinished()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
 }
 
-void MusicDownLoadQueryBDPlaylistThread::getPlaylistInfo(MusicPlaylistItem &item)
+void MusicDownLoadQueryBDPlaylistThread::getPlaylistInfo(MusicResultsItem &item)
 {
     if(!m_manager)
     {
@@ -90,17 +80,14 @@ void MusicDownLoadQueryBDPlaylistThread::getPlaylistInfo(MusicPlaylistItem &item
     }
 
     M_LOGGER_INFO(QString("%1 getPlaylistInfo %2").arg(getClassName()).arg(item.m_id));
-    QUrl musicUrl =  MusicUtils::Algorithm::mdII(BD_PLAYLIST_ATTR_URL, false).arg(item.m_id);
+    QUrl musicUrl = MusicUtils::Algorithm::mdII(BD_PLAYLIST_ATTR_URL, false).arg(item.m_id);
 
     QNetworkRequest request;
     request.setUrl(musicUrl);
     request.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(BD_UA_URL_1, ALG_UA_KEY, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     MusicSemaphoreLoop loop;
     QNetworkReply *reply = m_manager->get(request);
     QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
@@ -125,7 +112,7 @@ void MusicDownLoadQueryBDPlaylistThread::getPlaylistInfo(MusicPlaylistItem &item
             item.m_playCount = value["listenum"].toString();
             item.m_description = value["desc"].toString();
             item.m_updateTime = QDateTime::currentDateTime().toString("yyyy-MM-dd");
-            item.m_nickName = "Greedysky";
+            item.m_nickName = MUSIC_AUTHOR_NAME;
             item.m_tags = value["tag"].toString().replace(",", "|");
         }
     }
@@ -133,7 +120,7 @@ void MusicDownLoadQueryBDPlaylistThread::getPlaylistInfo(MusicPlaylistItem &item
 
 void MusicDownLoadQueryBDPlaylistThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -168,17 +155,17 @@ void MusicDownLoadQueryBDPlaylistThread::downLoadFinished()
                     if(m_interrupt) return;
 
                     value = var.toMap();
-                    MusicPlaylistItem item;
+                    MusicResultsItem item;
                     item.m_coverUrl = value["pic_300"].toString();
                     item.m_id = value["listid"].toString();
                     item.m_name = value["title"].toString();
                     item.m_playCount = value["listenum"].toString();
                     item.m_description = value["desc"].toString();
                     item.m_updateTime = QDateTime::currentDateTime().toString("yyyy-MM-dd");
-                    item.m_nickName = "Greedysky";
+                    item.m_nickName = MUSIC_AUTHOR_NAME;
                     item.m_tags = value["tag"].toString().replace(",", "|");
 
-                    emit createPlaylistItems(item);
+                    emit createPlaylistItem(item);
                 }
             }
         }
@@ -220,21 +207,25 @@ void MusicDownLoadQueryBDPlaylistThread::getDetailsFinished()
 
                     value = var.toMap();
                     MusicObject::MusicSongInformation musicInfo;
-                    musicInfo.m_singerName = value["author"].toString();
-                    musicInfo.m_songName = value["title"].toString();
+                    musicInfo.m_singerName = MusicUtils::String::illegalCharactersReplaced(value["author"].toString());
+                    musicInfo.m_songName = MusicUtils::String::illegalCharactersReplaced(value["title"].toString());
                     musicInfo.m_timeLength = "-";
 
                     musicInfo.m_songId = value["song_id"].toString();
                     musicInfo.m_artistId = value["ting_uid"].toString();
                     musicInfo.m_albumId = value["album_id"].toString();
-                    musicInfo.m_albumName = value["album_title"].toString();
+                    musicInfo.m_albumName = MusicUtils::String::illegalCharactersReplaced(value["album_title"].toString());
 
                     musicInfo.m_lrcUrl = value["lrclink"].toString();
                     musicInfo.m_smallPicUrl = value["pic_big"].toString().replace("_90", "_500");
 
-                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    musicInfo.m_year = value["publishtime"].toString();
+                    musicInfo.m_discNumber = "1";
+                    musicInfo.m_trackNumber = value["album_no"].toString();
+
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
                     readFromMusicSongAttribute(&musicInfo, value["all_rate"].toString(), m_searchQuality, m_queryAllRecords);
-                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
 
                     if(musicInfo.m_songAttrs.isEmpty())
                     {
@@ -248,7 +239,7 @@ void MusicDownLoadQueryBDPlaylistThread::getDetailsFinished()
                     item.m_albumName = musicInfo.m_albumName;
                     item.m_time = musicInfo.m_timeLength;
                     item.m_type = mapQueryServerString();
-                    emit createSearchedItems(item);
+                    emit createSearchedItem(item);
 
                     m_musicSongInfos << musicInfo;
                 }

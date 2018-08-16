@@ -46,11 +46,6 @@ MusicSongCheckToolsWidget::~MusicSongCheckToolsWidget()
     delete m_ui;
 }
 
-QString MusicSongCheckToolsWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSongCheckToolsWidget::modifiedItemButtonClicked()
 {
     MusicSongItems songs;
@@ -58,12 +53,12 @@ void MusicSongCheckToolsWidget::modifiedItemButtonClicked()
 
     m_selectedItemIdFlag = true;
     MusicSongCheckToolsItemSelectedDialog dialog;
-    connect(&dialog, SIGNAL(itemListsChanged(MusicObject::MIntList)), SLOT(itemListsChanged(MusicObject::MIntList)));
+    connect(&dialog, SIGNAL(itemListsChanged(MIntList)), SLOT(itemListsChanged(MIntList)));
     dialog.createAllItems(&songs);
     dialog.exec();
 }
 
-void MusicSongCheckToolsWidget::itemListsChanged(const MusicObject::MIntList &items)
+void MusicSongCheckToolsWidget::itemListsChanged(const MIntList &items)
 {
     m_selectedItemIds = items;
     m_ui->itemLabel->setText(tr("Custom Lists"));

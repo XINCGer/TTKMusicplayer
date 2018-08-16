@@ -8,6 +8,7 @@
 #include "musictoolsetsuiobject.h"
 
 #include <QButtonGroup>
+#include <QAbstractItemView>
 #include <QStyledItemDelegate>
 
 MusicTimerWidget::MusicTimerWidget(QWidget *parent)
@@ -77,11 +78,6 @@ MusicTimerWidget::MusicTimerWidget(QWidget *parent)
 MusicTimerWidget::~MusicTimerWidget()
 {
     delete m_ui;
-}
-
-QString MusicTimerWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicTimerWidget::initParemeter()
@@ -191,6 +187,7 @@ void MusicTimerWidget::changeWidgetIndex(int index)
         case 0: m_ui->timerToPlay->setStyleSheet(MusicUIObject::MKGTimeToPlayClicked); break;
         case 1: m_ui->timerToStop->setStyleSheet(MusicUIObject::MKGTimeToStopClicked); break;
         case 2: m_ui->timerToShutdown->setStyleSheet(MusicUIObject::MKGTimeToDownClicked); break;
+        default: break;
     }
 
     m_ui->stackedWidget->setCurrentIndex(index);

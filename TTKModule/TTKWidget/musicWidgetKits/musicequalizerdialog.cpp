@@ -9,6 +9,7 @@
 #include "musicplayer.h"
 
 #include <QSignalMapper>
+#include <QAbstractItemView>
 #include <QStyledItemDelegate>
 
 MusicEqualizerDialog::MusicEqualizerDialog(QWidget *parent)
@@ -60,11 +61,6 @@ MusicEqualizerDialog::~MusicEqualizerDialog()
     writeEqInformation();
     delete m_signalMapper;
     delete m_ui;
-}
-
-QString MusicEqualizerDialog::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicEqualizerDialog::init()
@@ -169,7 +165,7 @@ void MusicEqualizerDialog::verticalSliderChanged(int)
 
 void MusicEqualizerDialog::emitParameter()
 {
-    emit setEqEffect(MusicObject::MIntList() << m_ui->bwVerticalSlider->value() << m_ui->verticalSlider1->value()
+    emit setEqEffect(MIntList() << m_ui->bwVerticalSlider->value() << m_ui->verticalSlider1->value()
                      << m_ui->verticalSlider2->value() << m_ui->verticalSlider3->value()
                      << m_ui->verticalSlider4->value() << m_ui->verticalSlider5->value()
                      << m_ui->verticalSlider6->value() << m_ui->verticalSlider7->value()

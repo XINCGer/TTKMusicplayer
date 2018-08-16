@@ -9,11 +9,6 @@ MusicDownLoadQueryXMAlbumThread::MusicDownLoadQueryXMAlbumThread(QObject *parent
     m_queryServer = "XiaMi";
 }
 
-QString MusicDownLoadQueryXMAlbumThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicDownLoadQueryXMAlbumThread::startToSearch(const QString &album)
 {
     if(!m_manager)
@@ -27,16 +22,13 @@ void MusicDownLoadQueryXMAlbumThread::startToSearch(const QString &album)
     m_interrupt = true;
 
     QNetworkRequest request;
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
     makeTokenQueryUrl(&request,
                       MusicUtils::Algorithm::mdII(XM_ALBUM_DATA_URL, false).arg(album),
                       MusicUtils::Algorithm::mdII(XM_ALBUM_URL, false));
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -54,16 +46,13 @@ void MusicDownLoadQueryXMAlbumThread::startToSingleSearch(const QString &artist)
     m_interrupt = true;
 
     QNetworkRequest request;
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
     makeTokenQueryUrl(&request,
                       MusicUtils::Algorithm::mdII(XM_AR_ALBUM_DATA_URL, false).arg(artist),
                       MusicUtils::Algorithm::mdII(XM_AR_ALBUM_URL, false));
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    setSslConfiguration(&request);
+
     QNetworkReply *reply = m_manager->get(request);
     connect(reply, SIGNAL(finished()), SLOT(singleDownLoadFinished()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -84,7 +73,7 @@ void MusicDownLoadQueryXMAlbumThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -98,11 +87,11 @@ void MusicDownLoadQueryXMAlbumThread::downLoadFinished()
                 value = value["data"].toMap();
                 value = value["albumDetail"].toMap();
                 bool albumFlag = false;
-                MusicPlaylistItem info;
+                MusicResultsItem info;
                 info.m_coverUrl = value["albumLogo"].toString();
-                info.m_description = value["albumName"].toString() + "<>" +
-                                     value["language"].toString() + "<>" +
-                                     value["company"].toString() + "<>" +
+                info.m_description = value["albumName"].toString() + TTK_STR_SPLITER +
+                                     value["language"].toString() + TTK_STR_SPLITER +
+                                     value["company"].toString() + TTK_STR_SPLITER +
                                      QDateTime::fromMSecsSinceEpoch(value["gmtPublish"].toULongLong()).toString("yyyy-MM-dd");
                 ////////////////////////////////////////////////////////////
                 QVariantList datas = value["songs"].toList();
@@ -115,19 +104,23 @@ void MusicDownLoadQueryXMAlbumThread::downLoadFinished()
 
                     value = var.toMap();
                     MusicObject::MusicSongInformation musicInfo;
-                    musicInfo.m_singerName = value["artistName"].toString();
-                    musicInfo.m_songName = value["songName"].toString();
+                    musicInfo.m_singerName = MusicUtils::String::illegalCharactersReplaced(value["artistName"].toString());
+                    musicInfo.m_songName = MusicUtils::String::illegalCharactersReplaced(value["songName"].toString());
                     musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["length"].toInt());
 
                     musicInfo.m_songId = value["songId"].toString();
                     musicInfo.m_albumId = value["albumId"].toString();
                     musicInfo.m_artistId = value["artistId"].toString();
-                    musicInfo.m_albumName = value["albumName"].toString();
+                    musicInfo.m_albumName = MusicUtils::String::illegalCharactersReplaced(value["albumName"].toString());
                     musicInfo.m_smallPicUrl = value["albumLogo"].toString();
 
-                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    musicInfo.m_year = QString();
+                    musicInfo.m_discNumber = "0";
+                    musicInfo.m_trackNumber = value["track"].toString();
+
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
                     readFromMusicSongAttribute(&musicInfo, value["listenFiles"], m_searchQuality, m_queryAllRecords);
-                    if(m_interrupt || !m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
 
                     if(musicInfo.m_songAttrs.isEmpty())
                     {
@@ -148,7 +141,7 @@ void MusicDownLoadQueryXMAlbumThread::downLoadFinished()
                     item.m_albumName = musicInfo.m_albumName;
                     item.m_time = musicInfo.m_timeLength;
                     item.m_type = mapQueryServerString();
-                    emit createSearchedItems(item);
+                    emit createSearchedItem(item);
                     m_musicSongInfos << musicInfo;
                 }
             }
@@ -193,7 +186,7 @@ void MusicDownLoadQueryXMAlbumThread::singleDownLoadFinished()
 
                     if(m_interrupt) return;
 
-                    MusicPlaylistItem info;
+                    MusicResultsItem info;
                     info.m_id = value["albumId"].toString();
                     info.m_coverUrl = value["albumLogo"].toString();
                     info.m_name = value["albumName"].toString();

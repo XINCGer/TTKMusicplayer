@@ -8,7 +8,7 @@
 #include "musictoastlabel.h"
 #include "musicclickedlabel.h"
 #include "musiclrcanalysis.h"
-#include "musiccoreutils.h"
+#include "musicurlutils.h"
 #include "musicstringutils.h"
 #include "musicnumberdefine.h"
 #include "musicinlinelrcuiobject.h"
@@ -21,13 +21,12 @@
 #include "musictopareawidget.h"
 #include "musicbackgroundmanager.h"
 #include "musictime.h"
+#include "musicwidgetheaders.h"
 
 #include <QPainter>
 #include <QClipboard>
 #include <QApplication>
 #include <QActionGroup>
-#include <QPushButton>
-#include <QTextEdit>
 
 #define LRC_CHANGED_OFFSET_LIMIT    20
 #define LRC_TIME_LABEL_POSITION     20
@@ -43,7 +42,7 @@ MusicLrcContainerForInline::MusicLrcContainerForInline(QWidget *parent)
     m_lrcAnalysis->setLineMax(MUSIC_LRC_INLINE_MAX_LINE);
 
     m_containerType = "INLINE";
-    m_layoutWidget = new MusicLayoutAnimationWidget(this);
+    m_layoutWidget = new MusicVLayoutAnimationWidget(this);
     m_layoutWidget->connectTo(this);
     for(int i=0; i<m_lrcAnalysis->getLineMax(); ++i)
     {
@@ -86,11 +85,6 @@ MusicLrcContainerForInline::~MusicLrcContainerForInline()
     delete m_commentsWidget;
     delete m_translatedWidget;
     delete m_layoutWidget;
-}
-
-QString MusicLrcContainerForInline::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLrcContainerForInline::startTimerClock()
@@ -320,7 +314,7 @@ void MusicLrcContainerForInline::showArtBackgroundUploadedWidget()
 
 void MusicLrcContainerForInline::lrcOpenFileDir() const
 {
-    MusicUtils::Core::openUrl(QFileInfo(m_lrcAnalysis->getCurrentFileName()).absoluteFilePath());
+    MusicUtils::Url::openUrl(QFileInfo(m_lrcAnalysis->getCurrentFileName()).absoluteFilePath());
 }
 
 void MusicLrcContainerForInline::lrcCopyClipboard() const

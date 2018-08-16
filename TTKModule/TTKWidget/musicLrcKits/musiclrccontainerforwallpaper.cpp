@@ -2,58 +2,46 @@
 #include "musicdesktopwallpaperthread.h"
 #include "musiclrcmanagerforinline.h"
 #include "musiclayoutanimationwidget.h"
+#include "musictransitionanimationlabel.h"
+#include "musicbackgroundmanager.h"
 #include "musiclrcanalysis.h"
 #include "musicstringutils.h"
-#ifdef Q_OS_WIN
-#include <qt_windows.h>
-#endif
-#include <QBoxLayout>
 
 MusicLrcContainerForWallpaper::MusicLrcContainerForWallpaper(QWidget *parent)
     : MusicLrcContainer(parent)
 {
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnBottomHint | Qt::Tool);
-    setAttribute(Qt::WA_TranslucentBackground);
-    setWindowState(Qt::WindowNoState);
-    setFocusPolicy(Qt::NoFocus);
-
     QVBoxLayout *vBoxLayout = new QVBoxLayout(this);
-    vBoxLayout->setMargin(0);
+    vBoxLayout->setContentsMargins(0, 0, 0, 0);
+    vBoxLayout->setSpacing(0);
     setLayout(vBoxLayout);
 
-#ifdef Q_OS_WIN
-    SetWindowLong((HWND)winId(), GWL_EXSTYLE, GetWindowLong((HWND)winId(), GWL_EXSTYLE) |
-                                 WS_EX_TRANSPARENT | WS_EX_LAYERED);
-#endif
+    m_background = new MusicTransitionAnimationLabel(this);
+    m_background->setScaledContents(true);
+    vBoxLayout->addWidget(m_background);
+    QVBoxLayout *bBoxLayout = new QVBoxLayout(m_background);
+    bBoxLayout->setContentsMargins(0, 0, 0, 0);
+    bBoxLayout->setSpacing(0);
+    m_background->setLayout(bBoxLayout);
 
     m_containerType = "WALLPAPER";
-    m_layoutWidget = new MusicLayoutAnimationWidget(this);
+    m_layoutWidget = new MusicVLayoutAnimationWidget(this);
     m_layoutWidget->connectTo(this);
-    vBoxLayout->addWidget(m_layoutWidget);
+    bBoxLayout->addWidget(m_layoutWidget);
 
     m_animationFreshTime = 0;
-
     m_wallThread = new MusicDesktopWallpaperThread(this);
-    MusicObject::MStriantMap para;
-    para.insert("Mode", 2);
-    para.insert("Path", "Play");
-    para.insert("Type", 2);
-    para.insert("Func", 1);
-    para.insert("Time", 10);
-    para.insert("Close", true);
-    m_wallThread->setParamters(para);
+    connect(m_wallThread, SIGNAL(updateBackground(QPixmap)), SLOT(updateBackground(QPixmap)));
+#ifdef Q_OS_WIN
+    m_wallThread->sendMessageToDesktop();
+    SetParent((HWND)winId(), m_wallThread->findDesktopIconWnd());
+#endif
+
 }
 
 MusicLrcContainerForWallpaper::~MusicLrcContainerForWallpaper()
 {
     clearAllMusicLRCManager();
-    m_wallThread->stopAndQuitThread();
     delete m_wallThread;
-}
-
-QString MusicLrcContainerForWallpaper::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLrcContainerForWallpaper::startTimerClock()
@@ -103,10 +91,8 @@ void MusicLrcContainerForWallpaper::setLrcAnalysisModel(MusicLrcAnalysis *analys
     m_layoutWidget->addStretch(1);
 
     initCurrentLrc(tr("Init Wallpaper Module"));
-    if(!m_wallThread->isRunning())
-    {
-        m_wallThread->start();
-    }
+
+    start(false);
 }
 
 void MusicLrcContainerForWallpaper::updateCurrentLrc(qint64 time)
@@ -117,15 +103,43 @@ void MusicLrcContainerForWallpaper::updateCurrentLrc(qint64 time)
         m_layoutWidget->start();
     }
 
-    if(!m_wallThread->isRunning())
+    start(false);
+}
+
+void MusicLrcContainerForWallpaper::updateCurrentLrc(const QString &text)
+{
+    for(int i=0; i<MUSIC_LRC_INLINE_MAX_LINE; ++i)
     {
-        m_wallThread->start();
+        m_musicLrcContainer[i]->setText(QString());
+    }
+    m_musicLrcContainer[MUSIC_LRC_INLINE_MAX_LINE/2]->setText(text);
+}
+
+void MusicLrcContainerForWallpaper::start(bool immediate)
+{
+    if(m_wallThread)
+    {
+        m_wallThread->setImagePath(M_BACKGROUND_PTR->getArtPhotoPathList());
+
+        if(!m_wallThread->isRunning())
+        {
+            m_wallThread->start();
+        }
+        if(immediate)
+        {
+            m_wallThread->timeout();
+        }
     }
 }
 
 void MusicLrcContainerForWallpaper::changeCurrentLrcColor()
 {
     setSettingParameter();
+}
+
+void MusicLrcContainerForWallpaper::updateBackground(const QPixmap &pix)
+{
+    m_background->setPixmap(pix);
 }
 
 void MusicLrcContainerForWallpaper::updateAnimationLrc()

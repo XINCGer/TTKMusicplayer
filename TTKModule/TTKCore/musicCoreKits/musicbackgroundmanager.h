@@ -32,11 +32,8 @@
 class MUSIC_CORE_EXPORT MusicBackgroundManager : public QObject
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicBackgroundManager)
 public:
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Set current artist name.
      */
@@ -106,14 +103,15 @@ public:
      * Remove observer.
      */
     void removeObserver(QObject *object);
+
     /*!
      * Set artist background picture by path.
      */
-    void setMBackground(const QString &path);
+    void setBackgroundUrl(const QString &path);
     /*!
      * Get artist background picture path.
      */
-    QString getMBackground() const;
+    QString getBackgroundUrl() const;
 
     /*!
      * Get artist background picture path.
@@ -128,7 +126,7 @@ Q_SIGNALS:
     /*!
      * New art has been set emit.
      */
-    void artHasChanged();
+    void artistNameChanged();
     /*!
      * User selected index changed emit.
      */

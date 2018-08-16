@@ -3,9 +3,11 @@
 #include "musicmessagebox.h"
 #include "musicuiobject.h"
 #include "musicsemaphoreloop.h"
+#include "musiccoreutils.h"
+#include "musicwidgetheaders.h"
+#include "musicsinglemanager.h"
 
 #include <QProcess>
-#include <QFileDialog>
 
 #define GAIN_DEFAULT 89
 #define GAIN_TRACKDB "Recommended \"Track\" dB change:"
@@ -26,11 +28,6 @@ MusicVolumeGainTableWidget::MusicVolumeGainTableWidget(QWidget *parent)
 MusicVolumeGainTableWidget::~MusicVolumeGainTableWidget()
 {
 
-}
-
-QString MusicVolumeGainTableWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicVolumeGainTableWidget::listCellClicked(int row, int column)
@@ -110,19 +107,9 @@ MusicVolumeGainWidget::MusicVolumeGainWidget(QWidget *parent)
 
 MusicVolumeGainWidget::~MusicVolumeGainWidget()
 {
+    M_SINGLE_MANAGER_PTR->removeObject(getClassName());
     delete m_process;
     delete m_ui;
-}
-
-QString MusicVolumeGainWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
-void MusicVolumeGainWidget::closeEvent(QCloseEvent *event)
-{
-    MusicAbstractMoveWidget::closeEvent(event);
-    emit resetFlag(MusicObject::TT_SoundGain);
 }
 
 void MusicVolumeGainWidget::createItemFinished(const QString &track, const QString &album)
@@ -210,11 +197,9 @@ void MusicVolumeGainWidget::addFilesButtonClicked()
     if(dialog.exec())
     {
         setControlEnable(false);
-        QList<QFileInfo> file(dialog.directory().entryInfoList());
-        foreach(const QFileInfo &info, file)
+        foreach(const QFileInfo &info, MusicUtils::Core::getFileListByDir(dialog.directory().absolutePath(), true))
         {
-            if( QString("mp3").contains(info.suffix().toLower()) &&
-                !m_paths.contains(info.absoluteFilePath()) )
+            if(QString(MP3_FILE_PREFIX).contains(info.suffix().toLower()) && !m_paths.contains(info.absoluteFilePath()))
             {
                 m_currentIndex = m_paths.count();
                 m_paths << info.absoluteFilePath();

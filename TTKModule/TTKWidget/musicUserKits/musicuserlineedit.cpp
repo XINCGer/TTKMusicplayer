@@ -16,11 +16,6 @@ MusicUserLineEdit::MusicUserLineEdit(QWidget *parent)
     m_statusLabel = nullptr;
 }
 
-QString MusicUserLineEdit::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicUserLineEdit::focusInEvent(QFocusEvent *event)
 {
     QLineEdit::focusInEvent(event);
@@ -42,6 +37,7 @@ void MusicUserLineEdit::setLabel(LabelType ty, QLabel *t, QLabel *s)
     m_tipsLabel = t;
     m_statusLabel = s;
     m_type = ty;
+
     if(ty == PasswdNew)
     {
         connect(this, SIGNAL(textChanged(QString)), SLOT(checkPwdStrength()));
@@ -86,12 +82,13 @@ void MusicUserLineEdit::checkTheInput()
              showLabel(4, 20);
              break;  
         case Passwd:
-        case PwdConfirm:
+        case PasswdConfirm:
              showLabel(6, 16);
              break;
         case Mail:
              showLabel();
              break;
+        default: break;
     }
 }
 
@@ -108,16 +105,16 @@ void MusicUserLineEdit::checkPwdStrength()
     onlyChar = text().contains(QRegExp("[a-zA-z]"));
     onlySp = text().contains(QRegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~@#]"));
 
-    if( ( onlyNum && !onlyChar && !onlySp) ||
-        (!onlyNum &&  onlyChar && !onlySp) ||
-        (!onlyNum && !onlyChar &&  onlySp) ||
-        (!onlyNum && !onlyChar && !onlySp) )
+    if(( onlyNum && !onlyChar && !onlySp) ||
+       (!onlyNum &&  onlyChar && !onlySp) ||
+       (!onlyNum && !onlyChar &&  onlySp) ||
+       (!onlyNum && !onlyChar && !onlySp))
     {
         emit checkPwdStrength(0);
     }
-    else if( ( onlyNum &&  onlyChar && !onlySp) ||
-             ( onlyNum && !onlyChar &&  onlySp) ||
-             (!onlyNum &&  onlyChar &&  onlySp) )
+    else if(( onlyNum &&  onlyChar && !onlySp) ||
+            ( onlyNum && !onlyChar &&  onlySp) ||
+            (!onlyNum &&  onlyChar &&  onlySp))
     {
         emit checkPwdStrength(1);
     }

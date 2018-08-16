@@ -19,83 +19,65 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include "musicsongslistabstracttablewidget.h"
-#include "musicdownloadrecordconfigmanager.h"
+#include "musicfunctiontoolboxwidget.h"
+#include "musicdownloadabstracttablewidget.h"
 
-class MusicProgressBarDelegate;
-
-/*! @brief The class of the download record widget.
+/*! @brief The class of the download record table widget.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_TOOL_EXPORT MusicDownloadRecordWidget : public MusicSongsListAbstractTableWidget
+class MUSIC_TOOL_EXPORT MusicDownloadRecordTableWidget : public MusicDownloadAbstractTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownloadRecordTableWidget)
 public:
     /*!
      * Object contsructor.
      */
-    explicit MusicDownloadRecordWidget(QWidget *parent = 0);
+    explicit MusicDownloadRecordTableWidget(QWidget *parent = 0);
 
-    virtual ~MusicDownloadRecordWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
-    /*!
-     * Read all config from file and insert items.
-     */
-    void musicSongsFileName();
-    /*!
-     * Clear All Items.
-     */
-    void clearAllItems();
-
-Q_SIGNALS:
-    /*!
-     * Add current selected song to play lists.
-     */
-    void addSongToPlay(const QStringList &list);
-
-public Q_SLOTS:
-    /*!
-     * Add selected music song path to list.
-     */
-    void musicPlay();
-    /*!
-     * Delete item from list at current row.
-     */
-    virtual void setDeleteItemAt() override;
-    /*!
-     * Table widget list cell click.
-     */
-    virtual void listCellClicked(int row, int column) override;
-    /*!
-     * Table widget list cell double click.
-     */
-    void listCellDoubleClicked(int row, int column);
-    /*!
-     * Update download percent\ total time and current time progress.
-     */
-    void downloadProgressChanged(float percent, const QString &total, qint64 time);
-    /*!
-     * Create download item from download name and total time.
-     */
-    void createDownloadItem(const QString &name, qint64 time);
+    virtual ~MusicDownloadRecordTableWidget();
 
 protected:
     /*!
-     * Override the widget event.
-     */
-    virtual void contextMenuEvent(QContextMenuEvent *event) override;
-    /*!
      * Create item by index and name and size and time.
      */
-    void createItem(int index, const MusicDownloadRecord &record, qint64 time);
+    virtual void createItem(int index, const MusicSong &record) override;
 
-    MusicProgressBarDelegate *m_delegate;
-    MusicDownloadRecords m_musicRecords;
-    int m_loadRecordCount;
+};
+
+/*! @brief The class of the download tool box widget.
+ * @author Greedysky <greedysky@163.com>
+ */
+class MUSIC_TOOL_EXPORT MusicDownloadToolBoxWidget : public MusicFunctionToolBoxWidget
+{
+    Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownloadToolBoxWidget)
+public:
+    /*!
+     * Object contsructor.
+     */
+    explicit MusicDownloadToolBoxWidget(QWidget *parent = 0);
+
+    virtual ~MusicDownloadToolBoxWidget();
+
+public Q_SLOTS:
+    /*!
+     * Update item title.
+     */
+    void updateItemTitle(int index);
+
+protected:
+    /*!
+     * Create widget item.
+     */
+    void createWidgetItem(MusicDownloadAbstractTableWidget *w, const QString &text, int index);
+    /*!
+     * Create item.
+     */
+    virtual MusicFunctionToolBoxWidgetItem* createItem(QWidget *item, const QString &text);
+
+    MusicSongItems m_songItems;
+    MusicDownloadRecordTableWidget *m_downloadTable;
 
 };
 

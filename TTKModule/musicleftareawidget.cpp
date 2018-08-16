@@ -6,7 +6,7 @@
 #include "musicfunctionuiobject.h"
 #include "musicdownloadmgmtwidget.h"
 #include "musicdownloadrecordwidget.h"
-#include "musicwebmusicradiolistview.h"
+#include "musicwebradioview.h"
 #include "musicconnectmobilewidget.h"
 #include "musiccloudsharedsongwidget.h"
 #include "musicqualitychoicepopwidget.h"
@@ -38,11 +38,6 @@ MusicLeftAreaWidget::~MusicLeftAreaWidget()
     delete m_qualityChoiceWidget;
     delete m_cloudSharedSongWidget;
     delete m_stackedWidget;
-}
-
-QString MusicLeftAreaWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 MusicLeftAreaWidget *MusicLeftAreaWidget::instance()
@@ -98,6 +93,13 @@ void MusicLeftAreaWidget::setupUi(Ui::MusicApplication* ui)
     ui->musicMoreFunction->setToolTip(tr("moreFunction"));
     ui->musicDesktopLrc->setToolTip(tr("desktopLrc"));
     ui->musicPlayMode->setToolTip(tr("playMode"));
+}
+
+void MusicLeftAreaWidget::radioExecuteOuter(const QString &path)
+{
+    musicStackedRadioWidgetChanged();
+    MusicWebRadioView *w = MStatic_cast(MusicWebRadioView*, m_stackedWidget);
+    w->init(path.toInt());
 }
 
 void MusicLeftAreaWidget::musictLoveStateClicked(bool state)
@@ -164,8 +166,8 @@ void MusicLeftAreaWidget::musicStackedRadioWidgetChanged()
     m_currentIndex = 2;
 
     delete m_stackedWidget;
-    MusicWebMusicRadioListView *w = new MusicWebMusicRadioListView(this);
-    w->initListItems();
+    MusicWebRadioView *w = new MusicWebRadioView(this);
+    w->init(DEFAULT_LEVEL_LOWER);
     m_stackedWidget = w;
 
     m_ui->songsContainer->insertWidget(1, m_stackedWidget);
@@ -182,7 +184,7 @@ void MusicLeftAreaWidget::musicStackedMyDownWidgetChanged()
     m_currentIndex = 4;
 
     delete m_stackedWidget;
-    m_stackedWidget = new MusicDownloadRecordWidget(this);
+    m_stackedWidget = new MusicDownloadToolBoxWidget(this);
     m_ui->songsContainer->insertWidget(1, m_stackedWidget);
     m_ui->songsContainer->setIndex(0, 0);
     m_ui->songsContainer->start(1);
@@ -219,29 +221,10 @@ void MusicLeftAreaWidget::musicStackedCloudWidgetChanged()
     {
         m_cloudSharedSongWidget = new MusicCloudSharedSongWidget(this);
         m_ui->songsContainer->addWidget(m_cloudSharedSongWidget);
-        m_cloudSharedSongWidget->getKey();
     }
+    m_cloudSharedSongWidget->showMainWindow();
     m_ui->songsContainer->setIndex(0, 0);
     m_ui->songsContainer->start(1);
-}
-
-void MusicLeftAreaWidget::cloudSharedSongUploadAllDone()
-{
-    if(m_currentIndex == 1)
-    {
-        return;
-    }
-
-    switch(m_currentIndex)
-    {
-        case 0: musicStackedSongListWidgetChanged(); break;
-        case 2: musicStackedRadioWidgetChanged(); break;
-        case 3: musicStackedMobileWidgetChanged(); break;
-        case 4: musicStackedMyDownWidgetChanged(); break;
-    }
-
-    delete m_cloudSharedSongWidget;
-    m_cloudSharedSongWidget = nullptr;
 }
 
 void MusicLeftAreaWidget::lrcWidgetShowFullScreen()

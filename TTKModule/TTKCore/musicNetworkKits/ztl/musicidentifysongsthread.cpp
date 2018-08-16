@@ -15,15 +15,9 @@ MusicIdentifySongsThread::MusicIdentifySongsThread(QObject *parent)
 {
     m_manager = new QNetworkAccessManager(this);
 #ifndef QT_NO_SSL
-    connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
-                       SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
+    connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
     M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
 #endif
-}
-
-QString MusicIdentifySongsThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicIdentifySongsThread::deleteAll()
@@ -89,18 +83,10 @@ void MusicIdentifySongsThread::startToDownload(const QString &path)
     QNetworkRequest request;
     request.setUrl(QUrl(MusicUtils::Algorithm::mdII(QUERY_URL, false)));
     request.setHeader(QNetworkRequest::ContentTypeHeader, contentType);
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->post(request, content);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
-}
-
-const MusicSongIdentifys& MusicIdentifySongsThread::getIdentifySongs() const
-{
-    return m_songIdentifys;
 }
 
 void MusicIdentifySongsThread::downLoadFinished()
@@ -149,8 +135,7 @@ void MusicIdentifySongsThread::keyDownLoadFinished(const QByteArray &data)
     if(ok)
     {
         QVariantMap value = dt.toMap();
-        if( QDateTime::fromString( value["time"].toString(), "yyyy-MM-dd HH:mm:ss") >
-            QDateTime::currentDateTime())
+        if(QDateTime::fromString( value["time"].toString(), "yyyy-MM-dd HH:mm:ss") > QDateTime::currentDateTime())
         {
             m_accessKey = value["key"].toString();
             m_accessSecret = value["secret"].toString();

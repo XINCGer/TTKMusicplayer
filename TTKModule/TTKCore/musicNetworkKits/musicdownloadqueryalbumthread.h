@@ -27,16 +27,12 @@
 class MUSIC_NETWORK_EXPORT MusicDownLoadQueryAlbumThread : public MusicDownLoadQueryThreadAbstract
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownLoadQueryAlbumThread)
 public:
     /*!
      * Object contsructor.
      */
     explicit MusicDownLoadQueryAlbumThread(QObject *parent = 0);
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Start to Search data from name and type.
@@ -51,7 +47,7 @@ Q_SIGNALS:
     /*!
      * Create the current album info item.
      */
-    void createAlbumInfoItem(const MusicPlaylistItem &item);
+    void createAlbumInfoItem(const MusicResultsItem &item);
 
 };
 

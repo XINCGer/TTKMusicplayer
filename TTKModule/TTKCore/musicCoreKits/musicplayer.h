@@ -36,14 +36,15 @@ class MusicPlayedlist;
 class MUSIC_CORE_EXPORT MusicPlayer : public QObject
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicPlayer)
 public:
     enum Enhanced
     {
-        EnhancedOff,    /*!< enhanced off, no any effect*/
-        Music3D,        /*!< 3d music effect*/
-        MusicNICAM,     /*!< nicam music effect*/
-        MusicSubwoofer, /*!< subwoofer music effect*/
-        MusicVocal      /*!< vocal music effect*/
+        EnhancedOff,       /*!< enhanced off, no any effect*/
+        Enhanced3D,        /*!< 3d music effect*/
+        EnhancedNICAM,     /*!< nicam music effect*/
+        EnhancedSubwoofer, /*!< subwoofer music effect*/
+        EnhancedVocal      /*!< vocal music effect*/
     };
 
     /*!
@@ -52,11 +53,6 @@ public:
     explicit MusicPlayer(QObject *parent = 0);
 
     ~MusicPlayer();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Get current player is playing or not.
@@ -161,7 +157,7 @@ public Q_SLOTS:
     /*!
      * Set current equalizer effect.
      */
-    void setEqEffect(const MusicObject::MIntList &hz);
+    void setEqEffect(const MIntList &hz);
     /*!
      * Set enable to set current equalizer effect.
      */

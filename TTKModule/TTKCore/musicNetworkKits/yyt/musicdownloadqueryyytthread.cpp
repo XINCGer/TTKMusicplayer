@@ -3,6 +3,7 @@
 #include "musicnumberutils.h"
 #include "musiccoreutils.h"
 #include "musictime.h"
+#include "musicotherdefine.h"
 #///QJson import
 #include "qjson/parser.h"
 
@@ -16,11 +17,6 @@ MusicDownLoadQueryYYTThread::MusicDownLoadQueryYYTThread(QObject *parent)
     : MusicDownLoadQueryMovieThread(parent)
 {
     m_queryServer = "YinYueTai";
-}
-
-QString MusicDownLoadQueryYYTThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicDownLoadQueryYYTThread::startToSearch(QueryType type, const QString &text)
@@ -42,11 +38,8 @@ void MusicDownLoadQueryYYTThread::startToSearch(QueryType type, const QString &t
     request.setRawHeader("App-Id", MusicUtils::Algorithm::mdII(BD_MV_INFO_ID, false).toUtf8());
     request.setRawHeader("Device-Id", MusicUtils::Algorithm::mdII(BD_MV_INFO_DID, false).toUtf8());
     request.setRawHeader("Device-V", MusicUtils::Algorithm::mdII(BD_MV_INFO_DV, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -54,7 +47,7 @@ void MusicDownLoadQueryYYTThread::startToSearch(QueryType type, const QString &t
 
 void MusicDownLoadQueryYYTThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -88,7 +81,7 @@ void MusicDownLoadQueryYYTThread::downLoadFinished()
 
                     MusicObject::MusicSongInformation musicInfo;
                     musicInfo.m_songId = QString::number(value["videoId"].toULongLong());
-                    musicInfo.m_songName = value["title"].toString();
+                    musicInfo.m_songName = MusicUtils::String::illegalCharactersReplaced(value["title"].toString());
 
                     QVariantList artistsList = value["artists"].toList();
                     foreach(const QVariant &var, artistsList)
@@ -98,27 +91,28 @@ void MusicDownLoadQueryYYTThread::downLoadFinished()
                             continue;
                         }
 
-                        value = var.toMap();
-                        musicInfo.m_singerName = value["artistName"].toString();
+                        QVariantMap artMap = var.toMap();
+                        musicInfo.m_singerName = MusicUtils::String::illegalCharactersReplaced(artMap["artistName"].toString());
                     }
 
-                    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
                     readFromMusicMVAttribute(&musicInfo);
-                    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+                    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
 
                     if(musicInfo.m_songAttrs.isEmpty())
                     {
                         continue;
                     }
 
-                    musicInfo.m_timeLength = findTimeStringByAttrs(musicInfo.m_songAttrs);
+                    musicInfo.m_timeLength = value["lasted"].toString();
                     MusicSearchedItem item;
                     item.m_songName = musicInfo.m_songName;
                     item.m_singerName = musicInfo.m_singerName;
                     item.m_time = musicInfo.m_timeLength;
                     item.m_type = mapQueryServerString();
-                    emit createSearchedItems(item);
+                    emit createSearchedItem(item);
 
+                    musicInfo.m_songId = MUSIC_YYT_PREFIX + musicInfo.m_songId;
                     m_musicSongInfos << musicInfo;
                 }
             }
@@ -145,11 +139,8 @@ void MusicDownLoadQueryYYTThread::readFromMusicMVAttribute(MusicObject::MusicSon
     request.setRawHeader("App-Id", MusicUtils::Algorithm::mdII(BD_MV_INFO_ID, false).toUtf8());
     request.setRawHeader("Device-Id", MusicUtils::Algorithm::mdII(BD_MV_INFO_DID, false).toUtf8());
     request.setRawHeader("Device-V", MusicUtils::Algorithm::mdII(BD_MV_INFO_DV, false).toUtf8());
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    setSslConfiguration(&request);
+
     MusicSemaphoreLoop loop;
     QNetworkReply *reply = m_manager->get(request);
     QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));

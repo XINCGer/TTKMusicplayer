@@ -6,14 +6,9 @@ MusicLocalSongSearchRecordConfigManager::MusicLocalSongSearchRecordConfigManager
 
 }
 
-QString MusicLocalSongSearchRecordConfigManager::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicLocalSongSearchRecordConfigManager::writeSearchConfig(const MusicSearchRecords &records)
 {
-    if( !writeConfig( MUSICSEARCH_FULL ) )
+    if(!writeConfig(MUSICSEARCH_FULL))
     {
         return;
     }
@@ -30,12 +25,12 @@ void MusicLocalSongSearchRecordConfigManager::writeSearchConfig(const MusicSearc
 
     //Write to file
     QTextStream out(m_file);
-    m_ddom->save(out, 4);
+    m_document->save(out, 4);
 }
 
 void MusicLocalSongSearchRecordConfigManager::readSearchConfig(MusicSearchRecords &records)
 {
-    QDomNodeList nodelist = m_ddom->elementsByTagName("value");
+    QDomNodeList nodelist = m_document->elementsByTagName("value");
     for(int i=0; i<nodelist.count(); ++i)
     {
         MusicSearchRecord record;

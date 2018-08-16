@@ -1,13 +1,10 @@
 #include "musicitemdelegate.h"
 #include "musicuiobject.h"
 #include "musicobject.h"
+#include "musicsongstoolitemrenamedwidget.h"
+#include "musicwidgetheaders.h"
 
-#include <QLabel>
 #include <QPainter>
-#include <QCheckBox>
-#include <QPushButton>
-#include <QRadioButton>
-#include <QProgressBar>
 
 MusicRadioButtonDelegate::MusicRadioButtonDelegate(QObject *parent)
     : QItemDelegate(parent)
@@ -22,11 +19,6 @@ MusicRadioButtonDelegate::MusicRadioButtonDelegate(QObject *parent)
 MusicRadioButtonDelegate::~MusicRadioButtonDelegate()
 {
     delete m_radioButton;
-}
-
-QString MusicRadioButtonDelegate::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicRadioButtonDelegate::setStyleSheet(const QString &style)
@@ -73,11 +65,6 @@ MusicCheckBoxDelegate::~MusicCheckBoxDelegate()
     delete m_checkBox;
 }
 
-QString MusicCheckBoxDelegate::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicCheckBoxDelegate::setStyleSheet(const QString &style)
 {
     m_checkBox->setStyleSheet(style);
@@ -118,11 +105,6 @@ MusicQueryTableDelegate::~MusicQueryTableDelegate()
 
 }
 
-QString MusicQueryTableDelegate::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicQueryTableDelegate::paint(QPainter *painter,
                                     const QStyleOptionViewItem &option,
                                     const QModelIndex &index) const
@@ -144,11 +126,6 @@ MusicProgressBarDelegate::MusicProgressBarDelegate(QObject *parent)
 MusicProgressBarDelegate::~MusicProgressBarDelegate()
 {
     delete m_progress;
-}
-
-QString MusicProgressBarDelegate::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicProgressBarDelegate::setStyleSheet(const QString &style)
@@ -190,11 +167,6 @@ MusicLabelDelegate::MusicLabelDelegate(QObject *parent)
 MusicLabelDelegate::~MusicLabelDelegate()
 {
     delete m_label;
-}
-
-QString MusicLabelDelegate::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLabelDelegate::setStyleSheet(const QString &style)
@@ -244,11 +216,6 @@ MusicPushButtonDelegate::~MusicPushButtonDelegate()
     delete m_pushButton;
 }
 
-QString MusicPushButtonDelegate::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicPushButtonDelegate::setStyleSheet(const QString &style)
 {
     m_pushButton->setStyleSheet(style);
@@ -274,4 +241,29 @@ void MusicPushButtonDelegate::paint(QPainter *painter,
     painter->translate(5, 5);
     m_pushButton->render(painter, option.rect.topLeft(), QRegion(), QWidget::DrawChildren);
     painter->restore();
+}
+
+
+
+MusicRenameLineEditDelegate::MusicRenameLineEditDelegate(QObject *parent)
+    : QItemDelegate(parent)
+{
+
+}
+
+QWidget *MusicRenameLineEditDelegate::createEditor(QWidget *parent,
+                                                   const QStyleOptionViewItem &option,
+                                                   const QModelIndex &index) const
+{
+    Q_UNUSED(option);
+
+    QString text;
+    const QAbstractItemModel *model = index.model();
+    if(model)
+    {
+        text = model->data(index, Qt::DisplayRole).toString();
+    }
+
+    MusicSongsToolItemRenamedWidget *edit = new MusicSongsToolItemRenamedWidget(text, parent);
+    return edit;
 }

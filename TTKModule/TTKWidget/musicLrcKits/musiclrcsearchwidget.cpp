@@ -52,11 +52,6 @@ MusicLrcSearchWidget::~MusicLrcSearchWidget()
     delete m_ui;
 }
 
-QString MusicLrcSearchWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicLrcSearchWidget::setCurrentSongName(const QString &name) const
 {
     if(name.isEmpty())
@@ -84,7 +79,7 @@ void MusicLrcSearchWidget::lrcSearchButtonClicked() const
 
 void MusicLrcSearchWidget::lrcSearchDownloadClicked()
 {
-    MusicObject::MIntList list = m_ui->tableWidget->getSelectedItems();
+    MIntList list = m_ui->tableWidget->getSelectedItems();
     list.removeOne(m_ui->tableWidget->rowCount() - 1);
     if(list.isEmpty())
     {
@@ -103,7 +98,7 @@ void MusicLrcSearchWidget::lrcSearchDownloadClicked()
 
 void MusicLrcSearchWidget::lrcDownloadStateChanged(const QString &string)
 {
-    if(string == "Download_Lrc")
+    if(string == "DownloadLrc")
     {
        m_ui->stateLabel->setText(tr("lrc download finished!"));
     }

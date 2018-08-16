@@ -33,6 +33,7 @@
 class MUSIC_WIDGET_EXPORT MusicAbstractTableWidget : public QTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicAbstractTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -41,10 +42,6 @@ public:
 
     virtual ~MusicAbstractTableWidget();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Clear current items.
      */
@@ -66,6 +63,10 @@ protected:
      * Set selected item row color.
      */
     void setRowColor(int row, const QColor &color) const;
+    /*!
+     * Get multi index set.
+     */
+    MIntList getMultiIndexSet();
 
     QColor m_defaultBkColor;
     int m_previousColorRow;

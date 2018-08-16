@@ -6,19 +6,14 @@
 
 MusicDownloadBackgroundThread::MusicDownloadBackgroundThread(const QString &name, const QString &save,
                                                              QObject *parent)
-    : MusicNetworkAbstract(parent), m_artName(name), m_savePath(save), m_index(0), m_counter(0)
+    : MusicNetworkAbstract(parent), m_index(0), m_counter(0), m_artName(name), m_savePath(save)
 {
 
-}
-
-QString MusicDownloadBackgroundThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicDownloadBackgroundThread::downLoadFinished()
 {
-    if( ++m_index >= m_counter)
+    if(++m_index >= m_counter)
     {
         M_BACKGROUND_PTR->setArtName( m_artName );
 #ifndef MUSIC_MOBILE

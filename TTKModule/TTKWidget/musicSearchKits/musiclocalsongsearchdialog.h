@@ -19,8 +19,8 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QDialog>
 #include "musicglobaldefine.h"
+#include "musicwidgetheaders.h"
 
 class MusicLocalSongSearchEdit;
 
@@ -30,6 +30,7 @@ class MusicLocalSongSearchEdit;
 class MUSIC_SEARCH_EXPORT MusicLocalSongSearchDialog : public QDialog
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicLocalSongSearchDialog)
 public:
     /*!
      * Object contsructor.
@@ -38,10 +39,6 @@ public:
 
     ~MusicLocalSongSearchDialog();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Get the search text that the user searched.
      */

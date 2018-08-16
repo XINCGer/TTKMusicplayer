@@ -11,16 +11,12 @@
 class MUSIC_TOOLSET_EXPORT MusicSongCheckToolsItemSelectedTableWidget : public MusicFillItemTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongCheckToolsItemSelectedTableWidget)
 public:
     /*!
      * Object contsructor.
      */
     explicit MusicSongCheckToolsItemSelectedTableWidget(QWidget *parent = 0);
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Create all items.
@@ -29,7 +25,7 @@ public:
     /*!
      * Get selected items.
      */
-    MusicObject::MIntList getSelectedItems() const;
+    MIntList getSelectedItems() const;
 
 public Q_SLOTS:
     /*!
@@ -50,6 +46,7 @@ class MusicSongCheckToolsItemSelectedDialog;
 class MUSIC_TOOLSET_EXPORT MusicSongCheckToolsItemSelectedDialog : public MusicAbstractMoveDialog
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongCheckToolsItemSelectedDialog)
 public:
     /*!
      * Object contsructor.
@@ -57,11 +54,6 @@ public:
     explicit MusicSongCheckToolsItemSelectedDialog(QWidget *parent = 0);
 
     virtual ~MusicSongCheckToolsItemSelectedDialog();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Create all items.
@@ -72,7 +64,7 @@ Q_SIGNALS:
     /*!
      * Item lists changed.
      */
-    void itemListsChanged(const MusicObject::MIntList &items);
+    void itemListsChanged(const MIntList &items);
 
 public Q_SLOTS:
     /*!

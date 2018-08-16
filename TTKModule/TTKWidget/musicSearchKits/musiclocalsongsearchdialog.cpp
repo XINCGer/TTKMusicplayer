@@ -4,10 +4,6 @@
 #include "musictinyuiobject.h"
 #include "musicapplication.h"
 
-#include <QLabel>
-#include <QBoxLayout>
-#include <QToolButton>
-
 MusicLocalSongSearchDialog::MusicLocalSongSearchDialog(QWidget *parent)
     : QDialog(parent)
 {
@@ -52,11 +48,6 @@ MusicLocalSongSearchDialog::MusicLocalSongSearchDialog(QWidget *parent)
 MusicLocalSongSearchDialog::~MusicLocalSongSearchDialog()
 {
     delete m_searchLine;
-}
-
-QString MusicLocalSongSearchDialog::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 bool MusicLocalSongSearchDialog::close()

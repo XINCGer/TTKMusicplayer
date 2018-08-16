@@ -8,14 +8,11 @@
 #include "musicclickedlabel.h"
 #include "musicsemaphoreloop.h"
 #include "musicpagingwidgetobject.h"
+#include "musicwidgetheaders.h"
 
 #include <qmath.h>
-#include <QBoxLayout>
-#include <QPushButton>
 #include <QTextEdit>
 #include <QDateTime>
-#include <QScrollBar>
-#include <QScrollArea>
 
 MusicCommentsItem::MusicCommentsItem(QWidget *parent)
     : QWidget(parent)
@@ -119,12 +116,7 @@ MusicCommentsItem::~MusicCommentsItem()
     delete m_starLabel;
 }
 
-QString MusicCommentsItem::getClassName()
-{
-    return staticMetaObject.className();
-}
-
-void MusicCommentsItem::createSearchedItems(const MusicPlaylistItem &comments)
+void MusicCommentsItem::createSearchedItem(const MusicResultsItem &comments)
 {
     m_userName->setText(comments.m_nickName + ":");
     m_userName->setFixedWidth(QFontMetrics(m_userName->font()).width(m_userName->text()));
@@ -169,11 +161,6 @@ MusicCommentsWidget::~MusicCommentsWidget()
     delete m_pagingWidgetObject;
     delete m_messageComments;
     delete m_commentsThread;
-}
-
-QString MusicCommentsWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicCommentsWidget::initWidget(bool isPain)
@@ -317,10 +304,10 @@ void MusicCommentsWidget::setCurrentSongName(const QString &name)
     initLabel(name, m_commentsThread->getPageTotal());
 }
 
-void MusicCommentsWidget::createSearchedItems(const MusicPlaylistItem &comments)
+void MusicCommentsWidget::createSearchedItem(const MusicResultsItem &comments)
 {
     MusicCommentsItem *item = new MusicCommentsItem(m_messageComments);
-    item->createSearchedItems(comments);
+    item->createSearchedItem(comments);
     m_commentsItems << item;
     QVBoxLayout *layout = MStatic_cast(QVBoxLayout*, m_messageComments->layout());
     layout->insertWidget(layout->count() - 1, item);

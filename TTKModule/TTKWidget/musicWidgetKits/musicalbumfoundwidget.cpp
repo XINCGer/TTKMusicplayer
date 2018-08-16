@@ -21,11 +21,6 @@ MusicAlbumFoundTableWidget::~MusicAlbumFoundTableWidget()
     clearAllItems();
 }
 
-QString MusicAlbumFoundTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicAlbumFoundTableWidget::setQueryInput(MusicDownLoadQueryThreadAbstract *query)
 {
     MusicQueryFoundTableWidget::setQueryInput(query);
@@ -47,11 +42,6 @@ MusicAlbumFoundWidget::MusicAlbumFoundWidget(QWidget *parent)
     connect(m_downloadThread, SIGNAL(downLoadDataChanged(QString)), SLOT(queryAllFinished()));
 }
 
-QString MusicAlbumFoundWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicAlbumFoundWidget::setSongName(const QString &name)
 {
     MusicFoundAbstractWidget::setSongName(name);
@@ -65,7 +55,7 @@ void MusicAlbumFoundWidget::setSongNameById(const QString &id)
     MusicDownLoadQueryThreadAbstract *v = M_DOWNLOAD_QUERY_PTR->getAlbumThread(this);
     m_foundTableWidget->setQueryInput(v);
     m_foundTableWidget->startSearchQuery(id);
-    connect(v, SIGNAL(createAlbumInfoItem(MusicPlaylistItem)), SLOT(createAlbumInfoItem(MusicPlaylistItem)));
+    connect(v, SIGNAL(createAlbumInfoItem(MusicResultsItem)), SLOT(createAlbumInfoItem(MusicResultsItem)));
 }
 
 void MusicAlbumFoundWidget::resizeWindow()
@@ -122,7 +112,13 @@ void MusicAlbumFoundWidget::queryAllFinished()
 
 void MusicAlbumFoundWidget::queryAlbumFinished()
 {
-    MusicObject::MusicSongInformations musicSongInfos(m_foundTableWidget->getMusicSongInfos());
+    MusicDownLoadQueryThreadAbstract *d = m_foundTableWidget->getQueryInput();
+    if(!d)
+    {
+        return;
+    }
+
+    MusicObject::MusicSongInformations musicSongInfos(d->getMusicSongInfos());
     if(musicSongInfos.isEmpty())
     {
         m_statusLabel->setPixmap(QPixmap(":/image/lb_noAlbum"));
@@ -133,7 +129,7 @@ void MusicAlbumFoundWidget::queryAlbumFinished()
     }
 }
 
-void MusicAlbumFoundWidget::createAlbumInfoItem(const MusicPlaylistItem &item)
+void MusicAlbumFoundWidget::createAlbumInfoItem(const MusicResultsItem &item)
 {
     m_currentPlaylistItem = item;
 
@@ -141,7 +137,7 @@ void MusicAlbumFoundWidget::createAlbumInfoItem(const MusicPlaylistItem &item)
 
     if(!m_resizeWidgets.isEmpty())
     {
-        QStringList lists = item.m_description.split("<>");
+        QStringList lists = item.m_description.split(TTK_STR_SPLITER);
         if(lists.count() < 4)
         {
             return;
@@ -216,7 +212,7 @@ void MusicAlbumFoundWidget::createLabels()
 
     m_iconLabel = new QLabel(topFuncWidget);
     m_iconLabel->setPixmap(QPixmap(":/image/lb_warning").scaled(180, 180));
-    m_iconLabel->setFixedSize(180, 180);
+    m_iconLabel->setFixedSize(210, 180);
     ////////////////////////////////////////////////////////////////////////////
 
     QWidget *topLineWidget = new QWidget(topFuncWidget);

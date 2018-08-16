@@ -17,11 +17,6 @@ MusicResizeGrabItemWidget::MusicResizeGrabItemWidget(QWidget *parent)
     setMouseTracking(true);
 }
 
-QString MusicResizeGrabItemWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicResizeGrabItemWidget::setBorderRect(const QRect &rect)
 {
     m_borderRect = rect - QMargins(1, 1, 1, 1);
@@ -133,6 +128,7 @@ void MusicResizeGrabItemWidget::mouseMoveEvent(QMouseEvent *event)
             case Direction_Bottom:
                 m_originPoint = pt_lu;
                 break;
+            default: break;
         }
     }
     else

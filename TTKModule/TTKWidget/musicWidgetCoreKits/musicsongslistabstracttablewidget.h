@@ -21,14 +21,15 @@
 
 #include <QMenu>
 #include "musicsong.h"
-#include "musicslowmovingtablewidget.h"
+#include "musicsmoothmovingtablewidget.h"
 
 /*! @brief The class of the songs list abstract table widget.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_WIDGET_EXPORT MusicSongsListAbstractTableWidget : public MusicSlowMovingTableWidget
+class MUSIC_WIDGET_EXPORT MusicSongsListAbstractTableWidget : public MusicSmoothMovingTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongsListAbstractTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -36,11 +37,6 @@ public:
     explicit MusicSongsListAbstractTableWidget(QWidget *parent = 0);
 
     virtual ~MusicSongsListAbstractTableWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set songs file names.
@@ -76,11 +72,11 @@ Q_SIGNALS:
     /*!
      * Check is current play stack widget.
      */
-    void isCurrentIndexs(bool &state);
+    void isCurrentIndex(bool &state);
 
 public Q_SLOTS:
     /*!
-     * Music item has double been clicked.
+     * Music item has been clicked.
      */
     void musicPlayClicked();
     /*!

@@ -27,6 +27,7 @@
 class MUSIC_NETWORK_EXPORT MusicDownLoadPagingThread : public MusicNetworkAbstract
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicDownLoadPagingThread)
 public:
     /*!
      * Object contsructor.
@@ -35,10 +36,6 @@ public:
 
     virtual ~MusicDownLoadPagingThread();
 
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
     /*!
      * Release the network object.
      */
@@ -49,10 +46,6 @@ public:
     virtual void startToPage(int offset);
 
     /*!
-     * Return the current raw data.
-     */
-    inline QVariantMap getRawData() const { return m_rawData; }
-    /*!
      * Return the each page max size.
      */
     inline int getPageSize() const { return m_pageSize; }
@@ -60,10 +53,13 @@ public:
      * Return the page total number.
      */
     inline int getPageTotal() const { return m_pageTotal; }
+    /*!
+     * Return the page index number.
+     */
+    inline int getPageIndex() const { return m_pageIndex; }
 
 protected:
-    QVariantMap m_rawData;
-    int m_pageSize, m_pageTotal;
+    int m_pageSize, m_pageTotal, m_pageIndex;
 
 };
 

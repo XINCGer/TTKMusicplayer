@@ -28,16 +28,13 @@
 class MUSIC_WIDGET_EXPORT MusicSongsToolItemRenamedWidget : public QLineEdit
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicSongsToolItemRenamedWidget)
 public:
     /*!
      * Object contsructor by index and origin name.
      */
-    explicit MusicSongsToolItemRenamedWidget(const QString &originText, QWidget *parent = 0);
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
+    explicit MusicSongsToolItemRenamedWidget(QWidget *parent = 0);
+    explicit MusicSongsToolItemRenamedWidget(const QString &text, QWidget *parent = 0);
 
 Q_SIGNALS:
     /*!
@@ -47,12 +44,17 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     /*!
+     * Input text data changed.
+     */
+    void textChanged(const QString &text);
+    /*!
      * Tool rename is finished.
      */
-    void renameFinished()
-    {
-        emit renameFinished(text());
-    }
+    void renameFinished();
+    /*!
+     * Animation close changed.
+     */
+    void animationCloseChanged();
 
 protected:
     /*!
@@ -60,6 +62,8 @@ protected:
      */
     virtual void focusOutEvent(QFocusEvent *event) override;
     virtual void contextMenuEvent(QContextMenuEvent *event) override;
+
+    bool m_focusBlock;
 
 };
 

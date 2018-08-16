@@ -1,5 +1,4 @@
 #include "musicwyartistsimilarthread.h"
-
 #///QJson import
 #include "qjson/parser.h"
 
@@ -7,11 +6,6 @@ MusicWYArtistSimilarThread::MusicWYArtistSimilarThread(QObject *parent)
     : MusicDownLoadSimilarThread(parent)
 {
 
-}
-
-QString MusicWYArtistSimilarThread::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicWYArtistSimilarThread::startToSearch(const QString &text)
@@ -26,16 +20,13 @@ void MusicWYArtistSimilarThread::startToSearch(const QString &text)
     m_interrupt = true;
 
     QNetworkRequest request;
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
     QByteArray parameter = makeTokenQueryUrl(&request,
                MusicUtils::Algorithm::mdII(WY_AR_SIM_N_URL, false),
                MusicUtils::Algorithm::mdII(WY_AR_SIM_DATA_N_URL, false).arg(text));
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    setSslConfiguration(&request);
+
     m_reply = m_manager->post(request, parameter);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -54,7 +45,7 @@ void MusicWYArtistSimilarThread::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        QByteArray bytes = m_reply->readAll(); ///Get all the data obtained by request
+        QByteArray bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -75,12 +66,12 @@ void MusicWYArtistSimilarThread::downLoadFinished()
                     }
 
                     value = var.toMap();
-                    MusicPlaylistItem info;
+                    MusicResultsItem info;
                     info.m_id = QString::number(value["id"].toULongLong());
                     info.m_coverUrl = value["picUrl"].toString();
                     info.m_name = value["name"].toString();
                     info.m_updateTime.clear();
-                    emit createSimilarItems(info);
+                    emit createSimilarItem(info);
                 }
             }
         }

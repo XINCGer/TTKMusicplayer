@@ -2,10 +2,11 @@
 #include "ui_musictransformwidget.h"
 #include "musicmessagebox.h"
 #include "musicwidgetutils.h"
+#include "musiccoreutils.h"
+#include "musicwidgetheaders.h"
 
 #include <QSound>
 #include <QProcess>
-#include <QFileDialog>
 #include <QStyledItemDelegate>
 
 MusicTransformWidget::MusicTransformWidget(QWidget *parent)
@@ -74,11 +75,6 @@ MusicTransformWidget::~MusicTransformWidget()
     delete m_ui;
 }
 
-QString MusicTransformWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicTransformWidget::initControlParameter() const
 {
     m_ui->formatCombo->addItems(QStringList() << "MP3" << "WAV" << "WMA"
@@ -126,7 +122,7 @@ void MusicTransformWidget::initInputPath()
         if(dialog.exec())
         {
             path = dialog.directory().absolutePath();
-            foreach(const QFileInfo &var, getFileList(path))
+            foreach(const QFileInfo &var, MusicUtils::Core::getFileListByDir(path, true))
             {
                 if(!m_path.contains(var.absoluteFilePath()) && supportedFormat.contains(var.suffix()))
                 {
@@ -142,20 +138,6 @@ void MusicTransformWidget::initInputPath()
     {
         m_ui->inputLineEdit->setText(path);
     }
-}
-
-QFileInfoList MusicTransformWidget::getFileList(const QString &path)
-{
-    QDir dir(path);
-
-    QFileInfoList fileList = dir.entryInfoList(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
-    QFileInfoList folderList = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
-
-    foreach(const QFileInfo &fileInfo, folderList)
-    {
-        fileList.append( getFileList(fileInfo.absoluteFilePath()) );
-    }
-    return fileList;
 }
 
 void MusicTransformWidget::initOutputPath()
@@ -202,9 +184,9 @@ void MusicTransformWidget::transformFinish()
         {
             setMusicCheckedControl(false);
         }
+
         m_ui->inputLineEdit->clear();
-        m_ui->loadingLabel->hide();
-        m_ui->loadingLabel->stop();
+        m_ui->loadingLabel->run(false);
     }
 }
 

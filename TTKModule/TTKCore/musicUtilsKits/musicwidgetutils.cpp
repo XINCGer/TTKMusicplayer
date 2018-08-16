@@ -1,10 +1,9 @@
 #include "musicwidgetutils.h"
+#include "musicwidgetheaders.h"
 
-#include <QComboBox>
 #include <QBitmap>
 #include <QPainter>
 #include <QBuffer>
-#include <QFileDialog>
 
 void MusicUtils::Widget::setLabelFontSize(QWidget *widget, int size)
 {
@@ -44,7 +43,7 @@ void MusicUtils::Widget::setTransparent(QWidget *widget, int alpha)
     widget->setPalette(pal);
 }
 
-void MusicUtils::Widget::setComboboxText(QComboBox *object, const QString &text)
+void MusicUtils::Widget::setComboBoxText(QComboBox *object, const QString &text)
 {
     if(object->isEditable())
     {
@@ -67,6 +66,11 @@ void MusicUtils::Widget::widgetToRound(QWidget *w, int ratioX, int ratioY)
 
 void MusicUtils::Widget::fusionPixmap(QPixmap &bg, const QPixmap &fg, const QPoint &pt)
 {
+    if(fg.isNull())
+    {
+        return;
+    }
+
     QPainter painter(&bg);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     painter.drawPixmap(pt.x(), pt.y(), fg);
@@ -92,7 +96,7 @@ QPixmap MusicUtils::Widget::pixmapToRound(const QPixmap &src, const QRect &rect,
 
 QPixmap MusicUtils::Widget::pixmapToRound(const QPixmap &src, const QPixmap &mask, const QSize &size)
 {
-    if(src.isNull())
+    if(src.isNull() || mask.isNull())
     {
         return QPixmap();
     }
@@ -120,6 +124,11 @@ QBitmap MusicUtils::Widget::getBitmapMask(const QRect &rect, int ratioX, int rat
 
 QByteArray MusicUtils::Widget::getPixmapData(const QPixmap &pix)
 {
+    if(pix.isNull())
+    {
+        return QByteArray();
+    }
+
     QByteArray data;
     QBuffer buffer(&data);
     if(buffer.open(QIODevice::WriteOnly))
@@ -142,28 +151,26 @@ void MusicUtils::Widget::reRenderImage(int delta, const QImage *input, QImage *o
         for(int h=0; h<input->height(); h++)
         {
             QRgb rgb = input->pixel(w, h);
-            uint resultR = colorBurnTransform(qRed(rgb), delta);
-            uint resultG = colorBurnTransform(qGreen(rgb), delta);
-            uint resultB = colorBurnTransform(qBlue(rgb), delta);
-            uint newRgb = ((resultR & 0xFF)<<16 | (resultG & 0xFF)<<8 | (resultB & 0xFF));
-            output->setPixel(w, h, newRgb);
+            output->setPixel(w, h, qRgb(colorBurnTransform(qRed(rgb), delta),
+                                        colorBurnTransform(qGreen(rgb), delta),
+                                        colorBurnTransform(qBlue(rgb), delta)));
         }
     }
 }
 
-uint MusicUtils::Widget::colorBurnTransform(int c, int delta)
+int MusicUtils::Widget::colorBurnTransform(int c, int delta)
 {
-    Q_ASSERT(0 <= delta && delta < 0xFF);
-    if(0 <= delta || delta >= 0xFF)
+    if(0 > delta || delta > 0xFF)
     {
         return c;
     }
 
-    int result = (c - (uint)(c*delta)/(0xFF - delta));
+    int result = (c - (int)(c*delta)/(0xFF - delta));
     if(result > 0xFF)
     {
         result = 0xFF;
-    }else if(result < 0)
+    }
+    else if(result < 0)
     {
         result = 0;
     }

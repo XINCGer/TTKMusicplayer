@@ -5,15 +5,17 @@
 #include "musicmessagebox.h"
 #include "musicuiobject.h"
 #include "musiccoreutils.h"
+#include "musicurlutils.h"
 #include "musictime.h"
 #include "musicsettingmanager.h"
 #include "musicapplicationobject.h"
 #include "musicotherdefine.h"
-
 #///QJson import
 #include "qjson/parser.h"
 
 #include <QBoxLayout>
+
+#define DOWNLOAD_URL    "YXhxRk5PeWpscVNYbEZKMmEwbUExdkMxcm9QN1ZybTlZYTcwVmN1aUdTNEJoMFRiM3V5cnE2S3VDbG89"
 
 MusicSourceUpdateNotifyWidget::MusicSourceUpdateNotifyWidget(QWidget *parent)
     : MusicAbstractMoveSingleWidget(true, parent)
@@ -67,11 +69,6 @@ MusicSourceUpdateNotifyWidget::~MusicSourceUpdateNotifyWidget()
     delete m_textLabel;
 }
 
-QString MusicSourceUpdateNotifyWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSourceUpdateNotifyWidget::start()
 {
     MusicSourceUpdateThread *download = new MusicSourceUpdateThread(this);
@@ -90,7 +87,7 @@ void MusicSourceUpdateNotifyWidget::downLoadFinished(const QVariant &data)
     QVariantMap value = data.toMap();
     QString versionStr = value["version"].toString();
 
-    if(MusicUtils::Core::musicVersionCheck(TTKMUSIC_VERSION_STR, versionStr))
+    if(MusicUtils::Core::appVersionCheck(TTKMUSIC_VERSION_STR, versionStr))
     {
         show();
         m_textLabel->setText(tr("New Version Found") + "\r\n" + versionStr);
@@ -127,11 +124,6 @@ MusicSourceUpdateWidget::~MusicSourceUpdateWidget()
     delete m_ui;
 }
 
-QString MusicSourceUpdateWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicSourceUpdateWidget::start()
 {
     MusicSourceUpdateThread *download = new MusicSourceUpdateThread(this);
@@ -145,7 +137,7 @@ void MusicSourceUpdateWidget::upgradeButtonClicked()
     m_ui->stackedWidget->setCurrentIndex(SOURCE_UPDATE_INDEX_1);
     QString localDwonload = "v" + m_newVersionStr + EXE_FILE;
     MusicDataDownloadThread *download = new MusicDataDownloadThread(QString("%1%2").arg(MusicUtils::Algorithm::mdII(DOWNLOAD_URL, false)).arg(localDwonload),
-                                                                    UPDATE_DIR_FULL + localDwonload, MusicDownLoadThreadAbstract::Download_Other, this);
+                                                                    UPDATE_DIR_FULL + localDwonload, MusicObject::DownloadOther, this);
     connect(download, SIGNAL(downloadProgressChanged(float,QString,qint64)), SLOT(downloadProgressChanged(float,QString)));
     connect(download, SIGNAL(downLoadDataChanged(QString)), SLOT(downloadProgressFinished()));
     connect(download, SIGNAL(downloadSpeedLabelChanged(QString,qint64)), SLOT(downloadSpeedLabelChanged(QString,qint64)));
@@ -159,7 +151,7 @@ void MusicSourceUpdateWidget::upgradeButtonClicked()
 
 void MusicSourceUpdateWidget::upgradeFailedClicked()
 {
-    MusicUtils::Core::openUrl(MusicUtils::Algorithm::mdII(CSDN_URL, false), false);
+    MusicUtils::Url::openUrl(MusicUtils::Algorithm::mdII(CSDN_URL, false), false);
 }
 
 void MusicSourceUpdateWidget::downLoadFinished(const QVariant &data)
@@ -168,7 +160,7 @@ void MusicSourceUpdateWidget::downLoadFinished(const QVariant &data)
     m_newVersionStr = value["version"].toString();
 
     QString text;
-    if(MusicUtils::Core::musicVersionCheck(TTKMUSIC_VERSION_STR, m_newVersionStr))
+    if(MusicUtils::Core::appVersionCheck(TTKMUSIC_VERSION_STR, m_newVersionStr))
     {
         text.append(m_newVersionStr);
         text.append("\r\n");
@@ -204,7 +196,7 @@ void MusicSourceUpdateWidget::downloadProgressFinished()
     message.setText(tr("Download Finish, Install Or Not"));
     if(message.exec())
     {
-        MusicUtils::Core::openUrl("open", UPDATE_DIR_FULL+ localDwonload);
+        MusicUtils::Url::openUrl("open", UPDATE_DIR_FULL+ localDwonload);
         MStatic_cast(QWidget*, parent())->close();
     }
 }

@@ -6,11 +6,6 @@ MusicBackgroundManager::MusicBackgroundManager()
     m_currentIndex = 0;
 }
 
-QString MusicBackgroundManager::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicBackgroundManager::setArtName(const QString &name)
 {
     QString sName = MusicUtils::String::artistName(name);
@@ -28,7 +23,7 @@ void MusicBackgroundManager::setArtName(const QString &name)
             m_photos << filter.arg(i);
         }
     }
-    emit artHasChanged();
+    emit artistNameChanged();
 }
 
 void MusicBackgroundManager::clearArtName()
@@ -113,12 +108,12 @@ void MusicBackgroundManager::removeObserver(QObject *object)
     disconnect(this, SIGNAL(backgroundChanged()), object, SLOT(backgroundChanged()));
 }
 
-void MusicBackgroundManager::setMBackground(const QString &path)
+void MusicBackgroundManager::setBackgroundUrl(const QString &path)
 {
     m_background = path;
 }
 
-QString MusicBackgroundManager::getMBackground() const
+QString MusicBackgroundManager::getBackgroundUrl() const
 {
     return m_background;
 }

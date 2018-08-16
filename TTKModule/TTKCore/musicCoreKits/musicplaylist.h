@@ -29,6 +29,7 @@
 class MUSIC_CORE_EXPORT MusicPlaylist : public QObject
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicPlaylist)
 public:
     /*!
      * Object contsructor.
@@ -36,11 +37,6 @@ public:
     explicit MusicPlaylist(QObject *parent = 0);
 
     ~MusicPlaylist() = default;
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Get current play mode.
@@ -115,7 +111,7 @@ public Q_SLOTS:
     /*!
      * Set current play index.
      */
-    void setCurrentIndex(int index = DEFAULT_INDEX_LEVEL1);
+    void setCurrentIndex(int index = DEFAULT_LEVEL_NORMAL);
     /*!
      * Append music media.
      */

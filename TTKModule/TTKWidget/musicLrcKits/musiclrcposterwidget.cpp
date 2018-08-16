@@ -12,7 +12,6 @@
 
 #include <qmath.h>
 #include <QPainter>
-#include <QScrollBar>
 
 #define ITEM_SCROLL_WIDTH   8
 #define ITEM_BORDER         3
@@ -28,14 +27,9 @@ MusicLrcPosterItemWidget::MusicLrcPosterItemWidget(QWidget *parent)
     if(m_pixmap.isNull())
     {
         MusicBackgroundImage image;
-        MusicExtractWrap::outputSkin(&image, M_BACKGROUND_PTR->getMBackground());
+        MusicExtractWrap::outputSkin(&image, M_BACKGROUND_PTR->getBackgroundUrl());
         m_pixmap = image.m_pix;
     }
-}
-
-QString MusicLrcPosterItemWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 bool MusicLrcPosterItemWidget::hasScroll() const
@@ -94,6 +88,7 @@ void MusicLrcPosterItemWidget::paintEvent(QPaintEvent *event)
         case Type_15: drawTheme15(&painter); break;
         case Type_16: drawTheme16(&painter); break;
         case Type_17: drawTheme17(&painter); break;
+        default: break;
     }
 }
 
@@ -182,7 +177,7 @@ void MusicLrcPosterItemWidget::drawTheme3(QPainter *painter)
     int lineHeight = fm.height();
     int delta = 5*ITEM_BORDER + lineHeight;
     int offset = 0;
-    MusicObject::MIntList list;
+    MIntList list;
     //////////////////////////////////////////////////////////////////////////////
     painter->setPen(QColor(0xBB, 0xBB, 0xBB));
     painter->translate(2*ITEM_BORDER, pix.height());
@@ -215,7 +210,7 @@ void MusicLrcPosterItemWidget::drawTheme4(QPainter *painter)
     int lineHeight = fm.height();
     int delta = 5*ITEM_BORDER + lineHeight;
     int offset = ITEM_WIDTH - delta;
-    MusicObject::MIntList list;
+    MIntList list;
     //////////////////////////////////////////////////////////////////////////////
     painter->setPen(QColor(0x66, 0x66, 0x66));
     painter->translate(2*ITEM_BORDER, 0);
@@ -296,7 +291,7 @@ void MusicLrcPosterItemWidget::drawTheme6(QPainter *painter)
     int lineHeight = fm.height();
     int delta = 5*ITEM_BORDER + lineHeight;
     offset = ITEM_WIDTH - delta;
-    MusicObject::MIntList list;
+    MIntList list;
     //////////////////////////////////////////////////////////////////////////////
     painter->setPen(QColor(0xBB, 0xBB, 0xBB));
     painter->translate(2*ITEM_BORDER, pix.height());
@@ -806,7 +801,7 @@ void MusicLrcPosterItemWidget::drawTheme17(QPainter *painter)
     int lineHeight = fm.height();
     int delta = 5*ITEM_BORDER + lineHeight;
     int offset = delta;
-    MusicObject::MIntList list;
+    MIntList list;
     //////////////////////////////////////////////////////////////////////////////
     painter->translate(2*ITEM_BORDER, 0);
     painter->rotate(MA_90);
@@ -865,11 +860,6 @@ MusicLrcPosterTableWidget::MusicLrcPosterTableWidget(QWidget *parent)
     headerview->resizeSection(1, 237);
 }
 
-QString MusicLrcPosterTableWidget::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicLrcPosterTableWidget::createAllItems(const QStringList &lrcs)
 {
     setRowCount(lrcs.count());
@@ -919,11 +909,6 @@ MusicLrcPosterThemeListWidget::MusicLrcPosterThemeListWidget(QWidget *parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     addListWidgetItem();
-}
-
-QString MusicLrcPosterThemeListWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLrcPosterThemeListWidget::addListWidgetItem()
@@ -1048,11 +1033,6 @@ MusicLrcPosterWidget::~MusicLrcPosterWidget()
     delete m_itemWidget;
     delete m_themeWidget;
     delete m_ui;
-}
-
-QString MusicLrcPosterWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicLrcPosterWidget::setCurrentLrcs(const QStringList &lrcs, const QString &name)

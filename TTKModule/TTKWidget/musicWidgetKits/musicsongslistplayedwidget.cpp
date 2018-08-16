@@ -5,10 +5,9 @@
 #include "musicgiflabelwidget.h"
 #include "musicleftareawidget.h"
 #include "musicnumberdefine.h"
+#include "musicwidgetheaders.h"
 
-#include <QMenu>
 #include <QTimer>
-#include <QPushButton>
 
 MusicSongsListPlayedWidget::MusicSongsListPlayedWidget(int index, QWidget *parent)
     : QWidget(parent), m_parentClass(parent)
@@ -69,11 +68,6 @@ MusicSongsListPlayedWidget::~MusicSongsListPlayedWidget()
     delete m_downloadButton;
     delete m_deleteButton;
     delete m_moreButton;
-}
-
-QString MusicSongsListPlayedWidget::getClassName()
-{
-    return staticMetaObject.className();
 }
 
 void MusicSongsListPlayedWidget::setParameter(const QString &name)

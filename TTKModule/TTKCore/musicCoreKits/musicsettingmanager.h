@@ -32,6 +32,7 @@ class MUSIC_CORE_EXPORT MusicSettingManager : public QObject
 {
     Q_OBJECT
     Q_ENUMS(ConfigType)
+    TTK_DECLARE_MODULE(MusicSettingManager)
 public:
     enum ConfigType
     {
@@ -62,8 +63,10 @@ public:
         OtherBgLosslessChoiced,         /*!< Other Bg Lossless Parameter*/
         OtherUpdateChoiced,             /*!< Other Update Check Parameter*/
         OtherSearchChoiced,             /*!< Other Search Optimzied Parameter*/
-        OtherAlbumChoiced,              /*!< Other Use File Album Parameter*/
+        OtherAlbumCoverChoiced,         /*!< Other Use File Album Parameter*/
         OtherInfoChoiced,               /*!< Other Use File Info Parameter*/
+        OtherAlbumCoverWChoiced,        /*!< Other Write File Album Parameter*/
+        OtherInfoWChoiced,              /*!< Other Write File Info Parameter*/
         OtherSongFormat,                /*!< Other Song Format Parameter*/
         OtherSideByChoiced,             /*!< Other App Side By Mode Parameter*/
         OtherSideByInChoiced,           /*!< Other App Side By In Mode Parameter*/
@@ -132,21 +135,15 @@ public:
         DownloadULoadLimitChoiced,      /*!< Download ULoad Limit Parameter*/
 
         HotkeyEnableChoiced,            /*!< Hotkey Enable Parameter*/
-        HotkeyStringChoiced             /*!< Hotkey String Parameter*/
+        HotkeyStringChoiced,            /*!< Hotkey String Parameter*/
+
+        NetworkCookieChoiced            /*!< Network cookie Parameter*/
 
 #ifdef MUSIC_MOBILE
         ,MobileWifiConnectChoiced       /*!< Mobile Wifi Connect Parameter*/
 #endif
 
     };
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName()
-    {
-        return staticMetaObject.className();
-    }
 
     /*!
      * Set current value by Config Type.

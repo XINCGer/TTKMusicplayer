@@ -27,6 +27,7 @@
 class MUSIC_WIDGET_EXPORT MusicQueryFoundTableWidget : public MusicQueryTableWidget
 {
     Q_OBJECT
+    TTK_DECLARE_MODULE(MusicQueryFoundTableWidget)
 public:
     /*!
      * Object contsructor.
@@ -34,11 +35,6 @@ public:
     explicit MusicQueryFoundTableWidget(QWidget *parent = 0);
 
     virtual ~MusicQueryFoundTableWidget();
-
-    /*!
-     * Get class object name.
-     */
-    static QString getClassName();
 
     /*!
      * Set network query input.
@@ -59,7 +55,7 @@ public:
     /*!
      * Download batch data from net.
      */
-    void downloadBatchData();
+    void downloadBatchData(bool music);
     /*!
      * Resize window bound by widgte resize called.
      */
@@ -81,7 +77,7 @@ public Q_SLOTS:
     /*!
      * Create searched items.
      */
-    virtual void createSearchedItems(const MusicSearchedItem &songItem) override;
+    virtual void createSearchedItem(const MusicSearchedItem &songItem) override;
     /*!
      * Create the search finished item.
      */

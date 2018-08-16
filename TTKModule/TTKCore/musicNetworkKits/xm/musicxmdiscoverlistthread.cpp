@@ -9,11 +9,6 @@ MusicXMDiscoverListThread::MusicXMDiscoverListThread(QObject *parent)
 
 }
 
-QString MusicXMDiscoverListThread::getClassName()
-{
-    return staticMetaObject.className();
-}
-
 void MusicXMDiscoverListThread::startToSearch()
 {
     if(!m_manager)
@@ -22,21 +17,18 @@ void MusicXMDiscoverListThread::startToSearch()
     }
 
     M_LOGGER_INFO(QString("%1 startToSearch").arg(getClassName()));
-    m_topListInfo.clear();
+    m_toplistInfo.clear();
     deleteAll();
     m_interrupt = true;
 
     QNetworkRequest request;
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
     makeTokenQueryUrl(&request,
-                      MusicUtils::Algorithm::mdII(XM_SONG_TOPLIST_DATA_URL, false).arg("xiami_daxia"),
+                      MusicUtils::Algorithm::mdII(XM_SONG_TOPLIST_DATA_URL, false).arg(103),
                       MusicUtils::Algorithm::mdII(XM_SONG_TOPLIST_URL, false));
-    if(!m_manager || m_stateCode != MusicNetworkAbstract::Init) return;
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    setSslConfiguration(&request);
+
     m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
     connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
@@ -44,7 +36,7 @@ void MusicXMDiscoverListThread::startToSearch()
 
 void MusicXMDiscoverListThread::downLoadFinished()
 {
-    if(m_reply == nullptr)
+    if(!m_reply)
     {
         deleteAll();
         return;
@@ -67,7 +59,8 @@ void MusicXMDiscoverListThread::downLoadFinished()
             {
                 value = value["data"].toMap();
                 value = value["data"].toMap();
-                QVariantList datas = value["songs"].toList();
+                value = value["billboard"].toMap();
+                QVariantList datas = value["items"].toList();
                 int where = datas.count();
                 where = (where > 0) ? qrand()%where : 0;
 
@@ -82,7 +75,7 @@ void MusicXMDiscoverListThread::downLoadFinished()
                     }
 
                     value = var.toMap();
-                    m_topListInfo = QString("%1 - %2").arg(value["artistName"].toString())
+                    m_toplistInfo = QString("%1 - %2").arg(value["artistName"].toString())
                                                     .arg(value["songName"].toString());
                     break;
                 }
@@ -90,7 +83,7 @@ void MusicXMDiscoverListThread::downLoadFinished()
         }
     }
 
-    emit downLoadDataChanged(m_topListInfo);
+    emit downLoadDataChanged(m_toplistInfo);
     deleteAll();
     M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
 }
