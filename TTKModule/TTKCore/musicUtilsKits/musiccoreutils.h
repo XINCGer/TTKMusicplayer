@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,14 +38,31 @@ namespace MusicUtils
          * Get music dir prefix path.
          */
         MUSIC_UTILS_EXPORT QString musicPrefix();
+
         /*!
-         * Get file suffix path.
+         * Get string prefix path.
          */
-        MUSIC_UTILS_EXPORT QString fileSuffix(const QString &name);
+        MUSIC_UTILS_EXPORT QString StringPrefix(const QString &name);
         /*!
-         * Get file suffix path.
+         * Get string prefix path.
          */
-        MUSIC_UTILS_EXPORT QString fileSuffix(const QString &name, const QString &prefix);
+        MUSIC_UTILS_EXPORT QString StringPrefix(const QString &name, const QString &prefix);
+        /*!
+         * Get string suffix path.
+         */
+        MUSIC_UTILS_EXPORT QString StringSuffix(const QString &name);
+        /*!
+         * Get string suffix path.
+         */
+        MUSIC_UTILS_EXPORT QString StringSuffix(const QString &name, const QString &suffix);
+        /*!
+         * Get string splite path.
+         */
+        MUSIC_UTILS_EXPORT QString StringSplite(const QString &name);
+        /*!
+         * Get string splite path.
+         */
+        MUSIC_UTILS_EXPORT QString StringSplite(const QString &name, const QString &prefix, const QString &suffix);
 
         /*!
          * Get given dir size.

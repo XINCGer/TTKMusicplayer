@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 
 #include <QMenu>
 #include "musicsong.h"
-#include "musicsmoothmovingtablewidget.h"
+#include "musicsmoothmovingwidget.h"
 
 /*! @brief The class of the songs list abstract table widget.
  * @author Greedysky <greedysky@163.com>
@@ -34,7 +34,7 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicSongsListAbstractTableWidget(QWidget *parent = 0);
+    explicit MusicSongsListAbstractTableWidget(QWidget *parent = nullptr);
 
     virtual ~MusicSongsListAbstractTableWidget();
 

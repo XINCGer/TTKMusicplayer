@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ class MUSIC_WIDGET_EXPORT MusicDownloadAbstractTableWidget : public MusicSongsLi
     Q_OBJECT
     TTK_DECLARE_MODULE(MusicDownloadAbstractTableWidget)
 public:
-    explicit MusicDownloadAbstractTableWidget(QWidget *parent = 0);
+    explicit MusicDownloadAbstractTableWidget(QWidget *parent = nullptr);
 
     virtual ~MusicDownloadAbstractTableWidget();
 

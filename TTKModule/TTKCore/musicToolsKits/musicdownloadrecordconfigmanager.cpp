@@ -6,33 +6,9 @@ MusicDownloadRecordConfigManager::MusicDownloadRecordConfigManager(MusicObject::
     m_type = type;
 }
 
-void MusicDownloadRecordConfigManager::writeDownloadConfig(const MusicSongs &records)
+void MusicDownloadRecordConfigManager::readDownloadData(MusicSongs &records)
 {
-    if(!writeConfig(mappingFilePathFromEnum()))
-    {
-        return;
-    }
-    ///////////////////////////////////////////////////////
-    createProcessingInstruction();
-    QDomElement musicPlayer = createRoot(APPNAME);
-    QDomElement download = writeDom(musicPlayer, "download");
-
-    foreach(const MusicSong &record, records)
-    {
-        writeDomElementMutilText(download, "value", MusicXmlAttributes() << MusicXmlAttribute("name", record.getMusicName())
-                                                 << MusicXmlAttribute("size", record.getMusicSizeStr())
-                                                 << MusicXmlAttribute("time", record.getMusicAddTimeStr()),
-                                                    record.getMusicPath());
-    }
-
-    //Write to file
-    QTextStream out(m_file);
-    m_document->save(out, 4);
-}
-
-void MusicDownloadRecordConfigManager::readDownloadConfig(MusicSongs &records)
-{
-    QDomNodeList nodelist = m_document->elementsByTagName("value");
+    const QDomNodeList &nodelist = m_document->elementsByTagName("value");
     for(int i=0; i<nodelist.count(); ++i)
     {
         MusicSong record;
@@ -42,6 +18,28 @@ void MusicDownloadRecordConfigManager::readDownloadConfig(MusicSongs &records)
         record.setMusicPath(nodelist.at(i).toElement().text());
         records << record;
     }
+}
+
+void MusicDownloadRecordConfigManager::writeDownloadData(const MusicSongs &records)
+{
+    if(!writeConfig(mappingFilePathFromEnum()))
+    {
+        return;
+    }
+    ///////////////////////////////////////////////////////
+    createProcessingInstruction();
+    QDomElement musicPlayer = createRoot(APP_NAME);
+    QDomElement download = writeDomNode(musicPlayer, "download");
+
+    foreach(const MusicSong &record, records)
+    {
+        writeDomElementMutilText(download, "value", MusicXmlAttributes() << MusicXmlAttribute("name", record.getMusicName())
+                                                 << MusicXmlAttribute("size", record.getMusicSizeStr())
+                                                 << MusicXmlAttribute("time", record.getMusicAddTimeStr()), record.getMusicPath());
+    }
+
+    QTextStream out(m_file);
+    m_document->save(out, 4);
 }
 
 QString MusicDownloadRecordConfigManager::mappingFilePathFromEnum() const

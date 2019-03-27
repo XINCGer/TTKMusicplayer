@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicAbstractMoveWidget(QWidget *parent = 0);
+    explicit MusicAbstractMoveWidget(QWidget *parent = nullptr);
     /*!
      * Object contsructor.
      */
-    explicit MusicAbstractMoveWidget(bool transparent, QWidget *parent = 0);
+    explicit MusicAbstractMoveWidget(bool transparent, QWidget *parent = nullptr);
 
     virtual ~MusicAbstractMoveWidget();
 
@@ -93,11 +93,11 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicAbstractMoveSingleWidget(QWidget *parent = 0);
+    explicit MusicAbstractMoveSingleWidget(QWidget *parent = nullptr);
     /*!
      * Object contsructor.
      */
-    explicit MusicAbstractMoveSingleWidget(bool transparent, QWidget *parent = 0);
+    explicit MusicAbstractMoveSingleWidget(bool transparent, QWidget *parent = nullptr);
 
     virtual ~MusicAbstractMoveSingleWidget();
 

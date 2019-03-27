@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,11 @@
 #include "musicglobaldefine.h"
 
 ///////////////////////////////////////////////////////////////////////////
-const QString WY_COOKIE_URL          = "M2g1Q0hEb2JJeDNROGtJcDE3ZEFpR0J2TFFJOGtvbms1Sk4zTjBDV3p6b3hOVXZMSllpQmNFRFlxdVJvdHk0T0owNVpJTjBhejlqS2M1OVZPRXNQdWg2eCtPR3l5cG5nNkdpUUIrUHZpUzhRRTBNMFZWUnZ4SmlTaXdZOHoxQVBlTjg2UGZtUkJmWVhRNlU5TEs2aHJ2MVg3WVdqYjZrdWRwdnBPVlVJNHlPKzdVbCs=";
+const QString WY_COOKIE_URL          = "SVF6a3hVZzBPc3gvMnJCMGlnVlp1QmZhQ01yMi9NWXlISW5oUzN3aGRpVWlRSytUT2FsVysvRlNjb1BSbXorYmNYOThtbDNValBxblBad1lERVVMZTQzNm0wNWJVRUJPQVdZYjlBM29vd01ES1pXc0lUQ2QrZkkzT09NV3RpL3dXUVgrSjErOVpvcDBFUnRGTUhHY2dQdzloME09";
 const QString WY_UA_URL_1            = "N1hBb3hrWFVaNnNTejltZUpIeUhieG9xN0FuV0J3QmkzOElteHZYNkQzL1Z2VEIzVDdsMVlURmhUVFlZT3NSU3BSQzVmUDFWNzBIbEwvaHJ4UFg0ODVzUVBXQzZNcjVheWZEcmF2ZitwSm1WUFV1Y1ozZXdCUXBsdXFoZ1ZyTTNURGVHUTZYQmRMQXJDZ2ZrQ3lNTU0rb3UxMkJmQUpxYXdaYVlCdC9kdm84PQ==";
+const QString WY_NUID_URL            = "b3dKbGtVNzlPOVd2VXFNblZaN1dXYW5WZ2hKNEZkUENjaUpxUDF3c2hvLzFaVnRW";
+const QString WY_NNID_URL            = "RjF6ZXpKb2cyN1Nyay9FZ2c4L3hXUGtqdXo3WkdOa05FK0ZjNTVNczY2Q3YyNGhrYXlWSUh2TDVlMkxQVXRGY3JYRDFHZz09";
+const QString WY_WYYY_URL            = "MG6QwDltNsmCgQuuPzMXdhc%2BpK3ejnT6BsTGsFA2Bqvs81skRhS2DG%5C9%5CRuSFwqmRipr%5CDktV9RlfnkNUb6AyE75tC4FXGv4iNlDB7EJZSMVFxjkkswdhD6vFxM2X%2Bndj4Humuwwgm4h8WVM%2Bc%2FNWiIwIR2H73AxY5jz7t3a8mKAQUK5%3A1538748695685";
 ///////////////////////////////////////////////////////////////////////////
 const QString WY_BASE_URL            = "MVNVTXo4bW9WdHhXR1dXeTZmU3k5dmFOcGlua1VOMlE=";
 const QString WY_ENCRYPT_STRING      = "3go8&$8*3*3h0k(2)2";
@@ -89,7 +92,7 @@ public:
     /*!
      * Make token query url string.
      */
-    void makeTokenQueryQequest(QNetworkRequest *request);
+    void makeTokenQueryRequest(QNetworkRequest *request);
     /*!
      * Make token query url string.
      */
@@ -105,8 +108,7 @@ public:
     /*!
      * Read tags(size\bitrate\url) from query results.
      */
-    void readFromMusicSongAttribute(MusicObject::MusicSongInformation *info, const QVariantMap &key,
-                                    const QString &quality, bool all);
+    void readFromMusicSongAttribute(MusicObject::MusicSongInformation *info, const QVariantMap &key, const QString &quality, bool all);
     /*!
      * Read tags(size\bitrate\url) from query results.
      */
@@ -118,8 +120,7 @@ public:
     /*!
      * Read tags(size\bitrate\url) from query results.
      */
-    void readFromMusicSongAttributeNew(MusicObject::MusicSongInformation *info, const QVariantMap &key,
-                                       const QString &quality, bool all);
+    void readFromMusicSongAttributeNew(MusicObject::MusicSongInformation *info, const QVariantMap &key, const QString &quality, bool all);
     /*!
      * Encrypted music info id.
      */

@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicQueryTableWidget(QWidget *parent = 0);
+    explicit MusicQueryTableWidget(QWidget *parent = nullptr);
 
     virtual ~MusicQueryTableWidget();
 
@@ -65,8 +65,7 @@ Q_SIGNALS:
     /*!
      * Add current network music to download to local.
      */
-    void musicSongToPlayListChanged(const QString &name, const QString &time,
-                                    const QString &format, bool play);
+    void musicSongToPlaylistChanged(const QString &name, const QString &time, const QString &format, bool play);
     /*!
      * Show download state type.
      */
@@ -111,7 +110,7 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicQueryItemTableWidget(QWidget *parent = 0);
+    explicit MusicQueryItemTableWidget(QWidget *parent = nullptr);
 
     virtual ~MusicQueryItemTableWidget();
 

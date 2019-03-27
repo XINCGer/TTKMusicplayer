@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,12 +32,20 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicColorPreviewLabel(QWidget *parent = 0);
+    explicit MusicColorPreviewLabel(QWidget *parent = nullptr);
 
     /*!
-     * Set linear gradient and fg and bg.
+     * Set linear gradient colors.
      */
-    void setLinearGradient(const QList<QColor> &colors);
+    void setColors(const QList<QColor> &colors);
+    /*!
+     * Get linear gradient colors.
+     */
+    QList<QColor> getColors() const;
+    /*!
+     * Get linear gradient color.
+     */
+    QColor getColor() const;
 
 protected:
     /*!
@@ -45,6 +53,7 @@ protected:
      */
     virtual void paintEvent(QPaintEvent *event) override;
 
+    QList<QColor> m_gradientColors;
     QLinearGradient m_linearGradient;
 
 };
@@ -57,8 +66,8 @@ typedef struct MUSIC_WIDGET_EXPORT MusicPreviewLabelItem
     QString m_family;
     int m_size;
     int m_type;
-    QList<QColor> m_fg;
-    QList<QColor> m_bg;
+    QList<QColor> m_frontground;
+    QList<QColor> m_background;
 }MusicPreviewLabelItem;
 
 /*! @brief The class of the lrc setting preview label.
@@ -72,16 +81,16 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicPreviewLabel(QWidget *parent = 0);
+    explicit MusicPreviewLabel(QWidget *parent = nullptr);
 
     /*!
      * Set linear gradient item.
      */
     void setLinearGradient(const MusicPreviewLabelItem &item);
     /*!
-     * Set linear gradient and fg and bg.
+     * Set linear gradient and front and back.
      */
-    void setLinearGradient(const QList<QColor> &fg, const QList<QColor> &bg);
+    void setLinearGradient(const QList<QColor> &front, const QList<QColor> &back);
     /*!
      * Set current transparent.
      */

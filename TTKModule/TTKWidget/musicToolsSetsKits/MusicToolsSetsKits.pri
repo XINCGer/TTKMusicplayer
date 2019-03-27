@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2018 Greedysky Studio
+# * Copyright (C) 2015 - 2019 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@ HEADERS  += \
     $$PWD/musicnetworkconnectiontestwidget.h \
     $$PWD/musicsongchecktoolswidget.h \
     $$PWD/musicsongchecktoolstablewidget.h \
-    $$PWD/musicsongchecktoolsitemselecteddialog.h \
     $$PWD/musicgrabwidget.h \
     $$PWD/musicsoundkmicrowidget.h \
     $$PWD/musicsoundkmicrosearchwidget.h \
@@ -61,7 +60,6 @@ SOURCES += \
     $$PWD/musicnetworkconnectiontestwidget.cpp \
     $$PWD/musicsongchecktoolswidget.cpp \
     $$PWD/musicsongchecktoolstablewidget.cpp \
-    $$PWD/musicsongchecktoolsitemselecteddialog.cpp \
     $$PWD/musicgrabwidget.cpp \
     $$PWD/musicsoundkmicrowidget.cpp \
     $$PWD/musicsoundkmicrosearchwidget.cpp \

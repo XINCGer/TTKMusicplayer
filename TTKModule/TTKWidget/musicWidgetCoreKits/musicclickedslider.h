@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicClickedSlider(QWidget *parent = 0);
-    explicit MusicClickedSlider(Qt::Orientation orientation, QWidget *parent = 0);
+    explicit MusicClickedSlider(QWidget *parent = nullptr);
+    explicit MusicClickedSlider(Qt::Orientation orientation, QWidget *parent = nullptr);
 
 protected:
     /*!

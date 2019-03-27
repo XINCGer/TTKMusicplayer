@@ -6,6 +6,7 @@
 #include "musictoastlabel.h"
 #include "musicwidgetheaders.h"
 #include "musicsinglemanager.h"
+#include "musicqmmputils.h"
 
 #include <QButtonGroup>
 #include <QPluginLoader>
@@ -124,7 +125,7 @@ MusicSpectrumWidget::~MusicSpectrumWidget()
     M_SINGLE_MANAGER_PTR->removeObject(getClassName());
     foreach(const MusicSpectrum &type, m_types)
     {
-        showSpectrum(type.m_name, false);
+        MusicUtils::QMMP::enableVisualPlugin(type.m_name, false);
     }
     delete m_ui;
 }
@@ -254,9 +255,9 @@ void MusicSpectrumWidget::newSpectrumWidget(QCheckBox *box, const QString &name,
 {
     if(box->isChecked())
     {
-        int before = Visual::visuals()->count();
-        showSpectrum(name, true);
-        QList<Visual *> *vs = Visual::visuals();
+        const int before = Visual::visuals()->count();
+        MusicUtils::QMMP::enableVisualPlugin(name, true);
+        const QList<Visual*> *vs = Visual::visuals();
         if(before == vs->count())
         {
             showMessageBoxWidget(box);
@@ -278,12 +279,12 @@ void MusicSpectrumWidget::newSpectrumWidget(QCheckBox *box, const QString &name,
     }
     else
     {
-        int index = findSpectrumWidget(name);
+        const int index = findSpectrumWidget(name);
         if(index != -1)
         {
             MusicSpectrum t = m_types.takeAt(index);
             layout->removeWidget(t.m_obj);
-            showSpectrum(name, false);
+            MusicUtils::QMMP::enableVisualPlugin(name, false);
         }
     }
 }
@@ -296,7 +297,7 @@ void MusicSpectrumWidget::newSpekWidget(QCheckBox *box, const QString &name, QLa
         {
             QPluginLoader loader;
             loader.setFileName(MusicUtils::QMMP::pluginPath("Spek", name));
-            QObject *obj = loader.instance();
+            const QObject *obj = loader.instance();
             SpekFactory *decoderfac = nullptr;
             if(obj && (decoderfac = MObject_cast(SpekFactory*, obj)))
             {
@@ -309,13 +310,13 @@ void MusicSpectrumWidget::newSpekWidget(QCheckBox *box, const QString &name, QLa
             }
         }
 
-        int index = findSpectrumWidget(name);
+        const int index = findSpectrumWidget(name);
         Spek *spek = MStatic_cast(Spek*, m_types[index].m_obj);
-        spek->open( url.isEmpty() ? SoundCore::instance()->url() : url );
+        spek->open(url.isEmpty() ? SoundCore::instance()->path() : url );
     }
     else
     {
-        int index = findSpectrumWidget(name);
+        const int index = findSpectrumWidget(name);
         if(index != -1)
         {
             MusicSpectrum t = m_types.takeAt(index);
@@ -339,18 +340,6 @@ void MusicSpectrumWidget::adjustWidgetLayout(int offset)
     m_ui->mainViewWidget->setFixedHeight(offset + 390);
 
     setBackgroundPixmap(m_ui->background, size());
-}
-
-void MusicSpectrumWidget::showSpectrum(const QString &name, bool state)
-{
-    foreach(VisualFactory *v, Visual::factories())
-    {
-        if(v->properties().shortName == name)
-        {
-            Visual::setEnabled(v, state);
-            break;
-        }
-    }
 }
 
 int MusicSpectrumWidget::findSpectrumWidget(const QString &name)

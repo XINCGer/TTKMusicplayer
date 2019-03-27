@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicRadioButtonDelegate(QObject* parent = 0);
+    explicit MusicRadioButtonDelegate(QObject* parent = nullptr);
 
     virtual ~MusicRadioButtonDelegate();
 
@@ -58,14 +58,11 @@ public:
     /*!
      * Override size hint.
      */
-    virtual QSize sizeHint(const QStyleOptionViewItem &option,
-                           const QModelIndex &) const override;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const override;
     /*!
      * Override paint.
      */
-    virtual void paint(QPainter *painter,
-                       const QStyleOptionViewItem &option,
-                       const QModelIndex &index) const override;
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
 protected:
     QRadioButton *m_radioButton;
@@ -84,7 +81,7 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicCheckBoxDelegate(QObject* parent = 0);
+    explicit MusicCheckBoxDelegate(QObject* parent = nullptr);
 
     virtual ~MusicCheckBoxDelegate();
 
@@ -95,14 +92,11 @@ public:
     /*!
      * Override size hint.
      */
-    virtual QSize sizeHint(const QStyleOptionViewItem &option,
-                           const QModelIndex &) const override;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const override;
     /*!
      * Override paint.
      */
-    virtual void paint(QPainter *painter,
-                       const QStyleOptionViewItem &option,
-                       const QModelIndex &index) const override;
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
 protected:
     QCheckBox *m_checkBox;
@@ -121,16 +115,14 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicQueryTableDelegate(QObject* parent = 0);
+    explicit MusicQueryTableDelegate(QObject* parent = nullptr);
 
     virtual ~MusicQueryTableDelegate();
 
     /*!
      * Override paint.
      */
-    virtual void paint(QPainter *painter,
-                       const QStyleOptionViewItem &option,
-                       const QModelIndex &index) const override;
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
 };
 
@@ -146,7 +138,7 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicProgressBarDelegate(QObject* parent = 0);
+    explicit MusicProgressBarDelegate(QObject* parent = nullptr);
 
     ~MusicProgressBarDelegate();
 
@@ -158,14 +150,11 @@ public:
     /*!
      * Override size hint.
      */
-    virtual QSize sizeHint(const QStyleOptionViewItem &option,
-                           const QModelIndex &) const override;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const override;
     /*!
      * Override paint.
      */
-    virtual void paint(QPainter *painter,
-                       const QStyleOptionViewItem &option,
-                       const QModelIndex &index) const override;
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
 private:
     QProgressBar *m_progress;
@@ -184,7 +173,7 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicLabelDelegate(QObject* parent = 0);
+    explicit MusicLabelDelegate(QObject* parent = nullptr);
 
     virtual ~MusicLabelDelegate();
 
@@ -196,14 +185,11 @@ public:
     /*!
      * Override size hint.
      */
-    virtual QSize sizeHint(const QStyleOptionViewItem &option,
-                           const QModelIndex &) const override;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const override;
     /*!
      * Override paint.
      */
-    virtual void paint(QPainter *painter,
-                       const QStyleOptionViewItem &option,
-                       const QModelIndex &index) const override;
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
 protected:
     QLabel *m_label;
@@ -222,7 +208,7 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicPushButtonDelegate(QObject* parent = 0);
+    explicit MusicPushButtonDelegate(QObject* parent = nullptr);
 
     virtual ~MusicPushButtonDelegate();
 
@@ -234,14 +220,11 @@ public:
     /*!
      * Override size hint.
      */
-    virtual QSize sizeHint(const QStyleOptionViewItem &option,
-                           const QModelIndex &) const override;
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const override;
     /*!
      * Override paint.
      */
-    virtual void paint(QPainter *painter,
-                       const QStyleOptionViewItem &option,
-                       const QModelIndex &index) const override;
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
 protected:
     QPushButton *m_pushButton;
@@ -265,9 +248,7 @@ public:
     /*!
      * Override createEditor.
      */
-    virtual QWidget *createEditor(QWidget *parent,
-                                  const QStyleOptionViewItem &option,
-                                  const QModelIndex &index) const override;
+    virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
 };
 

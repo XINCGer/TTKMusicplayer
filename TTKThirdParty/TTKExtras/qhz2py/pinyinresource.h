@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,21 +31,21 @@ class MUSIC_EXTRAS_EXPORT PinyinResource
 {
 public:
 
-    static QMap<QString, QString> getPinyinResource();
+    static MStringMap getPinyinResource();
     /*!
      * Get mutil pinyin resource.
      */
-    static QMap<QString, QString> getMutilPinyinResource();
+    static MStringMap getMutilPinyinResource();
     /*!
      * Get chinese resource.
      */
-    static QMap<QString, QString> getChineseResource();
+    static MStringMap getChineseResource();
 
 private:
     /*!
      * Get resource.
      */
-    static QMap<QString, QString> getResource(const QString &resourceName);
+    static MStringMap getResource(const QString &resourceName);
 
 };
 

@@ -17,8 +17,7 @@ void MusicPhotoGrabItem::setBorderRect(const QRect &rect)
 {
     MusicResizeGrabItemWidget::setBorderRect(rect);
     move(m_borderRect.topLeft());
-    int v = (m_borderRect.width() < m_borderRect.height()) ?
-             m_borderRect.width() : m_borderRect.height();
+    const int v = (m_borderRect.width() < m_borderRect.height()) ? m_borderRect.width() : m_borderRect.height();
     resize(v, v);
 }
 
@@ -65,9 +64,7 @@ void MusicPhotoGrabLabel::setImagePath(const QString &path)
 QPixmap MusicPhotoGrabLabel::pixmap()
 {
     QPixmap img(m_path);
-    return img.copy(
-            QRect((m_grabItem->geometry().topLeft() - m_imgRect.topLeft())*m_ratio,
-                   m_grabItem->geometry().size()*m_ratio));
+    return img.copy(QRect((m_grabItem->geometry().topLeft() - m_imgRect.topLeft())*m_ratio, m_grabItem->geometry().size()*m_ratio));
 }
 
 void MusicPhotoGrabLabel::rectChanged()
@@ -80,16 +77,15 @@ void MusicPhotoGrabLabel::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
     QPainter painter(this);
 
-    QPixmap bgPix(":/lrc/lb_transparent");
+    QPixmap pix(":/lrc/lb_transparent");
     for(int i=0; i<ceil(width()/PIX_WIDTH); ++i)
     {
         for(int j=0; j<=ceil(height()/PIX_HEIGHT); ++j)
         {
-            painter.drawPixmap(i*PIX_WIDTH, j*PIX_HEIGHT, PIX_WIDTH, PIX_HEIGHT, bgPix);
+            painter.drawPixmap(i*PIX_WIDTH, j*PIX_HEIGHT, PIX_WIDTH, PIX_HEIGHT, pix);
         }
     }
 
     QPixmap img(m_path);
     painter.drawPixmap(m_imgRect, img);
-    painter.end();
 }

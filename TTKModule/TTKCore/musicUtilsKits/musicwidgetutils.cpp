@@ -29,8 +29,7 @@ void MusicUtils::Widget::setLabelFontStyle(QWidget *widget, MusicObject::FontSty
     widget->setFont(font);
 }
 
-QString MusicUtils::Widget::elidedText(const QFont &font, const QString &text,
-                                       Qt::TextElideMode mode, int width)
+QString MusicUtils::Widget::elidedText(const QFont &font, const QString &text, Qt::TextElideMode mode, int width)
 {
     QFontMetrics ft(font);
     return ft.elidedText(text, mode, width);
@@ -64,17 +63,16 @@ void MusicUtils::Widget::widgetToRound(QWidget *w, int ratioX, int ratioY)
     w->setMask( getBitmapMask(w->rect(), ratioX, ratioY) );
 }
 
-void MusicUtils::Widget::fusionPixmap(QPixmap &bg, const QPixmap &fg, const QPoint &pt)
+void MusicUtils::Widget::fusionPixmap(QPixmap &back, const QPixmap &front, const QPoint &pt)
 {
-    if(fg.isNull())
+    if(front.isNull())
     {
         return;
     }
 
-    QPainter painter(&bg);
+    QPainter painter(&back);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-    painter.drawPixmap(pt.x(), pt.y(), fg);
-    painter.end();
+    painter.drawPixmap(pt.x(), pt.y(), front);
 }
 
 QPixmap MusicUtils::Widget::pixmapToRound(const QPixmap &src, const QSize &size, int ratioX, int ratioY)
@@ -106,7 +104,6 @@ QPixmap MusicUtils::Widget::pixmapToRound(const QPixmap &src, const QPixmap &mas
     painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     painter.drawPixmap(0, 0, src.scaled(size));
-    painter.end();
 
     return image;
 }
@@ -150,7 +147,7 @@ void MusicUtils::Widget::reRenderImage(int delta, const QImage *input, QImage *o
     {
         for(int h=0; h<input->height(); h++)
         {
-            QRgb rgb = input->pixel(w, h);
+            const QRgb rgb = input->pixel(w, h);
             output->setPixel(w, h, qRgb(colorBurnTransform(qRed(rgb), delta),
                                         colorBurnTransform(qGreen(rgb), delta),
                                         colorBurnTransform(qBlue(rgb), delta)));
@@ -165,14 +162,14 @@ int MusicUtils::Widget::colorBurnTransform(int c, int delta)
         return c;
     }
 
-    int result = (c - (int)(c*delta)/(0xFF - delta));
+    const int result = (c - (int)(c*delta)/(0xFF - delta));
     if(result > 0xFF)
     {
-        result = 0xFF;
+        return 0xFF;
     }
     else if(result < 0)
     {
-        result = 0;
+        return 0;
     }
     return result;
 }

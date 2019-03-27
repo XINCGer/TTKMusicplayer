@@ -102,7 +102,7 @@ void MusicWebMusicRadioWidget::listCellDoubleClicked(int row, int column)
         return;
     }
 
-    MusicRadioChannelInfos channels = m_getChannelThread->getMusicChannel();
+    const MusicRadioChannelInfos &channels = m_getChannelThread->getMusicChannel();
     if(m_musicRadio == nullptr)
     {
         m_musicRadio = new MusicWebMusicRadioPlayWidget(this);
@@ -118,19 +118,18 @@ void MusicWebMusicRadioWidget::listCellDoubleClicked(int row, int column)
 
 void MusicWebMusicRadioWidget::addListWidgetItem()
 {
-    MusicRadioChannelInfos channels = m_getChannelThread->getMusicChannel();
+    const MusicRadioChannelInfos &channels = m_getChannelThread->getMusicChannel();
     foreach(const MusicRadioChannelInfo &channel, channels)
     {
-        int index = rowCount();
+        const int index = rowCount();
         setRowCount(index + 1);
-        setRowHeight(index, 60);
+        setRowHeight(index, ITEM_ROW_HEIGHT_XL);
 
         QTableWidgetItem *item = new QTableWidgetItem;
         setItem(index, 0, item);
 
                           item = new QTableWidgetItem;
-        item->setIcon(MusicUtils::Widget::pixmapToRound(QPixmap(":/image/lb_defaultArt"),
-                                                        QPixmap(":/usermanager/lb_mask_50"), iconSize()));
+        item->setIcon(MusicUtils::Widget::pixmapToRound(QPixmap(":/image/lb_defaultArt"), QPixmap(":/usermanager/lb_mask_50"), iconSize()));
         setItem(index, 1, item);
 
                           item = new QTableWidgetItem;
@@ -147,7 +146,7 @@ void MusicWebMusicRadioWidget::addListWidgetItem()
 
         MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
         connect(download, SIGNAL(downLoadExtDataChanged(QByteArray,QVariantMap)), SLOT(downLoadFinished(QByteArray,QVariantMap)));
-        if(!channel.m_coverUrl.isEmpty() && channel.m_coverUrl != "null")
+        if(!channel.m_coverUrl.isEmpty() && channel.m_coverUrl != COVER_URL_NULL)
         {
             QVariantMap map;
             map["id"] = index;
@@ -177,7 +176,7 @@ void MusicWebMusicRadioWidget::downLoadFinished(const QByteArray &data, const QV
 
 void MusicWebMusicRadioWidget::musicPlayClicked()
 {
-    int row = currentRow();
+    const int row = currentRow();
     if(row >= 0)
     {
         listCellDoubleClicked(row, DEFAULT_LEVEL_LOWER);
@@ -186,7 +185,7 @@ void MusicWebMusicRadioWidget::musicPlayClicked()
 
 void MusicWebMusicRadioWidget::sendToDesktopLink()
 {
-    int row = currentRow();
+    const int row = currentRow();
     if(row < 0)
     {
         return;
@@ -207,11 +206,9 @@ void MusicWebMusicRadioWidget::sendToDesktopLink()
 
     MusicRegeditManager reg;
 #ifdef Q_OS_WIN
-    reg.setFileLink(MAIN_DIR_FULL + APPEXE, desktop + "/" + fileName + ".lnk", QString(),
-                    QString("%1 \"%2\"").arg(MUSIC_OUTER_RADIO).arg(row), tr("TTK Radio Link"));
+    reg.setFileLink(MAIN_DIR_FULL + APP_EXE_NAME, desktop + "/" + fileName + ".lnk", QString(), QString("%1 \"%2\"").arg(MUSIC_OUTER_RADIO).arg(row), tr("TTK Radio Link"));
 #else
-    reg.setFileLink(QString(" %1 \"%2\"").arg(MUSIC_OUTER_RADIO).arg(row), desktop, MAIN_DIR_FULL + APPNAME,
-                    MusicObject::getAppDir(), fileName);
+    reg.setFileLink(QString(" %1 \"%2\"").arg(MUSIC_OUTER_RADIO).arg(row), desktop, MAIN_DIR_FULL + APP_NAME, MusicObject::getAppDir(), fileName);
 #endif
 }
 

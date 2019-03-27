@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicConnectTransferWidget(QWidget *parent = 0);
+    explicit MusicConnectTransferWidget(QWidget *parent = nullptr);
 
     virtual ~MusicConnectTransferWidget();
 
@@ -63,7 +63,7 @@ public Q_SLOTS:
     /*!
      * Current playList selected.
      */
-    void currentPlayListSelected(int index);
+    void currentPlaylistSelected(int index);
     /*!
      * Select all items.
      */
@@ -115,7 +115,7 @@ protected:
     int m_currentIndex;
     MusicSongs m_currentSongs;
     QButtonGroup *m_buttonGroup;
-    MIntsListMap m_searchfileListCache;
+    MIntListMap m_searchfileListCache;
     MusicFileSenderServer *m_sendServer;
 
 };

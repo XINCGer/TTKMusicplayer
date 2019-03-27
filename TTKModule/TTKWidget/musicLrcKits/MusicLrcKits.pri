@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2018 Greedysky Studio
+# * Copyright (C) 2015 - 2019 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,8 @@ HEADERS  += \
     $$PWD/musiclrccommentswidget.h \
     $$PWD/musiclrctranslatedwidget.h \
     $$PWD/musiclrccontainerforwallpaper.h \
-    $$PWD/musiclrcposterwidget.h
+    $$PWD/musiclrcposterwidget.h \
+    $$PWD/musiclrcdownloadbatchwidget.h
 
 }
 
@@ -66,6 +67,7 @@ SOURCES += \
     $$PWD/musiclrccommentswidget.cpp \
     $$PWD/musiclrctranslatedwidget.cpp \
     $$PWD/musiclrccontainerforwallpaper.cpp \
-    $$PWD/musiclrcposterwidget.cpp
+    $$PWD/musiclrcposterwidget.cpp \
+    $$PWD/musiclrcdownloadbatchwidget.cpp
 
 }

@@ -16,7 +16,7 @@ void MusicRunTimeManager::run() const
 #ifndef MUSIC_GREATER_NEW
     MusicUtils::Codec::setLocalCodec();
 #endif
-    MusicUtils::QMMP::midTransferFile();
+    MusicUtils::QMMP::updateMidConfigFile();
 
     ///////////////////////////////////////////////////////
 #ifdef Q_OS_UNIX
@@ -31,8 +31,8 @@ void MusicRunTimeManager::run() const
 
     M_LOGGER_INFO("Load Translation");
     MusicSysConfigManager *xml = new MusicSysConfigManager;
-    xml->readXMLConfig();
-    xml->readSysLoadConfig();
+    xml->readConfig();
+    xml->readSysConfigData();
 
     MusicUtils::Core::checkCacheSize(
                 M_SETTING_PTR->value(MusicSettingManager::DownloadCacheSizeChoiced).toInt()*MH_MB2B,
@@ -47,6 +47,6 @@ void MusicRunTimeManager::run() const
 
 QString MusicRunTimeManager::translator() const
 {
-    int index = M_SETTING_PTR->value(MusicSettingManager::CurrentLanIndexChoiced).toInt();
+    const int index = M_SETTING_PTR->value(MusicSettingManager::CurrentLanIndexChoiced).toInt();
     return MusicUtils::Core::getLanguageName(index);
 }

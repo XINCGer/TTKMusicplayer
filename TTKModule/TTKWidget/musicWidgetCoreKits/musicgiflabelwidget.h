@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,11 +49,11 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicGifLabelWidget(QWidget *parent = 0);
+    explicit MusicGifLabelWidget(QWidget *parent = nullptr);
     /*!
      * Object contsructor.
      */
-    explicit MusicGifLabelWidget(Type type, QWidget *parent = 0);
+    explicit MusicGifLabelWidget(Type type, QWidget *parent = nullptr);
 
     ~MusicGifLabelWidget();
 
@@ -138,7 +138,7 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicGifLabelMaskWidget(QWidget *parent = 0);
+    explicit MusicGifLabelMaskWidget(QWidget *parent = nullptr);
 
     ~MusicGifLabelMaskWidget();
 

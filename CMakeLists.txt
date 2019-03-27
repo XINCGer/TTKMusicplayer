@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.11)
 
 add_definitions(-DMUSIC_LIBRARY)
 
-set(TTK_VERSION "2.7.0.0")
+set(TTK_VERSION "2.8.0.0")
 
 # Find includes in the build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -35,6 +35,7 @@ include_directories(
 set(MUSIC_CORE_DIR "${MUSIC_LIB_CORE_DIR}/musicCoreKits")
 set(MUSIC_CORE_LRCMANAGER_DIR "${MUSIC_LIB_CORE_DIR}/musicLrcKits")
 set(MUSIC_CORE_NETWORK_DIR "${MUSIC_LIB_CORE_DIR}/musicNetworkKits")
+set(MUSIC_CORE_PLAYLIST_DIR "${MUSIC_LIB_CORE_DIR}/musicPlaylistKits")
 set(MUSIC_CORE_LOCALSEARCH_DIR "${MUSIC_LIB_CORE_DIR}/musicSearchKits")
 set(MUSIC_CORE_TOOLSWIDGET_DIR "${MUSIC_LIB_CORE_DIR}/musicToolsKits")
 set(MUSIC_CORE_TOOLSETSWIDGET_DIR "${MUSIC_LIB_CORE_DIR}/musicToolsSetsKits")
@@ -59,6 +60,7 @@ include_directories(
     ${MUSIC_CORE_NETWORK_DIR}/xm
     ${MUSIC_CORE_NETWORK_DIR}/yyt
     ${MUSIC_CORE_NETWORK_DIR}/ztl
+    ${MUSIC_CORE_PLAYLIST_DIR}
     ${MUSIC_CORE_LOCALSEARCH_DIR}
     ${MUSIC_CORE_TOOLSWIDGET_DIR}
     ${MUSIC_CORE_TOOLSETSWIDGET_DIR}

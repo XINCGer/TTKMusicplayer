@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2018 Greedysky Studio
+ * Copyright (C) 2015 - 2019 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,11 @@
 #include "musicuiobject.h"
 #include "musicwidgetutils.h"
 
+#define ITEM_ROW_HEIGHT_S   25
+#define ITEM_ROW_HEIGHT_M   30
+#define ITEM_ROW_HEIGHT_L   40
+#define ITEM_ROW_HEIGHT_XL  60
+
 /*! @brief The class of the table widget base.
  * @author Greedysky <greedysky@163.com>
  */
@@ -38,7 +43,7 @@ public:
     /*!
      * Object contsructor.
      */
-    explicit MusicAbstractTableWidget(QWidget *parent = 0);
+    explicit MusicAbstractTableWidget(QWidget *parent = nullptr);
 
     virtual ~MusicAbstractTableWidget();
 

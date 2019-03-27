@@ -21,7 +21,7 @@ MusicDownloadAbstractTableWidget::~MusicDownloadAbstractTableWidget()
 {
     M_CONNECTION_PTR->removeValue(getClassName());
     MusicDownloadRecordConfigManager xml(m_type, this);
-    xml.writeDownloadConfig(*m_musicSongs);
+    xml.writeDownloadData(*m_musicSongs);
     clear();
 
     delete m_delegate;
@@ -31,11 +31,11 @@ void MusicDownloadAbstractTableWidget::updateSongsFileName(const MusicSongs &son
 {
     Q_UNUSED(songs);
     MusicDownloadRecordConfigManager xml(m_type, this);
-    if(!xml.readDownloadXMLConfig())
+    if(!xml.readConfig())
     {
         return;
     }
-    xml.readDownloadConfig(*m_musicSongs);
+    xml.readDownloadData(*m_musicSongs);
 
     setRowCount(m_musicSongs->count()); //reset row count
 
@@ -54,7 +54,7 @@ void MusicDownloadAbstractTableWidget::musicPlay()
         return;
     }
 
-    QString path = (*m_musicSongs)[currentRow()].getMusicPath();
+    const QString &path = (*m_musicSongs)[currentRow()].getMusicPath();
     emit addSongToPlay(QStringList( QFile::exists(path) ? path : QString() ));
 }
 
@@ -67,11 +67,11 @@ void MusicDownloadAbstractTableWidget::setDeleteItemAt()
        return;
     }
 
-    MIntList deleteList(getMultiIndexSet());
+    const MIntList deleteList(getMultiIndexSet());
 
     for(int i=deleteList.count() - 1; i>=0; --i)
     {
-        int index = deleteList[i];
+        const int index = deleteList[i];
         removeRow(index); //Delete the current row
         m_musicSongs->removeAt(index);
     }
@@ -139,7 +139,7 @@ void MusicDownloadAbstractTableWidget::contextMenuEvent(QContextMenuEvent *event
 
     createMoreMenu(&rightClickMenu);
 
-    bool empty = !m_musicSongs->isEmpty();
+    const bool empty = !m_musicSongs->isEmpty();
     rightClickMenu.addAction(tr("musicInfo..."), this, SLOT(musicFileInformation()))->setEnabled(empty);
     rightClickMenu.addAction(QIcon(":/contextMenu/btn_localFile"), tr("openFileDir"), this, SLOT(musicOpenFileDir()))->setEnabled(empty);
     rightClickMenu.addAction(QIcon(":/contextMenu/btn_ablum"), tr("ablum"), this, SLOT(musicAlbumFoundWidget()));

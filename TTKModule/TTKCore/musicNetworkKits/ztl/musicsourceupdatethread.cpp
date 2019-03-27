@@ -1,9 +1,10 @@
 #include "musicsourceupdatethread.h"
 #include "musicdownloadsourcethread.h"
+#include "musicsettingmanager.h"
 #///QJson import
 #include "qjson/parser.h"
 
-#define VERSION_URL     "TzFTSjRiNlN6TXB3WGZtdENONGdaQzhxdkpNc0ZXZk9VSUtXdlhQQ252bWJLZ0pidE5LcW80WUlHQmQzNWp0OGxXSjFkQT09"
+#define QN_VERSION       "version"
 
 MusicSourceUpdateThread::MusicSourceUpdateThread(QObject *parent)
     : QObject(parent)
@@ -15,7 +16,8 @@ void MusicSourceUpdateThread::startToDownload()
 {
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
     connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
-    download->startToDownload(MusicUtils::Algorithm::mdII(VERSION_URL, false));
+    const QString &buketUrl = M_SETTING_PTR->value(MusicSettingManager::QiNiuDataConfigChoiced).toString();
+    download->startToDownload(MusicUtils::Algorithm::mdII(buketUrl, false) + QN_VERSION);
 }
 
 QString MusicSourceUpdateThread::getLastedVersion() const
@@ -25,7 +27,7 @@ QString MusicSourceUpdateThread::getLastedVersion() const
 
 bool MusicSourceUpdateThread::isLastedVersion() const
 {
-    QString v = getLastedVersion();
+    const QString &v = getLastedVersion();
     if(v.isEmpty())
     {
         return true;
@@ -45,7 +47,7 @@ void MusicSourceUpdateThread::downLoadFinished(const QByteArray &data)
 {
     QJson::Parser parser;
     bool ok;
-    QVariant parseData = parser.parse(data, &ok);
+    const QVariant &parseData = parser.parse(data, &ok);
     if(!ok)
     {
         return;

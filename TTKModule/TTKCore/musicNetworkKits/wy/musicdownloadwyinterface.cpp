@@ -4,6 +4,7 @@
 #include "musicalgorithmutils.h"
 #include "musicurlutils.h"
 #include "musicsettingmanager.h"
+#include "musicnetworkabstract.h"
 #///QJson import
 #include "qjson/parser.h"
 #include "qalg/qaeswrap.h"
@@ -13,42 +14,42 @@
 #include <QSslConfiguration>
 #include <QNetworkAccessManager>
 
-void MusicDownLoadWYInterface::makeTokenQueryQequest(QNetworkRequest *request)
+void MusicDownLoadWYInterface::makeTokenQueryRequest(QNetworkRequest *request)
 {
-    request->setRawHeader("Content-Type", "application/x-www-form-urlencoded");
     request->setRawHeader("Referer", MusicUtils::Algorithm::mdII(WY_BASE_URL, false).toUtf8());
     request->setRawHeader("Origin", MusicUtils::Algorithm::mdII(WY_BASE_URL, false).toUtf8());
     request->setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(WY_UA_URL_1, ALG_UA_KEY, false).toUtf8());
 
     QString cookie = M_SETTING_PTR->value(MusicSettingManager::NetworkCookieChoiced).toString();
     cookie = cookie.isEmpty() ? MusicUtils::Algorithm::mdII(WY_COOKIE_URL, ALG_UA_KEY, false) : cookie;
-    request->setRawHeader("Cookie", QString("MUSIC_U=%1; appver=2.0.3.131777; __remember_me=true;").arg(cookie).toUtf8());
+    request->setRawHeader("Cookie", QString("MUSIC_U=%1; appver=2.0.3.131777; __remember_me=true; _ntes_nuid=%2; _ntes_nnid=%3; JSESSIONID-WYYY=%4; _iuqxldmzr_=32").arg(cookie)
+                                            .arg(MusicUtils::Algorithm::mdII(WY_NUID_URL, ALG_UA_KEY, false))
+                                            .arg(MusicUtils::Algorithm::mdII(WY_NNID_URL, ALG_UA_KEY, false))
+                                            .arg(WY_WYYY_URL).toUtf8());
+    MusicObject::setSslConfiguration(request);
 }
 
 QByteArray MusicDownLoadWYInterface::makeTokenQueryUrl(QNetworkRequest *request, const QString &query, const QString &type)
 {
-    QByteArray parameter = QAesWrap::encrypt(type.toUtf8(), "0CoJUm6Qyw8W8jud", "0102030405060708");
-    parameter = QAesWrap::encrypt(parameter, "a44e542eaac91dce", "0102030405060708");
+    QAesWrap aes;
+    QByteArray parameter = aes.encryptCBC(type.toUtf8(), "0CoJUm6Qyw8W8jud", "0102030405060708");
+    parameter = aes.encryptCBC(parameter, "a44e542eaac91dce", "0102030405060708");
     MusicUtils::Url::urlEncode(parameter);
 
     request->setUrl(QUrl(query));
-    makeTokenQueryQequest(request);
+    makeTokenQueryRequest(request);
 
     return "params=" + parameter + "&encSecKey=" + WY_SECKRY.toUtf8();
 }
 
 void MusicDownLoadWYInterface::readFromMusicSongAttribute(MusicObject::MusicSongInformation *info, int bitrate)
 {
-    QUrl musicUrl = MusicUtils::Algorithm::mdII(WY_SONG_INFO_URL, false).arg(bitrate*1000).arg(info->m_songId);
+    const QUrl &musicUrl = MusicUtils::Algorithm::mdII(WY_SONG_INFO_URL, false).arg(bitrate*1000).arg(info->m_songId);
 
     QNetworkRequest request;
     request.setUrl(musicUrl);
-    makeTokenQueryQequest(&request);
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    makeTokenQueryRequest(&request);
+
     QNetworkAccessManager manager;
     MusicSemaphoreLoop loop;
     QNetworkReply *reply = manager.get(request);
@@ -63,7 +64,7 @@ void MusicDownLoadWYInterface::readFromMusicSongAttribute(MusicObject::MusicSong
 
     QJson::Parser parser;
     bool ok;
-    QVariant data = parser.parse(reply->readAll(), &ok);
+    const QVariant &data = parser.parse(reply->readAll(), &ok);
     if(ok)
     {
         QVariantMap value = data.toMap();
@@ -97,10 +98,9 @@ void MusicDownLoadWYInterface::readFromMusicSongAttribute(MusicObject::MusicSong
     }
 }
 
-void MusicDownLoadWYInterface::readFromMusicSongAttribute(MusicObject::MusicSongInformation *info,
-                                                          const QVariantMap &key, int bitrate)
+void MusicDownLoadWYInterface::readFromMusicSongAttribute(MusicObject::MusicSongInformation *info, const QVariantMap &key, int bitrate)
 {
-    qlonglong dfsId = /*key.value("dfsId").toLongLong()*/0;
+    const qint64 dfsId = /*key.value("dfsId").toLongLong()*/0;
     if(key.isEmpty() || dfsId == 0)
     {
         readFromMusicSongAttribute(info, bitrate);
@@ -120,14 +120,13 @@ void MusicDownLoadWYInterface::readFromMusicSongAttribute(MusicObject::MusicSong
     }
 }
 
-void MusicDownLoadWYInterface::readFromMusicSongAttribute(MusicObject::MusicSongInformation *info,
-                                                          const QVariantMap &key, const QString &quality, bool all)
+void MusicDownLoadWYInterface::readFromMusicSongAttribute(MusicObject::MusicSongInformation *info, const QVariantMap &key, const QString &quality, bool all)
 {
     int maxBr = MB_999;
-    QVariantMap privilege = key["privilege"].toMap();
+    const QVariantMap &privilege = key["privilege"].toMap();
     if(!privilege.isEmpty())
     {
-        QString brStr = privilege["maxbr"].toString();
+        const QString &brStr = privilege["maxbr"].toString();
         if(brStr == "999000")
         {
             maxBr = MB_999;
@@ -184,14 +183,10 @@ void MusicDownLoadWYInterface::readFromMusicSongAttribute(MusicObject::MusicSong
 void MusicDownLoadWYInterface::readFromMusicSongAttributeNew(MusicObject::MusicSongInformation *info, int bitrate)
 {
     QNetworkRequest request;
-    QByteArray parameter = makeTokenQueryUrl(&request,
-               MusicUtils::Algorithm::mdII(WY_SONG_INFO_N_URL, false),
-               MusicUtils::Algorithm::mdII(WY_SONG_INFO_NDT_URL, false).arg(info->m_songId).arg(bitrate*1000));
-#ifndef QT_NO_SSL
-    QSslConfiguration sslConfig = request.sslConfiguration();
-    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-    request.setSslConfiguration(sslConfig);
-#endif
+    const QByteArray &parameter = makeTokenQueryUrl(&request,
+                      MusicUtils::Algorithm::mdII(WY_SONG_INFO_N_URL, false),
+                      MusicUtils::Algorithm::mdII(WY_SONG_INFO_NDT_URL, false).arg(info->m_songId).arg(bitrate*1000));
+
     QNetworkAccessManager manager;
     MusicSemaphoreLoop loop;
     QNetworkReply *reply = manager.post(request, parameter);
@@ -206,13 +201,13 @@ void MusicDownLoadWYInterface::readFromMusicSongAttributeNew(MusicObject::MusicS
 
     QJson::Parser parser;
     bool ok;
-    QVariant data = parser.parse(reply->readAll(), &ok);
+    const QVariant &data = parser.parse(reply->readAll(), &ok);
     if(ok)
     {
         QVariantMap value = data.toMap();
         if(value["code"].toInt() == 200 && value.contains("data"))
         {
-            QVariantList datas = value["data"].toList();
+            const QVariantList &datas = value["data"].toList();
             foreach(const QVariant &var, datas)
             {
                 if(var.isNull())
@@ -237,10 +232,9 @@ void MusicDownLoadWYInterface::readFromMusicSongAttributeNew(MusicObject::MusicS
     }
 }
 
-void MusicDownLoadWYInterface::readFromMusicSongAttributeNew(MusicObject::MusicSongInformation *info,
-                                                             const QVariantMap &key, int bitrate)
+void MusicDownLoadWYInterface::readFromMusicSongAttributeNew(MusicObject::MusicSongInformation *info, const QVariantMap &key, int bitrate)
 {
-    qlonglong fid = /*key.value("fid").toLongLong()*/0;
+    const qint64 fid = /*key.value("fid").toLongLong()*/0;
     if(key.isEmpty() || fid == 0)
     {
         readFromMusicSongAttribute(info, bitrate);
@@ -260,14 +254,13 @@ void MusicDownLoadWYInterface::readFromMusicSongAttributeNew(MusicObject::MusicS
     }
 }
 
-void MusicDownLoadWYInterface::readFromMusicSongAttributeNew(MusicObject::MusicSongInformation *info,
-                                                             const QVariantMap &key, const QString &quality, bool all)
+void MusicDownLoadWYInterface::readFromMusicSongAttributeNew(MusicObject::MusicSongInformation *info, const QVariantMap &key, const QString &quality, bool all)
 {
     int maxBr = MB_999;
-    QVariantMap privilege = key["privilege"].toMap();
+    const QVariantMap &privilege = key["privilege"].toMap();
     if(!privilege.isEmpty())
     {
-        QString brStr = privilege["maxbr"].toString();
+        const QString &brStr = privilege["maxbr"].toString();
         if(brStr == "999000")
         {
             maxBr = MB_999;
@@ -328,7 +321,7 @@ QString MusicDownLoadWYInterface::encryptedId(qint64 id)
 
 QString MusicDownLoadWYInterface::encryptedId(const QString &string)
 {
-    QByteArray array1(WY_ENCRYPT_STRING.toUtf8());
+    const QByteArray array1(WY_ENCRYPT_STRING.toUtf8());
     QByteArray array2 = string.toUtf8();
     int length = array1.length();
     for(int i=0; i<array2.length(); ++i)

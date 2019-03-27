@@ -38,14 +38,35 @@ QString MusicUtils::Core::musicPrefix()
     return path;
 }
 
-QString MusicUtils::Core::fileSuffix(const QString &name)
+QString MusicUtils::Core::StringPrefix(const QString &name)
 {
-    return fileSuffix(name, ".");
+    return StringPrefix(name, ".");
 }
 
-QString MusicUtils::Core::fileSuffix(const QString &name, const QString &prefix)
+QString MusicUtils::Core::StringPrefix(const QString &name, const QString &prefix)
 {
-    return name.right(name.length() - name.lastIndexOf(prefix) - 1);
+    return name.left(name.indexOf(prefix));
+}
+
+QString MusicUtils::Core::StringSuffix(const QString &name)
+{
+    return StringSuffix(name, ".");
+}
+
+QString MusicUtils::Core::StringSuffix(const QString &name, const QString &suffix)
+{
+    return name.right(name.length() - name.lastIndexOf(suffix) - 1);
+}
+
+QString MusicUtils::Core::StringSplite(const QString &name)
+{
+    return StringSplite(name, ".", "?");
+}
+
+QString MusicUtils::Core::StringSplite(const QString &name, const QString &prefix, const QString &suffix)
+{
+    const QString &data = StringSuffix(name, prefix);
+    return StringPrefix(data, suffix);
 }
 
 quint64 MusicUtils::Core::dirSize(const QString &dirName)
@@ -54,8 +75,8 @@ quint64 MusicUtils::Core::dirSize(const QString &dirName)
     if(QFileInfo(dirName).isDir())
     {
         QDir dir(dirName);
-        QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Dirs |  QDir::Hidden |
-                                               QDir::NoSymLinks | QDir::NoDotAndDotDot);
+        const QFileInfoList &list = dir.entryInfoList(QDir::Files | QDir::Dirs |  QDir::Hidden |
+                                                      QDir::NoSymLinks | QDir::NoDotAndDotDot);
         foreach(const QFileInfo &fileInfo, list)
         {
             if(fileInfo.isDir())
@@ -78,7 +99,7 @@ void MusicUtils::Core::checkCacheSize(quint64 cacheSize, bool disabled, const QS
         quint64 size = dirSize( path );
         if(size > cacheSize)
         {
-            QFileInfoList fileList = QDir(path).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+            const QFileInfoList &fileList = QDir(path).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
             foreach(const QFileInfo &fileInfo, fileList)
             {
                 size -= fileInfo.size();
@@ -108,7 +129,7 @@ QFileInfoList MusicUtils::Core::getFileListByDir(const QString &dpath, const QSt
     QFileInfoList fileList = dir.entryInfoList(filter, QDir::Files | QDir::Hidden | QDir::NoSymLinks);
     if(recursively)
     {
-        QFileInfoList folderList = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+        const QFileInfoList& folderList = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
         foreach(const QFileInfo &fileInfo, folderList)
         {
             fileList.append( getFileListByDir(fileInfo.absoluteFilePath(), filter, recursively) );
@@ -127,7 +148,7 @@ bool MusicUtils::Core::removeRecursively(const QString &dir)
     }
 
     bool success = true;
-    const QString dirPath = dr.path();
+    const QString &dirPath = dr.path();
     // not empty -- we must empty it first
     QDirIterator di(dirPath, QDir::AllEntries | QDir::Hidden | QDir::System | QDir::NoDotAndDotDot);
     while(di.hasNext())
@@ -207,8 +228,8 @@ bool MusicUtils::Core::appVersionCheck(const QStringList &ol, const QStringList 
 
 bool MusicUtils::Core::appVersionCheck(const QString &o, const QString &d)
 {
-    QStringList ol = o.split(".");
-    QStringList dl = d.split(".");
+    const QStringList &ol = o.split(".");
+    const QStringList &dl = d.split(".");
 
     if(ol.isEmpty() || dl.isEmpty() || ol.count() != dl.count())
     {

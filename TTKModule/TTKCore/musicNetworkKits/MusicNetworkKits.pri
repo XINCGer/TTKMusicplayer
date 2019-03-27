@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2018 Greedysky Studio
+# * Copyright (C) 2015 - 2019 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -148,6 +148,7 @@ HEADERS  += \
     $$PWD/ztl/musicdownloadbackgroundremotethread.h \
     $$PWD/ztl/musictranslationthreadabstract.h \
     $$PWD/ztl/musicauthenticationthread.h \
+    $$PWD/ztl/musicdownloadqnconfighread.h \
     $$PWD/musicnetworkdefines.h \
     $$PWD/musicnetworkabstract.h \
     $$PWD/musicdownloadthreadabstract.h \
@@ -287,6 +288,7 @@ SOURCES += \
     $$PWD/ztl/musicdownloadbackgroundremotethread.cpp \
     $$PWD/ztl/musictranslationthreadabstract.cpp \
     $$PWD/ztl/musicauthenticationthread.cpp \
+    $$PWD/ztl/musicdownloadqnconfighread.cpp \
     $$PWD/musicnetworkabstract.cpp \
     $$PWD/musicdownloadthreadabstract.cpp \
     $$PWD/musicdownloadqueryfactory.cpp \
