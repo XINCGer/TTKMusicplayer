@@ -22,7 +22,7 @@ MusicSoundKMicroSearchTableWidget::MusicSoundKMicroSearchTableWidget(QWidget *pa
     headerview->resizeSection(4, 24);
 
     m_queryMovieMode = true;
-    viewport()->setStyleSheet(MusicUIObject::MBackgroundStyle02);
+    viewport()->setStyleSheet(MusicUIObject::MQSSBackgroundStyle02);
     m_defaultBkColor = Qt::black;
 }
 
@@ -36,7 +36,7 @@ void MusicSoundKMicroSearchTableWidget::startSearchQuery(const QString &text)
     if(!M_NETWORK_PTR->isOnline())   //no network connection
     {
         clearAllItems();
-        emit showDownLoadInfoFor(MusicObject::DW_DisConnection);
+        Q_EMIT showDownLoadInfoFor(MusicObject::DW_DisConnection);
         return;
     }
 
@@ -93,14 +93,22 @@ void MusicSoundKMicroSearchTableWidget::createSearchedItem(const MusicSearchedIt
 
     QHeaderView *headerview = horizontalHeader();
     QTableWidgetItem *item = new QTableWidgetItem;
-    item->setData(MUSIC_CHECK_ROLE, false);
+    item->setData(MUSIC_CHECK_ROLE, Qt::Unchecked);
+#if TTK_QT_VERSION_CHECK(5,13,0)
+    item->setBackground(m_defaultBkColor);
+#else
     item->setBackgroundColor(m_defaultBkColor);
+#endif
     setItem(count, 0, item);
 
                       item = new QTableWidgetItem;
     item->setToolTip(songItem.m_singerName + " - " + songItem.m_songName);
     item->setText(MusicUtils::Widget::elidedText(font(), item->toolTip(), Qt::ElideRight, headerview->sectionSize(1) - 15));
+#if TTK_QT_VERSION_CHECK(5,13,0)
+    item->setForeground(QColor(100, 100, 100));
+#else
     item->setTextColor(QColor(100, 100, 100));
+#endif
     item->setTextAlignment(Qt::AlignCenter);
     setItem(count, 1, item);
 
@@ -128,19 +136,23 @@ void MusicSoundKMicroSearchTableWidget::itemDoubleClicked(int row, int column)
     dataDownloadPlay(row);
 }
 
-void MusicSoundKMicroSearchTableWidget::listCellEntered(int row, int column)
+void MusicSoundKMicroSearchTableWidget::itemCellEntered(int row, int column)
 {
-    MusicQueryItemTableWidget::listCellEntered(row, column);
+    MusicQueryItemTableWidget::itemCellEntered(row, column);
     QTableWidgetItem *it = item(row, 0);
     if(it)
     {
+#if TTK_QT_VERSION_CHECK(5,13,0)
+        it->setBackground(m_defaultBkColor);
+#else
         it->setBackgroundColor(m_defaultBkColor);
+#endif
     }
 }
 
-void MusicSoundKMicroSearchTableWidget::listCellClicked(int row, int column)
+void MusicSoundKMicroSearchTableWidget::itemCellClicked(int row, int column)
 {
-    MusicQueryItemTableWidget::listCellClicked(row, column);
+    MusicQueryItemTableWidget::itemCellClicked(row, column);
     switch(column)
     {
         case 4:
@@ -164,7 +176,7 @@ void MusicSoundKMicroSearchTableWidget::dataDownloadPlay(int row)
     const MusicObject::MusicSongInformations musicSongInfos(m_downLoadManager->getMusicSongInfos());
     foreach(const MusicObject::MusicSongAttribute &attr, musicSongInfos[row].m_songAttrs)
     {
-        emit mediaUrlChanged(m_queryMovieMode, attr.m_url, m_queryMovieMode ? QString() : musicSongInfos[row].m_lrcUrl);
+        Q_EMIT mediaUrlChanged(m_queryMovieMode, attr.m_url, m_queryMovieMode ? QString() : musicSongInfos[row].m_lrcUrl);
     }
 }
 
@@ -194,11 +206,11 @@ MusicSoundKMicroSearchWidget::MusicSoundKMicroSearchWidget(QWidget *parent)
     layout->setSpacing(0);
 
     QLabel *topWidget = new QLabel(tr(" Search"), this);
-    topWidget->setStyleSheet(MusicUIObject::MBackgroundStyle06 + MusicUIObject::MColorStyle01);
+    topWidget->setStyleSheet(MusicUIObject::MQSSBackgroundStyle06 + MusicUIObject::MQSSColorStyle01);
     topWidget->setFixedHeight(35);
 
     QWidget *searchWidget = new QWidget(this);
-    searchWidget->setStyleSheet(MusicUIObject::MBackgroundStyle15);
+    searchWidget->setStyleSheet(MusicUIObject::MQSSBackgroundStyle15);
     searchWidget->setFixedHeight(35);
     QHBoxLayout *searchLayout = new QHBoxLayout(searchWidget);
     searchLayout->setContentsMargins(5, 0, 0, 0);
@@ -206,16 +218,16 @@ MusicSoundKMicroSearchWidget::MusicSoundKMicroSearchWidget(QWidget *parent)
 
     m_searchEdit = new MusicLocalSongSearchEdit(this);
     m_searchEdit->setFixedHeight(25);
-    m_searchEdit->setStyleSheet(MusicUIObject::MBorderStyle04);
+    m_searchEdit->setStyleSheet(MusicUIObject::MQSSBorderStyle04);
     QPushButton *searchButton = new QPushButton(searchWidget);
-    searchButton->setStyleSheet(MusicUIObject::MBackgroundStyle01);
+    searchButton->setStyleSheet(MusicUIObject::MQSSBackgroundStyle01);
     searchButton->setIcon(QIcon(":/tiny/btn_search_main_hover"));
     searchButton->setCursor(QCursor(Qt::PointingHandCursor));
     searchButton->setIconSize(QSize(25, 25));
     QRadioButton *mvButton = new QRadioButton(tr("MV"), searchWidget);
-    mvButton->setStyleSheet(MusicUIObject::MRadioButtonStyle01);
+    mvButton->setStyleSheet(MusicUIObject::MQSSRadioButtonStyle01);
     QRadioButton *songButton = new QRadioButton(tr("Song"), searchWidget);
-    songButton->setStyleSheet(MusicUIObject::MRadioButtonStyle01);
+    songButton->setStyleSheet(MusicUIObject::MQSSRadioButtonStyle01);
     QButtonGroup *group = new QButtonGroup(this);
     group->addButton(mvButton, 0);
     group->addButton(songButton, 1);

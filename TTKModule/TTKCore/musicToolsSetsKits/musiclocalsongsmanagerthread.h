@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +19,13 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QThread>
-#include <QStringList>
 #include <QFileInfoList>
-#include "musicglobaldefine.h"
+#include "musicabstractthread.h"
 
 /*! @brief The class of the local songs manager thread.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_TOOLSET_EXPORT MusicLocalSongsManagerThread : public QThread
+class MUSIC_TOOLSET_EXPORT MusicLocalSongsManagerThread : public MusicAbstractThread
 {
     Q_OBJECT
     TTK_DECLARE_MODULE(MusicLocalSongsManagerThread)
@@ -37,8 +35,6 @@ public:
      */
     explicit MusicLocalSongsManagerThread(QObject *parent = nullptr);
 
-    ~MusicLocalSongsManagerThread();
-
     /*!
      * Set find file path by given path.
      */
@@ -47,10 +43,6 @@ public:
      * Set find file path by given path lists.
      */
     void setFindFilePath(const QStringList &path);
-    /*!
-     * Stop and quit current thread.
-     */
-    void stopAndQuitThread();
 
 Q_SIGNALS:
     /*!
@@ -58,18 +50,13 @@ Q_SIGNALS:
      */
     void setSongNamePath(const QFileInfoList &name);
 
-public Q_SLOTS:
-    /*!
-     * Strat thread now.
-     */
-    void start();
+protected:
     /*!
      * Thread run now.
      */
     virtual void run() override;
 
 protected:
-    bool m_run;
     QStringList m_path;
 
 };

@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2019 Greedysky Studio
+# * Copyright (C) 2015 - 2020 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,9 @@ TEMPLATE = lib
 
 include(../../../TTKVersion.pri)
 
-win32:TARGET = ../../../../bin/$$TTKMusicPlayer/zlib
-unix:TARGET = ../../../lib/$$TTKMusicPlayer/zlib
+win32:DESTDIR = $$OUT_PWD/../../../bin/$$TTKMusicPlayer
+unix:DESTDIR = $$OUT_PWD/../../../lib/$$TTKMusicPlayer
+TARGET = zlib
 
 CONFIG       += warn_off
 unix:VERSION += 1.2.11

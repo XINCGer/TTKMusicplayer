@@ -1,13 +1,13 @@
 #include "musicconsoleobject.h"
 #include "musicplayer.h"
 #include "musicplaylist.h"
-#include "musiccoreutils.h"
+#include "musicfileutils.h"
 #include "musicformats.h"
 #include "musictkplconfigmanager.h"
 #include "musichotkeymanager.h"
 #include "musictime.h"
 
-#ifdef MUSIC_WINEXTRAS
+#if TTK_QT_VERSION_CHECK(5,2,0)
 #include <QCommandLineOption>
 #include <QCommandLineParser>
 #endif
@@ -77,7 +77,7 @@ MusicConsoleObject::~MusicConsoleObject()
 
 bool MusicConsoleObject::init(const QCoreApplication &app)
 {
-#ifdef MUSIC_WINEXTRAS
+#if TTK_QT_VERSION_CHECK(5,2,0)
     QCommandLineOption op1("u", "", ".");
     QCommandLineOption op2("d", "", ".");
     QCommandLineOption op3("l", "", ".");
@@ -122,7 +122,7 @@ bool MusicConsoleObject::init(const QCoreApplication &app)
         }
         else
         {
-            foreach(const QFileInfo &file, MusicUtils::Core::getFileListByDir(url, MusicFormats::supportFormatsFilterString(), true))
+            foreach(const QFileInfo &file, MusicUtils::File::getFileListByDir(url, MusicFormats::supportFormatsFilterString(), true))
             {
                 qDebug() << "Add play url path: " << file.absoluteFilePath();
                 m_musicPlaylist->appendMedia(0, file.absoluteFilePath());

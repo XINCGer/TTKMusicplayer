@@ -7,7 +7,6 @@
 #include "musicdatadownloadthread.h"
 #include "musicconnectionpool.h"
 #include "musicsemaphoreloop.h"
-#include "musicotherdefine.h"
 #include "musiccoreutils.h"
 #include "musicuiobject.h"
 
@@ -17,8 +16,7 @@ MusicLrcDownloadBatchTableWidget::MusicLrcDownloadBatchTableWidget(QWidget *pare
     setAttribute(Qt::WA_TranslucentBackground, false);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    verticalScrollBar()->setStyleSheet(MusicUIObject::MScrollBarStyle01);
+    verticalScrollBar()->setStyleSheet(MusicUIObject::MQSSScrollBarStyle01);
 
     setColumnCount(5);
     QHeaderView *headerview = horizontalHeader();
@@ -68,7 +66,7 @@ void MusicLrcDownloadBatchTableWidget::createAllItems(const MusicSongs &items)
     }
 }
 
-void MusicLrcDownloadBatchTableWidget::listCellClicked(int row, int column)
+void MusicLrcDownloadBatchTableWidget::itemCellClicked(int row, int column)
 {
     Q_UNUSED(row);
     Q_UNUSED(column);
@@ -81,9 +79,10 @@ MusicLrcDownloadBatchWidget::MusicLrcDownloadBatchWidget(QWidget *parent)
       m_ui(new Ui::MusicLrcDownloadBatchWidget)
 {
     m_ui->setupUi(this);
+    setFixedSize(size());
 
     m_ui->topTitleCloseButton->setIcon(QIcon(":/functions/btn_close_hover"));
-    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MToolButtonStyle04);
+    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle04);
     m_ui->topTitleCloseButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_ui->topTitleCloseButton->setToolTip(tr("Close"));
     connect(m_ui->topTitleCloseButton, SIGNAL(clicked()), SLOT(close()));
@@ -91,9 +90,9 @@ MusicLrcDownloadBatchWidget::MusicLrcDownloadBatchWidget(QWidget *parent)
 
     m_selectedItemIdFlag = false;
 
-    m_ui->skipAlreadyLrcCheckBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
-    m_ui->saveToLrcDirRadioBox->setStyleSheet(MusicUIObject::MRadioButtonStyle01);
-    m_ui->saveToCurrentDirRadioBox->setStyleSheet(MusicUIObject::MRadioButtonStyle01);
+    m_ui->skipAlreadyLrcCheckBox->setStyleSheet(MusicUIObject::MQSSCheckBoxStyle01);
+    m_ui->saveToLrcDirRadioBox->setStyleSheet(MusicUIObject::MQSSRadioButtonStyle01);
+    m_ui->saveToCurrentDirRadioBox->setStyleSheet(MusicUIObject::MQSSRadioButtonStyle01);
 #ifdef Q_OS_UNIX
     m_ui->skipAlreadyLrcCheckBox->setFocusPolicy(Qt::NoFocus);
     m_ui->saveToLrcDirRadioBox->setFocusPolicy(Qt::NoFocus);
@@ -101,8 +100,8 @@ MusicLrcDownloadBatchWidget::MusicLrcDownloadBatchWidget(QWidget *parent)
     m_ui->addButton->setFocusPolicy(Qt::NoFocus);
     m_ui->downloadButton->setFocusPolicy(Qt::NoFocus);
 #endif
-    m_ui->addButton->setStyleSheet(MusicUIObject::MPushButtonStyle04);
-    m_ui->downloadButton->setStyleSheet(MusicUIObject::MPushButtonStyle04);
+    m_ui->addButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
+    m_ui->downloadButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
 
     connect(m_ui->addButton, SIGNAL(clicked()), SLOT(addButtonClicked()));
     connect(m_ui->downloadButton, SIGNAL(clicked()), SLOT(downloadButtonClicked()));
@@ -123,16 +122,16 @@ MusicLrcDownloadBatchWidget::~MusicLrcDownloadBatchWidget()
 void MusicLrcDownloadBatchWidget::modifiedItemButtonClicked()
 {
     MusicSongItems songs;
-    emit getMusicLists(songs);
+    Q_EMIT getMusicLists(songs);
 
     m_selectedItemIdFlag = true;
     MusicSongItemSelectedDialog dialog;
-    connect(&dialog, SIGNAL(itemListsChanged(MIntList)), SLOT(itemListsChanged(MIntList)));
+    connect(&dialog, SIGNAL(itemListsChanged(TTKIntList)), SLOT(itemListsChanged(TTKIntList)));
     dialog.createAllItems(&songs);
     dialog.exec();
 }
 
-void MusicLrcDownloadBatchWidget::itemListsChanged(const MIntList &items)
+void MusicLrcDownloadBatchWidget::itemListsChanged(const TTKIntList &items)
 {
     m_selectedItemIds = items;
     m_ui->itemLabel->setText(tr("Custom Lists"));
@@ -172,11 +171,15 @@ void MusicLrcDownloadBatchWidget::downloadButtonClicked()
         it->setText("...");
 
         MusicSong *song = &m_localSongs[i];
-        const QString &prefix = lrcDir ? MusicUtils::Core::lrcPrefix() : QFileInfo(song->getMusicPath()).path() + QDir::separator();
+        const QString &prefix = lrcDir ? MusicUtils::String::lrcPrefix() : QFileInfo(song->getMusicPath()).path() + QDir::separator();
         const QString &path = QString("%1/%2%3").arg(prefix).arg(song->getMusicName()).arg(LRC_FILE);
         if(skip && QFile::exists(path))
         {
+#if TTK_QT_VERSION_CHECK(5,13,0)
+            it->setForeground(QColor(100, 100, 100));
+#else
             it->setTextColor(QColor(100, 100, 100));
+#endif
             it->setText(tr("Skip"));
             continue;
         }
@@ -193,12 +196,20 @@ void MusicLrcDownloadBatchWidget::downloadButtonClicked()
             MusicDownLoadThreadAbstract *d = M_DOWNLOAD_QUERY_PTR->getDownloadLrcThread(info.m_lrcUrl, path, MusicObject::DownloadLrc, this);
             d->startToDownload();
             loop.exec();
+#if TTK_QT_VERSION_CHECK(5,13,0)
+            it->setForeground(QColor(0, 0xFF, 0));
+#else
             it->setTextColor(QColor(0, 0xFF, 0));
+#endif
             it->setText(tr("Finish"));
         }
         else
         {
+#if TTK_QT_VERSION_CHECK(5,13,0)
+            it->setForeground(QColor(0xFF, 0, 0));
+#else
             it->setTextColor(QColor(0xFF, 0, 0));
+#endif
             it->setText(tr("Error"));
         }
     }
@@ -218,7 +229,7 @@ void MusicLrcDownloadBatchWidget::getSelectedSongItems()
     m_localSongs.clear();
 
     MusicSongItems songs;
-    emit getMusicLists(songs);
+    Q_EMIT getMusicLists(songs);
 
     foreach(const MusicSongItem &item, songs)
     {

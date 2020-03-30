@@ -15,7 +15,7 @@ MusicBDSongCommentsThread::MusicBDSongCommentsThread(QObject *parent)
 
 void MusicBDSongCommentsThread::startToSearch(const QString &name)
 {
-    M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(name));
+    TTK_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(name));
 
     MusicSemaphoreLoop loop;
     MusicDownLoadQueryBDThread *d = new MusicDownLoadQueryBDThread(this);
@@ -40,7 +40,7 @@ void MusicBDSongCommentsThread::startToPage(int offset)
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 startToPage %2").arg(getClassName()).arg(offset));
+    TTK_LOGGER_INFO(QString("%1 startToPage %2").arg(getClassName()).arg(offset));
     deleteAll();
 
     const QString &time = "1494911685";
@@ -72,7 +72,7 @@ void MusicBDSongCommentsThread::downLoadFinished()
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    TTK_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
     m_interrupt = false;
 
     if(m_reply->error() == QNetworkReply::NoError)
@@ -110,15 +110,14 @@ void MusicBDSongCommentsThread::downLoadFinished()
                     comment.m_nickName = user["username"].toString();
                     comment.m_coverUrl = user["userpic"].toString();
 
-                    emit createSearchedItem(comment);
+                    Q_EMIT createSearchedItem(comment);
                 }
             }
         }
     }
 
-    emit downLoadDataChanged(QString());
+    Q_EMIT downLoadDataChanged(QString());
     deleteAll();
-    M_LOGGER_INFO(QString("%1 finished deleteAll").arg(getClassName()));
 }
 
 
@@ -131,7 +130,7 @@ MusicBDPlaylistCommentsThread::MusicBDPlaylistCommentsThread(QObject *parent)
 
 void MusicBDPlaylistCommentsThread::startToSearch(const QString &name)
 {
-    M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(name));
+    TTK_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(name));
 
     m_rawData["songID"] = name;
     startToPage(0);
@@ -144,7 +143,7 @@ void MusicBDPlaylistCommentsThread::startToPage(int offset)
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 startToPage %2").arg(getClassName()).arg(offset));
+    TTK_LOGGER_INFO(QString("%1 startToPage %2").arg(getClassName()).arg(offset));
     deleteAll();
 
     const QString &time = "1494911685";
@@ -152,9 +151,9 @@ void MusicBDPlaylistCommentsThread::startToPage(int offset)
     const QString &data = MusicUtils::Algorithm::mdII(BD_PL_COMMIT_DATA_URL, false).arg(m_pageSize*offset).arg(m_pageSize).arg(m_rawData["songID"].toInt());
     QString eKey = QAesWrap().encryptCBC(data.toUtf8(), key.toUtf8(), key.toUtf8());
     const QString &sign = MusicUtils::Algorithm::md5(QString("baidu_taihe_music" + eKey + time).toUtf8()).toHex();
-    eKey.replace('+', "%2B");
-    eKey.replace('/', "%2F");
-    eKey.replace('=', "%3D");
+    eKey.replace("+", "%2B");
+    eKey.replace("/", "%2F");
+    eKey.replace("=", "%3D");
     const QUrl &musicUrl = MusicUtils::Algorithm::mdII(BD_COMMIT_URL, false).arg(time).arg(sign).arg(eKey);
 
     m_pageTotal = 0;
@@ -178,7 +177,7 @@ void MusicBDPlaylistCommentsThread::downLoadFinished()
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    TTK_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
     m_interrupt = false;
 
     if(m_reply->error() == QNetworkReply::NoError)
@@ -216,13 +215,12 @@ void MusicBDPlaylistCommentsThread::downLoadFinished()
                     comment.m_nickName = user["username"].toString();
                     comment.m_coverUrl= user["userpic"].toString();
 
-                    emit createSearchedItem(comment);
+                    Q_EMIT createSearchedItem(comment);
                 }
             }
         }
     }
 
-    emit downLoadDataChanged(QString());
+    Q_EMIT downLoadDataChanged(QString());
     deleteAll();
-    M_LOGGER_INFO(QString("%1 finished deleteAll").arg(getClassName()));
 }

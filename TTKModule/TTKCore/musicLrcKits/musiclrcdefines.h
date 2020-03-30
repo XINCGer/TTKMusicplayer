@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,34 +35,34 @@ public:
     MusicLrcDefines();
 
     /*!
-     * Get inline lrc size.
+     * Get Interior lrc size.
      */
-    QStringList getInlineLrcSize() const;
+    QStringList getInteriorLrcSize() const;
     /*!
      * Get desktop lrc size.
      */
     QStringList getDesktopLrcSize() const;
 
     /*!
-     * Find inline lrc index.
+     * Find Interior lrc index.
      */
-    int findInlineLrcIndex(int size) const;
+    int findInteriorLrcIndex(int size) const;
     /*!
-     * Find inline pre size.
+     * Find Interior pre size.
      */
-    int findInlinePreSize(int index) const;
+    int findInteriorPreSize(int index) const;
     /*!
-     * Find inline next size.
+     * Find Interior next size.
      */
-    int findInlineNextSize(int index) const;
+    int findInteriorNextSize(int index) const;
     /*!
-     * Find inline first size.
+     * Find Interior first size.
      */
-    int findInlineFirstSize() const;
+    int findInteriorFirstSize() const;
     /*!
-     * Find inline last size.
+     * Find Interior last size.
      */
-    int findInlineLastSize() const;
+    int findInteriorLastSize() const;
 
     /*!
      * Find desktop lrc index.
@@ -86,7 +86,7 @@ public:
     int findDesktopLastSize() const;
 
 protected:
-    QStringList m_inlineLrcSize, m_desktopLrcSize;
+    QStringList m_interiorLrcSize, m_desktopLrcSize;
 
 };
 

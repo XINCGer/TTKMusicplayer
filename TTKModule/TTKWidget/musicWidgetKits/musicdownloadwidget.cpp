@@ -2,7 +2,6 @@
 #include "ui_musicdownloadwidget.h"
 #include "musicuiobject.h"
 #include "musicsettingmanager.h"
-#include "musicnetworkthread.h"
 #include "musicdownloadrecordconfigmanager.h"
 #include "musicdatatagdownloadthread.h"
 #include "musicmessagebox.h"
@@ -100,7 +99,7 @@ MusicDownloadTableItemRole MusicDownloadTableWidget::getCurrentItemRole() const
    return item(row, 0)->data(TABLE_ITEM_ROLE).value<MusicDownloadTableItemRole>();
 }
 
-void MusicDownloadTableWidget::listCellClicked(int row, int column)
+void MusicDownloadTableWidget::itemCellClicked(int row, int column)
 {
     Q_UNUSED(row);
     Q_UNUSED(column);
@@ -113,18 +112,19 @@ MusicDownloadWidget::MusicDownloadWidget(QWidget *parent)
       m_ui(new Ui::MusicDownloadWidget)
 {
     m_ui->setupUi(this);
+    setFixedSize(size());
 
     m_ui->topTitleCloseButton->setIcon(QIcon(":/functions/btn_close_hover"));
-    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MToolButtonStyle04);
+    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle04);
     m_ui->topTitleCloseButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_ui->topTitleCloseButton->setToolTip(tr("Close"));
 
     setAttribute(Qt::WA_DeleteOnClose);
 
-    m_ui->downloadPathEdit->setStyleSheet(MusicUIObject::MLineEditStyle01);
-    m_ui->pathChangedButton->setStyleSheet(MusicUIObject::MPushButtonStyle03);
-    m_ui->settingButton->setStyleSheet(MusicUIObject::MPushButtonStyle03);
-    m_ui->downloadButton->setStyleSheet(MusicUIObject::MPushButtonStyle06);
+    m_ui->downloadPathEdit->setStyleSheet(MusicUIObject::MQSSLineEditStyle01);
+    m_ui->pathChangedButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle03);
+    m_ui->settingButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle03);
+    m_ui->downloadButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle06);
 #ifdef Q_OS_UNIX
     m_ui->pathChangedButton->setFocusPolicy(Qt::NoFocus);
     m_ui->settingButton->setFocusPolicy(Qt::NoFocus);
@@ -155,7 +155,7 @@ void MusicDownloadWidget::initWidget()
 {
     m_ui->loadingLabel->run(true);
 
-    controlEnable(true);
+    controlEnabled(true);
 
     if(m_queryType == MusicDownLoadQueryThreadAbstract::MovieQuery)
     {
@@ -163,11 +163,11 @@ void MusicDownloadWidget::initWidget()
     }
     else
     {
-        m_ui->downloadPathEdit->setText(M_SETTING_PTR->value(MusicSettingManager::DownloadMusicPathDirChoiced).toString());
+        m_ui->downloadPathEdit->setText(M_SETTING_PTR->value(MusicSettingManager::DownloadMusicPathDir).toString());
     }
 }
 
-void MusicDownloadWidget::controlEnable(bool enable)
+void MusicDownloadWidget::controlEnabled(bool enable)
 {
     m_ui->topTitleCloseButton->setEnabled(enable);
     m_ui->downloadButton->setEnabled(enable);
@@ -246,7 +246,7 @@ MusicObject::MusicSongInformation MusicDownloadWidget::getMatchMusicSongInformat
                 break;
             }
         }
-        qSort(musicSongInfo.m_songAttrs);
+        std::sort(musicSongInfo.m_songAttrs.begin(), musicSongInfo.m_songAttrs.end());
         return musicSongInfo;
     }
     return MusicObject::MusicSongInformation();
@@ -270,7 +270,7 @@ void MusicDownloadWidget::queryAllFinishedMusic()
 void MusicDownloadWidget::queryAllFinishedMusic(const MusicObject::MusicSongAttributes &attrs)
 {
     MusicObject::MusicSongAttributes attributes = attrs;
-    qSort(attributes);
+    std::sort(attributes.begin(), attributes.end());
     //to find out the min bitrate
 
     foreach(const MusicObject::MusicSongAttribute &attr, attributes)
@@ -322,7 +322,7 @@ void MusicDownloadWidget::queryAllFinishedMovie()
 void MusicDownloadWidget::queryAllFinishedMovie(const MusicObject::MusicSongAttributes &attrs)
 {
     MusicObject::MusicSongAttributes attributes = attrs;
-    qSort(attributes);
+    std::sort(attributes.begin(), attributes.end());
     //to find out the min bitrate
 
     foreach(const MusicObject::MusicSongAttribute &attr, attributes)
@@ -396,7 +396,7 @@ void MusicDownloadWidget::downloadDirSelected()
         {
             if(m_queryType == MusicDownLoadQueryThreadAbstract::MusicQuery)
             {
-                M_SETTING_PTR->setValue(MusicSettingManager::DownloadMusicPathDirChoiced, path + "/");
+                M_SETTING_PTR->setValue(MusicSettingManager::DownloadMusicPathDir, path + "/");
             }
             m_ui->downloadPathEdit->setText(path + "/");
         }
@@ -424,14 +424,14 @@ void MusicDownloadWidget::startToDownload()
     {
         m_querySingleInfo ? startToDownloadMovie(m_singleSongInfo) : startToDownloadMovie();
     }
-    controlEnable(false);
+    controlEnabled(false);
 }
 
 void MusicDownloadWidget::dataDownloadFinished()
 {
     if(++m_downloadOffset >= m_downloadTotal)
     {
-        emit dataDownloadChanged();
+        Q_EMIT dataDownloadChanged();
         close();
     }
 }

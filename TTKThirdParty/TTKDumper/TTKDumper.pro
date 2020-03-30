@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2019 Greedysky Studio
+# * Copyright (C) 2015 - 2020 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,9 @@ TEMPLATE = lib
 
 include(../../TTKVersion.pri)
 
-win32:TARGET = ../../../bin/$$TTKMusicPlayer/TTKDumper
-unix:TARGET = ../../lib/$$TTKMusicPlayer/TTKDumper
+win32:DESTDIR = $$OUT_PWD/../../bin/$$TTKMusicPlayer
+unix:DESTDIR = $$OUT_PWD/../../lib/$$TTKMusicPlayer
+TARGET = TTKDumper
 
 CONFIG       += warn_off
 unix:VERSION += 1.0.0
@@ -47,7 +48,8 @@ SOURCES += \
 HEADERS += \
     $$PWD/mini.h \
     $$PWD/minidumper.h \
-    $$PWD/ttkdumper.h
+    $$PWD/ttkdumper.h \
+    $$PWD/ttklogger.h
 
 #load extra define
 include(../TTKExtrasDefine.pri)

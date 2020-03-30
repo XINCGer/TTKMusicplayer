@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2019 Greedysky Studio
+# * Copyright (C) 2015 - 2020 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ INCLUDEPATH += $$PWD
 
 !contains(CONFIG, TTK_NO_MSVC_LINK_NEED){
 HEADERS  += \
-    $$PWD/musiclogger.h \
     $$PWD/musicobject.h \
     $$PWD/musicformats.h \
     $$PWD/musicnumberdefine.h \
@@ -30,9 +29,10 @@ HEADERS  += \
     $$PWD/musicplayer.h \
     $$PWD/musicplaylist.h \
     $$PWD/musicabstractxml.h \
+    $$PWD/musicabstractthread.h \
     $$PWD/musicsettingmanager.h \
     $$PWD/musicconnectionpool.h \
-    $$PWD/musicregeditmanager.h \
+    $$PWD/musicwindowsmanager.h \
     $$PWD/musicsingleton.h \
     $$PWD/musiccoremplayer.h \
     $$PWD/musicsong.h \
@@ -41,7 +41,7 @@ HEADERS  += \
     $$PWD/musicbackgroundmanager.h \
     $$PWD/musicsemaphoreloop.h \
     $$PWD/musiccategoryconfigmanager.h \
-    $$PWD/musiclicensecore.h \
+    $$PWD/musiclicenseobject.h \
     $$PWD/musicplaylistmanager.h \
     $$PWD/musichotkeymanager.h \
     $$PWD/musicruntimemanager.h \
@@ -60,8 +60,9 @@ SOURCES += \
     $$PWD/musicplayer.cpp \
     $$PWD/musicplaylist.cpp \
     $$PWD/musicabstractxml.cpp \
+    $$PWD/musicabstractthread.cpp \
     $$PWD/musicconnectionpool.cpp \
-    $$PWD/musicregeditmanager.cpp \
+    $$PWD/musicwindowsmanager.cpp \
     $$PWD/musiccoremplayer.cpp \
     $$PWD/musicsong.cpp \
     $$PWD/musicsongtag.cpp \
@@ -69,7 +70,7 @@ SOURCES += \
     $$PWD/musicbackgroundmanager.cpp \
     $$PWD/musicsemaphoreloop.cpp \
     $$PWD/musiccategoryconfigmanager.cpp \
-    $$PWD/musiclicensecore.cpp \
+    $$PWD/musiclicenseobject.cpp \
     $$PWD/musicplaylistmanager.cpp \
     $$PWD/musichotkeymanager.cpp \
     $$PWD/musicruntimemanager.cpp \

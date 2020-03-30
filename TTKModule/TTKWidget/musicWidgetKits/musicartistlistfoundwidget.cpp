@@ -4,7 +4,6 @@
 #include "musictinyuiobject.h"
 #include "musicartistlistfoundcategorypopwidget.h"
 #include "musicpagingwidgetobject.h"
-#include "musicotherdefine.h"
 #include "musicrightareawidget.h"
 
 #include <qmath.h>
@@ -18,7 +17,7 @@ MusicArtistListFoundItemWidget::MusicArtistListFoundItemWidget(QWidget *parent)
     : MusicClickedLabel(parent)
 {
     setAlignment(Qt::AlignCenter);
-    setStyleSheet(MusicUIObject::MColorStyle09);
+    setStyleSheet(MusicUIObject::MQSSColorStyle09);
     setFixedSize(WIDTH_LABEL_SIZE, HEIGHT_LABEL_SIZE);
 
     connect(this, SIGNAL(clicked()), SLOT(currentItemClicked()));
@@ -33,7 +32,7 @@ void MusicArtistListFoundItemWidget::setMusicResultsItem(const MusicResultsItem 
 
 void MusicArtistListFoundItemWidget::currentItemClicked()
 {
-    emit currentItemClicked(m_itemData);
+    Q_EMIT currentItemClicked(m_itemData);
 }
 
 
@@ -100,7 +99,7 @@ void MusicArtistListFoundWidget::createArtistListItem(const MusicResultsItem &it
 
         m_container->removeWidget(m_mainWindow);
         QScrollArea *scrollArea = new QScrollArea(this);
-        scrollArea->setStyleSheet(MusicUIObject::MScrollBarStyle01);
+        scrollArea->setStyleSheet(MusicUIObject::MQSSScrollBarStyle01);
         scrollArea->setWidgetResizable(true);
         scrollArea->setFrameShape(QFrame::NoFrame);
         scrollArea->setAlignment(Qt::AlignLeft);
@@ -108,7 +107,7 @@ void MusicArtistListFoundWidget::createArtistListItem(const MusicResultsItem &it
         m_container->addWidget(scrollArea);
 
         m_firstInit = true;
-        QHBoxLayout *mainlayout = MStatic_cast(QHBoxLayout*, m_mainWindow->layout());
+        QHBoxLayout *mainlayout = TTKStatic_cast(QHBoxLayout*, m_mainWindow->layout());
         QWidget *containTopWidget = new QWidget(m_mainWindow);
         QVBoxLayout *containTopLayout  = new QVBoxLayout(containTopWidget);
         containTopLayout->setContentsMargins(30, 0, 30, 0);
@@ -125,8 +124,8 @@ void MusicArtistListFoundWidget::createArtistListItem(const MusicResultsItem &it
         connect(group, SIGNAL(mapped(int)), SLOT(numberButtonClicked(int)));
         for(int i=-1; i<27; ++i)
         {
-            MusicClickedLabel *l = new MusicClickedLabel(QString(MStatic_cast(char, i + 65)), containNumberWidget);
-            l->setStyleSheet(QString("QLabel::hover{%1} QLabel{%2}").arg(MusicUIObject::MColorStyle08).arg(MusicUIObject::MColorStyle11));
+            MusicClickedLabel *l = new MusicClickedLabel(QString(TTKStatic_cast(char, i + 65)), containNumberWidget);
+            l->setStyleSheet(QString("QLabel::hover{%1} QLabel{%2}").arg(MusicUIObject::MQSSColorStyle08).arg(MusicUIObject::MQSSColorStyle11));
             connect(l, SIGNAL(clicked()), group, SLOT(map()));
             if(i == -1)
             {
@@ -146,7 +145,7 @@ void MusicArtistListFoundWidget::createArtistListItem(const MusicResultsItem &it
 
         QFrame *line = new QFrame(m_mainWindow);
         line->setFrameShape(QFrame::HLine);
-        line->setStyleSheet(MusicUIObject::MColorStyle06);
+        line->setStyleSheet(MusicUIObject::MQSSColorStyle06);
 
         QWidget *containWidget = new QWidget(m_mainWindow);
         m_gridLayout = new QGridLayout(containWidget);

@@ -19,7 +19,6 @@ void MusicDownloadSourceThread::startToDownload(const QString &url)
     request.setUrl(url);
 #ifndef QT_NO_SSL
     connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
-    M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
     MusicObject::setSslConfiguration(&request);
 #endif
 
@@ -41,25 +40,25 @@ void MusicDownloadSourceThread::downLoadFinished()
         {
             if(m_rawData.isEmpty())
             {
-                emit downLoadByteDataChanged(m_reply->readAll());
+                Q_EMIT downLoadByteDataChanged(m_reply->readAll());
             }
             else
             {
-                emit downLoadExtDataChanged(m_reply->readAll(), m_rawData);
+                Q_EMIT downLoadExtDataChanged(m_reply->readAll(), m_rawData);
             }
             deleteAll();
         }
     }
     else
     {
-        M_LOGGER_ERROR("Download source data error");
+        TTK_LOGGER_ERROR("Download source data error");
         if(m_rawData.isEmpty())
         {
-            emit downLoadByteDataChanged(QByteArray());
+            Q_EMIT downLoadByteDataChanged(QByteArray());
         }
         else
         {
-            emit downLoadExtDataChanged(QByteArray(), m_rawData);
+            Q_EMIT downLoadExtDataChanged(QByteArray(), m_rawData);
         }
         deleteAll();
     }
@@ -67,14 +66,14 @@ void MusicDownloadSourceThread::downLoadFinished()
 
 void MusicDownloadSourceThread::replyError(QNetworkReply::NetworkError)
 {
-    M_LOGGER_ERROR("Abnormal network connection");
+    TTK_LOGGER_ERROR("Abnormal network connection");
     if(m_rawData.isEmpty())
     {
-        emit downLoadByteDataChanged(QByteArray());
+        Q_EMIT downLoadByteDataChanged(QByteArray());
     }
     else
     {
-        emit downLoadExtDataChanged(QByteArray(), m_rawData);
+        Q_EMIT downLoadExtDataChanged(QByteArray(), m_rawData);
     }
     deleteAll();
 }
@@ -85,11 +84,11 @@ void MusicDownloadSourceThread::sslErrors(QNetworkReply* reply, const QList<QSsl
     sslErrorsString(reply, errors);
     if(m_rawData.isEmpty())
     {
-        emit downLoadByteDataChanged(QByteArray());
+        Q_EMIT downLoadByteDataChanged(QByteArray());
     }
     else
     {
-        emit downLoadExtDataChanged(QByteArray(), m_rawData);
+        Q_EMIT downLoadExtDataChanged(QByteArray(), m_rawData);
     }
     deleteAll();
 }

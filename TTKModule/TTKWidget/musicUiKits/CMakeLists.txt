@@ -6,8 +6,8 @@ set_property(GLOBAL PROPERTY MUSIC_WIDGET_UI_KITS_HEADERS
     ${MUSIC_WIDGET_UI_DIR}/musicdesktoplrcuiobject.h
     ${MUSIC_WIDGET_UI_DIR}/musicfunctionlistuiobject.h
     ${MUSIC_WIDGET_UI_DIR}/musicfunctionuiobject.h
-    ${MUSIC_WIDGET_UI_DIR}/musicinlinefloatuiobject.h
-    ${MUSIC_WIDGET_UI_DIR}/musicinlinelrcuiobject.h
+    ${MUSIC_WIDGET_UI_DIR}/musicinteriorfloatuiobject.h
+    ${MUSIC_WIDGET_UI_DIR}/musicinteriorlrcuiobject.h
     ${MUSIC_WIDGET_UI_DIR}/musicleftitemlistuiobject.h
     ${MUSIC_WIDGET_UI_DIR}/musicmagicwidgetuiobject.h
     ${MUSIC_WIDGET_UI_DIR}/musicqualitywidgetuiobject.h
@@ -35,13 +35,12 @@ set_property(GLOBAL PROPERTY MUSIC_UIS
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musictimerwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musictransformwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musicvolumegainwidget.ui
-    ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musicsoundtouchwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musicsongringtonemakerwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musicsongchecktoolswidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musicsoundkmicrowidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musicspectrumwidget.ui
+    ${MUSIC_WIDGET_UI_DIR}/musicToolsetsKits/musicsongdlnatransferwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsKits/musiccloudfileinformationwidget.ui
-    ${MUSIC_WIDGET_UI_DIR}/musicToolsKits/musiccloudfilemanagerdialog.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsKits/musicconnecttransferwidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsKits/musicwebmusicradioplaywidget.ui
     ${MUSIC_WIDGET_UI_DIR}/musicToolsKits/musictoolsetswidget.ui
@@ -66,4 +65,6 @@ set_property(GLOBAL PROPERTY MUSIC_UIS
     ${MUSIC_WIDGET_UI_DIR}/musicWidgetKits/musicmessageaboutdialog.ui
     ${MUSIC_WIDGET_UI_DIR}/musicWidgetKits/musiccolordialog.ui
     ${MUSIC_WIDGET_UI_DIR}/musicWidgetKits/musicsongitemselecteddialog.ui
+    ${MUSIC_WIDGET_UI_DIR}/musicWidgetKits/musicmessagefeedbackdialog.ui
+    ${MUSIC_WIDGET_UI_DIR}/musicWidgetKits/musicpluginwidget.ui
 )

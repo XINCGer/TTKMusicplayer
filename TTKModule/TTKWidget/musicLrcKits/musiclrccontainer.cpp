@@ -34,13 +34,13 @@ void MusicLrcContainer::setLinearGradientColor(const MusicLrcColor &color)
         manager->setLinearGradientColor(color);
     }
 
-    M_SETTING_PTR->setValue( (m_containerType == LRC_DESKTOP_TPYE) ? MusicSettingManager::DLrcColorChoiced : MusicSettingManager::LrcColorChoiced, color.m_index);
-    emit linearGradientColorChanged();
+    M_SETTING_PTR->setValue( (m_containerType == LRC_DESKTOP_TPYE) ? MusicSettingManager::DLrcColor : MusicSettingManager::LrcColor, color.m_index);
+    Q_EMIT linearGradientColorChanged();
 }
 
-void MusicLrcContainer::setSettingParameter()
+void MusicLrcContainer::applySettingParameter()
 {
-    setSettingParameter(m_containerType == LRC_DESKTOP_TPYE ? LRC_DESKTOP_PREFIX : QString());
+    applySettingParameter(m_containerType == LRC_DESKTOP_TPYE ? LRC_DESKTOP_PREFIX : QString());
 }
 
 void MusicLrcContainer::setCurrentTime(qint64 time, qint64 total)
@@ -56,8 +56,8 @@ qint64 MusicLrcContainer::getTotalTime() const
 
 void MusicLrcContainer::currentLrcCustom()
 {
-    emit changeCurrentLrcColorCustom();
-    emit changeCurrentLrcColorSetting();
+    Q_EMIT changeCurrentLrcColorCustom();
+    Q_EMIT changeCurrentLrcColorSetting();
 }
 
 void MusicLrcContainer::changeCurrentLrcColor(QAction *action)
@@ -86,7 +86,7 @@ void MusicLrcContainer::changeCurrentLrcColor(QAction *action)
 
 void MusicLrcContainer::changeCurrentLrcColor(int index)
 {
-    setLinearGradientColor(MStatic_cast(MusicLrcColor::LrcColorType, index));
+    setLinearGradientColor(TTKStatic_cast(MusicLrcColor::LrcColorType, index));
 }
 
 void MusicLrcContainer::searchMusicLrcs()
@@ -125,24 +125,24 @@ void MusicLrcContainer::clearAllMusicLRCManager()
     m_musicLrcContainer.clear();
 }
 
-void MusicLrcContainer::setSettingParameter(const QString &t)
+void MusicLrcContainer::applySettingParameter(const QString &t)
 {
     foreach(MusicLrcManager *manager, m_musicLrcContainer)
     {
-        manager->setFontFamily(M_SETTING_PTR->value(t + "LrcFamilyChoiced").toInt());
-        manager->setFontType(M_SETTING_PTR->value(t + "LrcTypeChoiced").toInt());
-        manager->setFontTransparent(M_SETTING_PTR->value(t + "LrcColorTransChoiced").toInt());
-        manager->setLrcFontSize(M_SETTING_PTR->value(t + "LrcSizeChoiced").toInt());
+        manager->setFontFamily(M_SETTING_PTR->value(t + "LrcFamily").toInt());
+        manager->setFontType(M_SETTING_PTR->value(t + "LrcType").toInt());
+        manager->setFontTransparent(M_SETTING_PTR->value(t + "LrcColorTrans").toInt());
+        manager->setLrcFontSize(M_SETTING_PTR->value(t + "LrcSize").toInt());
     }
-    if(M_SETTING_PTR->value(t + "LrcColorChoiced").toInt() != -1)
+    if(M_SETTING_PTR->value(t + "LrcColor").toInt() != -1)
     {
-        const MusicLrcColor::LrcColorType index = MStatic_cast(MusicLrcColor::LrcColorType, M_SETTING_PTR->value(t + "LrcColorChoiced").toInt());
+        const MusicLrcColor::LrcColorType index = TTKStatic_cast(MusicLrcColor::LrcColorType, M_SETTING_PTR->value(t + "LrcColor").toInt());
         setLinearGradientColor(index);
     }
     else
     {
-        const MusicLrcColor cl(MusicUtils::String::readColorConfig(M_SETTING_PTR->value(t + "LrcFrontgroundColorChoiced").toString()),
-                               MusicUtils::String::readColorConfig(M_SETTING_PTR->value(t + "LrcBackgroundColorChoiced").toString()));
+        const MusicLrcColor cl(MusicUtils::String::readColorConfig(M_SETTING_PTR->value(t + "LrcFrontgroundColor").toString()),
+                               MusicUtils::String::readColorConfig(M_SETTING_PTR->value(t + "LrcBackgroundColor").toString()));
         setLinearGradientColor(cl);
     }
 }

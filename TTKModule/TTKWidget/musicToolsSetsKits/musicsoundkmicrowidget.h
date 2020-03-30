@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@ class MusicSoundKMicroWidget;
 }
 class MusicCoreMPlayer;
 class MusicLrcAnalysis;
-class MusicLrcManagerForInline;
+class MusicLrcManagerForInterior;
 class MusicSoundKMicroSearchWidget;
-class MusicAudioRecorderCore;
+class MusicAudioRecorderObject;
 
 /*! @brief The class of the sound kmicro widget.
  * @author Greedysky <greedysky@163.com>
@@ -135,8 +135,8 @@ protected:
     MusicCoreMPlayer *m_mediaPlayer;
     MusicSoundKMicroSearchWidget *m_searchWidget;
     MusicLrcAnalysis *m_analysis;
-    QList<MusicLrcManagerForInline*> m_musicLrcContainer;
-    MusicAudioRecorderCore *m_recordCore;
+    QList<MusicLrcManagerForInterior*> m_musicLrcContainer;
+    MusicAudioRecorderObject *m_recordCore;
 
 };
 

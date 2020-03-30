@@ -5,7 +5,7 @@
 #include "musiccoremplayer.h"
 #include "musicsettingmanager.h"
 #include "musiclrcanalysis.h"
-#include "musiclrcmanagerforinline.h"
+#include "musiclrcmanagerforinterior.h"
 #include "musicstringutils.h"
 #include "musicdownloadsourcethread.h"
 #include "musicvideouiobject.h"
@@ -13,9 +13,9 @@
 #include "musicuiobject.h"
 #include "musictoolsetsuiobject.h"
 #include "musicmessagebox.h"
-#include "musicaudiorecordercore.h"
+#include "musicaudiorecorderobject.h"
 #include "musiccodecutils.h"
-#include "musicotherdefine.h"
+#include "musicfileutils.h"
 #include "musictime.h"
 #include "musicsinglemanager.h"
 
@@ -28,19 +28,20 @@ MusicSoundKMicroWidget::MusicSoundKMicroWidget(QWidget *parent)
     m_ui(new Ui::MusicSoundKMicroWidget)
 {
     m_ui->setupUi(this);
+    setFixedSize(size());
 
     m_ui->topTitleCloseButton->setIcon(QIcon(":/functions/btn_close_hover"));
-    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MToolButtonStyle04);
+    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle04);
     m_ui->topTitleCloseButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_ui->topTitleCloseButton->setToolTip(tr("Close"));
     connect(m_ui->topTitleCloseButton, SIGNAL(clicked()), SLOT(close()));
 
-    m_ui->stackedWidget->setStyleSheet(MusicUIObject::MBackgroundStyle02);
-    m_ui->topWidget->setStyleSheet(MusicUIObject::MBackgroundStyle06);
-    m_ui->controlWidget->setStyleSheet(MusicUIObject::MBackgroundStyle06);
-    m_ui->timeLabel->setStyleSheet(MusicUIObject::MColorStyle03);
-    m_ui->timeSlider->setStyleSheet(MusicUIObject::MSliderStyle01);
-    m_ui->transferButton->setStyleSheet(MusicUIObject::MKGRecordTransfer);
+    m_ui->stackedWidget->setStyleSheet(MusicUIObject::MQSSBackgroundStyle02);
+    m_ui->topWidget->setStyleSheet(MusicUIObject::MQSSBackgroundStyle06);
+    m_ui->controlWidget->setStyleSheet(MusicUIObject::MQSSBackgroundStyle06);
+    m_ui->timeLabel->setStyleSheet(MusicUIObject::MQSSColorStyle03);
+    m_ui->timeSlider->setStyleSheet(MusicUIObject::MQSSSliderStyle01);
+    m_ui->transferButton->setStyleSheet(MusicUIObject::MQSSRecordTransfer);
 
     m_queryMovieMode = true;
     m_stateButtonOn = true;
@@ -62,7 +63,7 @@ MusicSoundKMicroWidget::MusicSoundKMicroWidget(QWidget *parent)
     m_searchWidget->connectTo(this);
     m_searchWidget->show();
 
-    m_ui->winTipsButton->setStyleSheet(MusicUIObject::MKGTinyBtnWintopOff);
+    m_ui->winTipsButton->setStyleSheet(MusicUIObject::MQSSTinyBtnWintopOff);
 
     m_analysis = new MusicLrcAnalysis(this);
     m_analysis->setLineMax(5);
@@ -70,13 +71,13 @@ MusicSoundKMicroWidget::MusicSoundKMicroWidget(QWidget *parent)
 
     for(int i=0; i<m_analysis->getLineMax(); ++i)
     {
-        MusicLrcManagerForInline *w = new MusicLrcManagerForInline(this);
+        MusicLrcManagerForInterior *w = new MusicLrcManagerForInterior(this);
         w->setLrcPerWidth(-10);
         m_ui->musicPage->addWidget(w);
         m_musicLrcContainer.append(w);
     }
 
-    m_recordCore = new MusicAudioRecorderCore(this);
+    m_recordCore = new MusicAudioRecorderObject(this);
     m_ui->transferButton->setAudioCore(m_recordCore);
 
 #ifdef Q_OS_UNIX
@@ -103,12 +104,12 @@ MusicSoundKMicroWidget::~MusicSoundKMicroWidget()
 
 void MusicSoundKMicroWidget::setButtonStyle(bool style) const
 {
-    m_ui->playButton->setStyleSheet(style ? MusicUIObject::MKGVideoBtnPlay : MusicUIObject::MKGVideoBtnPause);
+    m_ui->playButton->setStyleSheet(style ? MusicUIObject::MQSSVideoBtnPlay : MusicUIObject::MQSSVideoBtnPause);
 }
 
 void MusicSoundKMicroWidget::setStateButtonStyle(bool style)  const
 {
-    m_ui->stateButton->setStyleSheet(style ? MusicUIObject::MKGVideoBtnOrigin : MusicUIObject::MKGVideoBtnOriginOff);
+    m_ui->stateButton->setStyleSheet(style ? MusicUIObject::MQSSVideoBtnOrigin : MusicUIObject::MQSSVideoBtnOriginOff);
 }
 
 void MusicSoundKMicroWidget::startSeachKMicro(const QString &name)
@@ -162,7 +163,7 @@ void MusicSoundKMicroWidget::playFinished()
 
         recordStateChanged(false);
 
-        const QString &filename = MusicUtils::Widget::getSaveFileDialog(this, "Wav(*.wav)");
+        const QString &filename = MusicUtils::File::getSaveFileDialog(this, "Wav(*.wav)");
         if(!filename.isEmpty())
         {
             m_recordCore->addWavHeader(MusicUtils::Codec::toLocal8Bit(filename));
@@ -214,14 +215,14 @@ void MusicSoundKMicroWidget::stateButtonChanged()
 
 void MusicSoundKMicroWidget::tipsButtonChanged()
 {
-    if(m_ui->winTipsButton->styleSheet().contains(MusicUIObject::MKGTinyBtnWintopOff))
+    if(m_ui->winTipsButton->styleSheet().contains(MusicUIObject::MQSSTinyBtnWintopOff))
     {
-        m_ui->winTipsButton->setStyleSheet(MusicUIObject::MKGTinyBtnWintopOn);
+        m_ui->winTipsButton->setStyleSheet(MusicUIObject::MQSSTinyBtnWintopOn);
         m_searchWidget->hide();
     }
     else
     {
-        m_ui->winTipsButton->setStyleSheet(MusicUIObject::MKGTinyBtnWintopOff);
+        m_ui->winTipsButton->setStyleSheet(MusicUIObject::MQSSTinyBtnWintopOff);
         m_searchWidget->show();
     }
 }
@@ -344,23 +345,23 @@ void MusicSoundKMicroWidget::multiMediaChanged()
 
 void MusicSoundKMicroWidget::setItemStyleSheet(int index, int size, int transparent)
 {
-    MusicLrcManagerForInline *w = m_musicLrcContainer[index];
+    MusicLrcManagerForInterior *w = m_musicLrcContainer[index];
     w->setFontSize(size);
 
     const int value = qBound<int>(0, 100 - transparent, 100);
     w->setFontTransparent(value);
     w->setTransparent(value);
 
-    if(M_SETTING_PTR->value("LrcColorChoiced").toInt() != -1)
+    if(M_SETTING_PTR->value("LrcColor").toInt() != -1)
     {
-        const MusicLrcColor::LrcColorType index = MStatic_cast(MusicLrcColor::LrcColorType, M_SETTING_PTR->value("LrcColorChoiced").toInt());
+        const MusicLrcColor::LrcColorType index = TTKStatic_cast(MusicLrcColor::LrcColorType, M_SETTING_PTR->value("LrcColor").toInt());
         const MusicLrcColor &cl = MusicLrcColor::mapIndexToColor(index);
         w->setLinearGradientColor(cl);
     }
     else
     {
-        const MusicLrcColor cl(MusicUtils::String::readColorConfig(M_SETTING_PTR->value("LrcFrontgroundColorChoiced").toString()),
-                               MusicUtils::String::readColorConfig(M_SETTING_PTR->value("LrcBackgroundColorChoiced").toString()));
+        const MusicLrcColor cl(MusicUtils::String::readColorConfig(M_SETTING_PTR->value("LrcFrontgroundColor").toString()),
+                               MusicUtils::String::readColorConfig(M_SETTING_PTR->value("LrcBackgroundColor").toString()));
         w->setLinearGradientColor(cl);
     }
 }
@@ -370,7 +371,7 @@ void MusicSoundKMicroWidget::recordStateChanged(bool state)
     if(state && m_mediaPlayer->state() != MusicObject::PS_StoppedState)
     {
         m_ui->gifLabel->start();
-        m_ui->recordButton->setStyleSheet(MusicUIObject::MKGRerecord);
+        m_ui->recordButton->setStyleSheet(MusicUIObject::MQSSRerecord);
         if(m_recordCore)
         {
             m_recordCore->onRecordStart();
@@ -383,7 +384,7 @@ void MusicSoundKMicroWidget::recordStateChanged(bool state)
     else
     {
         m_ui->gifLabel->stop();
-        m_ui->recordButton->setStyleSheet(MusicUIObject::MKGRecord);
+        m_ui->recordButton->setStyleSheet(MusicUIObject::MQSSRecord);
         if(m_recordCore)
         {
             m_recordCore->onRecordStop();

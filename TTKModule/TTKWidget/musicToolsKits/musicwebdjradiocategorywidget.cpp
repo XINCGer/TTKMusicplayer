@@ -55,7 +55,7 @@ void MusicWebDJRadioCategoryItemWidget::downLoadFinished(const QByteArray &data)
 
 void MusicWebDJRadioCategoryItemWidget::currentItemClicked()
 {
-    emit currentItemClicked(m_itemData);
+    Q_EMIT currentItemClicked(m_itemData);
 }
 
 
@@ -71,7 +71,7 @@ MusicWebDJRadioCategoryWidget::MusicWebDJRadioCategoryWidget(QWidget *parent)
     QWidget *mainWindow = new QWidget(this);
 
     QScrollArea *scrollArea = new QScrollArea(this);
-    scrollArea->verticalScrollBar()->setStyleSheet(MusicUIObject::MScrollBarStyle01);
+    scrollArea->verticalScrollBar()->setStyleSheet(MusicUIObject::MQSSScrollBarStyle01);
     scrollArea->setWidgetResizable(true);
     scrollArea->setFrameShape(QFrame::NoFrame);
     scrollArea->setAlignment(Qt::AlignLeft);
@@ -92,7 +92,7 @@ MusicWebDJRadioCategoryWidget::~MusicWebDJRadioCategoryWidget()
     delete m_categoryThread;
 }
 
-void MusicWebDJRadioCategoryWidget::init()
+void MusicWebDJRadioCategoryWidget::initialize()
 {
     m_categoryThread->startToDownload();
 }

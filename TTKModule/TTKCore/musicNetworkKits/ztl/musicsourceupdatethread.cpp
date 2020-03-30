@@ -3,8 +3,10 @@
 #include "musicsettingmanager.h"
 #///QJson import
 #include "qjson/parser.h"
+#///Oss import
+#include "qoss/qossconf.h"
 
-#define QN_VERSION       "version"
+#define OS_VERSION_URL       "version"
 
 MusicSourceUpdateThread::MusicSourceUpdateThread(QObject *parent)
     : QObject(parent)
@@ -16,18 +18,17 @@ void MusicSourceUpdateThread::startToDownload()
 {
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
     connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
-    const QString &buketUrl = M_SETTING_PTR->value(MusicSettingManager::QiNiuDataConfigChoiced).toString();
-    download->startToDownload(MusicUtils::Algorithm::mdII(buketUrl, false) + QN_VERSION);
+    download->startToDownload(QOSSConf::generateDataBucketUrl() + OS_VERSION_URL);
 }
 
-QString MusicSourceUpdateThread::getLastedVersion() const
+QString MusicSourceUpdateThread::getVersion() const
 {
     return m_rawData["version"].toString();
 }
 
 bool MusicSourceUpdateThread::isLastedVersion() const
 {
-    const QString &v = getLastedVersion();
+    const QString &v = getVersion();
     if(v.isEmpty())
     {
         return true;
@@ -38,7 +39,7 @@ bool MusicSourceUpdateThread::isLastedVersion() const
     }
 }
 
-QString MusicSourceUpdateThread::getLastedVersionDes() const
+QString MusicSourceUpdateThread::getVersionDescription() const
 {
     return m_rawData["data"].toString();
 }
@@ -54,5 +55,5 @@ void MusicSourceUpdateThread::downLoadFinished(const QByteArray &data)
     }
 
     m_rawData = parseData.toMap();
-    emit downLoadDataChanged(m_rawData);
+    Q_EMIT downLoadDataChanged(m_rawData);
 }

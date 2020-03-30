@@ -1,10 +1,9 @@
 #include "musiclrccontainerforwallpaper.h"
 #include "musicdesktopwallpaperthread.h"
-#include "musiclrcmanagerforinline.h"
+#include "musiclrcmanagerforinterior.h"
 #include "musiclayoutanimationwidget.h"
 #include "musictransitionanimationlabel.h"
 #include "musicbackgroundmanager.h"
-#include "musiclrcanalysis.h"
 #include "musicstringutils.h"
 
 MusicLrcContainerForWallpaper::MusicLrcContainerForWallpaper(QWidget *parent)
@@ -18,6 +17,7 @@ MusicLrcContainerForWallpaper::MusicLrcContainerForWallpaper(QWidget *parent)
     m_background = new MusicTransitionAnimationLabel(this);
     m_background->setScaledContents(true);
     vBoxLayout->addWidget(m_background);
+
     QVBoxLayout *bBoxLayout = new QVBoxLayout(m_background);
     bBoxLayout->setContentsMargins(0, 0, 0, 0);
     bBoxLayout->setSpacing(0);
@@ -31,11 +31,11 @@ MusicLrcContainerForWallpaper::MusicLrcContainerForWallpaper(QWidget *parent)
     m_animationFreshTime = 0;
     m_wallThread = new MusicDesktopWallpaperThread(this);
     connect(m_wallThread, SIGNAL(updateBackground(QPixmap)), SLOT(updateBackground(QPixmap)));
+
 #ifdef Q_OS_WIN
     m_wallThread->sendMessageToDesktop();
     SetParent((HWND)winId(), m_wallThread->findDesktopIconWnd());
 #endif
-
 }
 
 MusicLrcContainerForWallpaper::~MusicLrcContainerForWallpaper()
@@ -46,28 +46,28 @@ MusicLrcContainerForWallpaper::~MusicLrcContainerForWallpaper()
 
 void MusicLrcContainerForWallpaper::startTimerClock()
 {
-    m_musicLrcContainer[MUSIC_LRC_INLINE_MAX_LINE/2]->startTimerClock();
+    m_musicLrcContainer[MUSIC_LRC_INTERIOR_MAX_LINE / 2]->startTimerClock();
 }
 
 void MusicLrcContainerForWallpaper::stopLrcMask()
 {
-    m_musicLrcContainer[MUSIC_LRC_INLINE_MAX_LINE/2]->stopLrcMask();
+    m_musicLrcContainer[MUSIC_LRC_INTERIOR_MAX_LINE / 2]->stopLrcMask();
     m_layoutWidget->stop();
 }
 
-void MusicLrcContainerForWallpaper::setSettingParameter()
+void MusicLrcContainerForWallpaper::applySettingParameter()
 {
     const int width = M_SETTING_PTR->value(MusicSettingManager::ScreenSize).toSize().width() - LRC_PER_WIDTH;
-    for(int i=0; i<MUSIC_LRC_INLINE_MAX_LINE; ++i)
+    for(int i=0; i<MUSIC_LRC_INTERIOR_MAX_LINE; ++i)
     {
-        MusicLrcManagerForInline *w = MStatic_cast(MusicLrcManagerForInline*, m_musicLrcContainer[i]);
+        MusicLrcManagerForInterior *w = TTKStatic_cast(MusicLrcManagerForInterior*, m_musicLrcContainer[i]);
         w->setLrcPerWidth(width);
         w->setLrcFontSize(36);
         w->setY(35 + 36);
         w->setFixedHeight(35 + 36);
     }
 
-    for(int i=0; i<MUSIC_LRC_INLINE_MAX_LINE; ++i)
+    for(int i=0; i<MUSIC_LRC_INTERIOR_MAX_LINE; ++i)
     {
         if(i == 0 || i == 10) setItemStyleSheet(i, 25, 90);
         else if(i == 1 || i == 9) setItemStyleSheet(i, 20, 80);
@@ -82,9 +82,9 @@ void MusicLrcContainerForWallpaper::setLrcAnalysisModel(MusicLrcAnalysis *analys
 {
     MusicLrcContainer::setLrcAnalysisModel(analysis);
     m_layoutWidget->addStretch(1);
-    for(int i=0; i<MUSIC_LRC_INLINE_MAX_LINE; ++i)
+    for(int i=0; i<MUSIC_LRC_INTERIOR_MAX_LINE; ++i)
     {
-       MusicLrcManager *w = new MusicLrcManagerForInline(this);
+       MusicLrcManager *w = new MusicLrcManagerForInterior(this);
        m_layoutWidget->addWidget(w);
        m_musicLrcContainer.append(w);
     }
@@ -108,11 +108,11 @@ void MusicLrcContainerForWallpaper::updateCurrentLrc(qint64 time)
 
 void MusicLrcContainerForWallpaper::updateCurrentLrc(const QString &text)
 {
-    for(int i=0; i<MUSIC_LRC_INLINE_MAX_LINE; ++i)
+    for(int i=0; i<MUSIC_LRC_INTERIOR_MAX_LINE; ++i)
     {
         m_musicLrcContainer[i]->setText(QString());
     }
-    m_musicLrcContainer[MUSIC_LRC_INLINE_MAX_LINE/2]->setText(text);
+    m_musicLrcContainer[MUSIC_LRC_INTERIOR_MAX_LINE / 2]->setText(text);
 }
 
 void MusicLrcContainerForWallpaper::start(bool immediate)
@@ -135,7 +135,7 @@ void MusicLrcContainerForWallpaper::start(bool immediate)
 
 void MusicLrcContainerForWallpaper::changeCurrentLrcColor()
 {
-    setSettingParameter();
+    applySettingParameter();
 }
 
 void MusicLrcContainerForWallpaper::updateBackground(const QPixmap &pix)
@@ -145,12 +145,12 @@ void MusicLrcContainerForWallpaper::updateBackground(const QPixmap &pix)
 
 void MusicLrcContainerForWallpaper::updateAnimationLrc()
 {
-    const int length = (MUSIC_LRC_INLINE_MAX_LINE - m_lrcAnalysis->getLineMax())/2 + 1;
-    for(int i=0; i<MUSIC_LRC_INLINE_MAX_LINE; ++i)
+    const int length = (MUSIC_LRC_INTERIOR_MAX_LINE - m_lrcAnalysis->getLineMax())/2 + 1;
+    for(int i=0; i<MUSIC_LRC_INTERIOR_MAX_LINE; ++i)
     {
         m_musicLrcContainer[i]->setText(m_lrcAnalysis->getText(i - length));
     }
-    m_musicLrcContainer[MUSIC_LRC_INLINE_MAX_LINE/2]->startLrcMask(m_animationFreshTime);
+    m_musicLrcContainer[MUSIC_LRC_INTERIOR_MAX_LINE / 2]->startLrcMask(m_animationFreshTime);
 }
 
 void MusicLrcContainerForWallpaper::initCurrentLrc(const QString &str)
@@ -159,27 +159,27 @@ void MusicLrcContainerForWallpaper::initCurrentLrc(const QString &str)
     {
         m_musicLrcContainer[i]->setText( QString() );
     }
-    m_musicLrcContainer[MUSIC_LRC_INLINE_MAX_LINE/2]->setText(str);
+    m_musicLrcContainer[MUSIC_LRC_INTERIOR_MAX_LINE / 2]->setText(str);
 }
 
 void MusicLrcContainerForWallpaper::setItemStyleSheet(int index, int size, int transparent)
 {
-    MusicLrcManagerForInline *w = MStatic_cast(MusicLrcManagerForInline*, m_musicLrcContainer[index]);
+    MusicLrcManagerForInterior *w = TTKStatic_cast(MusicLrcManagerForInterior*, m_musicLrcContainer[index]);
     w->setFontSize(size);
 
     const int value = 100 - transparent;
     w->setFontTransparent(value);
     w->setTransparent(value);
 
-    if(M_SETTING_PTR->value("LrcColorChoiced").toInt() != -1)
+    if(M_SETTING_PTR->value("LrcColor").toInt() != -1)
     {
-        const MusicLrcColor::LrcColorType index = MStatic_cast(MusicLrcColor::LrcColorType, M_SETTING_PTR->value("LrcColorChoiced").toInt());
+        const MusicLrcColor::LrcColorType index = TTKStatic_cast(MusicLrcColor::LrcColorType, M_SETTING_PTR->value("LrcColor").toInt());
         setLinearGradientColor(index);
     }
     else
     {
-        const MusicLrcColor cl(MusicUtils::String::readColorConfig(M_SETTING_PTR->value("LrcFrontgroundColorChoiced").toString()),
-                               MusicUtils::String::readColorConfig(M_SETTING_PTR->value("LrcBackgroundColorChoiced").toString()));
+        const MusicLrcColor cl(MusicUtils::String::readColorConfig(M_SETTING_PTR->value("LrcFrontgroundColor").toString()),
+                               MusicUtils::String::readColorConfig(M_SETTING_PTR->value("LrcBackgroundColor").toString()));
         setLinearGradientColor(cl);
     }
 }

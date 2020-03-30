@@ -16,7 +16,7 @@ void MusicDownLoadQueryKWArtistListThread::startToPage(int offset)
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 startToPage %2").arg(getClassName()).arg(offset));
+    TTK_LOGGER_INFO(QString("%1 startToPage %2").arg(getClassName()).arg(offset));
     deleteAll();
 
     QString catId = "0", initial;
@@ -32,7 +32,7 @@ void MusicDownLoadQueryKWArtistListThread::startToPage(int offset)
         int mIdx = dds[1].toInt();
         if(mIdx > -1 && mIdx < 26)
         {
-            initial = QString("&prefix=%1").arg(MStatic_cast(char, mIdx + 65));
+            initial = QString("&prefix=%1").arg(TTKStatic_cast(char, mIdx + 65));
         }
     }
     const QUrl &musicUrl = MusicUtils::Algorithm::mdII(KW_AR_LIST_URL, false).arg(catId).arg(offset).arg(m_pageSize) + initial;
@@ -63,8 +63,8 @@ void MusicDownLoadQueryKWArtistListThread::downLoadFinished()
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
-    emit clearAllItems();
+    TTK_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    Q_EMIT clearAllItems();
     m_musicSongInfos.clear();
     m_interrupt = false;
 
@@ -96,13 +96,12 @@ void MusicDownLoadQueryKWArtistListThread::downLoadFinished()
                     MusicResultsItem info;
                     info.m_id = value["id"].toString();
                     info.m_name = value["name"].toString();
-                    emit createArtistListItem(info);
+                    Q_EMIT createArtistListItem(info);
                 }
             }
         }
     }
 
-//    emit downLoadDataChanged(QString());
+//    Q_EMIT downLoadDataChanged(QString());
     deleteAll();
-    M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
 }

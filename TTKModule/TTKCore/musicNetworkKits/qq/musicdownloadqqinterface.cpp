@@ -1,5 +1,4 @@
 #include "musicdownloadqqinterface.h"
-#include "musicnumberdefine.h"
 #include "musicnumberutils.h"
 #include "musicsemaphoreloop.h"
 #include "musictime.h"
@@ -17,7 +16,7 @@
 
 void MusicDownLoadQQInterface::readFromMusicSongAttribute(MusicObject::MusicSongInformation *info, const QVariantMap &key, int bitrate)
 {
-    MusicTime::timeSRand();
+    MusicTime::InitSRand();
     QString mid = key["strMediaMid"].toString();
     if(mid.isEmpty())
     {
@@ -140,7 +139,7 @@ void MusicDownLoadQQInterface::readFromMusicSongAttribute(MusicObject::MusicSong
 
 void MusicDownLoadQQInterface::readFromMusicSongAttributePlus(MusicObject::MusicSongInformation *info, const QVariantMap &key, int bitrate)
 {
-    MusicTime::timeSRand();
+    MusicTime::InitSRand();
     const QString &mid = key["media_mid"].toString();
     if(key["size_128mp3"].toULongLong() != 0 && bitrate == MB_128)
     {

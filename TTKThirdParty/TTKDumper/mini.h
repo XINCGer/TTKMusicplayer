@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 
 #include "musicobject.h"
 #include "musicextrasglobaldefine.h"
-#include <QDebug>
 
 #ifdef Q_OS_WIN
 #include "psapi.h"
@@ -105,15 +104,14 @@ static inline void checkExtraProcessQuit()
     origin << MAKE_TRANSFORM_PREFIX
            << MAKE_KRC2LRC_PREFIX
            << MAKE_PLAYER_PREFIX
-           << MAKE_GAIN_PREFIX
-           << MAKE_SOUNDTOUCH_PREFIX;
+           << MAKE_GAIN_PREFIX;
 
     QStringList list(getProcessLists());
     foreach(const QString &process, origin)
     {
         if(list.contains(process) && killProcess(process.toStdWString().c_str()))
         {
-            qDebug() << "Windows Kill Process " << process << " Successed!";
+            TTK_LOGGER_INFO("Windows Kill Process " << process << " Successed!");
         }
     }
 }
@@ -166,8 +164,7 @@ static inline void checkExtraProcessQuit()
     origin << MAKE_TRANSFORM_PREFIX
            << MAKE_KRC2LRC_PREFIX
            << MAKE_PLAYER_PREFIX
-           << MAKE_GAIN_PREFIX
-           << MAKE_SOUNDTOUCH_PREFIX;
+           << MAKE_GAIN_PREFIX;
 
     QList<PID_INFO>  list(getProcessLists());
     foreach(const PID_INFO &info, list)
@@ -176,7 +173,7 @@ static inline void checkExtraProcessQuit()
         {
             if(info.m_path.contains(process) && killProcess(info.m_pid))
             {
-                qDebug() << "Unix Kill Process " << process << " PID" << info.m_pid << " Successed!";
+                TTK_LOGGER_INFO("Unix Kill Process " << process << " PID" << info.m_pid << " Successed!");
             }
         }
     }

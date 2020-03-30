@@ -2,10 +2,9 @@
 
 #include <QDir>
 #include <QMap>
-#include <QDebug>
 #include <QFileInfo>
 #include <functional>
-#ifdef MUSIC_GREATER_NEW
+#ifdef TTK_GREATER_NEW
 #  include <QtConcurrent/QtConcurrent>
 #else
 #  include <QtConcurrentRun>
@@ -76,7 +75,7 @@ void CodeLinesTest::codeLines()
 
             if(availableSuffixs.contains(suffix))
             {
-                lineCount += fileAllData.count('\n') + 1;
+                lineCount += fileAllData.count("\n") + 1;
             }
             file.close();
         }, true);
@@ -85,11 +84,11 @@ void CodeLinesTest::codeLines()
     } );
     eventLoop.exec();
 
-    qDebug() << "All File Count " << fileCount;
-    qDebug() << "All Meet The Requirements Line Count " << lineCount;
+    TTK_LOGGER_INFO("All File Count " << fileCount);
+    TTK_LOGGER_INFO("All Meet The Requirements Line Count " << lineCount);
     foreach(const QString &key, categorys.keys())
     {
-        qDebug() << QString(".%1 Type  All count %2").arg(key).arg(categorys[key]);
+        TTK_LOGGER_INFO(QString(".%1 Type  All count %2").arg(key).arg(categorys[key]));
     }
 }
 

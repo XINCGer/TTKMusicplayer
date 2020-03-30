@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,9 +77,9 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     /*!
-     * Table widget list cell click.
+     * Table widget item cell click.
      */
-    virtual void listCellClicked(int row, int column) override;
+    virtual void itemCellClicked(int row, int column) override;
 
 protected:
     /*!
@@ -101,8 +101,8 @@ class MUSIC_WIDGET_EXPORT MusicSettingWidget : public MusicAbstractMoveDialog
 public:
     enum Type
     {
-        Inline, /*!< lrc inline type*/
-        Desktop /*!< lrc desktop type*/
+        Interior, /*!< lrc interior type*/
+        Desktop   /*!< lrc desktop type*/
     };
 
     /*!
@@ -149,57 +149,58 @@ public Q_SLOTS:
     /*!
      * Version update check changed.
      */
-    void otherVersionUpdateChanged();
+    void rippleVersionUpdateChanged();
     /*!
-     * Ripples spectrum color changed.
+     * Ripple spectrum color changed.
      */
-    void ripplesSpectrumColorChanged();
+    void rippleSpectrumColorChanged();
     /*!
-     * Ripples spectrum opacity changed.
+     * Ripple spectrum opacity enable changed.
      */
-    void ripplesSpectrumOpacityChanged(int value);
+    void rippleSpectrumOpacityEnableClicked(bool state);
+
     /*!
-     * Ripples spectrum opacity enable changed.
+     * Plugin manager changed.
      */
-    void ripplesSpectrumOpacityEnableClicked(bool state);
+    void otherPluginManagerChanged();
 
     /*!
      * Change to desktop lrc widget.
      */
     void changeDesktopLrcWidget();
     /*!
-     * Change to inline lrc widget.
+     * Change to interior lrc widget.
      */
-    void changeInlineLrcWidget();
+    void changeInteriorLrcWidget();
     /*!
      * Change to download widget.
      */
     void changeDownloadWidget();
 
     /*!
-     * Inline lrc foreground change.
+     * Interior lrc foreground change.
      */
-    void inlineLrcFrontgroundChanged();
+    void interiorLrcFrontgroundChanged();
     /*!
-     * Inline lrc background change.
+     * Interior lrc background change.
      */
-    void inlineLrcBackgroundChanged();
+    void interiorLrcBackgroundChanged();
     /*!
      * Default lrc color change by index.
      */
     void defaultLrcColorChanged(int value);
     /*!
-     * Inline lrc transparent changed by index.
+     * Interior lrc transparent changed by index.
      */
-    void inlineLrcTransChanged(int value);
+    void interiorLrcTransChanged(int value);
     /*!
-     * Show inline lrc preview.
+     * Show interior lrc preview.
      */
-    void showInlineLrcDemo();
+    void showInteriorLrcDemo();
     /*!
-     * Reset inline parameter.
+     * Reset interior parameter.
      */
-    void resetInlineParameter();
+    void resetInteriorParameter();
 
     /*!
      * Desktop lrc foreground change.
@@ -259,7 +260,7 @@ public Q_SLOTS:
     /*!
      * Save the change results.
      */
-    void commitTheResults();
+    void saveResults();
     /*!
      * Override exec function.
      */
@@ -289,6 +290,10 @@ protected:
      */
     void initNormalSettingWidget();
     /*!
+     * Init spectrum setting stack widget.
+     */
+    void initSpectrumSettingWidget();
+    /*!
      * Init other setting stack widget.
      */
     void initOtherSettingWidget();
@@ -301,9 +306,9 @@ protected:
      */
     void initDesktopLrcWidget();
     /*!
-     * Init inline lrc stack widget.
+     * Init interior lrc stack widget.
      */
-    void initInlineLrcWidget();
+    void initInteriorLrcWidget();
     /*!
      * Init sound effect stack widget.
      */

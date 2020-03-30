@@ -12,7 +12,7 @@
 MusicLrcContainerForDesktop::MusicLrcContainerForDesktop(QWidget *parent)
     : MusicLrcContainer(parent)
 {
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Tool);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Tool);
     setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
 
@@ -46,20 +46,19 @@ void MusicLrcContainerForDesktop::stopLrcMask()
     }
 }
 
-void MusicLrcContainerForDesktop::setSettingParameter()
+void MusicLrcContainerForDesktop::applySettingParameter()
 {
-    MusicLrcContainer::setSettingParameter();
+    MusicLrcContainer::applySettingParameter();
     foreach(MusicLrcManager *manager, m_musicLrcContainer)
     {
-        m_currentLrcFontSize = M_SETTING_PTR->value(MusicSettingManager::DLrcSizeChoiced).toInt();
+        m_currentLrcFontSize = M_SETTING_PTR->value(MusicSettingManager::DLrcSize).toInt();
         manager->setLrcFontSize(m_currentLrcFontSize);
     }
-    m_windowLocked = M_SETTING_PTR->value(MusicSettingManager::DLrcLockedChoiced).toInt() == 1;
-    //Revert in function setSingleLineTypeChanged
-    m_singleLineType = !(M_SETTING_PTR->value(MusicSettingManager::DLrcSingleLineTypeChoiced).toInt() == 1);
+    m_windowLocked = M_SETTING_PTR->value(MusicSettingManager::DLrcLocked).toInt() == 1;
+    m_singleLineType = !(M_SETTING_PTR->value(MusicSettingManager::DLrcSingleLineType).toInt() == 1);
     setSingleLineTypeChanged();
 
-    const QPoint &point = M_SETTING_PTR->value(MusicSettingManager::DLrcGeometryChoiced).toPoint();
+    const QPoint &point = M_SETTING_PTR->value(MusicSettingManager::DLrcGeometry).toPoint();
     if(!point.isNull())
     {
         move(point);
@@ -76,12 +75,12 @@ void MusicLrcContainerForDesktop::initCurrentLrc() const
 
 void MusicLrcContainerForDesktop::showPlayStatus(bool status) const
 {
-    m_toolPlayButton->setStyleSheet(status ? MusicUIObject::MKGDeskTopPlay : MusicUIObject::MKGDeskTopPause);
+    m_toolPlayButton->setStyleSheet(status ? MusicUIObject::MQSSDeskTopPlay : MusicUIObject::MQSSDeskTopPause);
 }
 
 bool MusicLrcContainerForDesktop::getPlayStatus() const
 {
-    return m_toolPlayButton->styleSheet().contains(MusicUIObject::MKGDeskTopPlay);
+    return m_toolPlayButton->styleSheet().contains(MusicUIObject::MQSSDeskTopPlay);
 }
 
 void MusicLrcContainerForDesktop::updateCurrentLrc(const QString &first, const QString &second, qint64 time)
@@ -109,9 +108,9 @@ void MusicLrcContainerForDesktop::setWindowLockedChanged()
     if(m_windowLocked)
     {
        m_toolBarWidget->hide();
-       setStyleSheet(MusicUIObject::MBackgroundStyle01);
+       setStyleSheet(MusicUIObject::MQSSBackgroundStyle01);
     }
-    M_SETTING_PTR->setValue(MusicSettingManager::DLrcLockedChoiced,  m_windowLocked ? 1 : 0);
+    M_SETTING_PTR->setValue(MusicSettingManager::DLrcLocked,  m_windowLocked ? 1 : 0);
     MusicBottomAreaWidget::instance()->lockDesktopLrc(m_windowLocked);
 }
 
@@ -136,7 +135,7 @@ void MusicLrcContainerForDesktop::setLrcSmallerChanged()
 void MusicLrcContainerForDesktop::toolStyleChanged()
 {
     QMenu menu(this);
-    menu.setStyleSheet(MusicUIObject::MMenuStyle02);
+    menu.setStyleSheet(MusicUIObject::MQSSMenuStyle02);
     createColorMenu(menu);
     menu.exec(QCursor::pos());
 }
@@ -144,7 +143,7 @@ void MusicLrcContainerForDesktop::toolStyleChanged()
 void MusicLrcContainerForDesktop::setSingleLineTypeChanged()
 {
     m_singleLineType = !m_singleLineType;
-    M_SETTING_PTR->setValue(MusicSettingManager::DLrcSingleLineTypeChoiced, m_singleLineType);
+    M_SETTING_PTR->setValue(MusicSettingManager::DLrcSingleLineType, m_singleLineType);
 
     if(m_singleLineType)
     {
@@ -176,7 +175,7 @@ void MusicLrcContainerForDesktop::createColorMenu(QMenu &menu)
     menu.addSeparator();
     menu.addAction(tr("custom"), this, SLOT(currentLrcCustom()));
 
-    const int index = M_SETTING_PTR->value("DLrcColorChoiced").toInt() - LRC_COLOR_OFFSET;
+    const int index = M_SETTING_PTR->value("DLrcColor").toInt() - LRC_COLOR_OFFSET;
     if(index > -1 && index < group->actions().count())
     {
         group->actions()[index]->setIcon(QIcon(":/contextMenu/btn_selected"));
@@ -197,7 +196,7 @@ void MusicLrcContainerForDesktop::creatToolBarWidget()
     m_toolBarLayout->addStretch(1);
 
     m_toolBarWidget->setObjectName("toolBarWidget");
-    m_toolBarWidget->setStyleSheet(QString("#toolBarWidget{%1}").arg(MusicUIObject::MBackgroundStyle08));
+    m_toolBarWidget->setStyleSheet(QString("#toolBarWidget{%1}").arg(MusicUIObject::MQSSBackgroundStyle08));
     m_toolBarWidget->setLayout(m_toolBarLayout);
 
     QPushButton *showMainWindow = new QPushButton(m_toolBarWidget);
@@ -297,21 +296,21 @@ void MusicLrcContainerForDesktop::creatToolBarWidget()
     toolSettingButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_toolPlayButton->setCursor(QCursor(Qt::PointingHandCursor));
 
-    showMainWindow->setStyleSheet(MusicUIObject::MPushButtonStyle02);
-    toolCloseButton->setStyleSheet(MusicUIObject::MKGBtnTClose);
-    toolStyleButton->setStyleSheet(MusicUIObject::MKGDeskTopStyle);
-    toolWindowLockedButton->setStyleSheet(MusicUIObject::MKGDeskTopLock);
-    toolLrcSmallerButton->setStyleSheet(MusicUIObject::MKGDeskTopSizeDown);
-    toolLrcBigerButton->setStyleSheet(MusicUIObject::MKGDeskTopSizeUp);
-    toolPreSongButton->setStyleSheet(MusicUIObject::MKGDeskTopPrevious);
-    toolNextSongButton->setStyleSheet(MusicUIObject::MKGDeskTopNext);
-    toolSettingButton->setStyleSheet(MusicUIObject::MKGDeskTopSetting);
-    m_toolPlayButton->setStyleSheet(MusicUIObject::MKGDeskTopPlay);
-    toolWindowTypeButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MKGDeskTopHorizontal : MusicUIObject::MKGDeskTopVertical);
-    toolMakeLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MKGDeskTopVMakeLrc : MusicUIObject::MKGDeskTopHMakeLrc);
-    toolSearchLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MKGDeskTopVSearchLrc : MusicUIObject::MKGDeskTopHSearchLrc);
-    toolUpdateLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MKGDeskTopVUpdateLrc : MusicUIObject::MKGDeskTopHUpdateLrc);
-    toolErrorLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MKGDeskTopVErrorLrc : MusicUIObject::MKGDeskTopHErrorLrc);
+    showMainWindow->setStyleSheet(MusicUIObject::MQSSPushButtonStyle02);
+    toolCloseButton->setStyleSheet(MusicUIObject::MQSSBtnTClose);
+    toolStyleButton->setStyleSheet(MusicUIObject::MQSSDeskTopStyle);
+    toolWindowLockedButton->setStyleSheet(MusicUIObject::MQSSDeskTopLock);
+    toolLrcSmallerButton->setStyleSheet(MusicUIObject::MQSSDeskTopSizeDown);
+    toolLrcBigerButton->setStyleSheet(MusicUIObject::MQSSDeskTopSizeUp);
+    toolPreSongButton->setStyleSheet(MusicUIObject::MQSSDeskTopPrevious);
+    toolNextSongButton->setStyleSheet(MusicUIObject::MQSSDeskTopNext);
+    toolSettingButton->setStyleSheet(MusicUIObject::MQSSDeskTopSetting);
+    m_toolPlayButton->setStyleSheet(MusicUIObject::MQSSDeskTopPlay);
+    toolWindowTypeButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MQSSDeskTopHorizontal : MusicUIObject::MQSSDeskTopVertical);
+    toolMakeLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MQSSDeskTopVMakeLrc : MusicUIObject::MQSSDeskTopHMakeLrc);
+    toolSearchLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MQSSDeskTopVSearchLrc : MusicUIObject::MQSSDeskTopHSearchLrc);
+    toolUpdateLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MQSSDeskTopVUpdateLrc : MusicUIObject::MQSSDeskTopHUpdateLrc);
+    toolErrorLrcTextButton->setStyleSheet(m_verticalWindow ? MusicUIObject::MQSSDeskTopVErrorLrc : MusicUIObject::MQSSDeskTopHErrorLrc);
 
     showMainWindow->setToolTip(tr("showMainWindow"));
     toolCloseButton->setToolTip(tr("hide"));
@@ -343,7 +342,7 @@ void MusicLrcContainerForDesktop::resizeLrcSizeArea(bool resize)
     }
 
     resizeLrcSizeArea();
-    M_SETTING_PTR->setValue(MusicSettingManager::DLrcSizeChoiced, m_currentLrcFontSize);
+    M_SETTING_PTR->setValue(MusicSettingManager::DLrcSize, m_currentLrcFontSize);
 }
 
 void MusicLrcContainerForDesktop::mousePressEvent(QMouseEvent *event)
@@ -362,7 +361,7 @@ void MusicLrcContainerForDesktop::mouseMoveEvent(QMouseEvent *event)
     {
         setCursor(Qt::CrossCursor);
         move(event->globalPos() - m_offset);
-        M_SETTING_PTR->setValue(MusicSettingManager::DLrcGeometryChoiced, QWidget::pos());
+        M_SETTING_PTR->setValue(MusicSettingManager::DLrcGeometry, QWidget::pos());
     }
 }
 
@@ -374,7 +373,7 @@ void MusicLrcContainerForDesktop::enterEvent(QEvent *event)
     }
     MusicLrcContainer::enterEvent(event);
     m_toolBarWidget->show();
-    setStyleSheet(QString("#desktopWidget{%1}").arg(MusicUIObject::MBackgroundStyle08));
+    setStyleSheet(QString("#desktopWidget{%1}").arg(MusicUIObject::MQSSBackgroundStyle08));
 }
 
 void MusicLrcContainerForDesktop::leaveEvent(QEvent *event)
@@ -385,7 +384,7 @@ void MusicLrcContainerForDesktop::leaveEvent(QEvent *event)
     }
     MusicLrcContainer::leaveEvent(event);
     m_toolBarWidget->hide();
-    setStyleSheet(QString("#desktopWidget{%1}").arg(MusicUIObject::MBackgroundStyle01));
+    setStyleSheet(QString("#desktopWidget{%1}").arg(MusicUIObject::MQSSBackgroundStyle01));
 }
 
 void MusicLrcContainerForDesktop::closeEvent(QCloseEvent *event)
@@ -399,7 +398,7 @@ void MusicLrcContainerForDesktop::contextMenuEvent(QContextMenuEvent *event)
     MusicLrcContainer::contextMenuEvent(event);
 
     QMenu menu;
-    menu.setStyleSheet(MusicUIObject::MMenuStyle02);
+    menu.setStyleSheet(MusicUIObject::MQSSMenuStyle02);
     menu.addAction(tr("searchLrcs"), this, SLOT(searchMusicLrcs()));
     menu.addAction(tr("updateLrc"), this, SIGNAL(currentLrcUpdated()));
     menu.addAction(tr("makeLrc"), this, SLOT(showLrcMakedWidget()));
@@ -411,8 +410,7 @@ void MusicLrcContainerForDesktop::contextMenuEvent(QContextMenuEvent *event)
     menu.addAction(tr("hide"), this, SLOT(close()));
     menu.addAction(QIcon(":/contextMenu/btn_lock"), m_windowLocked ? tr("unlockLrc"): tr("lockLrc"), this, SLOT(setWindowLockedChanged()));
 
-    QMenu changColorMenu(tr("changColorMenu"), this);
-    changColorMenu.setStyleSheet(MusicUIObject::MMenuStyle02);
+    QMenu changColorMenu(tr("changColorMenu"), &menu);
     createColorMenu(changColorMenu);
     menu.addMenu(&changColorMenu);
 

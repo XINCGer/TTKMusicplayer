@@ -2,14 +2,15 @@ cmake_minimum_required(VERSION 2.8.11)
 
 add_definitions(-DTTK_LIBRARY)
 
-set(TTK_VERSION "2.8.0.0")
+set(TTK_MAJOR_VERSION "2.11.1")
+set(TTK_VERSION ${TTK_MAJOR_VERSION}.0)
 
 # Find includes in the build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Turn on automatic invocation of the MOC
 set(CMAKE_AUTOMOC OFF)
 # Add a compiler flag
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -pthread -fopenmp -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -pthread -fopenmp -Wall")
 # Build Type
 set(CMAKE_BUILD_TYPE Release CACHE STRING "set build type to Release")  
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Release Debug)
@@ -71,7 +72,7 @@ include_directories(
 
 
 set(MUSIC_WIDGET_DIR "${MUSIC_LIB_WIDGET_DIR}/musicWidgetKits")
-set(MUSIC_WIDGET_CORE_DIR "${MUSIC_LIB_WIDGET_DIR}/musicWidgetCoreKits")
+set(MUSIC_WIDGET_CORE_DIR "${MUSIC_LIB_WIDGET_DIR}/musicCoreKits")
 set(MUSIC_WIDGET_LRCMANAGER_DIR "${MUSIC_LIB_WIDGET_DIR}/musicLrcKits")
 set(MUSIC_WIDGET_REMOTEWIDGET_DIR "${MUSIC_LIB_WIDGET_DIR}/musicRemoteKits")
 set(MUSIC_WIDGET_LOCALSEARCH_DIR "${MUSIC_LIB_WIDGET_DIR}/musicSearchKits")
@@ -109,12 +110,8 @@ include_directories(
     ${MUSIC_THIRDPARTY_DIR}/TTKDumper
     ${MUSIC_THIRDPARTY_DIR}/TTKExtras
 )
-if(WIN32)
-  set(MUSIC_INSTALL_DIR "${CMAKE_CACHEFILE_DIR}/bin")  
-else(UNIX)
-  set(MUSIC_INSTALL_DIR "${CMAKE_CACHEFILE_DIR}/lib")
-endif()
 
+set(MUSIC_INSTALL_DIR "${CMAKE_CACHEFILE_DIR}/bin")  
 set(LIBRARY_OUTPUT_PATH ${MUSIC_INSTALL_DIR}/${TTK_VERSION})
 set(EXECUTABLE_OUTPUT_PATH ${MUSIC_INSTALL_DIR}/${TTK_VERSION}) 
 
@@ -146,6 +143,7 @@ if(TTK_QT_VERSION VERSION_GREATER "4")
   find_package(Qt5MultimediaWidgets REQUIRED)
   find_package(Qt5Network REQUIRED)
   find_package(Qt5Xml REQUIRED)
+  find_package(Qt5OpenGL REQUIRED)
   if(WIN32)
     find_package(Qt5WinExtras REQUIRED)
   else(UNIX)
@@ -169,6 +167,7 @@ else()
     set(QT_USE_QTNETWORK ON)
     set(QT_USE_QTSQL ON)
     set(QT_USE_QTXML ON)
+    set(QT_USE_QTOPENGL ON)
     include(${QT_USE_FILE})
 
     if(WIN32)
@@ -184,14 +183,18 @@ find_program(QT_LRELEASE_EXECUTABLE lrelease ${QT_INSTALL_BINS})
 if(QT_LRELEASE_EXECUTABLE)
   message(STATUS "Message Found lrelease executable: " ${QT_LRELEASE_EXECUTABLE})
   if(WIN32)
-    execute_process(COMMAND ${MUSIC_SCRIPT_DIR}/win.bat ${QT_LRELEASE_EXECUTABLE} ${EXECUTABLE_OUTPUT_PATH})
+    execute_process(COMMAND ${MUSIC_SCRIPT_DIR}/ts_win.bat ${QT_LRELEASE_EXECUTABLE} ${EXECUTABLE_OUTPUT_PATH})
   else(UNIX)
-    execute_process(COMMAND ${MUSIC_SCRIPT_DIR}/linux.sh ${QT_LRELEASE_EXECUTABLE} ${MUSIC_DIR} ${EXECUTABLE_OUTPUT_PATH})
+    execute_process(COMMAND ${MUSIC_SCRIPT_DIR}/ts_linux.sh ${QT_LRELEASE_EXECUTABLE} ${MUSIC_DIR} ${EXECUTABLE_OUTPUT_PATH})
   endif()
 else()
   message(FATAL_ERROR "Message Could NOT find lrelease executable")
 endif()
 
+# copy run resource
+if(UNIX)
+  execute_process(COMMAND ${MUSIC_SCRIPT_DIR}/resource.sh ${MUSIC_RESOURCE_DIR} ${EXECUTABLE_OUTPUT_PATH})
+endif()
 
 find_library(QMMP_LIBRARY
   NAMES qmmp1

@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@
 
 #include "musicglobaldefine.h"
 #include "musicwidgetheaders.h"
+#include "musicdeviceinfoobject.h"
 
+class MusicTextSliderWidget;
 class MusicAnimationStackedWidget;
 
 /*! @brief The class of the connect mobile widget.
@@ -57,15 +59,15 @@ private Q_SLOTS:
      */
     void openTransferFiles2Mobile();
     /*!
-     * Open transfer files to wifi widget.
+     * Device type changed.
      */
-    void openTransferFiles2Wifi();
+    void deviceTypeChanged(QAction *action);
+    /*!
+     * Update device info.
+     */
+    void updateDeviceInfo();
 
 protected:
-    /*!
-     * Override the widget event.
-     */
-    virtual void contextMenuEvent(QContextMenuEvent *event) override;
     /*!
      * Init main widget.
      */
@@ -79,6 +81,11 @@ protected:
      */
     void initThirdWidget();
 
+    QMenu m_popMenu;
+    QLabel *m_deviceInfoLabel;
+    MusicTextSliderWidget *m_deviceSizeLabel;
+    MusicDeviceInfoItem m_currentDeviceItem;
+    MusicDeviceInfoObject *m_deviceInfo;
     MusicAnimationStackedWidget *m_stackedWidget;
 
 };

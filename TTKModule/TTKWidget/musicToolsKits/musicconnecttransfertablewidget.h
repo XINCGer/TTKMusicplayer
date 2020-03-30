@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,36 @@ public:
      * Select all items.
      */
     void selectedAllItems(bool check);
+
+};
+
+
+/*! @brief The class of the transfer file list complete table widget.
+ * @author Greedysky <greedysky@163.com>
+ */
+class MUSIC_TOOL_EXPORT MusicConnectTransferCompleteTableWidget : public MusicAbstractTableWidget
+{
+    Q_OBJECT
+    TTK_DECLARE_MODULE(MusicConnectTransferCompleteTableWidget)
+public:
+    /*!
+     * Object contsructor.
+     */
+    explicit MusicConnectTransferCompleteTableWidget(QWidget *parent = nullptr);
+
+public Q_SLOTS:
+    /*!
+     * Table widget item cell enter.
+     */
+    virtual void itemCellEntered(int row, int column) override;
+    /*!
+     * Table widget item cell click.
+     */
+    virtual void itemCellClicked(int row, int column) override;
+    /*!
+     * Create all items.
+     */
+    void createItem(const QString &name);
 
 };
 

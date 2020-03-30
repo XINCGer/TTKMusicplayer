@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2019 Greedysky Studio
+# * Copyright (C) 2015 - 2020 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,10 @@ HEADERS  += \
     $$PWD/musicplsconfigmanager.h \
     $$PWD/musictkplconfigmanager.h \
     $$PWD/musicwplconfigmanager.h \
-    $$PWD/musicxspfconfigmanager.h
+    $$PWD/musicxspfconfigmanager.h \
+    $$PWD/musiccsvconfigmanager.h \
+    $$PWD/musictxtconfigmanager.h \
+    $$PWD/musicnfnconfigmanager.h
 
 }
 
@@ -43,6 +46,9 @@ SOURCES += \
     $$PWD/musicplsconfigmanager.cpp \
     $$PWD/musictkplconfigmanager.cpp \
     $$PWD/musicwplconfigmanager.cpp \
-    $$PWD/musicxspfconfigmanager.cpp
+    $$PWD/musicxspfconfigmanager.cpp \
+    $$PWD/musiccsvconfigmanager.cpp \
+    $$PWD/musictxtconfigmanager.cpp \
+    $$PWD/musicnfnconfigmanager.cpp
 
 }

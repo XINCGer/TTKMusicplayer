@@ -105,34 +105,34 @@ QString MusicAbstractXml::readXmlAttributeByTagNameValue(const QString &tagName)
 
 QString MusicAbstractXml::readXmlAttributeByTagName(const QString &tagName, const QString &attrName) const
 {
-    const QDomNodeList &nodelist = m_document->elementsByTagName(tagName);
-    if(nodelist.isEmpty())
+    const QDomNodeList &nodeList = m_document->elementsByTagName(tagName);
+    if(nodeList.isEmpty())
     {
         return QString();
     }
-    return nodelist.at(0).toElement().attribute(attrName);
+    return nodeList.at(0).toElement().attribute(attrName);
 }
 
 QString MusicAbstractXml::readXmlTextByTagName(const QString &tagName) const
 {
-    const QDomNodeList &nodelist = m_document->elementsByTagName(tagName);
-    if(nodelist.isEmpty())
+    const QDomNodeList &nodeList = m_document->elementsByTagName(tagName);
+    if(nodeList.isEmpty())
     {
         return QString();
     }
-    return nodelist.at(0).toElement().text();
+    return nodeList.at(0).toElement().text();
 }
 
-MVariantMap MusicAbstractXml::readXmlAttributesByTagName(const QString &tagName) const
+TTKVariantMap MusicAbstractXml::readXmlAttributesByTagName(const QString &tagName) const
 {
-    const QDomNodeList &nodelist = m_document->elementsByTagName(tagName);
-    if(nodelist.isEmpty())
+    const QDomNodeList &nodeList = m_document->elementsByTagName(tagName);
+    if(nodeList.isEmpty())
     {
-        return MVariantMap();
+        return TTKVariantMap();
     }
 
-    const QDomNamedNodeMap &nodes = nodelist.at(0).toElement().attributes();
-    MVariantMap maps;
+    const QDomNamedNodeMap &nodes = nodeList.at(0).toElement().attributes();
+    TTKVariantMap maps;
     for(int i=0; i<nodes.count(); ++i)
     {
         const QDomAttr &attr = nodes.item(i).toAttr();
@@ -144,19 +144,19 @@ MVariantMap MusicAbstractXml::readXmlAttributesByTagName(const QString &tagName)
 void MusicAbstractXml::createProcessingInstruction()
 {
     const QDomNode &node = m_document->createProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
-    m_document->appendChild( node );
+    m_document->appendChild(node);
 }
 
 QDomElement MusicAbstractXml::createRoot(const QString &node)
 {
-    const QDomElement &domElement = m_document->createElement( node );
+    const QDomElement &domElement = m_document->createElement(node);
     m_document->appendChild( domElement );
     return domElement;
 }
 
 QDomElement MusicAbstractXml::createRoot(const QString &node, const MusicXmlAttribute &attr)
 {
-    QDomElement domElement = m_document->createElement( node );
+    QDomElement domElement = m_document->createElement(node);
     writeAttribute(domElement, attr);
     m_document->appendChild( domElement );
     return domElement;
@@ -164,7 +164,7 @@ QDomElement MusicAbstractXml::createRoot(const QString &node, const MusicXmlAttr
 
 QDomElement MusicAbstractXml::createRoot(const QString &node, const MusicXmlAttributes &attrs)
 {
-    QDomElement domElement = m_document->createElement( node );
+    QDomElement domElement = m_document->createElement(node);
     foreach(const MusicXmlAttribute &attr, attrs)
     {
         writeAttribute(domElement, attr);
@@ -175,7 +175,7 @@ QDomElement MusicAbstractXml::createRoot(const QString &node, const MusicXmlAttr
 
 QDomElement MusicAbstractXml::writeDomNode(QDomElement &element, const QString &node)
 {
-    const QDomElement &domElement = m_document->createElement( node );
+    const QDomElement &domElement = m_document->createElement(node);
     element.appendChild( domElement );
     return domElement;
 }

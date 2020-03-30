@@ -2,14 +2,11 @@
 #include "musicsettingmanager.h"
 #include "musicdownloadmanager.h"
 #include "musicstringutils.h"
+#include "musiccoreutils.h"
 
+#include <QSslError>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
-#include <QThread>
-#if defined Q_OS_UNIX || defined Q_CC_MINGW
-# include <unistd.h>
-#endif
-#include <QSslError>
 
 MusicDownLoadThreadAbstract::MusicDownLoadThreadAbstract(const QString &url, const QString &save, MusicObject::DownloadType type, QObject *parent)
     : MusicNetworkAbstract(parent)
@@ -49,8 +46,8 @@ void MusicDownLoadThreadAbstract::deleteAll()
 
 void MusicDownLoadThreadAbstract::replyError(QNetworkReply::NetworkError)
 {
-    M_LOGGER_ERROR("Abnormal network connection");
-    emit downLoadDataChanged("The file create failed");
+    TTK_LOGGER_ERROR("Abnormal network connection");
+    Q_EMIT downLoadDataChanged("The file create failed");
     deleteAll();
 }
 
@@ -58,7 +55,7 @@ void MusicDownLoadThreadAbstract::replyError(QNetworkReply::NetworkError)
 void MusicDownLoadThreadAbstract::sslErrors(QNetworkReply* reply, const QList<QSslError> &errors)
 {
     sslErrorsString(reply, errors);
-    emit downLoadDataChanged("The file create failed");
+    Q_EMIT downLoadDataChanged("The file create failed");
     deleteAll();
 }
 #endif
@@ -73,16 +70,12 @@ void MusicDownLoadThreadAbstract::updateDownloadSpeed()
 {
     int delta = m_currentReceived - m_hasReceived;
     ///limit speed
-    if(M_SETTING_PTR->value(MusicSettingManager::DownloadLimitChoiced).toInt() == 0)
+    if(M_SETTING_PTR->value(MusicSettingManager::DownloadLimit).toInt() == 0)
     {
-        const int limitValue = M_SETTING_PTR->value(MusicSettingManager::DownloadDLoadLimitChoiced).toInt();
+        const int limitValue = M_SETTING_PTR->value(MusicSettingManager::DownloadDLoadLimit).toInt();
         if(limitValue != 0 && delta > limitValue*MH_KB)
         {
-#if defined Q_OS_WIN && defined MUSIC_GREATER_NEW
-            QThread::msleep(MT_S2MS - limitValue*MH_KB*MT_S2MS/delta);
-#else
-            usleep( (MT_S2MS - limitValue*MH_KB*MT_S2MS/delta)*MT_S2MS );
-#endif
+            MusicUtils::Core::sleep(MT_S2MS - limitValue*MH_KB*MT_S2MS/delta);
             delta = limitValue*MH_KB;
         }
     }

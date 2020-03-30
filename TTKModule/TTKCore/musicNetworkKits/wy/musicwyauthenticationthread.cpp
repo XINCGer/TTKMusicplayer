@@ -38,7 +38,7 @@ void MusicWYAuthenticationThread::downLoadFinished()
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    TTK_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
     m_interrupt = false;
     m_info.clear();
 
@@ -55,7 +55,7 @@ void MusicWYAuthenticationThread::downLoadFinished()
                 const QList<QNetworkCookie> &cookies = QNetworkCookie::parseCookies(m_reply->rawHeader("Set-Cookie"));
                 if(!cookies.isEmpty())
                 {
-                    M_SETTING_PTR->setValue(MusicSettingManager::NetworkCookieChoiced, cookies[0].value());
+                    M_SETTING_PTR->setValue(MusicSettingManager::NetworkCookie, cookies[0].value());
                 }
 
                 value = value["profile"].toMap();
@@ -65,7 +65,6 @@ void MusicWYAuthenticationThread::downLoadFinished()
         }
     }
 
-    emit downLoadDataChanged(QString());
+    Q_EMIT downLoadDataChanged(QString());
     deleteAll();
-    M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
 }

@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include <QDebug>
 #include "musicobject.h"
 #include "ttkversion.h"
 #include "musicrunglobaldefine.h"
@@ -36,6 +35,7 @@
 #define S_ART_DIR_FULL            S_DOWNLOADS_DIR_FULL + ART_DIR
 #define S_BACKGROUND_DIR_FULL     S_DOWNLOADS_DIR_FULL + BACKGROUND_DIR
 #define S_UPDATE_DIR_FULL         S_DOWNLOADS_DIR_FULL + UPDATE_DIR
+#define S_SCREEN_DIR_FULL         S_DOWNLOADS_DIR_FULL + SCREEN_DIR
 
 
 #define S_COFIGPATH_FULL          S_APPDATA_DIR_FULL + COFIGPATH
@@ -89,7 +89,7 @@ public:
     /*!
      * Init all parameter.
      */
-    void init();
+    void initialize();
     /*!
      * Check current dir is exist, no, just create it.
      */

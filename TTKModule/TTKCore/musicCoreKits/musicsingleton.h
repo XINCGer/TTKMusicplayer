@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,11 +51,11 @@ private:
 
 };
 
-    ////////////////////////////////////////////////////////////////
-    ///                                                           //
-    ///              Singleton Implementation                     //
-    ///                                                           //
-    ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+///                                                           //
+///              Singleton Implementation                     //
+///                                                           //
+////////////////////////////////////////////////////////////////
 
 template <typename T> QMutex MusicSingleton<T>::m_mutex;
 template <typename T> QScopedPointer<T> MusicSingleton<T>::m_instance;
@@ -75,11 +75,11 @@ T* MusicSingleton<T>::createInstance()
     return m_instance.data();
 }
 
-    ////////////////////////////////////////////////////////////////
-    ///                                                           //
-    ///              Singleton Macro                              //
-    ///                                                           //
-    ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+///                                                           //
+///              Singleton Macro                              //
+///                                                           //
+////////////////////////////////////////////////////////////////
 
 ////Class that will implement the singleton mode,
 ////must use the macro in it's delare file

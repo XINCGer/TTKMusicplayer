@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ class QMovie;
 class QStackedWidget;
 class MusicCoreMPlayer;
 class MusicLrcAnalysis;
-class MusicAudioRecorderCore;
+class MusicAudioRecorderObject;
 class MusicIdentifySongsThread;
 
 /*! @brief The class of the song identify widget.
@@ -82,10 +82,6 @@ public Q_SLOTS:
 
 protected:
     /*!
-     * Override the widget event.
-     */
-    virtual void contextMenuEvent(QContextMenuEvent *event) override;
-    /*!
      * Create the detected widget.
      */
     void createDetectedWidget();
@@ -105,7 +101,7 @@ protected:
     QPushButton *m_detectedButton;
     MusicCoreMPlayer *m_mediaPlayer;
     MusicLrcAnalysis *m_analysis;
-    MusicAudioRecorderCore *m_recordCore;
+    MusicAudioRecorderObject *m_recordCore;
     MusicIdentifySongsThread *m_detectedThread;
     MusicObject::MusicSongInformation m_currentSong;
 

@@ -1,13 +1,15 @@
 #include "musictimerautoobject.h"
 #include "musicsettingmanager.h"
-#include "musicnumberdefine.h"
 #include "musicapplication.h"
+#include "musiccoreutils.h"
 
 #include <QTime>
 #ifdef Q_OS_WIN
 #  include <qt_windows.h>
 #else
-#  include <QProcess>
+#  include <signal.h>
+#  include <unistd.h>
+#  include <sys/reboot.h>
 #endif
 
 MusicTimerAutoObject::MusicTimerAutoObject(QObject *parent)
@@ -31,32 +33,32 @@ void MusicTimerAutoObject::runTimerAutoConfig()
 {
     m_timer.start(MT_S2MS);
 
-    if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoPlayChoiced).toInt() == 0)
+    if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoPlay).toInt() == 0)
     {
         m_timeObjects[0].m_state = true;
-        m_timeObjects[0].m_hour = M_SETTING_PTR->value(MusicSettingManager::TimerAutoPlayHourChoiced).toInt();
-        m_timeObjects[0].m_minute = M_SETTING_PTR->value(MusicSettingManager::TimerAutoPlaySecondChoiced).toInt();
+        m_timeObjects[0].m_hour = M_SETTING_PTR->value(MusicSettingManager::TimerAutoPlayHour).toInt();
+        m_timeObjects[0].m_minute = M_SETTING_PTR->value(MusicSettingManager::TimerAutoPlaySecond).toInt();
     }
 
-    if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoStopChoiced).toInt() == 0)
+    if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoStop).toInt() == 0)
     {
         m_timeObjects[1].m_state = true;
-        m_timeObjects[1].m_hour = M_SETTING_PTR->value(MusicSettingManager::TimerAutoStopHourChoiced).toInt();
-        m_timeObjects[1].m_minute = M_SETTING_PTR->value(MusicSettingManager::TimerAutoStopSecondChoiced).toInt();
+        m_timeObjects[1].m_hour = M_SETTING_PTR->value(MusicSettingManager::TimerAutoStopHour).toInt();
+        m_timeObjects[1].m_minute = M_SETTING_PTR->value(MusicSettingManager::TimerAutoStopSecond).toInt();
     }
 
-    if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoShutdownChoiced).toInt() == 0)
+    if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoShutdown).toInt() == 0)
     {
         m_timeObjects[2].m_state = true;
-        m_timeObjects[2].m_hour = M_SETTING_PTR->value(MusicSettingManager::TimerAutoShutdownHourChoiced).toInt();
-        m_timeObjects[2].m_minute = M_SETTING_PTR->value(MusicSettingManager::TimerAutoShutdownSecondChoiced).toInt();
+        m_timeObjects[2].m_hour = M_SETTING_PTR->value(MusicSettingManager::TimerAutoShutdownHour).toInt();
+        m_timeObjects[2].m_minute = M_SETTING_PTR->value(MusicSettingManager::TimerAutoShutdownSecond).toInt();
     }
 }
 
 void MusicTimerAutoObject::timeout()
 {
     int hour = 0, minute = 0;
-    const QStringList &l = QTime::currentTime().toString(Qt::ISODate).split(':');
+    const QStringList &l = QTime::currentTime().toString(Qt::ISODate).split(":");
     if(l.count() != 3)
     {
         return;
@@ -74,34 +76,34 @@ void MusicTimerAutoObject::timeout()
             {
                 case 0:
                     {
-                        if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoPlayRepeatChoiced).toInt() == 0)
+                        if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoPlayRepeat).toInt() == 0)
                         {
                             pair->m_state = false;
-                            M_SETTING_PTR->setValue(MusicSettingManager::TimerAutoPlayChoiced, 1);
+                            M_SETTING_PTR->setValue(MusicSettingManager::TimerAutoPlay, 1);
                         }
-                        MusicApplication::instance()->setPlaySongChanged(M_SETTING_PTR->value(MusicSettingManager::TimerAutoPlaySongIndexChoiced).toInt());
+                        MusicApplication::instance()->setPlaySongChanged(M_SETTING_PTR->value(MusicSettingManager::TimerAutoPlaySongIndex).toInt());
+                        break;
                     }
-                    break;
                 case 1:
                     {
-                        if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoStopRepeatChoiced).toInt() == 0)
+                        if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoStopRepeat).toInt() == 0)
                         {
                             pair->m_state = false;
-                            M_SETTING_PTR->setValue(MusicSettingManager::TimerAutoStopChoiced, 1);
+                            M_SETTING_PTR->setValue(MusicSettingManager::TimerAutoStop, 1);
                         }
                         MusicApplication::instance()->setStopSongChanged();
+                        break;
                     }
-                    break;
                 case 2:
                     {
-                        if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoShutdownRepeatChoiced).toInt() == 0)
+                        if(M_SETTING_PTR->value(MusicSettingManager::TimerAutoShutdownRepeat).toInt() == 0)
                         {
                             pair->m_state = false;
-                            M_SETTING_PTR->setValue(MusicSettingManager::TimerAutoShutdownChoiced, 1);
+                            M_SETTING_PTR->setValue(MusicSettingManager::TimerAutoShutdown, 1);
                         }
                         setShutdown();
+                        break;
                     }
-                    break;
                 default: break;
             }
         }
@@ -118,11 +120,24 @@ void MusicTimerAutoObject::setShutdown()
         LookupPrivilegeValue(nullptr, SE_SHUTDOWN_NAME, &tkp.Privileges[0].Luid);
         tkp.PrivilegeCount = 1;
         tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-        AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, MStatic_cast(PTOKEN_PRIVILEGES, nullptr), 0);
+        AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, TTKStatic_cast(PTOKEN_PRIVILEGES, nullptr), nullptr);
         ExitWindowsEx(EWX_SHUTDOWN | EWX_POWEROFF, 0);
     }
 #elif defined Q_OS_UNIX
-    QProcess::execute("shutdown", QStringList() << "now");
+    /* first disable all our signals */
+    sigset_t set;
+    sigfillset(&set);
+    sigprocmask(SIG_BLOCK, &set, nullptr);
+    /* send signals to all processes  _except_ pid 1 */
+    kill(-1, SIGTERM);
+    sync();
+    MusicUtils::Core::sleep(3 * MT_S2MS);
+
+    kill(-1, SIGKILL);
+    sync();
+    MusicUtils::Core::sleep(3 * MT_S2MS);
+    /* shutdown */
+    reboot(RB_POWER_OFF);
 #endif
-    M_LOGGER_INFO("shutdown now");
+    TTK_LOGGER_INFO("shutdown now");
 }

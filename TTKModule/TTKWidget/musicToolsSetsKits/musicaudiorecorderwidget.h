@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ class QMovie;
 namespace Ui {
 class MusicAudioRecorderWidget;
 }
-class MusicAudioRecorderCore;
+class MusicAudioRecorderObject;
 
 /*! @brief The class of the audio recorder widget.
  * @author Greedysky <greedysky@163.com>
@@ -118,7 +118,7 @@ protected:
     QMovie *m_movie;
 
     int m_miVolume, m_miMaxValue;
-    MusicAudioRecorderCore *m_recordCore;
+    MusicAudioRecorderObject *m_recordCore;
     QAudioFormat m_mFormatSound;
     QAudioInput *m_mpAudioInputSound;
     QAudioOutput *m_mpAudioOutputSound;

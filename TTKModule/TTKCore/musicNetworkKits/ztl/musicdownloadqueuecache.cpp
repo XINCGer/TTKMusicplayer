@@ -1,5 +1,4 @@
 #include "musicdownloadqueuecache.h"
-#include "musicnetworkthread.h"
 
 #include <QStringList>
 
@@ -20,7 +19,6 @@ MusicDownloadQueueCache::MusicDownloadQueueCache(const MusicDownloadQueueData &d
     m_request = new QNetworkRequest();
 #ifndef QT_NO_SSL
     connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
-    M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
     MusicObject::setSslConfiguration(m_request);
 #endif
 
@@ -80,7 +78,7 @@ void MusicDownloadQueueCache::startOrderImageQueue()
     {
         if(QFile::exists(m_imageQueue.first().m_savePath))
         {
-            emit downLoadDataChanged(m_imageQueue.takeFirst().m_savePath);
+            Q_EMIT downLoadDataChanged(m_imageQueue.takeFirst().m_savePath);
             startOrderImageQueue();
         }
         else
@@ -129,7 +127,7 @@ void MusicDownloadQueueCache::downLoadFinished()
     m_reply->deleteLater();
     m_reply = nullptr;
     m_isDownload = false;
-    emit downLoadDataChanged(m_imageQueue.takeFirst().m_savePath);
+    Q_EMIT downLoadDataChanged(m_imageQueue.takeFirst().m_savePath);
 
     startOrderImageQueue();
 }
@@ -151,10 +149,10 @@ void MusicDownloadQueueCache::errorSlot(QNetworkReply::NetworkError code)
     {
         return;
     }
-#ifndef MUSIC_DEBUG
+#ifndef TTK_DEBUG
     Q_UNUSED(code);
 #endif
-    M_LOGGER_ERROR(QString("QNetworkReply::NetworkError : %1 %2").arg(code).arg(m_reply->errorString()));
+    TTK_LOGGER_ERROR(QString("QNetworkReply::NetworkError : %1 %2").arg(code).arg(m_reply->errorString()));
     m_file->flush();
     if(!m_isAbort)
     {

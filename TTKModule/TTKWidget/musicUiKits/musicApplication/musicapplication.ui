@@ -214,7 +214,7 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="MusicLocalSongSearchInlineEdit" name="musicSongSearchLine" native="true">
+                <widget class="MusicLocalSongSearchInteriorEdit" name="musicSongSearchEdit" native="true">
                  <property name="minimumSize">
                   <size>
                    <width>260</width>
@@ -687,7 +687,7 @@
                <number>0</number>
               </property>
               <widget class="MusicSongSearchOnlineWidget" name="songSearchWidget"/>
-              <widget class="MusicLrcContainerForInline" name="musiclrccontainerforinline">
+              <widget class="MusicLrcContainerForInterior" name="musiclrccontainerforinterior">
                <widget class="QPushButton" name="lrcDisplayAllButton">
                 <property name="enabled">
                  <bool>true</bool>
@@ -1336,9 +1336,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>MusicLrcContainerForInline</class>
+   <class>MusicLrcContainerForInterior</class>
    <extends>QWidget</extends>
-   <header>musiclrccontainerforinline.h</header>
+   <header>musiclrccontainerforinterior.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1348,9 +1348,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>MusicLocalSongSearchInlineEdit</class>
+   <class>MusicLocalSongSearchInteriorEdit</class>
    <extends>QWidget</extends>
-   <header>musiclocalsongsearchinlineedit.h</header>
+   <header>musiclocalsongsearchinterioredit.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

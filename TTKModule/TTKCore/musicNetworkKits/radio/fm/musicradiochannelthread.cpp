@@ -1,10 +1,14 @@
 #include "musicradiochannelthread.h"
 #///QJson import
 #include "qjson/parser.h"
+#///Oss import
+#include "qoss/qossconf.h"
 
 #include <QNetworkRequest>
 #include <QNetworkCookieJar>
 #include <QNetworkAccessManager>
+
+#define OS_RADIO_URL  "BaiduRadio"
 
 MusicRadioChannelThread::MusicRadioChannelThread(QObject *parent, QNetworkCookieJar *cookie)
     : MusicRadioThreadAbstract(parent, cookie)
@@ -26,7 +30,6 @@ void MusicRadioChannelThread::startToDownload(const QString &id)
     request.setUrl(QUrl(MusicUtils::Algorithm::mdII(RADIO_CHANNEL_URL, false)));
 #ifndef QT_NO_SSL
     connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
-    M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
     MusicObject::setSslConfiguration(&request);
 #endif
     if(m_cookJar)
@@ -60,29 +63,18 @@ void MusicRadioChannelThread::downLoadFinished()
             QVariantMap value = data.toMap();
             const QVariantList &channels = value["channel_list"].toList();
 
-            QFile arcFile(":/data/fmarclist");
-            arcFile.open(QFile::ReadOnly);
-
-            QStringList arcs = QString(arcFile.readAll()).remove("\r").split("\n");
-            arcFile.close();
-
-            while(channels.count() > arcs.count())
-            {
-                arcs.append(QString());
-            }
-
             for(int i=0; i<channels.count(); ++i)
             {
                 value = channels[i].toMap();
                 MusicRadioChannelInfo channel;
                 channel.m_id = value["channel_id"].toString();
                 channel.m_name = value["channel_name"].toString();
-                channel.m_coverUrl = arcs[i];
+                channel.m_coverUrl = QOSSConf::generateDataBucketUrl() + QString("%1/%2%3").arg(OS_RADIO_URL).arg(i + 1).arg(JPG_FILE);
                 m_channels << channel;
             }
         }
     }
 
-    emit downLoadDataChanged("query finished!");
+    Q_EMIT downLoadDataChanged("query finished!");
     deleteAll();
 }

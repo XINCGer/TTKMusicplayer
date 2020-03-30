@@ -7,7 +7,7 @@
 MusicMobileDevicesWidget::MusicMobileDevicesWidget(QWidget *parent)
     : QLabel(parent)
 {
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Tool);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::Tool);
     setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
 
@@ -17,14 +17,14 @@ MusicMobileDevicesWidget::MusicMobileDevicesWidget(QWidget *parent)
 
     m_closeButton = new QToolButton(this);
     m_closeButton->setIcon(QIcon(":/functions/btn_close_hover"));
-    m_closeButton->setStyleSheet(MusicUIObject::MToolButtonStyle04);
+    m_closeButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle04);
     m_closeButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_closeButton->setToolTip(tr("Close"));
     m_closeButton->setGeometry(215, 2, 28, 22);
     connect(m_closeButton, SIGNAL(clicked()), SLOT(close()));
 
     m_openButton = new QToolButton(this);
-    m_openButton->setStyleSheet(MusicUIObject::MToolButtonStyle04);
+    m_openButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle04);
     m_openButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_openButton->setText(tr("MobileOpen"));
     m_openButton->setGeometry(160, 140, 75, 25);
@@ -43,7 +43,7 @@ void MusicMobileDevicesWidget::showMobileManager()
     hide();
     M_SINGLE_MANAGER_WIDGET_NEW(MusicLocalSongsManagerWidget);
 #ifdef Q_OS_WIN
-    w->findExtraDevicePath(M_SETTING_PTR->value(MusicSettingManager::ExtraDevicePathChoiced).toString());
+    w->findExtraDevicePath(M_SETTING_PTR->value(MusicSettingManager::ExtraDevicePath).toString());
 #endif
     w->show();
 }

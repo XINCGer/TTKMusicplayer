@@ -3,6 +3,7 @@
 #include "musicsettingmanager.h"
 #include "musicnetworkthread.h"
 #include "musicqmmputils.h"
+#include "musicfileutils.h"
 #include "musiccoreutils.h"
 #include "musiccodecutils.h"
 
@@ -11,9 +12,8 @@
 
 void MusicRunTimeManager::run() const
 {
-    M_LOGGER_INFO("MusicApplication Begin");
-
-#ifndef MUSIC_GREATER_NEW
+    TTK_LOGGER_INFO("MusicApplication Run");
+#ifndef TTK_GREATER_NEW
     MusicUtils::Codec::setLocalCodec();
 #endif
     MusicUtils::QMMP::updateMidConfigFile();
@@ -27,24 +27,21 @@ void MusicRunTimeManager::run() const
     //detect the current network state
     M_NETWORK_PTR->start();
 
-    M_LOGGER_INFO("Load Translation");
     MusicSysConfigManager *xml = new MusicSysConfigManager;
     xml->readConfig();
     xml->readSysConfigData();
 
-    MusicUtils::Core::checkCacheSize(
-                M_SETTING_PTR->value(MusicSettingManager::DownloadCacheSizeChoiced).toInt()*MH_MB2B,
-                M_SETTING_PTR->value(MusicSettingManager::DownloadCacheLimitChoiced).toInt(),
-                M_SETTING_PTR->value(MusicSettingManager::DownloadMusicPathDirChoiced).toString());
+    MusicUtils::File::checkCacheSize(
+                M_SETTING_PTR->value(MusicSettingManager::DownloadCacheSize).toInt() * MH_MB2B,
+                M_SETTING_PTR->value(MusicSettingManager::DownloadCacheLimit).toInt(),
+                M_SETTING_PTR->value(MusicSettingManager::DownloadMusicPathDir).toString());
     M_NETWORK_PTR->setBlockNetWork(
-                M_SETTING_PTR->value(MusicSettingManager::CloseNetWorkChoiced).toInt());
+                M_SETTING_PTR->value(MusicSettingManager::CloseNetWork).toInt());
     delete xml;
-
-    M_LOGGER_INFO("End load translation");
 }
 
 QString MusicRunTimeManager::translator() const
 {
-    const int index = M_SETTING_PTR->value(MusicSettingManager::CurrentLanIndexChoiced).toInt();
+    const int index = M_SETTING_PTR->value(MusicSettingManager::CurrentLanIndex).toInt();
     return MusicUtils::Core::getLanguageName(index);
 }

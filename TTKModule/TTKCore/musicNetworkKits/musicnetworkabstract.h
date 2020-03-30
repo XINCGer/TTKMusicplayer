@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 #include <QNetworkReply>
 #include <QSslConfiguration>
+#include "musicnetworkthread.h"
 #include "musicnetworkdefines.h"
 #include "musicalgorithmutils.h"
 
@@ -62,6 +63,15 @@ public:
      */
     inline const QVariantMap &getRawData() const { return m_rawData; }
 
+    /*!
+     * Set the current raw data.
+     */
+    inline void setHeader(const QString &key, const QVariant &value) { m_headerData[key] = value; }
+    /*!
+     * Get the current raw data.
+     */
+    inline const QVariant getHeader(const QString &key) const { return m_headerData[key]; }
+
 Q_SIGNALS:
     /*!
      * Send raw data changed.
@@ -95,6 +105,7 @@ public Q_SLOTS:
 
 protected:
     QVariantMap m_rawData;
+    QVariantMap m_headerData;
     MusicObject::NetworkCode m_stateCode;
     volatile bool m_interrupt;
     QNetworkReply *m_reply;
@@ -102,7 +113,8 @@ protected:
 
 };
 
-namespace MusicObject {
+namespace MusicObject
+{
     /*!
      * Set request ssl configuration.
      */

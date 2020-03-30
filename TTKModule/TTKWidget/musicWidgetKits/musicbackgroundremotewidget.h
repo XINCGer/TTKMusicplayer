@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ protected:
 
     int m_currentIndex;
     MusicSkinRemoteGroups m_groups;
-    MusicBackgroundListWidget *m_listWidget;
+    MusicBackgroundListWidget *m_backgroundList;
     MusicDownloadQueueCache *m_downloadQueue;
     MusicDownloadBackgroundRemoteThread *m_queryThread;
 
@@ -95,7 +95,7 @@ public:
     /*!
      * Init the current download object.
      */
-    void init();
+    void initialize();
 
     /*!
      * Create functions widget.
@@ -149,7 +149,7 @@ public:
     /*!
      * Init the current download object.
      */
-    void init();
+    void initialize();
 
     /*!
      * Output remote skin.

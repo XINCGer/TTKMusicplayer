@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
  ================================================= */
 
 #include <QApplication>
-#include "ttkprivate.h"
 #include "musicrunglobaldefine.h"
 
 class TTKRunApplicationPrivate;
@@ -63,10 +62,6 @@ public:
 #endif
 
     /*!
-     * Initialize the current server.
-    */
-    void initialize(bool dummy = true);
-    /*!
      * Check the current server is running or not.
     */
     bool isRunning() const;
@@ -104,7 +99,7 @@ private:
     /*!
      * Init the system parameter.
     */
-    void sysInit(const QString &appId = QString());
+    void initialize(const QString &appId = QString());
 
     TTK_DECLARE_PRIVATE(TTKRunApplication)
 

@@ -1,11 +1,9 @@
 #include "toolsskin.h"
 #include "ui_toolsskin.h"
 #include "musicextractwrap.h"
-#include "musicwidgetutils.h"
+#include "musicfileutils.h"
 #include "musiccolordialog.h"
 #include "musicbackgroundconfigmanager.h"
-
-#include <QDebug>
 
 ToolsSkin::ToolsSkin(QWidget *parent)
     : QWidget(parent),
@@ -31,7 +29,7 @@ ToolsSkin::~ToolsSkin()
 
 void ToolsSkin::imageClicked()
 {
-    QString path = MusicUtils::Widget::getOpenFileDialog(this);
+    QString path = MusicUtils::File::getOpenFileDialog(this);
     if(path.isEmpty())
     {
         return;
@@ -56,7 +54,7 @@ void ToolsSkin::paletteClicked()
 
 void ToolsSkin::readClicked()
 {
-    QString path = MusicUtils::Widget::getOpenFileDialog(this, "TTKS Files (*.ttks)");
+    QString path = MusicUtils::File::getOpenFileDialog(this, "TTKS Files (*.ttks)");
     if(path.isEmpty())
     {
         return;
@@ -74,7 +72,7 @@ void ToolsSkin::readClicked()
 
 void ToolsSkin::writeClicked()
 {
-    QString path = MusicUtils::Widget::getSaveFileDialog(this, "TTKS Files (*.ttks)");
+    QString path = MusicUtils::File::getSaveFileDialog(this, "TTKS Files (*.ttks)");
     if(path.isEmpty())
     {
         return;
@@ -84,5 +82,5 @@ void ToolsSkin::writeClicked()
     image.m_pix = m_pixmap;
     image.m_item.m_name = m_ui->nameLineEdit->text().trimmed();
     image.m_item.m_useCount = m_ui->countLineEdit->text().trimmed().toInt();
-    qDebug() << "Save state " << MusicExtractWrap::inputSkin(&image, path);
+    TTK_LOGGER_INFO("Save state " << MusicExtractWrap::inputSkin(&image, path));
 }

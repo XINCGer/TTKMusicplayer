@@ -21,7 +21,6 @@ void MusicTextDownLoadThread::startToDownload()
             request.setUrl(m_url);
 #ifndef QT_NO_SSL
             connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
-            M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
             MusicObject::setSslConfiguration(&request);
 #endif
             m_reply = m_manager->get(request);
@@ -31,8 +30,8 @@ void MusicTextDownLoadThread::startToDownload()
         }
         else
         {
-            emit downLoadDataChanged("The text file create failed");
-            M_LOGGER_ERROR("The text file create failed!");
+            Q_EMIT downLoadDataChanged("The text file create failed");
+            TTK_LOGGER_ERROR("The text file create failed!");
             deleteAll();
         }
     }
@@ -57,16 +56,16 @@ void MusicTextDownLoadThread::downLoadFinished()
             outstream.setCodec("utf-8");
             outstream << QString(bytes).remove("\r").toUtf8() << endl;
             m_file->close();
-            M_LOGGER_INFO("text download has finished!");
+            TTK_LOGGER_INFO("text download has finished!");
         }
         else
         {
-            M_LOGGER_ERROR("text download file error!");
+            TTK_LOGGER_ERROR("text download file error!");
             m_file->remove();
             m_file->close();
         }
     }
 
-    emit downLoadDataChanged( transferData() );
+    Q_EMIT downLoadDataChanged( transferData() );
     deleteAll();
 }

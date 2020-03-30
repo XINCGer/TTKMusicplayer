@@ -7,7 +7,6 @@
         <file alias="toplist">../TTKResource/A_extras/toplist</file>
         <file alias="artistlist">../TTKResource/A_extras/artistlist</file>
         <file alias="movielist">../TTKResource/A_extras/movielist</file>
-        <file alias="fmarclist">../TTKResource/A_extras/fmarclist</file>
         <file alias="sound">../TTKResource/A_extras/sound.wav</file>
     </qresource>
     <qresource prefix="/image">
@@ -123,6 +122,8 @@
         <file alias="lb_grabwindow">../TTKResource/tools/lb_grabwindow.png</file>
         <file alias="lb_connections">../TTKResource/tools/lb_connections.png</file>
         <file alias="lb_radio">../TTKResource/tools/lb_radio.png</file>
+        <file alias="lb_dlna">../TTKResource/tools/lb_dlna.png</file>
+        <file alias="lb_screen_saver">../TTKResource/tools/lb_screensaver.png</file>
     </qresource>
     <qresource prefix="/contextMenu">
         <file alias="btn_next_normal">../TTKResource/contextMenu/btn_next_normal.png</file>
@@ -162,6 +163,8 @@
         <file alias="btn_kmicro">../TTKResource/contextMenu/btn_kmicro.png</file>
         <file alias="btn_lrc_label">../TTKResource/contextMenu/btn_lrc_label.png</file>
         <file alias="btn_bug_reoprt">../TTKResource/contextMenu/btn_bug_reoprt.png</file>
+        <file alias="btn_spectrum">../TTKResource/contextMenu/btn_spectrum.png</file>
+        <file alias="btn_feedback">../TTKResource/contextMenu/btn_feedback.png</file>
     </qresource>
     <qresource prefix="/gif">
         <file alias="lb_ballon_white">../TTKResource/gif/lb_ballon_white.png</file>
@@ -364,7 +367,7 @@
         <file alias="btn_tool_off">../TTKResource/toolSets/btn_tool_off.png</file>
         <file alias="lb_mobile_devices">../TTKResource/toolSets/lb_mobile_devices.png</file>
         <file alias="lb_mobile_usb">../TTKResource/toolSets/lb_mobile_usb.png</file>
-        <file alias="lb_mobile_wifi">../TTKResource/toolSets/lb_mobile_wifi.png</file>
+        <file alias="lb_mobile_computer">../TTKResource/toolSets/lb_mobile_computer.png</file>
         <file alias="lb_rate">../TTKResource/toolSets/lb_rate.gif</file>
         <file alias="lb_upgrade">../TTKResource/toolSets/lb_upgrade.png</file>
         <file alias="lb_upgradeMain">../TTKResource/toolSets/lb_upgradeMain.png</file>
@@ -377,7 +380,14 @@
         <file alias="btn_arrow">../TTKResource/toolSets/btn_arrow.png</file>
         <file alias="lb_wired">../TTKResource/toolSets/lb_wired.png</file>
         <file alias="lb_wireless">../TTKResource/toolSets/lb_wireless.png</file>
-        <file alias="lb_wired_con">../TTKResource/toolSets/lb_wired_con.png</file>
+        <file alias="btn_change_dev_normal">../TTKResource/toolSets/btn_change_dev_normal.png</file>
+        <file alias="btn_change_dev_hover">../TTKResource/toolSets/btn_change_dev_hover.png</file>
+        <file alias="btn_import_ring_normal">../TTKResource/toolSets/btn_import_ring_normal.png</file>
+        <file alias="btn_import_ring_hover">../TTKResource/toolSets/btn_import_ring_hover.png</file>
+        <file alias="btn_import_song_hover">../TTKResource/toolSets/btn_import_song_hover.png</file>
+        <file alias="btn_import_song_normal">../TTKResource/toolSets/btn_import_song_normal.png</file>
+        <file alias="btn_refresh_dev_hover">../TTKResource/toolSets/btn_refresh_dev_hover.png</file>
+        <file alias="btn_refresh_dev_normal">../TTKResource/toolSets/btn_refresh_dev_normal.png</file>
         <file alias="btn_detect_hover">../TTKResource/toolSets/btn_detect_hover.png</file>
         <file alias="btn_detect_normal">../TTKResource/toolSets/btn_detect_normal.png</file>
         <file alias="btn_detect_stop_hover">../TTKResource/toolSets/btn_detect_stop_hover.png</file>
@@ -424,6 +434,12 @@
         <file alias="lb_record_off">../TTKResource/toolSets/lb_record_off.png</file>
         <file alias="lb_record_on">../TTKResource/toolSets/lb_record_on.png</file>
         <file alias="btn_arrow_normal">../TTKResource/toolSets/btn_arrow_normal.png</file>
+        <file alias="btn_saver_off">../TTKResource/toolSets/btn_saver_off.png</file>
+        <file alias="btn_saver_on">../TTKResource/toolSets/btn_saver_on.png</file>
+        <file alias="btn_saver_enable">../TTKResource/toolSets/btn_saver_enable.png</file>
+        <file alias="btn_saver_enable_hover">../TTKResource/toolSets/btn_saver_enable_hover.png</file>
+        <file alias="btn_saver_disable">../TTKResource/toolSets/btn_saver_disable.png</file>
+        <file alias="btn_saver_disable_hover">../TTKResource/toolSets/btn_saver_disable_hover.png</file>
     </qresource>
     <qresource prefix="/tiny">
         <file alias="lb_resize_normal">../TTKResource/tiny/lb_resize_normal.png</file>
@@ -804,5 +820,29 @@
         <file alias="95">../TTKResource/emoji/95.png</file>
         <file alias="96">../TTKResource/emoji/96.png</file>
         <file alias="97">../TTKResource/emoji/97.png</file>
+    </qresource>
+    <qresource prefix="/spectrum">
+        <file alias="normal_1">../TTKResource/spectrum/normal_1.png</file>
+        <file alias="normal_2">../TTKResource/spectrum/normal_2.png</file>
+        <file alias="normal_3">../TTKResource/spectrum/normal_3.png</file>
+        <file alias="normal_4">../TTKResource/spectrum/normal_4.png</file>
+        <file alias="normal_5">../TTKResource/spectrum/normal_5.png</file>
+        <file alias="normal_6">../TTKResource/spectrum/normal_6.png</file>
+        <file alias="plus_1">../TTKResource/spectrum/plus_1.png</file>
+        <file alias="plus_2">../TTKResource/spectrum/plus_2.png</file>
+        <file alias="plus_3">../TTKResource/spectrum/plus_3.png</file>
+        <file alias="plus_4">../TTKResource/spectrum/plus_4.png</file>
+        <file alias="plus_5">../TTKResource/spectrum/plus_5.png</file>
+        <file alias="plus_6">../TTKResource/spectrum/plus_6.png</file>
+        <file alias="plus_7">../TTKResource/spectrum/plus_7.png</file>
+        <file alias="florid_1">../TTKResource/spectrum/florid_1.png</file>
+        <file alias="florid_2">../TTKResource/spectrum/florid_2.png</file>
+        <file alias="florid_3">../TTKResource/spectrum/florid_3.png</file>
+        <file alias="florid_4">../TTKResource/spectrum/florid_4.png</file>
+        <file alias="florid_5">../TTKResource/spectrum/florid_5.png</file>
+        <file alias="florid_6">../TTKResource/spectrum/florid_6.png</file>
+        <file alias="florid_7">../TTKResource/spectrum/florid_7.png</file>
+        <file alias="florid_8">../TTKResource/spectrum/florid_8.png</file>
+        <file alias="florid_9">../TTKResource/spectrum/florid_9.png</file>
     </qresource>
 </RCC>

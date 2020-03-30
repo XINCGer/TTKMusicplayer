@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ public:
      */
     void init(MusicObject::Program type);
     /*!
-     * Resize window bound by widgte resize called.
+     * Resize window bound by widget resize called.
      */
     void resizeWindow();
 
@@ -58,13 +58,13 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     /*!
-     * Table widget list cell enter.
+     * Table widget item cell enter.
      */
-    virtual void listCellEntered(int row, int column) override;
+    virtual void itemCellEntered(int row, int column) override;
     /*!
-     * Table widget list cell click.
+     * Table widget item cell click.
      */
-    virtual void listCellClicked(int row, int column) override;
+    virtual void itemCellClicked(int row, int column) override;
     /*!
      * Create the current program info item.
      */
@@ -98,9 +98,9 @@ public:
     /*!
      * Init widget.
      */
-    void init();
+    void initialize();
     /*!
-     * Resize window bound by widgte resize called.
+     * Resize window bound by widget resize called.
      */
     void resizeWindow();
 
@@ -129,11 +129,11 @@ public:
     /*!
      * Init widget.
      */
-    void init();
+    void initialize();
     /*!
-     * Resize window bound by widgte resize called.
+     * Resize window bound by widget resize called.
      */
-    void resizeWindow();
+    virtual void resizeWindow();
 
 public Q_SLOTS:
     /*!
@@ -162,10 +162,6 @@ protected:
      * Init the first widget.
      */
     void initFirstWidget();
-    /*!
-     * Override the widget event.
-     */
-    virtual void contextMenuEvent(QContextMenuEvent *event) override;
 
     MusicWebDJRadioCategoryWidget *m_categoryWidget;
     MusicWebDJRadioProgramWidget *m_recommendWidget, *m_programWidget;

@@ -4,11 +4,13 @@
 #include "musicwidgetutils.h"
 #include "musicuiobject.h"
 #include "musicdownloadsourcethread.h"
-#include "musicregeditmanager.h"
-#include "musicotherdefine.h"
+#include "musicwindowsmanager.h"
 #include "musicwidgetheaders.h"
+#include "musicitemdelegate.h"
+#include "musiccoreutils.h"
+#include "musicimageutils.h"
 
-#ifdef MUSIC_GREATER_NEW
+#ifdef TTK_GREATER_NEW
 #include <QStandardPaths>
 #else
 #include <QDesktopServices>
@@ -33,9 +35,9 @@ MusicWebMusicRadioWidget::MusicWebMusicRadioWidget(QWidget *parent)
     m_cookJar = new QNetworkCookieJar(this);
 
     MusicUtils::Widget::setTransparent(this, 0);
-    verticalScrollBar()->setStyleSheet(MusicUIObject::MScrollBarStyle03);
+    verticalScrollBar()->setStyleSheet(MusicUIObject::MQSSScrollBarStyle03);
 
-    connect(this, SIGNAL(cellDoubleClicked(int,int)), SLOT(listCellDoubleClicked(int,int)));
+    connect(this, SIGNAL(cellDoubleClicked(int,int)), SLOT(itemCellDoubleClicked(int,int)));
 
 }
 
@@ -58,7 +60,7 @@ void MusicWebMusicRadioWidget::initListItems(int index)
     }
 }
 
-void MusicWebMusicRadioWidget::listCellEntered(int row, int column)
+void MusicWebMusicRadioWidget::itemCellEntered(int row, int column)
 {
     QTableWidgetItem *it = item(m_previousColorRow, 3);
     if(it)
@@ -80,20 +82,20 @@ void MusicWebMusicRadioWidget::listCellEntered(int row, int column)
         unsetCursor();
     }
 
-    MusicAbstractTableWidget::listCellEntered(row, column);
+    MusicAbstractTableWidget::itemCellEntered(row, column);
 }
 
-void MusicWebMusicRadioWidget::listCellClicked(int row, int column)
+void MusicWebMusicRadioWidget::itemCellClicked(int row, int column)
 {
     Q_UNUSED(row);
 
     if(column == 3)
     {
-        listCellDoubleClicked(row, DEFAULT_LEVEL_LOWER);
+        itemCellDoubleClicked(row, DEFAULT_LEVEL_LOWER);
     }
 }
 
-void MusicWebMusicRadioWidget::listCellDoubleClicked(int row, int column)
+void MusicWebMusicRadioWidget::itemCellDoubleClicked(int row, int column)
 {
     Q_UNUSED(column);
 
@@ -126,10 +128,11 @@ void MusicWebMusicRadioWidget::addListWidgetItem()
         setRowHeight(index, ITEM_ROW_HEIGHT_XL);
 
         QTableWidgetItem *item = new QTableWidgetItem;
+        item->setData(MUSIC_DATAS_ROLE, channel.m_coverUrl);
         setItem(index, 0, item);
 
                           item = new QTableWidgetItem;
-        item->setIcon(MusicUtils::Widget::pixmapToRound(QPixmap(":/image/lb_defaultArt"), QPixmap(":/usermanager/lb_mask_50"), iconSize()));
+        item->setIcon(MusicUtils::Image::pixmapToRound(QPixmap(":/image/lb_defaultArt"), QPixmap(":/usermanager/lb_mask_50"), iconSize()));
         setItem(index, 1, item);
 
                           item = new QTableWidgetItem;
@@ -137,7 +140,11 @@ void MusicWebMusicRadioWidget::addListWidgetItem()
         f.setBold(true);
         item->setFont(f);
         item->setText(channel.m_name);
+#if TTK_QT_VERSION_CHECK(5,13,0)
+        item->setForeground(QColor(100, 100, 100));
+#else
         item->setTextColor(QColor(100, 100, 100));
+#endif
         item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         setItem(index, 2, item);
 
@@ -159,7 +166,7 @@ void MusicWebMusicRadioWidget::addListWidgetItem()
     if(m_outerIndex != -1)
     {
         selectRow(m_outerIndex);
-        listCellDoubleClicked(m_outerIndex, DEFAULT_LEVEL_LOWER);
+        itemCellDoubleClicked(m_outerIndex, DEFAULT_LEVEL_LOWER);
     }
 }
 
@@ -170,7 +177,7 @@ void MusicWebMusicRadioWidget::downLoadFinished(const QByteArray &data, const QV
     {
         QPixmap pix;
         pix.loadFromData(data);
-        it->setIcon(MusicUtils::Widget::pixmapToRound(pix, QPixmap(":/usermanager/lb_mask_50"), iconSize()));
+        it->setIcon(MusicUtils::Image::pixmapToRound(pix, QPixmap(":/usermanager/lb_mask_50"), iconSize()));
     }
 }
 
@@ -179,7 +186,7 @@ void MusicWebMusicRadioWidget::musicPlayClicked()
     const int row = currentRow();
     if(row >= 0)
     {
-        listCellDoubleClicked(row, DEFAULT_LEVEL_LOWER);
+        itemCellDoubleClicked(row, DEFAULT_LEVEL_LOWER);
     }
 }
 
@@ -198,17 +205,17 @@ void MusicWebMusicRadioWidget::sendToDesktopLink()
         fileName = it->text();
     }
 
-#ifdef MUSIC_GREATER_NEW
+#ifdef TTK_GREATER_NEW
     const QString &desktop = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 #else
     const QString &desktop = QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);
 #endif
 
-    MusicRegeditManager reg;
+    MusicWindowsManager win;
 #ifdef Q_OS_WIN
-    reg.setFileLink(MAIN_DIR_FULL + APP_EXE_NAME, desktop + "/" + fileName + ".lnk", QString(), QString("%1 \"%2\"").arg(MUSIC_OUTER_RADIO).arg(row), tr("TTK Radio Link"));
+    win.setFileLink(MAIN_DIR_FULL + APP_EXE_NAME, desktop + "/" + fileName + ".lnk", QString(), QString("%1 \"%2\"").arg(MUSIC_OUTER_RADIO).arg(row), tr("TTK Radio Link"));
 #else
-    reg.setFileLink(QString(" %1 \"%2\"").arg(MUSIC_OUTER_RADIO).arg(row), desktop, MAIN_DIR_FULL + APP_NAME, MusicObject::getAppDir(), fileName);
+    win.setFileLink(QString(" %1 \"%2\"").arg(MUSIC_OUTER_RADIO).arg(row), desktop, MAIN_DIR_FULL + APP_NAME, MusicObject::getAppDir(), fileName);
 #endif
 }
 
@@ -216,7 +223,7 @@ void MusicWebMusicRadioWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     MusicAbstractTableWidget::contextMenuEvent(event);
     QMenu rightClickMenu(this);
-    rightClickMenu.setStyleSheet(MusicUIObject::MMenuStyle02);
+    rightClickMenu.setStyleSheet(MusicUIObject::MQSSMenuStyle02);
 
     rightClickMenu.addAction(tr("musicPlay"), this, SLOT(musicPlayClicked()));
     rightClickMenu.addSeparator();

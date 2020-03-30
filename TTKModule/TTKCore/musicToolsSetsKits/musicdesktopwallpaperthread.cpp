@@ -10,7 +10,7 @@
 MusicDesktopWallpaperThread::MusicDesktopWallpaperThread(QObject *parent)
     : QObject(parent)
 {
-    MusicTime::timeSRand();
+    MusicTime::InitSRand();
 
     m_run = false;
     m_random = false;
@@ -18,7 +18,7 @@ MusicDesktopWallpaperThread::MusicDesktopWallpaperThread(QObject *parent)
     m_timer = new QTimer(this);
     connect(m_timer, SIGNAL(timeout()), SLOT(timeout()));
 
-    setInterval(20*MT_S2MS);
+    setInterval(20 * MT_S2MS);
 }
 
 MusicDesktopWallpaperThread::~MusicDesktopWallpaperThread()
@@ -49,23 +49,23 @@ void MusicDesktopWallpaperThread::setImagePath(const QStringList &list)
 #if defined Q_OS_WIN
 HWND MusicDesktopWallpaperThread::findDesktopIconWnd()
 {
-    HWND hWorkerW = FindWindowExW(NULL, NULL, L"WorkerW", NULL);
-    HWND hDefView = NULL;
+    HWND hWorkerW = FindWindowExW(nullptr, nullptr, L"WorkerW", nullptr);
+    HWND hDefView = nullptr;
 
-    while((!hDefView) && hWorkerW)
+    while(!hDefView && hWorkerW)
     {
-        hDefView = FindWindowExW(hWorkerW, NULL, L"SHELLDLL_DefView", NULL);
-        hWorkerW = FindWindowExW(NULL, hWorkerW, L"WorkerW", NULL);
+        hDefView = FindWindowExW(hWorkerW, nullptr, L"SHELLDLL_DefView", nullptr);
+        hWorkerW = FindWindowExW(nullptr, hWorkerW, L"WorkerW", nullptr);
     }
 
     ShowWindow(hWorkerW, 0);
-    return FindWindowW(L"Progman", NULL);
+    return FindWindowW(L"Progman", nullptr);
 }
 
 void MusicDesktopWallpaperThread::sendMessageToDesktop()
 {
-     PDWORD_PTR result = NULL;
-     SendMessageTimeoutW(FindWindowW(L"Progman",NULL), 0x52C, 0, 0, SMTO_NORMAL, 1000, result);
+    PDWORD_PTR result = nullptr;
+    SendMessageTimeoutW(FindWindowW(L"Progman", nullptr), 0x52C, 0, 0, SMTO_NORMAL, 1000, result);
 }
 #endif
 
@@ -100,13 +100,13 @@ void MusicDesktopWallpaperThread::timeout()
             m_currentImageIndex = 0;
         }
 
-        emit updateBackground(QPixmap(m_path[m_currentImageIndex]));
+        Q_EMIT updateBackground(QPixmap(m_path[m_currentImageIndex]));
     }
     else
     {
         MusicBackgroundImage image;
         MusicExtractWrap::outputSkin(&image, M_BACKGROUND_PTR->getBackgroundUrl());
 
-        emit updateBackground(image.m_pix);
+        Q_EMIT updateBackground(image.m_pix);
     }
 }

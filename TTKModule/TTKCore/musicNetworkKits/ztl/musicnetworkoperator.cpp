@@ -4,7 +4,7 @@
 
 #include <QStringList>
 
-#define IP_CHECK_URL    "bmdLQytSMnlXb2JUV1FPQ2tnenlBNWZWckZKK3FFYUt1eUQ3Ulg5cUptYz0="
+#define IP_CHECK_URL    "emtRdWI5YVg3eHduQjNwYUZNV2JXVjhGVmI2VnJJbEc="
 
 MusicNetworkOperator::MusicNetworkOperator(QObject *parent)
     : QObject(parent)
@@ -21,20 +21,48 @@ void MusicNetworkOperator::startToDownload()
 
 void MusicNetworkOperator::downLoadFinished(const QByteArray &data)
 {
-    QTextStream in(MConst_cast(QByteArray*, &data));
+    QTextStream in(TTKConst_cast(QByteArray*, &data));
     in.setCodec("gb2312");
 
+    QString text(in.readAll());
+    QRegExp regx("<iframe src=\"([^<]+)\" ");
+    regx.setMinimal(true);
+    const int pos = text.indexOf(regx);
+    while(pos != -1)
+    {
+        MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
+        connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadQueryFinished(QByteArray)));
+        text = regx.cap(1);
+        if(!text.contains("http:"))
+        {
+          text = "http:" + text;
+        }
+        download->startToDownload(text);
+        break;
+    }
+
+    if(pos == -1)
+    {
+        Q_EMIT getNetworkOperatorFinished(QString());
+        deleteLater();
+    }
+}
+
+void MusicNetworkOperator::downLoadQueryFinished(const QByteArray &data)
+{
+    QTextStream in(TTKConst_cast(QByteArray*, &data));
+    in.setCodec("utf-8");
+
     QString line, text(in.readAll());
-    QRegExp regx("<center>([^<]+)</center>");
+    QRegExp regx("<p align=\"center\">([^<]+)</p>");
     int pos = text.indexOf(regx);
     while(pos != -1)
     {
-        line = regx.cap(0).remove("<center>").remove("</center>").trimmed();
+        line = regx.cap(0).remove("<p align=\"center\">").remove("</p>").trimmed();
         line = line.right(2);
-        pos += regx.matchedLength();
-        pos = regx.indexIn(text, pos);
+        break;
     }
 
-    emit getNetworkOperatorFinished(line);
+    Q_EMIT getNetworkOperatorFinished(line);
     deleteLater();
 }

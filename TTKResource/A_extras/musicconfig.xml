@@ -26,11 +26,15 @@
         <otherWriteInfo value="1"/>
         <otherSideBy value="0"/>
         <otherSongFormat value="0"/>
-        <otherLrcKTV value="1"/>
-        <otherRippleSpectrumEnable value="1"/>
-        <otherRippleSpectrumColor value="250,218,131"/>
-        <otherRippleSpectrumOpacity value="100"/>
+        <otherLrcKTVMode value="1"/>
+        <otherScreenSaverEnable value="0"/>
+        <otherScreenSaverTime value="10"/>
+        <otherScreenSaverIndex value=""/>
     </otherSetting>
+    <rippleSetting>
+        <rippleSpectrumEnable value="1"/>
+        <rippleSpectrumColor value="250,218,131"/>
+    </rippleSetting>
     <backgroundSetting>
         <backgroundTheme value="theme-7"/>
         <backgroundTransparent value="100"/>
@@ -41,8 +45,8 @@
         <hotkeyEnable value="0"/>
         <hotkeyString value=""/>
     </hotkeySetting>
-    <inlineLrcSetting>
-        <showInlineLrc value="1"/>
+    <interiorLrcSetting>
+        <showInteriorLrc value="1"/>
         <lrcColor value="0"/>
         <lrcSize value="18"/>
         <lrcFamily value="0"/>
@@ -50,7 +54,7 @@
         <lrcTransparent value="99"/>
         <lrcFrontgroundColor value="250,218,131;250,218,131;250,218,131;"/>
         <lrcBackgroundColor value="255,255,255;255,255,255;255,255,255;"/>
-    </inlineLrcSetting>
+    </interiorLrcSetting>
     <desktopLrcSetting>
         <showDesktopLrc value="0"/>
         <lrcDColor value="10"/>
@@ -80,6 +84,8 @@
         <enhancedLADSPA value="0"/>
         <enhancedSOX value="0"/>
         <enhancedSRC value="0"/>
+        <enhancedMonoStereo value="0"/>
+        <enhancedMono value="0"/>
     </equalizerSetting>
     <timeSetting>
         <timeAutoIndex value="2"/>
@@ -108,9 +114,4 @@
         <downloadDLoadLimit value="100"/>
         <downloadULoadLimit value="100"/>
     </downloadSetting>
-    <qiniuSetting>
-        <qiniuMusicConfig value=""/>
-        <qiniuDataConfig value=""/>
-        <qiniuTimeConfig value=""/>
-    </qiniuSetting>
 </TTKMusicPlayer>

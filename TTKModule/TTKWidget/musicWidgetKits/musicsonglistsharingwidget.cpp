@@ -2,7 +2,7 @@
 #include "ui_musicsonglistsharingwidget.h"
 #include "musicuiobject.h"
 #include "musictoastlabel.h"
-#include "musiclicensecore.h"
+#include "musiclicenseobject.h"
 
 #include <QClipboard>
 #include <QApplication>
@@ -13,21 +13,23 @@ MusicSongListSharingWidget::MusicSongListSharingWidget(QWidget *parent)
       m_ui(new Ui::MusicSongListSharingWidget)
 {
     m_ui->setupUi(this);
+    setFixedSize(size());
+
     m_ui->topTitleCloseButton->setIcon(QIcon(":/functions/btn_close_hover"));
-    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MToolButtonStyle04);
+    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle04);
     m_ui->topTitleCloseButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_ui->topTitleCloseButton->setToolTip(tr("Close"));
     connect(m_ui->topTitleCloseButton, SIGNAL(clicked()), SLOT(close()));
 
-    m_ui->mainLabel->setStyleSheet(MusicUIObject::MBackgroundStyle01 + MusicUIObject::MFontStyle05 + MusicUIObject::MFontStyle01 + MusicUIObject::MColorStyle03);
-    m_ui->mainOutputButton->setStyleSheet(MusicUIObject::MPushButtonStyle04);
-    m_ui->mainInputButton->setStyleSheet(MusicUIObject::MPushButtonStyle04);
+    m_ui->mainLabel->setStyleSheet(MusicUIObject::MQSSBackgroundStyle01 + MusicUIObject::MQSSFontStyle05 + MusicUIObject::MQSSFontStyle01 + MusicUIObject::MQSSColorStyle03);
+    m_ui->mainOutputButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
+    m_ui->mainInputButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
 
     m_ui->mainOutputButton->setIcon(QIcon(":/toolSets/btn_kukou_output"));
     m_ui->mainInputButton->setIcon(QIcon(":/toolSets/btn_kukou_input"));
 
-    m_ui->writeBackButton->setStyleSheet(MusicUIObject::MBackgroundStyle01 + MusicUIObject::MColorStyle03 + MusicUIObject::MFontStyle02);
-    m_ui->readBackButton->setStyleSheet(MusicUIObject::MBackgroundStyle01 + MusicUIObject::MColorStyle03 + MusicUIObject::MFontStyle02);
+    m_ui->writeBackButton->setStyleSheet(MusicUIObject::MQSSBackgroundStyle01 + MusicUIObject::MQSSColorStyle03 + MusicUIObject::MQSSFontStyle02);
+    m_ui->readBackButton->setStyleSheet(MusicUIObject::MQSSBackgroundStyle01 + MusicUIObject::MQSSColorStyle03 + MusicUIObject::MQSSFontStyle02);
 #ifdef Q_OS_UNIX
     m_ui->mainOutputButton->setFocusPolicy(Qt::NoFocus);
     m_ui->mainInputButton->setFocusPolicy(Qt::NoFocus);
@@ -80,6 +82,6 @@ void MusicSongListSharingWidget::readMainButtonClicked()
 
 void MusicSongListSharingWidget::createWriteKey()
 {
-    MusicLicenseCore core;
+    MusicLicenseObject core;
     m_ui->writeMainLabel2->setText(core.getCharacteristicStringNormal());
 }

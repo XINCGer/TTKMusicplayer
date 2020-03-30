@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2019 Greedysky Studio
+# * Copyright (C) 2015 - 2020 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -23,12 +23,10 @@ HEADERS  += \
     $$PWD/musicdesktopwallpaperthread.h \
     $$PWD/musictimerautoobject.h \
     $$PWD/musiclocalsongsmanagerthread.h \
-    $$PWD/musicaudiorecordercore.h \
+    $$PWD/musicaudiorecorderobject.h \
     $$PWD/musicnetworktestthread.h \
-    $$PWD/musicnetworkspeedtestthread.h \
-    $$PWD/musicsongchecktoolscore.h \
-    $$PWD/musicsongchecktoolsunit.h \
-    $$PWD/musicwebradioobject.h
+    $$PWD/musicsongchecktoolsthread.h \
+    $$PWD/musicsongchecktoolsunit.h
 
 }
 
@@ -37,10 +35,8 @@ SOURCES += \
     $$PWD/musicdesktopwallpaperthread.cpp \
     $$PWD/musictimerautoobject.cpp \
     $$PWD/musiclocalsongsmanagerthread.cpp \
-    $$PWD/musicaudiorecordercore.cpp \
+    $$PWD/musicaudiorecorderobject.cpp \
     $$PWD/musicnetworktestthread.cpp \
-    $$PWD/musicnetworkspeedtestthread.cpp \
-    $$PWD/musicsongchecktoolscore.cpp \
-    $$PWD/musicwebradioobject.cpp
+    $$PWD/musicsongchecktoolsthread.cpp
 
 }

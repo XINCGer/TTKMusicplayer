@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,8 @@
  ================================================= */
 
 #include "musicglobaldefine.h"
-#include "qiniu/qndataitem.h"
+#///Oss import
+#include "qoss/qossdataitem.h"
 
 /*! @brief The class of the cloud data item.
  * @author Greedysky <greedysky@163.com>
@@ -38,7 +39,7 @@ typedef struct MUSIC_TOOL_EXPORT MusicCloudDataItem
     QString m_id;
     QString m_path;
     State m_state;
-    QNDataItem m_dataItem;
+    QOSSDataItem m_dataItem;
 
     inline bool isValid() const
     {

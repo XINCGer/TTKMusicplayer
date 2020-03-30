@@ -21,14 +21,13 @@ void MusicDataDownloadThread::startToDownload()
             m_manager = new QNetworkAccessManager(this);
 #ifndef QT_NO_SSL
             connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
-            M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
 #endif
             startRequest(m_url);
         }
         else
         {
-            M_LOGGER_ERROR("The data file create failed");
-            emit downLoadDataChanged("The data file create failed");
+            TTK_LOGGER_ERROR("The data file create failed");
+            Q_EMIT downLoadDataChanged("The data file create failed");
             deleteAll();
         }
     }
@@ -60,9 +59,9 @@ void MusicDataDownloadThread::startRequest(const QUrl &url)
     /// only download music data can that show progress
     if(m_downloadType == MusicObject::DownloadMusic && !m_redirection)
     {
-        m_createItemTime = MusicTime::timeStamp();
+        m_createItemTime = MusicTime::timestamp();
         M_DOWNLOAD_MANAGER_PTR->connectMusicDownload(MusicDownLoadPair(m_createItemTime, this, m_recordType));
-        emit createDownloadItem(m_savePathName, m_createItemTime);
+        Q_EMIT createDownloadItem(m_savePathName, m_createItemTime);
     }
 }
 
@@ -97,8 +96,8 @@ void MusicDataDownloadThread::downLoadFinished()
     {
         if(m_needUpdate)
         {
-            emit downLoadDataChanged( transferData() );
-            M_LOGGER_INFO("data download has finished!");
+            Q_EMIT downLoadDataChanged( transferData() );
+            TTK_LOGGER_INFO("data download has finished!");
         }
     }
     deleteAll();
@@ -119,7 +118,7 @@ void MusicDataDownloadThread::downloadProgress(qint64 bytesReceived, qint64 byte
     if(m_downloadType == MusicObject::DownloadMusic || m_downloadType == MusicObject::DownloadOther)
     {
         const QString &total = MusicUtils::Number::size2Label(bytesTotal);
-        emit downloadProgressChanged(bytesTotal != 0 ? bytesReceived*100.0/bytesTotal : 0, total, m_createItemTime);
+        Q_EMIT downloadProgressChanged(bytesTotal != 0 ? bytesReceived*100.0/bytesTotal : 0, total, m_createItemTime);
     }
 }
 
@@ -129,6 +128,6 @@ void MusicDataDownloadThread::updateDownloadSpeed()
     const QString &label = MusicUtils::Number::speed2Label(speed);
     const qint64 time = (speed != 0) ? (m_totalSize - m_currentReceived)/speed : 0;
 
-    emit downloadSpeedLabelChanged(label, time);
+    Q_EMIT downloadSpeedLabelChanged(label, time);
     MusicDownLoadThreadAbstract::updateDownloadSpeed();
 }

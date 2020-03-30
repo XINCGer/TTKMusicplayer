@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ namespace Ui {
 class MusicSongCheckToolsWidget;
 }
 
-class MusicSongCheckToolsRenameCore;
-class MusicSongCheckToolsDuplicateCore;
-class MusicSongCheckToolsQualityCore;
+class MusicSongCheckToolsRenameThread;
+class MusicSongCheckToolsDuplicateThread;
+class MusicSongCheckToolsQualityThread;
 
 /*! @brief The class of the song check tools widget.
  * @author Greedysky <greedysky@163.com>
@@ -59,7 +59,7 @@ public Q_SLOTS:
     /*!
      * Item lists changed.
      */
-    void itemListsChanged(const MIntList &items);
+    void itemListsChanged(const TTKIntList &items);
     /*!
      * Rename button clicked.
      */
@@ -121,15 +121,15 @@ protected:
     /*!
      * Rename widget init.
      */
-    void renameWidgetInit();
+    void initRenameWidget();
     /*!
      * Quality widget init.
      */
-    void qualityWidgetInit();
+    void initQualityWidget();
     /*!
      * Duplicate widget init.
      */
-    void duplicateWidgetInit();
+    void initDuplicateWidget();
     /*!
      * Switch to selected item style.
      */
@@ -139,10 +139,10 @@ protected:
 
     MusicSongs m_localSongs;
     bool m_selectedItemIdFlag;
-    MIntList m_selectedItemIds;
-    MusicSongCheckToolsRenameCore *m_renameCore;
-    MusicSongCheckToolsDuplicateCore *m_duplicateCore;
-    MusicSongCheckToolsQualityCore *m_qualityCore;
+    TTKIntList m_selectedItemIds;
+    MusicSongCheckToolsRenameThread *m_renameCore;
+    MusicSongCheckToolsDuplicateThread *m_duplicateCore;
+    MusicSongCheckToolsQualityThread *m_qualityCore;
 
 };
 

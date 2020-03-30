@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ namespace Ui {
 class MusicLrcMakerWidget;
 }
 class MusicLrcAnalysis;
-class MusicLrcManagerForInline;
+class MusicLrcManagerForInterior;
 
 /*! @brief The class of the lrc maker widget item.
  * @author Greedysky <greedysky@163.com>
@@ -216,7 +216,7 @@ protected:
     /*!
      * Set controller enable or disable.
      */
-    void setControlEnable(bool enable) const;
+    void setControlEnabled(bool enable) const;
     /*!
      * Translate current long time to string.
      */
@@ -243,7 +243,7 @@ protected:
     qint64 m_intervalTime;
     MusicLrcMakerWidgetItem *m_lineItem;
     MusicLrcAnalysis *m_analysis;
-    QList<MusicLrcManagerForInline*> m_musicLrcContainer;
+    QList<MusicLrcManagerForInterior*> m_musicLrcContainer;
 
 };
 

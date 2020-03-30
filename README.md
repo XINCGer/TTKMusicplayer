@@ -1,6 +1,6 @@
 # TTKMusicPlayer
 ![TTKMusicplayer](https://img.shields.io/badge/Greedysky-TTKMusicPlayer-green.svg?style=flat-square)
-![Version](https://img.shields.io/badge/Version-2.8.0.0-blue.svg?style=flat-square)
+![Version](https://img.shields.io/badge/Version-2.11.1.0-blue.svg?style=flat-square)
 ![License](https://img.shields.io/badge/License-GPL%20V3-yellowgreen.svg?style=flat-square)
 
 ![LOGO](https://github.com/Greedysky/Resource/blob/master/Screen/logo_pic.png?raw=true)
@@ -67,7 +67,7 @@ Features
 -------
 TTKMusicPlayer can meet your most demands
  * Support for multiple music formats.
- * SID File(*.sid *.mus *.str *.prg *.P00) on linux
+ * SID File(*.sid *.mus *.str *.prg *.P00)
  * MusePack File(*.mpc)
  * WavPack File(*.wv)
  * Ogg Vorbis File(*.ogg)
@@ -80,11 +80,15 @@ TTKMusicPlayer can meet your most demands
  * Game File(*.ay *.gms *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz)
  * FLAC File(*.flac *.oga)
  * Monkey's Audio File(*.ape)
+ * OptimFrog File(*.ofr *.ofs)
+ * AdPlug File(*.adl *.hsc *.ksm *.lds)
+ * YM File(*.ym)
+ * ALAC File(*.alac)
  * FFmpeg File(*.wma *.ape *.tta *.m4a *.ra *.shn *.vqf *.ac3)
  * ModPlug File(*.mod *.s3m *.xm *.it *.669 *.amf *.ams *.dbm *.dmf *.dsm *.far,mdl *.med *.mtm 
                 *.okt *.ptm *.stm *.ult *.umx *.mt2 *.psm *.mdz *.s3z *.xmz *.itz *.mdr *.s3r
                 *.xmr *.itr *.dgz *.s3gz *.xmgz *.itgz)
- * Playlist formats(ttklist, m3u, m3u8, pls, wpl, xspf, asx, kwl, kgl, fpl)
+ * Playlist formats(tkpl, m3u, m3u8, pls, wpl, xspf, asx, kwl, kgl, fpl, csv, txt, nfn)
  * Junior fans interface. Interface cool, gorgeous pop. Maintaining a perfect performance under Vista and XP, refreshing
 Screenshots.
  * Search and high-speed downloads. Song search accuracy optimization, intelligent save bandwidth, you can disable the network function, 8 source download speed.
@@ -145,7 +149,7 @@ Screenshots
 Copyright
 -------
  * This file is part of the TTK Music Player project.
- * Copyright (c) 2015 - 2019 Greedysky Studio.
+ * Copyright (c) 2015 - 2020 Greedysky Studio.
  * Mail: greedysky@163.com.
  
 How To Contribute

@@ -4,13 +4,14 @@
 #include "musicusermodel.h"
 #include "musicuserconfigmanager.h"
 #include "musicuserrecordwidget.h"
-#include "musicnumberdefine.h"
 
 MusicUserManagerDialog::MusicUserManagerDialog(QWidget *parent)
      : QDialog(parent),
        m_ui(new Ui::MusicUserManagerDialog)
 {
     m_ui->setupUi(this);
+    setFixedSize(size());
+
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
 
@@ -67,7 +68,7 @@ void MusicUserManagerDialog::createButtonPopMenu()
     m_popMenu.addAction(tr("Modifies"), this, SLOT(popupUserRecordWidget()));
     m_popMenu.addAction(tr("Switches"), this, SLOT(musicUserLogoff()));
     m_popMenu.addAction(tr("Spacing"));
-    m_popMenu.setStyleSheet(MusicUIObject::MMenuStyle02);
+    m_popMenu.setStyleSheet(MusicUIObject::MQSSMenuStyle02);
     m_ui->musicSettingButton->setMenu(&m_popMenu);
 }
 
@@ -99,13 +100,13 @@ void MusicUserManagerDialog::musicUserLogoff()
     xml.writeUserData( records );
 
     m_userUID.m_uid.clear();
-    emit userStateChanged(MusicUserUIDItem(), QString());
+    Q_EMIT userStateChanged(MusicUserUIDItem(), QString());
     close();
 }
 
 int MusicUserManagerDialog::exec()
 {
-    QWidget *pa = MStatic_cast(QWidget*, parent());
+    QWidget *pa = TTKStatic_cast(QWidget*, parent());
     const QPoint &point = pa->mapToGlobal(QPoint(0, 0));
     move(point.x(), point.y() + 27);
     return QDialog::exec();
@@ -119,10 +120,10 @@ void MusicUserManagerDialog::leaveEvent(QEvent *event)
 
 void MusicUserManagerDialog::popupUserRecordWidget()
 {
-#ifndef MUSIC_GREATER_NEW
+#ifndef TTK_GREATER_NEW
     close();
 #endif
-    if(m_userUID.m_uid <= 0)
+    if(m_userUID.m_server <= 0)
     {
         MusicUserRecordWidget record;
         connect(&record, SIGNAL(resetUserName(QString)), SLOT(resetUserName(QString)));

@@ -6,7 +6,7 @@
 #include "musictinyuiobject.h"
 #include "musicplaylistfoundcategorypopwidget.h"
 #include "musicpagingwidgetobject.h"
-#include "musicotherdefine.h"
+#include "musicimageutils.h"
 
 #include <qmath.h>
 #include <QGridLayout>
@@ -24,12 +24,12 @@ MusicPlaylistFoundItemWidget::MusicPlaylistFoundItemWidget(QWidget *parent)
     m_topListenButton->setGeometry(0, 0, WIDTH_LABEL_SIZE, 20);
     m_topListenButton->setIcon(QIcon(":/tiny/btn_listen_hover"));
     m_topListenButton->setText(" - ");
-    m_topListenButton->setStyleSheet(MusicUIObject::MBackgroundStyle04 + MusicUIObject::MColorStyle01);
+    m_topListenButton->setStyleSheet(MusicUIObject::MQSSBackgroundStyle04 + MusicUIObject::MQSSColorStyle01);
 
     m_playButton = new QPushButton(this);
     m_playButton->setGeometry(110, 110, 30, 30);
     m_playButton->setCursor(Qt::PointingHandCursor);
-    m_playButton->setStyleSheet(MusicUIObject::MKGTinyBtnPlaylist);
+    m_playButton->setStyleSheet(MusicUIObject::MQSSTinyBtnPlaylist);
     connect(m_playButton, SIGNAL(clicked()), SLOT(currentItemClicked()));
 
 #ifdef Q_OS_UNIX
@@ -101,7 +101,7 @@ void MusicPlaylistFoundItemWidget::downLoadFinished(const QByteArray &data)
         QPixmap cv(":/image/lb_album_cover");
         cv = cv.scaled(m_iconLabel->size());
         pix = pix.scaled(m_iconLabel->size());
-        MusicUtils::Widget::fusionPixmap(pix, cv, QPoint(0, 0));
+        MusicUtils::Image::fusionPixmap(pix, cv, QPoint(0, 0));
         m_iconLabel->setPixmap(pix);
     }
     m_topListenButton->raise();
@@ -110,7 +110,7 @@ void MusicPlaylistFoundItemWidget::downLoadFinished(const QByteArray &data)
 
 void MusicPlaylistFoundItemWidget::currentItemClicked()
 {
-    emit currentItemClicked(m_itemData);
+    Q_EMIT currentItemClicked(m_itemData);
 }
 
 
@@ -188,7 +188,7 @@ void MusicPlaylistFoundWidget::createPlaylistItem(const MusicResultsItem &item)
 
         m_container->removeWidget(m_mainWindow);
         QScrollArea *scrollArea = new QScrollArea(this);
-        scrollArea->setStyleSheet(MusicUIObject::MScrollBarStyle01);
+        scrollArea->setStyleSheet(MusicUIObject::MQSSScrollBarStyle01);
         scrollArea->setWidgetResizable(true);
         scrollArea->setFrameShape(QFrame::NoFrame);
         scrollArea->setAlignment(Qt::AlignLeft);
@@ -196,7 +196,7 @@ void MusicPlaylistFoundWidget::createPlaylistItem(const MusicResultsItem &item)
         m_container->addWidget(scrollArea);
 
         m_firstInit = true;
-        QHBoxLayout *mainlayout = MStatic_cast(QHBoxLayout*, m_mainWindow->layout());
+        QHBoxLayout *mainlayout = TTKStatic_cast(QHBoxLayout*, m_mainWindow->layout());
         QWidget *containTopWidget = new QWidget(m_mainWindow);
         QHBoxLayout *containTopLayout  = new QHBoxLayout(containTopWidget);
         containTopLayout->setContentsMargins(30, 0, 30, 0);
@@ -207,10 +207,10 @@ void MusicPlaylistFoundWidget::createPlaylistItem(const MusicResultsItem &item)
         foreach(const QString &data, QStringList() << tr("Recommend") << tr("Top") << tr("Hot") << tr("New"))
         {
             QLabel *l = new QLabel(data, containTopWidget);
-            l->setStyleSheet(QString("QLabel::hover{%1}").arg(MusicUIObject::MColorStyle08));
+            l->setStyleSheet(QString("QLabel::hover{%1}").arg(MusicUIObject::MQSSColorStyle08));
             QFrame *hline = new QFrame(containTopWidget);
             hline->setFrameShape(QFrame::VLine);
-            hline->setStyleSheet(MusicUIObject::MColorStyle06);
+            hline->setStyleSheet(MusicUIObject::MQSSColorStyle06);
             containTopLayout->addWidget(l);
             containTopLayout->addWidget(hline);
         }
@@ -218,7 +218,7 @@ void MusicPlaylistFoundWidget::createPlaylistItem(const MusicResultsItem &item)
 
         QFrame *line = new QFrame(m_mainWindow);
         line->setFrameShape(QFrame::HLine);
-        line->setStyleSheet(MusicUIObject::MColorStyle06);
+        line->setStyleSheet(MusicUIObject::MQSSColorStyle06);
 
         QWidget *containWidget = new QWidget(m_mainWindow);
         m_gridLayout = new QGridLayout(containWidget);
@@ -257,7 +257,7 @@ void MusicPlaylistFoundWidget::currentPlaylistClicked(const MusicResultsItem &it
 {
     delete m_infoWidget;
     m_infoWidget = new MusicPlaylistFoundInfoWidget(this);
-    MusicDownLoadQueryPlaylistThread *d = MStatic_cast(MusicDownLoadQueryPlaylistThread*, M_DOWNLOAD_QUERY_PTR->getPlaylistThread(this));
+    MusicDownLoadQueryPlaylistThread *d = TTKStatic_cast(MusicDownLoadQueryPlaylistThread*, M_DOWNLOAD_QUERY_PTR->getPlaylistThread(this));
     MusicResultsItem it(item);
     if(it.isEmpty())
     {

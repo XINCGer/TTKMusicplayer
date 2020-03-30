@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@
 #include "musicwidgetheaders.h"
 #include "musicabstractmovewidget.h"
 
-class QFileSystemWatcher;
 class MusicLocalSongsManagerThread;
 
 namespace Ui {
@@ -64,18 +63,6 @@ public Q_SLOTS:
      * Select all items.
      */
     void selectedAllItems(bool check);
-    /*!
-     * Watch dir enable or not.
-     */
-    void watchDirEnable(bool enable);
-    /*!
-     * Watch dir selected.
-     */
-    void watchDirSelected();
-    /*!
-     * Watch dir path changed.
-     */
-    void watchDirChanged(const QString &path);
     /*!
      * Music song audition play.
      */
@@ -154,7 +141,7 @@ protected:
     /*!
      * Control enable or disable.
      */
-    void controlEnable(bool state);
+    void controlEnabled(bool state);
     /*!
      * Loading label disable.
      */
@@ -164,8 +151,7 @@ protected:
     Ui::MusicLocalSongsManagerWidget *m_ui;
     QFileInfoList m_fileNames;
     MusicLocalSongsManagerThread *m_thread;
-    MIntListMap m_searchfileListCache;
-    QFileSystemWatcher *m_fileSystemWatcher;
+    TTKIntListMap m_searchfileListCache;
 
 };
 

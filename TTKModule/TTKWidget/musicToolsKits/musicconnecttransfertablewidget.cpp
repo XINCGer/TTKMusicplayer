@@ -12,6 +12,8 @@ MusicConnectTransferTableWidget::MusicConnectTransferTableWidget(QWidget *parent
     headerview->resizeSection(0, 30);
     headerview->resizeSection(1, 280);
     headerview->resizeSection(2, 43);
+
+    connect(m_checkBoxDelegate, SIGNAL(buttonChecked()), parent->parent(), SLOT(itemSelectedChanged()));
 }
 
 void MusicConnectTransferTableWidget::createAllItems(const MusicSongs &songs)
@@ -21,9 +23,9 @@ void MusicConnectTransferTableWidget::createAllItems(const MusicSongs &songs)
 
     for(int i=0; i<songs.count(); ++i)
     {
-        const MusicSong song = songs[i];
+        const MusicSong &song = songs[i];
         QTableWidgetItem *item = new QTableWidgetItem;
-        item->setData(MUSIC_CHECK_ROLE, false);
+        item->setData(MUSIC_CHECK_ROLE, Qt::Unchecked);
         setItem(i, 0, item);
 
                           item = new QTableWidgetItem;
@@ -44,7 +46,7 @@ void MusicConnectTransferTableWidget::selectedAllItems(bool check)
 {
     for(int i=0; i<rowCount(); ++i)
     {
-        item(i, 0)->setData(MUSIC_CHECK_ROLE, check);
+        item(i, 0)->setData(MUSIC_CHECK_ROLE, check ? Qt::Checked : Qt::Unchecked);
     }
 
     if(!check)
@@ -56,4 +58,46 @@ void MusicConnectTransferTableWidget::selectedAllItems(bool check)
     {
         selectAll();
     }
+}
+
+
+
+
+MusicConnectTransferCompleteTableWidget::MusicConnectTransferCompleteTableWidget(QWidget *parent)
+    : MusicAbstractTableWidget(parent)
+{
+    setAttribute(Qt::WA_TranslucentBackground, false);
+
+    setColumnCount(2);
+    QHeaderView *headerview = horizontalHeader();
+    headerview->resizeSection(0, 20);
+    headerview->resizeSection(1, 305);
+}
+
+void MusicConnectTransferCompleteTableWidget::itemCellEntered(int row, int column)
+{
+    MusicAbstractTableWidget::itemCellEntered(row, column);
+}
+
+void MusicConnectTransferCompleteTableWidget::itemCellClicked(int row, int column)
+{
+    Q_UNUSED(row);
+    Q_UNUSED(column);
+}
+
+void MusicConnectTransferCompleteTableWidget::createItem(const QString &name)
+{
+    const int index = rowCount();
+    setRowCount(index + 1);
+
+    QHeaderView *headerview = horizontalHeader();
+    QTableWidgetItem *item = new QTableWidgetItem;
+    item->setIcon(QPixmap(":/tiny/lb_right"));
+    setItem(index, 0, item);
+
+    item = new QTableWidgetItem;
+    item->setToolTip(name);
+    item->setText(MusicUtils::Widget::elidedText(font(), item->toolTip(), Qt::ElideRight, headerview->sectionSize(1) - 20));
+    item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    setItem(index, 1, item);
 }

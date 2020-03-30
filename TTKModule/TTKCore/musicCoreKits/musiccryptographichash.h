@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,35 +61,31 @@ public:
 
 protected:
     /*!
-     * XXTEA encrypt by MString data.
+     * XXTEA encrypt by TTKString data.
      */
-    MString xxteaEncrypt(const MString &data, const MString &key);
+    TTKString xxteaEncrypt(const TTKString &data, const TTKString &key);
     /*!
      * XXTEA encrypt by QString data.
      */
     QString xxteaEncrypt(const QString &data, const QString &key);
 
     /*!
-     * XXTEA decrypt by MString data.
+     * XXTEA decrypt by TTKString data.
      */
-    MString xxteaDecrypt(const MString &data, const MString &key);
+    TTKString xxteaDecrypt(const TTKString &data, const TTKString &key);
     /*!
      * XXTEA decrypt by QString data.
      */
     QString xxteaDecrypt(const QString &data, const QString &key);
 
     /*!
-     * Check current char is base64.
-     */
-    bool isBase64(uchar c);
-    /*!
      * Do XXTEA encrypt.
      */
-    uchar *doXxteaEncrypt(uchar *data, xxtea_uint len, uchar *key, xxtea_uint *ret_len);
+    uchar *doXxteaEncrypt(uchar *data, xxtea_uint len, uchar *key, xxtea_uint *retLength);
     /*!
      * Do XXTEA decrypt.
      */
-    uchar *doXxteaDecrypt(uchar *data, xxtea_uint len, uchar *key, xxtea_uint *ret_len);
+    uchar *doXxteaDecrypt(uchar *data, xxtea_uint len, uchar *key, xxtea_uint *retLength);
     /*!
      * XXTEA uint encrypt.
      */
@@ -101,33 +97,24 @@ protected:
     /*!
      * Fix key length.
      */
-    uchar *fixKeyLength(uchar *key, xxtea_uint key_len);
+    uchar *fixKeyLength(uchar *key, xxtea_uint keyLength);
     /*!
      * XXTEA to uint array.
      */
-    xxtea_uint *xxteaToUintArray(uchar *data, xxtea_uint len, int include_length, xxtea_uint *ret_len);
+    xxtea_uint *xxteaToUintArray(uchar *data, xxtea_uint len, int includeLength, xxtea_uint *retLength);
     /*!
      * XXTEA to byte array.
      */
-    uchar *xxteaToByteArray(xxtea_uint *data, xxtea_uint len, int include_length, xxtea_uint *ret_len);
-
-    /*!
-     * Base64 encode.
-     */
-    MString base64Encode(uchar const *bytes_to_encode, uint len);
-    /*!
-     * Base64 dncode.
-     */
-    MString base64Decode(const MString &s);
+    uchar *xxteaToByteArray(xxtea_uint *data, xxtea_uint len, int includeLength, xxtea_uint *retLength);
 
     /*!
      * XXTEA encrypt by uchar * data.
      */
-    uchar *xxteaEncrypt(uchar *data, xxtea_uint data_len, uchar *key, xxtea_uint key_len, xxtea_uint *ret_length);
+    uchar *xxteaEncrypt(uchar *data, xxtea_uint dataLength, uchar *key, xxtea_uint keyLength, xxtea_uint *retLengthgth);
     /*!
      * XXTEA decrypt by uchar * data.
      */
-    uchar *xxteaDecrypt(uchar *data, xxtea_uint data_len, uchar *key, xxtea_uint key_len, xxtea_uint *ret_length);
+    uchar *xxteaDecrypt(uchar *data, xxtea_uint dataLength, uchar *key, xxtea_uint keyLength, xxtea_uint *retLengthgth);
 
 };
 

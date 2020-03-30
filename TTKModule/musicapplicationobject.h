@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,14 @@
 
 #include "musicobject.h"
 #include "musicglobaldefine.h"
+#include <QPropertyAnimation>
 
 class QDeviceWatcher;
-class QPropertyAnimation;
 class MusicTimerAutoObject;
 class MusicMobileDevicesWidget;
+class MusicSourceUpdateThread;
 class MusicDownloadCounterPVThread;
-class MusicDownloadQNConfighread;
+class MusicScreenSaverBackgroundWidget;
 
 /*! @brief The class of the app object widget.
  * @author Greedysky <greedysky@163.com>
@@ -54,13 +55,17 @@ public:
     inline bool getWindowToTop() const { return m_setWindowToTop; }
 
     /*!
+     * Is lasted version.
+     */
+    bool isLastedVersion() const;
+    /*!
      * load network settings parameters.
      */
     void loadNetWorkSetting();
     /*!
-     * Get settings parameters.
+     * Apply settings parameters.
      */
-    void getParameterSetting();
+    void applySettingParameter();
     /*!
      * Window close animation.
      */
@@ -102,6 +107,10 @@ public Q_SLOTS:
      * Show bug report view.
      */
     void musicBugReportView();
+    /*!
+     * Show message feedback.
+     */
+    void musicMessageFeedback();
     /*!
      * Show version update widget.
      */
@@ -160,12 +169,14 @@ protected:
     bool m_setWindowToTop;
     bool m_leftSideByOn, m_rightSideByOn;
     QPropertyAnimation *m_quitAnimation, *m_sideAnimation;
-    MusicTimerAutoObject *m_musicTimerAutoObj;
+    MusicTimerAutoObject *m_musicTimerAutoObject;
     MusicMobileDevicesWidget *m_mobileDeviceWidget;
     QDeviceWatcher *m_deviceWatcher;
     QWidget *m_quitContainer;
+
+    MusicSourceUpdateThread *m_sourceUpdatehread;
     MusicDownloadCounterPVThread *m_counterPVThread;
-    MusicDownloadQNConfighread *m_qnConfigThread;
+    MusicScreenSaverBackgroundWidget *m_screenSaverWidget;
 
     static MusicApplicationObject *m_instance;
 };

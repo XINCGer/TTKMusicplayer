@@ -4,10 +4,8 @@
 #include "musicbottomareawidget.h"
 #include "musicsongsearchonlinewidget.h"
 #endif
-#include "musicnetworkthread.h"
 #include "musicsettingmanager.h"
 #include "musicconnectionpool.h"
-#include "musicnetworkthread.h"
 #include "musicdownloadqueryfactory.h"
 #include "musicdownloadbackgroundthread.h"
 #include "musiccoreutils.h"
@@ -17,7 +15,7 @@ MusicDownloadStatusObject::MusicDownloadStatusObject(QObject *parent)
     : QObject(parent)
 {
     m_previousState = true;
-    m_parentWidget = MStatic_cast(MusicApplication*, parent);
+    m_parentWidget = TTKStatic_cast(MusicApplication*, parent);
     m_downloadLrcThread = nullptr;
 
     M_CONNECTION_PTR->setValue(getClassName(), this);
@@ -54,7 +52,6 @@ void MusicDownloadStatusObject::showDownLoadInfoFor(MusicObject::DownLoadMode ty
         default:
             break;
     }
-    M_LOGGER_INFO(stringType);
 }
 
 void MusicDownloadStatusObject::showDownLoadInfoFinished(const QString &type)
@@ -87,10 +84,10 @@ void MusicDownloadStatusObject::networkConnectionStateChanged(bool state)
 
 bool MusicDownloadStatusObject::checkSettingParameterValue() const
 {
-    return M_SETTING_PTR->value(MusicSettingManager::ShowInlineLrcChoiced).toBool() || M_SETTING_PTR->value(MusicSettingManager::ShowDesktopLrcChoiced).toBool();
+    return M_SETTING_PTR->value(MusicSettingManager::ShowInteriorLrc).toBool() || M_SETTING_PTR->value(MusicSettingManager::ShowDesktopLrc).toBool();
 }
 
-void MusicDownloadStatusObject::musicCheckHasLrcAlready()
+void MusicDownloadStatusObject::musicCheckLrcValid()
 {
     if(!M_NETWORK_PTR->isOnline())   //no network connection
     {
@@ -107,7 +104,7 @@ void MusicDownloadStatusObject::musicCheckHasLrcAlready()
 
        const QString &filename = m_parentWidget->getCurrentFileName();
        ///Check if the file exists
-       if(QFile::exists(MusicUtils::Core::lrcPrefix() + filename + LRC_FILE) || QFile::exists(MusicUtils::Core::lrcPrefix() + filename + KRC_FILE))
+       if(QFile::exists(MusicUtils::String::lrcPrefix() + filename + LRC_FILE) || QFile::exists(MusicUtils::String::lrcPrefix() + filename + KRC_FILE))
        {
            return;
        }
@@ -137,7 +134,7 @@ void MusicDownloadStatusObject::musicHaveNoLrcAlready()
     if(!musicSongInfos.isEmpty())
     {
         const QString &filename = m_parentWidget->getCurrentFileName();
-        const int count = MusicUtils::String::splitString(filename).count();
+        const int count = MusicUtils::String::stringSplit(filename).count();
         const QString &artistName = MusicUtils::String::artistName(filename);
         const QString &songName = MusicUtils::String::songName(filename);
 
@@ -152,7 +149,7 @@ void MusicDownloadStatusObject::musicHaveNoLrcAlready()
         }
 
         ///download lrc
-        M_DOWNLOAD_QUERY_PTR->getDownloadLrcThread(musicSongInfo.m_lrcUrl, MusicUtils::Core::lrcPrefix() + filename + LRC_FILE, MusicObject::DownloadLrc, this)->startToDownload();
+        M_DOWNLOAD_QUERY_PTR->getDownloadLrcThread(musicSongInfo.m_lrcUrl, MusicUtils::String::lrcPrefix() + filename + LRC_FILE, MusicObject::DownloadLrc, this)->startToDownload();
         ///download art picture
         M_DOWNLOAD_QUERY_PTR->getDownloadSmallPicThread(musicSongInfo.m_smallPicUrl, ART_DIR_FULL + artistName + SKN_FILE, MusicObject::DownloadSmallBackground, this)->startToDownload();
         ///download big picture

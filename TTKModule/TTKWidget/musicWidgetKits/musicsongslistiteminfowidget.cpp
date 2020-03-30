@@ -12,14 +12,15 @@ MusicSongsListItemInfoWidget::MusicSongsListItemInfoWidget(QWidget *parent)
       m_ui(new Ui::MusicSongsListItemInfoWidget)
 {
     m_ui->setupUi(this);
+    setFixedSize(size());
 
     setWindowFlags(windowFlags() | Qt::Tool);
 
-    m_ui->songNameValue->setStyleSheet(MusicUIObject::MColorStyle03);
-    m_ui->artlistValue->setStyleSheet(MusicUIObject::MColorStyle03);
-    m_ui->sizeValue->setStyleSheet(MusicUIObject::MColorStyle03);
-    m_ui->typeValue->setStyleSheet(MusicUIObject::MColorStyle03);
-    m_ui->timeValue->setStyleSheet(MusicUIObject::MColorStyle03);
+    m_ui->songNameValue->setStyleSheet(MusicUIObject::MQSSColorStyle03);
+    m_ui->artlistValue->setStyleSheet(MusicUIObject::MQSSColorStyle03);
+    m_ui->sizeValue->setStyleSheet(MusicUIObject::MQSSColorStyle03);
+    m_ui->typeValue->setStyleSheet(MusicUIObject::MQSSColorStyle03);
+    m_ui->timeValue->setStyleSheet(MusicUIObject::MQSSColorStyle03);
 }
 
 MusicSongsListItemInfoWidget::~MusicSongsListItemInfoWidget()
@@ -47,7 +48,7 @@ void MusicSongsListItemInfoWidget::setMusicSongInformation(const MusicSong &info
     m_ui->typeValue->setText( info.getMusicType().isEmpty() ? "-" : MusicUtils::Widget::elidedText(font(), info.getMusicType(), Qt::ElideRight, m_ui->typeValue->width()) );
     m_ui->timeValue->setText( MusicUtils::Widget::elidedText(font(), QString::number(info.getMusicPlayCount()), Qt::ElideRight, m_ui->timeValue->width()) );
 
-    if(M_SETTING_PTR->value(MusicSettingManager::OtherUseAlbumCoverChoiced).toBool())
+    if(M_SETTING_PTR->value(MusicSettingManager::OtherUseAlbumCover).toBool())
     {
         MusicSongTag tag;
         if(tag.read(info.getMusicPath()))

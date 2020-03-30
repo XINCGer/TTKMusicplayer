@@ -19,7 +19,7 @@ MusicRemoteWidgetForRaysWave::MusicRemoteWidgetForRaysWave(QWidget *parent)
     hbox->addWidget(m_mainWidget);
     setLayout(hbox);
 
-    MusicUtils::QMMP::enableVisualPlugin("outerrayswave", true);
+    MusicUtils::QMMP::enabledVisualPlugin("outerrayswave", true);
 
     QWidget *bottomWidget = new QWidget(m_mainWidget);
     QVBoxLayout *mhbox = new QVBoxLayout(m_mainWidget);
@@ -35,7 +35,7 @@ MusicRemoteWidgetForRaysWave::MusicRemoteWidgetForRaysWave(QWidget *parent)
     m_mainWidget->setLayout(mhbox);
 
     m_songNameLabel = new MusicMarqueeWidget(this);
-    m_songNameLabel->setStyleSheet(MusicUIObject::MWidgetStyle01);
+    m_songNameLabel->setStyleSheet(MusicUIObject::MQSSWidgetStyle01);
     m_songNameLabel->setFixedWidth(160);
 
     m_PreSongButton->hide();
@@ -56,7 +56,7 @@ MusicRemoteWidgetForRaysWave::MusicRemoteWidgetForRaysWave(QWidget *parent)
 
 MusicRemoteWidgetForRaysWave::~MusicRemoteWidgetForRaysWave()
 {
-    MusicUtils::QMMP::enableVisualPlugin("outerrayswave", false);
+    MusicUtils::QMMP::enabledVisualPlugin("outerrayswave", false);
     delete m_songNameLabel;
 }
 

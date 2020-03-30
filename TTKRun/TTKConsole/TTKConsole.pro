@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2019 Greedysky Studio
+# * Copyright (C) 2015 - 2020 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 # =================================================
 
 QT       += core
-unix:VERSION += 1.0.0.0
 include(../../TTKVersion.pri)
+unix:VERSION += 1.0.0.0
 
 TEMPLATE = app
 CONFIG += console
@@ -30,14 +30,12 @@ RCC_DIR = ./.build/rcc
 
 DEFINES += TTK_LIBRARY
 
-win32{
-    TARGET = ../../../bin/$$TTKMusicPlayer/TTKConsole
-    LIBS += -L../../bin/$$TTKMusicPlayer -lTTKCore
-}
-unix{
-    TARGET = ../../lib/$$TTKMusicPlayer/TTKConsole
-    LIBS += -L../../lib/$$TTKMusicPlayer -lTTKCore -lqmmp -lTTKUi -lTTKExtras -lTTKWatcher -lzlib -lTTKZip
-}
+win32:DESTDIR = $$OUT_PWD/../../bin/$$TTKMusicPlayer
+unix:DESTDIR = $$OUT_PWD/../../lib/$$TTKMusicPlayer
+TARGET = TTKConsole
+
+win32:LIBS += -L$$DESTDIR -lTTKCore
+unix:LIBS += -L$$DESTDIR -lTTKCore -lqmmp -lTTKUi -lTTKExtras -lTTKWatcher -lzlib -lTTKZip
 
 win32:msvc{
     CONFIG +=c++11
@@ -48,6 +46,8 @@ win32:msvc{
 INCLUDEPATH += \
     $$PWD/../ \
     $$PWD/../../ \
+    $$PWD/../../TTKThirdParty \
+    $$PWD/../../TTKThirdParty/TTKDumper \
     $$PWD/../../TTKModule/TTKCore/musicCoreKits \
     $$PWD/../../TTKModule/TTKCore/musicPlaylistKits \
     $$PWD/../../TTKModule/TTKCore/musicUtilsKits

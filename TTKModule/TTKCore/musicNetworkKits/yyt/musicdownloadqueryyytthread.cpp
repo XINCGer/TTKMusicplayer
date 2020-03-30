@@ -3,7 +3,6 @@
 #include "musicnumberutils.h"
 #include "musiccoreutils.h"
 #include "musictime.h"
-#include "musicotherdefine.h"
 #///QJson import
 #include "qjson/parser.h"
 
@@ -26,7 +25,7 @@ void MusicDownLoadQueryYYTThread::startToSearch(QueryType type, const QString &t
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(text));
+    TTK_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(text));
     deleteAll();
 
     const QUrl &musicUrl = MusicUtils::Algorithm::mdII(BD_MV_INFO_URL, false).arg(text);
@@ -53,8 +52,8 @@ void MusicDownLoadQueryYYTThread::downLoadFinished()
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
-    emit clearAllItems();
+    TTK_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    Q_EMIT clearAllItems();
     m_musicSongInfos.clear();
 
     if(m_reply->error() == QNetworkReply::NoError)
@@ -110,7 +109,7 @@ void MusicDownLoadQueryYYTThread::downLoadFinished()
                     item.m_singerName = musicInfo.m_singerName;
                     item.m_time = musicInfo.m_timeLength;
                     item.m_type = mapQueryServerString();
-                    emit createSearchedItem(item);
+                    Q_EMIT createSearchedItem(item);
 
                     musicInfo.m_songId = MUSIC_YYT_PREFIX + musicInfo.m_songId;
                     m_musicSongInfos << musicInfo;
@@ -119,9 +118,8 @@ void MusicDownLoadQueryYYTThread::downLoadFinished()
         }
     }
 
-    emit downLoadDataChanged(QString());
+    Q_EMIT downLoadDataChanged(QString());
     deleteAll();
-    M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
 }
 
 void MusicDownLoadQueryYYTThread::readFromMusicMVAttribute(MusicObject::MusicSongInformation *info)
@@ -192,7 +190,7 @@ void MusicDownLoadQueryYYTThread::readFromMusicMVAttribute(MusicObject::MusicSon
         MusicObject::MusicSongAttribute attr;
         attr.m_url = url;
         attr.m_size = size;
-        attr.m_format = MusicUtils::Core::StringSplite(v);
+        attr.m_format = MusicUtils::String::stringSplitToken(v);
         attr.m_duration = duration;
         v = datas.back();
         foreach(QString var, v.split("&"))

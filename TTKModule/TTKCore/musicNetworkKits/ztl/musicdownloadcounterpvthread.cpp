@@ -24,7 +24,6 @@ void MusicDownloadCounterPVThread::startToDownload()
     request.setRawHeader("Cookie", MusicUtils::Algorithm::mdII(COOKIE_URL, false).toUtf8());
 #ifndef QT_NO_SSL
     connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
-    M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
     MusicObject::setSslConfiguration(&request);
 #endif
 
@@ -47,17 +46,17 @@ void MusicDownloadCounterPVThread::downLoadFinished()
         if(ok)
         {
             const QVariantMap &value = data.toMap();
-            emit downLoadDataChanged(value["site_pv"].toString());
+            Q_EMIT downLoadDataChanged(value["site_pv"].toString());
         }
         else
         {
-            emit downLoadDataChanged(QString());
+            Q_EMIT downLoadDataChanged(QString());
         }
     }
     else
     {
-        M_LOGGER_ERROR("Counter PV data error");
-        emit downLoadDataChanged(QString());
+        TTK_LOGGER_ERROR("Counter PV data error");
+        Q_EMIT downLoadDataChanged(QString());
     }
     deleteAll();
 }

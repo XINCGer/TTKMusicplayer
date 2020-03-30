@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2019 Greedysky Studio
+# * Copyright (C) 2015 - 2020 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -31,15 +31,9 @@ win32{
 include(../TTKMusicPlayer.pri)
 unix:VERSION += $$TTKMusicPlayer
 
-win32{
-    TARGET = ../../bin/$$TTKMusicPlayer/TTKService
-    LIBS += -L../bin/$$TTKMusicPlayer -lTTKCore -lTTKDumper
-}
-unix{
-    TARGET = ../lib/$$TTKMusicPlayer/TTKService
-    LIBS += -L./lib/$$TTKMusicPlayer -lTTKCore -lTTKDumper
-}
+TARGET = TTKService
 
+LIBS += -L$$DESTDIR -lTTKCore -lTTKDumper
 
 INCLUDEPATH += ../TTKModule
 

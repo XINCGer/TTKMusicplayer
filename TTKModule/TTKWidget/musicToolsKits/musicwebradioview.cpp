@@ -23,14 +23,14 @@ MusicWebRadioView::MusicWebRadioView(QWidget *parent)
     dj->setIcon(QIcon(":/tiny/btn_dj_radio"));
     dj->setToolTip(tr("DJRadio"));
     dj->setCursor(QCursor(Qt::PointingHandCursor));
-    dj->setStyleSheet(MusicUIObject::MPushButtonStyle01);
+    dj->setStyleSheet(MusicUIObject::MQSSPushButtonStyle01);
     dj->setFixedWidth(40);
 
     QPushButton *mv = new QPushButton(this);
     mv->setIcon(QIcon(":/tiny/btn_mv_radio"));
     mv->setToolTip(tr("MVRadio"));
     mv->setCursor(QCursor(Qt::PointingHandCursor));
-    mv->setStyleSheet(MusicUIObject::MPushButtonStyle01);
+    mv->setStyleSheet(MusicUIObject::MQSSPushButtonStyle01);
     mv->setFixedWidth(40);
 #ifdef Q_OS_UNIX
     dj->setFocusPolicy(Qt::NoFocus);
@@ -68,9 +68,4 @@ void MusicWebRadioView::openDJRadioWindow()
 void MusicWebRadioView::openMVRadioWindow()
 {
     MusicRightAreaWidget::instance()->musicFunctionClicked(MusicRightAreaWidget::WebMVRadioWidget);
-}
-
-void MusicWebRadioView::contextMenuEvent(QContextMenuEvent *event)
-{
-    Q_UNUSED(event);
 }

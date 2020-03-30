@@ -9,7 +9,7 @@
 #include "musiclrcanalysis.h"
 #include "musictime.h"
 #include "musiccoreutils.h"
-#include "musicwidgetutils.h"
+#include "musicimageutils.h"
 #include "musicfunctionuiobject.h"
 #include "musicdownloadwidget.h"
 
@@ -19,6 +19,7 @@ MusicWebMusicRadioPlayWidget::MusicWebMusicRadioPlayWidget(QWidget *parent)
       m_songsThread(nullptr)
 {
     m_ui->setupUi(this);
+    setFixedSize(size());
 
     m_currentPlaylistIndex = 0;
     m_isPlaying = false;
@@ -26,7 +27,7 @@ MusicWebMusicRadioPlayWidget::MusicWebMusicRadioPlayWidget(QWidget *parent)
     m_analysis->setLineMax(9);
 
     m_ui->topTitleCloseButton->setIcon(QIcon(":/functions/btn_close_hover"));
-    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MToolButtonStyle04);
+    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle04);
     m_ui->topTitleCloseButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_ui->topTitleCloseButton->setToolTip(tr("Close"));
     connect(m_ui->topTitleCloseButton, SIGNAL(clicked()), SLOT(close()));
@@ -34,12 +35,12 @@ MusicWebMusicRadioPlayWidget::MusicWebMusicRadioPlayWidget(QWidget *parent)
     m_ui->playButton->setIcon(QIcon(":/functions/btn_pause_hover"));
     m_ui->previousButton->setIcon(QIcon(":/functions/btn_previous_hover"));
     m_ui->nextButton->setIcon(QIcon(":/functions/btn_next_hover"));
-    m_ui->downloadButton->setStyleSheet(MusicUIObject::MKGBtnUnDownload);
-    m_ui->shareButton->setStyleSheet(MusicUIObject::MKGBtnMore);
+    m_ui->downloadButton->setStyleSheet(MusicUIObject::MQSSBtnUnDownload);
+    m_ui->shareButton->setStyleSheet(MusicUIObject::MQSSBtnMore);
 
-    m_ui->playButton->setStyleSheet(MusicUIObject::MBackgroundStyle01);
-    m_ui->previousButton->setStyleSheet(MusicUIObject::MBackgroundStyle01);
-    m_ui->nextButton->setStyleSheet(MusicUIObject::MBackgroundStyle01);
+    m_ui->playButton->setStyleSheet(MusicUIObject::MQSSBackgroundStyle01);
+    m_ui->previousButton->setStyleSheet(MusicUIObject::MQSSBackgroundStyle01);
+    m_ui->nextButton->setStyleSheet(MusicUIObject::MQSSBackgroundStyle01);
 
 #ifdef Q_OS_UNIX
     m_ui->playButton->setFocusPolicy(Qt::NoFocus);
@@ -57,7 +58,7 @@ MusicWebMusicRadioPlayWidget::MusicWebMusicRadioPlayWidget(QWidget *parent)
     m_ui->downloadButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_ui->shareButton->setCursor(QCursor(Qt::PointingHandCursor));
 
-    m_ui->volumeSlider->setStyleSheet(MusicUIObject::MSliderStyle01);
+    m_ui->volumeSlider->setStyleSheet(MusicUIObject::MQSSSliderStyle10);
     m_ui->volumeSlider->setRange(0, 100);
     m_ui->volumeSlider->setValue(100);
 
@@ -251,7 +252,7 @@ void MusicWebMusicRadioPlayWidget::startToPlay()
     m_ui->volumeSlider->setValue(0);
     m_ui->volumeSlider->setValue(v);
 
-    QString name = MusicUtils::Core::lrcPrefix() + info.m_singerName + " - " + info.m_songName + LRC_FILE;
+    QString name = MusicUtils::String::lrcPrefix() + info.m_singerName + " - " + info.m_songName + LRC_FILE;
     if(!QFile::exists(name))
     {
         MusicTextDownLoadThread* lrcDownload = new MusicTextDownLoadThread(info.m_lrcUrl, name, MusicObject::DownloadLrc, this);
@@ -291,7 +292,7 @@ void MusicWebMusicRadioPlayWidget::lrcDownloadStateChanged()
 
     const QString &name = (info.m_singerName + " - " + info.m_songName).trimmed();
     m_ui->titleWidget->setText(name);
-    m_analysis->transLrcFileToTime(MusicUtils::Core::lrcPrefix() + name + LRC_FILE);
+    m_analysis->transLrcFileToTime(MusicUtils::String::lrcPrefix() + name + LRC_FILE);
 }
 
 void MusicWebMusicRadioPlayWidget::picDownloadStateChanged()
@@ -312,7 +313,7 @@ void MusicWebMusicRadioPlayWidget::picDownloadStateChanged()
     {
         pix.load(":/image/lb_defaultArt");
     }
-    pix = MusicUtils::Widget::pixmapToRound(pix, QSize(150, 150), 100, 100);
+    pix = MusicUtils::Image::pixmapToRound(pix, QSize(150, 150), 100, 100);
     m_ui->artistLabel->setPixmap(pix);
     m_ui->artistLabel->start();
 }

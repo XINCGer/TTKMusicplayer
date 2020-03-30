@@ -17,7 +17,7 @@ void MusicKWArtistSimilarThread::startToSearch(const QString &text)
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(text));
+    TTK_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(text));
     deleteAll();
 
     const QUrl &musicUrl = MusicUtils::Algorithm::mdII(KW_AR_SIM_URL, false).arg(getArtistNameById(text));
@@ -41,7 +41,7 @@ void MusicKWArtistSimilarThread::downLoadFinished()
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    TTK_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
     m_interrupt = false;
 
     if(m_reply->error() == QNetworkReply::NoError)
@@ -60,16 +60,15 @@ void MusicKWArtistSimilarThread::downLoadFinished()
             info.m_coverUrl = regx.cap(1);
             info.m_name = regx.cap(2);
             info.m_updateTime.clear();
-            emit createSimilarItem(info);
+            Q_EMIT createSimilarItem(info);
 
             pos += regx.matchedLength();
             pos = regx.indexIn(html, pos);
         }
     }
 
-    emit downLoadDataChanged(QString());
+    Q_EMIT downLoadDataChanged(QString());
     deleteAll();
-    M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
 }
 
 QString MusicKWArtistSimilarThread::getArtistNameById(const QString &id)

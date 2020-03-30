@@ -3,18 +3,80 @@
 
 #include <QColor>
 
-QString MusicUtils::String::removeStringBy(const QString &value, const QString &key)
+QString MusicUtils::String::lrcPrefix()
 {
-    QString s = value;
-    s.remove(key);
-    if(s.contains(key))
+    QString path = M_SETTING_PTR->value(MusicSettingManager::DownloadLrcPathDir).toString();
+    if(path.isEmpty())
     {
-        s = removeStringBy(key);
+        path = LRC_DIR_FULL;
     }
-    return s;
+    else
+    {
+        if(!QDir(path).exists())
+        {
+            QDir().mkpath(path);
+        }
+    }
+    return path;
 }
 
-QStringList MusicUtils::String::splitString(const QString &value, const QString &key)
+QString MusicUtils::String::musicPrefix()
+{
+    QString path = M_SETTING_PTR->value(MusicSettingManager::DownloadMusicPathDir).toString();
+    if(path.isEmpty())
+    {
+        path = MUSIC_DIR_FULL;
+    }
+    else
+    {
+        if(!QDir(path).exists())
+        {
+            QDir().mkpath(path);
+        }
+    }
+    return path;
+}
+
+QString MusicUtils::String::stringPrefix(const QString &name)
+{
+    return stringPrefix(name, ".");
+}
+
+QString MusicUtils::String::stringPrefix(const QString &name, const QString &prefix)
+{
+    return name.left(name.indexOf(prefix));
+}
+
+QString MusicUtils::String::stringSuffix(const QString &name)
+{
+    return stringSuffix(name, ".");
+}
+
+QString MusicUtils::String::stringSuffix(const QString &name, const QString &suffix)
+{
+    return name.right(name.length() - name.lastIndexOf(suffix) - suffix.length());
+}
+
+QString MusicUtils::String::stringSplitToken(const QString &name)
+{
+    return stringSplitToken(name, ".", "?");
+}
+
+QString MusicUtils::String::stringSplitToken(const QString &name, const QString &prefix, const QString &suffix, bool revert)
+{
+    if(revert)
+    {
+        const QString &data = stringSuffix(name, prefix);
+        return stringPrefix(data, suffix);
+    }
+    else
+    {
+        const QString &data = stringPrefix(name, prefix);
+        return stringSuffix(data, suffix);
+    }
+}
+
+QStringList MusicUtils::String::stringSplit(const QString &value, const QString &key)
 {
     QStringList strings = value.split(QString(" %1 ").arg(key));
     if(strings.isEmpty() || strings.count() == 1)
@@ -24,9 +86,38 @@ QStringList MusicUtils::String::splitString(const QString &value, const QString 
     return strings;
 }
 
+QString MusicUtils::String::removeStringToken(const QString &value, const QString &key)
+{
+    QString s = value;
+    s.remove(key);
+    if(s.contains(key))
+    {
+        s = removeStringToken(key);
+    }
+    return s;
+}
+
+QString MusicUtils::String::newlines()
+{
+#ifdef Q_OS_WIN
+    return "\r\n";
+#else
+    return "\n";
+#endif
+}
+
+bool MusicUtils::String::isChinese(const QChar &c)
+{
+#ifdef Q_CC_MSVC
+    return '\xa9\x96' == c || (c.unicode() >= 0x4e00 && c.unicode() <= 0x9fa5);
+#else
+    return L'〇' == c || (c.unicode() >= 0x4e00 && c.unicode() <= 0x9fa5);
+#endif
+}
+
 QString MusicUtils::String::artistName(const QString &value, const QString &key)
 {
-    const QStringList &s = splitString(value);
+    const QStringList &s = stringSplit(value);
     if(s.count() >= 2)
     {
         if(M_SETTING_PTR->value(MusicSettingManager::OtherSongFormat).toInt() == 0)
@@ -45,7 +136,7 @@ QString MusicUtils::String::artistName(const QString &value, const QString &key)
 
 QString MusicUtils::String::songName(const QString &value, const QString &key)
 {
-    const QStringList &s = splitString(value);
+    const QStringList &s = stringSplit(value);
     if(s.count() >= 2)
     {
         if(M_SETTING_PTR->value(MusicSettingManager::OtherSongFormat).toInt() == 0)
@@ -103,10 +194,10 @@ QString MusicUtils::String::illegalCharactersReplaced(const QString &value)
 QList<QColor> MusicUtils::String::readColorConfig(const QString &value)
 {
     QList<QColor> colors;
-    const QStringList &rgbs = value.split(';', QString::SkipEmptyParts);
+    const QStringList &rgbs = value.split(";", QString::SkipEmptyParts);
     foreach(const QString &rgb, rgbs)
     {
-        const QStringList &var = rgb.split(',');
+        const QStringList &var = rgb.split(",");
         if(var.count() != 3)
         {
             continue;

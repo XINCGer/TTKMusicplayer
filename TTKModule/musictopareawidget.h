@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,10 +166,6 @@ public Q_SLOTS:
      */
     void musicPlaylistTransparent(int index);
     /*!
-     * Changed current remote to circle mode.
-     */
-    void musicCircleRemote();
-    /*!
      * Changed current remote to diamond mode.
      */
     void musicDiamondRemote();
@@ -194,9 +190,9 @@ public Q_SLOTS:
      */
     void musicWallpaperRemote(bool create);
     /*!
-     * Changed current remote to ripples mode.
+     * Changed current remote to ripple mode.
      */
-    void musicRipplesRemote();
+    void musicRippleRemote();
     /*!
      * Changed current remote to rayswave mode.
      */

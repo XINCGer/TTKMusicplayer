@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2019 Greedysky Studio
+# * Copyright (C) 2015 - 2020 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 include(../../TTKVersion.pri)
 unix:VERSION += $$TTKMusicPlayer
 
-win32:TARGET = ../../../bin/TTKMusicPlayer
-unix:TARGET = ../../lib/TTKMusicPlayer
+win32:DESTDIR = $$OUT_PWD/../../bin
+unix:DESTDIR = $$OUT_PWD/../../lib
+TARGET = TTKMusicPlayer
 
 TEMPLATE = app
 
@@ -37,6 +38,8 @@ INCLUDEPATH += \
     $$PWD/../ \
     $$PWD/../TTKInit \
     $$PWD/../../ \
+    $$PWD/../../TTKThirdParty \
+    $$PWD/../../TTKThirdParty/TTKDumper \
     $$PWD/../../TTKModule/TTKCore/musicCoreKits
 
 SOURCES += \

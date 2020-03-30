@@ -2,15 +2,16 @@
 #include "musicdownloadsourcethread.h"
 #include "musicsemaphoreloop.h"
 #include "musicalgorithmutils.h"
-#include "musicsourceupdatethread.h"
 #include "musicsettingmanager.h"
 #///QJson import
 #include "qjson/parser.h"
+#///Oss import
+#include "qoss/qossconf.h"
 
 #include <QFile>
 
 #define QUERY_URL     "VzBxZCtBUDBKK1R6aHNiTGxMdy84SzlIUVA5a3cvbjdKQ1ZIVGdYRThBS0hZMTlZSnhRQ0Y5N0lZdi9QQ3VveVEyVDdXbll3ZUZvPQ=="
-#define QN_ACRUA_URL  "acrcloud"
+#define OS_ACRUA_URL  "acrcloud"
 
 MusicIdentifySongsThread::MusicIdentifySongsThread(QObject *parent)
     : MusicNetworkAbstract(parent)
@@ -18,7 +19,6 @@ MusicIdentifySongsThread::MusicIdentifySongsThread(QObject *parent)
     m_manager = new QNetworkAccessManager(this);
 #ifndef QT_NO_SSL
     connect(m_manager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), SLOT(sslErrors(QNetworkReply*,QList<QSslError>)));
-    M_LOGGER_INFO(QString("%1 Support ssl: %2").arg(getClassName()).arg(QSslSocket::supportsSsl()));
 #endif
 }
 
@@ -38,8 +38,7 @@ bool MusicIdentifySongsThread::getKey()
 
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
     connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(keyDownLoadFinished(QByteArray)));
-    const QString &buketUrl = M_SETTING_PTR->value(MusicSettingManager::QiNiuDataConfigChoiced).toString();
-    download->startToDownload(MusicUtils::Algorithm::mdII(buketUrl, false) + QN_ACRUA_URL);
+    download->startToDownload(QOSSConf::generateDataBucketUrl() + OS_ACRUA_URL);
 
     loop.exec();
 
@@ -126,7 +125,7 @@ void MusicIdentifySongsThread::downLoadFinished()
         }
     }
 
-    emit downLoadDataChanged( QString() );
+    Q_EMIT downLoadDataChanged( QString() );
     deleteAll();
 }
 
@@ -138,11 +137,11 @@ void MusicIdentifySongsThread::keyDownLoadFinished(const QByteArray &data)
     if(ok)
     {
         const QVariantMap &value = dt.toMap();
-        if(QDateTime::fromString( value["time"].toString(), "yyyy-MM-dd HH:mm:ss") > QDateTime::currentDateTime())
+        if(QDateTime::fromString( value["time"].toString(), MUSIC_YEAR_STIME_FORMAT) > QDateTime::currentDateTime())
         {
             m_accessKey = value["key"].toString();
             m_accessSecret = value["secret"].toString();
         }
     }
-    emit getKeyFinished();
+    Q_EMIT getKeyFinished();
 }

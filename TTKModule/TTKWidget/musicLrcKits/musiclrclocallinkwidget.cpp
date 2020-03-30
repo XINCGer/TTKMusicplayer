@@ -3,7 +3,7 @@
 #include "musicconnectionpool.h"
 #include "musicmessagebox.h"
 #include "musicuiobject.h"
-#include "musiccoreutils.h"
+#include "musicfileutils.h"
 #include "musicdownloadstatusobject.h"
 
 #include <QDir>
@@ -51,7 +51,7 @@ void MusicLrcLocalLinkTableWidget::createAllItems(const MusicLocalDataItems &ite
     }
 }
 
-void MusicLrcLocalLinkTableWidget::listCellClicked(int row, int column)
+void MusicLrcLocalLinkTableWidget::itemCellClicked(int row, int column)
 {
     Q_UNUSED(row);
     Q_UNUSED(column);
@@ -64,19 +64,20 @@ MusicLrcLocalLinkWidget::MusicLrcLocalLinkWidget(QWidget *parent)
       m_ui(new Ui::MusicLrcLocalLinkWidget)
 {
     m_ui->setupUi(this);
+    setFixedSize(size());
 
     m_ui->topTitleCloseButton->setIcon(QIcon(":/functions/btn_close_hover"));
-    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MToolButtonStyle04);
+    m_ui->topTitleCloseButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle04);
     m_ui->topTitleCloseButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_ui->topTitleCloseButton->setToolTip(tr("Close"));
     connect(m_ui->topTitleCloseButton, SIGNAL(clicked()), SLOT(close()));
 
-    m_ui->fuzzyButton->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
-    m_ui->localSearchButton->setStyleSheet(MusicUIObject::MPushButtonStyle04);
-    m_ui->commitButton->setStyleSheet(MusicUIObject::MPushButtonStyle04);
-    m_ui->previewButton->setStyleSheet(MusicUIObject::MPushButtonStyle04);
-    m_ui->deleteButton->setStyleSheet(MusicUIObject::MPushButtonStyle04);
-    m_ui->titleEdit->setStyleSheet(MusicUIObject::MLineEditStyle01);
+    m_ui->fuzzyButton->setStyleSheet(MusicUIObject::MQSSCheckBoxStyle01);
+    m_ui->localSearchButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
+    m_ui->commitButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
+    m_ui->previewButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
+    m_ui->deleteButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
+    m_ui->titleEdit->setStyleSheet(MusicUIObject::MQSSLineEditStyle01);
 
 #ifdef Q_OS_UNIX
     m_ui->fuzzyButton->setFocusPolicy(Qt::NoFocus);
@@ -120,7 +121,7 @@ void MusicLrcLocalLinkWidget::searchInLocalMLrc()
     }
 
     m_ui->fuzzyButton->isChecked();
-    const QStringList &list = QDir(MusicUtils::Core::lrcPrefix()).entryList(QDir::Files |  QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+    const QStringList &list = QDir(MusicUtils::String::lrcPrefix()).entryList(QDir::Files |  QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
 
     MusicLocalDataItems items;
     foreach(const QString &var, list)
@@ -129,7 +130,7 @@ void MusicLrcLocalLinkWidget::searchInLocalMLrc()
         {
             MusicLocalDataItem item;
             item.m_name = var;
-            item.m_path = MusicUtils::Core::lrcPrefix() + var;
+            item.m_path = MusicUtils::String::lrcPrefix() + var;
             items << item;
         }
     }
@@ -144,7 +145,7 @@ void MusicLrcLocalLinkWidget::fuzzyStateChanged()
 
 void MusicLrcLocalLinkWidget::findInLocalFile()
 {
-    const QString &picPath = MusicUtils::Widget::getOpenFileDialog(this, "LRC (*.lrc)");
+    const QString &picPath = MusicUtils::File::getOpenFileDialog(this, "LRC (*.lrc)");
     if(picPath.isEmpty() || m_ui->searchedTable->contains(picPath))
     {
         return;
@@ -186,7 +187,7 @@ void MusicLrcLocalLinkWidget::confirmButtonClicked()
     QFile fileIn(path);
     if(!fileIn.open(QIODevice::ReadOnly))
     {
-        M_LOGGER_ERROR("Lrc Input File Error!");
+        TTK_LOGGER_ERROR("Lrc Input File Error!");
         fileIn.close();
         close();
         return;
@@ -195,10 +196,10 @@ void MusicLrcLocalLinkWidget::confirmButtonClicked()
     const QByteArray dataIn(fileIn.readAll());
     fileIn.close();
 
-    QFile fileOut(QString("%1%2%3").arg(MusicUtils::Core::lrcPrefix()).arg(m_currentName).arg(LRC_FILE));
+    QFile fileOut(QString("%1%2%3").arg(MusicUtils::String::lrcPrefix()).arg(m_currentName).arg(LRC_FILE));
     if(!fileOut.open(QIODevice::WriteOnly))
     {
-        M_LOGGER_ERROR("Lrc Output File Error!");
+        TTK_LOGGER_ERROR("Lrc Output File Error!");
         fileOut.close();
         close();
         return;
@@ -208,7 +209,7 @@ void MusicLrcLocalLinkWidget::confirmButtonClicked()
     fileOut.flush();
     fileOut.close();
 
-    emit currentLrcChanged("DownloadLrc");
+    Q_EMIT currentLrcChanged("DownloadLrc");
     close();
 }
 

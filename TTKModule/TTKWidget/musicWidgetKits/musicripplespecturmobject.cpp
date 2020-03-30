@@ -1,13 +1,14 @@
 #include "musicripplespecturmobject.h"
 #include "musicqmmputils.h"
+#include "musicobject.h"
 
 #include "visual.h"
 
 MusicRippleSpecturmObject::MusicRippleSpecturmObject(QObject *parent)
     : QObject(parent)
 {
-    m_topLayout = nullptr;
-    m_topWidget = nullptr;
+    m_topAreaLayout = nullptr;
+    m_topAreaWidget = nullptr;
     m_visualWidget = nullptr;
 }
 
@@ -18,22 +19,22 @@ MusicRippleSpecturmObject::~MusicRippleSpecturmObject()
 
 void MusicRippleSpecturmObject::setVisible(bool v)
 {
-    if(!m_topLayout || !m_topWidget)
+    if(!m_topAreaLayout || !m_topAreaWidget)
     {
         return;
     }
 
-    m_visualWidget ? m_visualWidget->setVisible(v) : m_topWidget->setVisible(v);
+    m_visualWidget ? m_visualWidget->setVisible(v) : m_topAreaWidget->setVisible(v);
 }
 
 void MusicRippleSpecturmObject::show()
 {
-    if(!m_topLayout || !m_topWidget || m_visualWidget)
+    if(!m_topAreaLayout || !m_topAreaWidget || m_visualWidget)
     {
         return;
     }
 
-    MusicUtils::QMMP::enableVisualPlugin("outerewave", true);
+    MusicUtils::QMMP::enabledVisualPlugin("outerewave", true);
 
     const QList<Visual*> *vs = Visual::visuals();
     if(!vs->isEmpty() && vs->last())
@@ -41,27 +42,28 @@ void MusicRippleSpecturmObject::show()
         m_visualWidget = vs->last();
         m_visualWidget->setMinimumHeight(65);
         m_visualWidget->setMaximumHeight(65);
+        m_visualWidget->setMinimumWidth(CONCISE_WIDTH_MIN);
 
         QVBoxLayout *layout = new QVBoxLayout(m_visualWidget);
         layout->setSpacing(0);
         layout->setContentsMargins(0, 0, 0, 0);
         m_visualWidget->setLayout(layout);
 
-        m_topLayout->removeWidget(m_topWidget);
-        layout->addWidget(m_topWidget);
-        m_topLayout->addWidget(m_visualWidget);
+        m_topAreaLayout->removeWidget(m_topAreaWidget);
+        layout->addWidget(m_topAreaWidget);
+        m_topAreaLayout->addWidget(m_visualWidget);
     }
 }
 
 void MusicRippleSpecturmObject::close()
 {
-    if(!m_topLayout || !m_topWidget || !m_visualWidget)
+    if(!m_topAreaLayout || !m_topAreaWidget || !m_visualWidget)
     {
         return;
     }
 
-    m_visualWidget->layout()->removeWidget(m_topWidget);
-    m_topLayout->addWidget(m_topWidget);
+    m_visualWidget->layout()->removeWidget(m_topAreaWidget);
+    m_topAreaLayout->addWidget(m_topAreaWidget);
 
     removeSpectrum();
 }
@@ -74,7 +76,7 @@ void MusicRippleSpecturmObject::update(bool up)
 
     if(m_visualWidget)
     {
-        Visual *widget = MStatic_cast(Visual*, m_visualWidget);
+        Visual *widget = TTKStatic_cast(Visual*, m_visualWidget);
         if(widget)
         {
             widget->start();
@@ -84,8 +86,8 @@ void MusicRippleSpecturmObject::update(bool up)
 
 void MusicRippleSpecturmObject::init(QVBoxLayout *layout, QWidget *widget)
 {
-    m_topLayout = layout;
-    m_topWidget = widget;
+    m_topAreaLayout = layout;
+    m_topAreaWidget = widget;
 }
 
 void MusicRippleSpecturmObject::removeSpectrum()
@@ -93,6 +95,6 @@ void MusicRippleSpecturmObject::removeSpectrum()
     if(m_visualWidget)
     {
         m_visualWidget = nullptr;
-        MusicUtils::QMMP::enableVisualPlugin("outerewave", false);
+        MusicUtils::QMMP::enabledVisualPlugin("outerewave", false);
     }
 }

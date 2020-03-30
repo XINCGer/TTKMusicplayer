@@ -1,7 +1,7 @@
 #include "musiclrcfloatphotowidget.h"
 #include "musicbackgroundmanager.h"
-#include "musicinlinefloatuiobject.h"
-#include "musicwidgetutils.h"
+#include "musicinteriorfloatuiobject.h"
+#include "musicfileutils.h"
 #include "musicwidgetheaders.h"
 
 #include <qmath.h>
@@ -21,7 +21,7 @@ MusicLrcFloatPhotoItem::MusicLrcFloatPhotoItem(int index, QWidget *parent)
     m_index = index;
     m_checkBox = new QCheckBox(this);
     m_checkBox->setGeometry(90, 45, 20, 20);
-    m_checkBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
+    m_checkBox->setStyleSheet(MusicUIObject::MQSSCheckBoxStyle01);
 #ifdef Q_OS_UNIX
     m_checkBox->setFocusPolicy(Qt::NoFocus);
 #endif
@@ -69,20 +69,20 @@ void MusicLrcFloatPhotoItem::setBoxVisible(bool v)
 
 void MusicLrcFloatPhotoItem::sendUserBoxClicked()
 {
-    emit boxClicked(m_index);
+    Q_EMIT boxClicked(m_index);
 }
 
 void MusicLrcFloatPhotoItem::sendUserSelectArt()
 {
     if(!pixmap()->isNull())
     {
-        emit itemClicked(m_index);
+        Q_EMIT itemClicked(m_index);
     }
 }
 
 void MusicLrcFloatPhotoItem::exportArtPixmap()
 {
-    const QString &filename = MusicUtils::Widget::getSaveFileDialog(this, "Jpeg(*.jpg)");
+    const QString &filename = MusicUtils::File::getSaveFileDialog(this, "Jpeg(*.jpg)");
     if(!filename.isEmpty())
     {
         QPixmap pix(m_pixPath);
@@ -96,7 +96,7 @@ void MusicLrcFloatPhotoItem::contextMenuEvent(QContextMenuEvent *event)
     if(!pixmap()->isNull())
     {
         QMenu menu(this);
-        menu.setStyleSheet(MusicUIObject::MMenuStyle02);
+        menu.setStyleSheet(MusicUIObject::MQSSMenuStyle02);
         menu.addAction(tr("Export"), this, SLOT(exportArtPixmap()));
         menu.exec(QCursor::pos());
     }
@@ -121,7 +121,7 @@ MusicLrcFloatPhotoWidget::MusicLrcFloatPhotoWidget(QWidget *parent)
     : MusicFloatAbstractWidget(parent)
 {
     setObjectName("MusicLrcFloatPhotoWidget");
-    setStyleSheet(QString("#MusicLrcFloatPhotoWidget{%1}").arg(MusicUIObject::MBackgroundStyle08));
+    setStyleSheet(QString("#MusicLrcFloatPhotoWidget{%1}").arg(MusicUIObject::MQSSBackgroundStyle08));
 
     m_filmBackgroundWidget = new QWidget(this);
     m_filmBackgroundWidget->setGeometry(0, 0, 680, 125);
@@ -140,11 +140,11 @@ MusicLrcFloatPhotoWidget::MusicLrcFloatPhotoWidget(QWidget *parent)
     m_checkBox = new QCheckBox(tr("All"), this);
     m_checkBox->setGeometry(29, 130, 100, 20);
     m_checkBox->setChecked(true);
-    m_checkBox->setStyleSheet(MusicUIObject::MCheckBoxStyle01);
+    m_checkBox->setStyleSheet(MusicUIObject::MQSSCheckBoxStyle01);
 
     m_confirmButton = new QPushButton(tr("Confirm"), this);
     m_confirmButton->setGeometry(589, 130, 60, 22);
-    m_confirmButton->setStyleSheet(MusicUIObject::MKGInlineFloatSetting + MusicUIObject::MPushButtonStyle08);
+    m_confirmButton->setStyleSheet(MusicUIObject::MQSSInteriorFloatSetting + MusicUIObject::MQSSPushButtonStyle08);
     m_confirmButton->setCursor(QCursor(Qt::PointingHandCursor));
 
     m_previous = new QPushButton("<", m_filmBackgroundWidget);
@@ -161,8 +161,8 @@ MusicLrcFloatPhotoWidget::MusicLrcFloatPhotoWidget(QWidget *parent)
     m_next->setFocusPolicy(Qt::NoFocus);
 #endif
 
-    m_previous->setStyleSheet(MusicUIObject::MBackgroundStyle10 + MusicUIObject::MBorderStyle01);
-    m_next->setStyleSheet(MusicUIObject::MBackgroundStyle10 + MusicUIObject::MBorderStyle01);
+    m_previous->setStyleSheet(MusicUIObject::MQSSBackgroundStyle10 + MusicUIObject::MQSSBorderStyle01);
+    m_next->setStyleSheet(MusicUIObject::MQSSBackgroundStyle10 + MusicUIObject::MQSSBorderStyle01);
 
     m_currentIndex = 0;
 

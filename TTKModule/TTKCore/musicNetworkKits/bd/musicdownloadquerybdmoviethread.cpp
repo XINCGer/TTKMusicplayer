@@ -21,7 +21,7 @@ void MusicDownLoadQueryBDMovieThread::startToSearch(QueryType type, const QStrin
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(text));
+    TTK_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(text));
     deleteAll();
 
     const QUrl &musicUrl = MusicUtils::Algorithm::mdII(BD_SONG_SEARCH_URL, false).arg(text).arg(0).arg(m_pageSize);
@@ -46,7 +46,7 @@ void MusicDownLoadQueryBDMovieThread::startToPage(int offset)
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(offset));
+    TTK_LOGGER_INFO(QString("%1 startToSearch %2").arg(getClassName()).arg(offset));
     deleteAll();
 
     const QUrl &musicUrl = MusicUtils::Algorithm::mdII(BD_AR_MV_URL, false).arg(m_searchText).arg(offset*m_pageSize);
@@ -71,7 +71,7 @@ void MusicDownLoadQueryBDMovieThread::startToSingleSearch(const QString &text)
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 startToSingleSearch %2").arg(getClassName()).arg(text));
+    TTK_LOGGER_INFO(QString("%1 startToSingleSearch %2").arg(getClassName()).arg(text));
     deleteAll();
 
     m_searchText = text.trimmed();
@@ -88,8 +88,8 @@ void MusicDownLoadQueryBDMovieThread::downLoadFinished()
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
-    emit clearAllItems();
+    TTK_LOGGER_INFO(QString("%1 downLoadFinished").arg(getClassName()));
+    Q_EMIT clearAllItems();
     m_musicSongInfos.clear();
     m_interrupt = false;
 
@@ -139,7 +139,7 @@ void MusicDownLoadQueryBDMovieThread::downLoadFinished()
                     item.m_singerName = musicInfo.m_singerName;
                     item.m_time = findTimeStringByAttrs(musicInfo.m_songAttrs);
                     item.m_type = mapQueryServerString();
-                    emit createSearchedItem(item);
+                    Q_EMIT createSearchedItem(item);
                     m_musicSongInfos << musicInfo;
                 }
             }
@@ -158,9 +158,8 @@ void MusicDownLoadQueryBDMovieThread::downLoadFinished()
         m_musicSongInfos << d->getMusicSongInfos();
     }
 
-    emit downLoadDataChanged(QString());
+    Q_EMIT downLoadDataChanged(QString());
     deleteAll();
-    M_LOGGER_INFO(QString("%1 downLoadFinished deleteAll").arg(getClassName()));
 }
 
 void MusicDownLoadQueryBDMovieThread::pageDownLoadFinished()
@@ -171,7 +170,7 @@ void MusicDownLoadQueryBDMovieThread::pageDownLoadFinished()
         return;
     }
 
-    M_LOGGER_INFO(QString("%1 pageDownLoadFinished").arg(getClassName()));
+    TTK_LOGGER_INFO(QString("%1 pageDownLoadFinished").arg(getClassName()));
     m_interrupt = false;
 
     if(m_reply->error() == QNetworkReply::NoError)
@@ -203,7 +202,7 @@ void MusicDownLoadQueryBDMovieThread::pageDownLoadFinished()
                     info.m_coverUrl = regx.cap(1).remove("@s_0,w_160,h_90");
                     info.m_name = regx.cap(3);
                     info.m_updateTime.clear();
-                    emit createMovieInfoItem(info);
+                    Q_EMIT createMovieInfoItem(info);
 
                     pos += regx.matchedLength();
                     pos = regx.indexIn(html, pos);
@@ -212,16 +211,15 @@ void MusicDownLoadQueryBDMovieThread::pageDownLoadFinished()
         }
     }
 
-    emit downLoadDataChanged(QString());
+    Q_EMIT downLoadDataChanged(QString());
     deleteAll();
-    M_LOGGER_INFO(QString("%1 pageDownLoadFinished deleteAll").arg(getClassName()));
 }
 
 void MusicDownLoadQueryBDMovieThread::singleDownLoadFinished()
 {
-    M_LOGGER_INFO(QString("%1 singleDownLoadFinished").arg(getClassName()));
+    TTK_LOGGER_INFO(QString("%1 singleDownLoadFinished").arg(getClassName()));
 
-    emit clearAllItems();
+    Q_EMIT clearAllItems();
     m_musicSongInfos.clear();
     m_interrupt = false;
 
@@ -244,13 +242,12 @@ void MusicDownLoadQueryBDMovieThread::singleDownLoadFinished()
         item.m_singerName = musicInfo.m_singerName;
         item.m_time = findTimeStringByAttrs(musicInfo.m_songAttrs);
         item.m_type = mapQueryServerString();
-        emit createSearchedItem(item);
+        Q_EMIT createSearchedItem(item);
         m_musicSongInfos << musicInfo;
     }
 
-    emit downLoadDataChanged(QString());
+    Q_EMIT downLoadDataChanged(QString());
     deleteAll();
-    M_LOGGER_INFO(QString("%1 singleDownLoadFinished deleteAll").arg(getClassName()));
 }
 
 void MusicDownLoadQueryBDMovieThread::readFromMusicMVAttributeWeb(MusicObject::MusicSongInformation *info)
@@ -313,7 +310,7 @@ void MusicDownLoadQueryBDMovieThread::readFromMusicMVAttributeWeb(MusicObject::M
                 attr.m_url = value["file_link"].toString();
                 attr.m_duration = info->m_timeLength;
                 attr.m_bitrate = MB_500;
-                attr.m_format = MusicUtils::Core::StringSplite(attr.m_url);
+                attr.m_format = MusicUtils::String::stringSplitToken(attr.m_url);
                 if(!findUrlFileSize(&attr)) return;
                 info->m_songAttrs.append(attr);
             }
@@ -474,7 +471,7 @@ void MusicDownLoadQueryBDMovieThread::readFromMusicMVAttributeIQY(MusicObject::M
         }
     }
 
-    const QString &time = QString::number(MusicTime::timeStamp());
+    const QString &time = QString::number(MusicTime::timestamp());
     const QString &host = MusicUtils::Algorithm::mdII(BD_MV_INFO_ATTR_I_URL, false);
     const QString &src = MusicUtils::Algorithm::mdII(BD_MV_INFO_ATTR_ID_URL, false).arg(tvid).arg(vid).arg(tvid).arg(time);
 
@@ -600,7 +597,7 @@ void MusicDownLoadQueryBDMovieThread::readFromMusicMVAttributeYYT(MusicObject::M
     if(datas.count() == 2)
     {
         const QString &v = datas.front();
-        attr.m_format = MusicUtils::Core::StringSplite(v);
+        attr.m_format = MusicUtils::String::stringSplitToken(v);
         attr.m_size = MusicUtils::Number::size2Label(key["fileSize"].toLongLong());
         info->m_songAttrs.append(attr);
     }

@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,9 @@ public:
 
 public Q_SLOTS:
     /*!
-     * Table widget list cell click.
+     * Table widget item cell click.
      */
-    virtual void listCellClicked(int row, int column) override;
+    virtual void itemCellClicked(int row, int column) override;
 
 };
 
@@ -117,7 +117,7 @@ protected:
     /*!
      * Enable or disable control state.
      */
-    void setControlEnable(bool enable);
+    void setControlEnabled(bool enable);
 
     Ui::MusicVolumeGainWidget *m_ui;
     QProcess *m_process;

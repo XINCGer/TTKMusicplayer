@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,16 +21,17 @@
 
 #include <QMap>
 #include "musicsingleton.h"
+#include "musicwidgetutils.h"
 
 #define M_SINGLE_MANAGER_PTR (MusicSingleton<MusicSingleManager>::createInstance())
-//
+/////////////////////////////////////////////////////////////////////////
 #define M_SINGLE_MANAGER_WIDGET_NEW2(name, parent)                      \
     MusicSingleManager *manager = M_SINGLE_MANAGER_PTR;                 \
     if(!manager->contains(#name))                                       \
     {                                                                   \
         manager->createObject(#name, new name(parent));                 \
     }                                                                   \
-    name *w = MStatic_cast(name*, manager->object(#name));
+    name *w = TTKStatic_cast(name*, manager->object(#name));
 
 #define M_SINGLE_MANAGER_WIDGET_NEW(name)                               \
     M_SINGLE_MANAGER_WIDGET_NEW2(name, MusicApplication::instance())
@@ -38,20 +39,22 @@
 #define M_SINGLE_MANAGER_WIDGET_CLASS2(name, parent)                    \
 {                                                                       \
     M_SINGLE_MANAGER_WIDGET_NEW2(name, parent)                          \
+    const QRect &r = MusicUtils::Widget::windowScreenGeometry();        \
+    w->move((r.width() - w->width())/2, (r.height() - w->height())/2);  \
     w->raise();                                                         \
     w->show();                                                          \
 }
 
 #define M_SINGLE_MANAGER_WIDGET_CLASS(name)                             \
     M_SINGLE_MANAGER_WIDGET_CLASS2(name, MusicApplication::instance())
-//
+/////////////////////////////////////////////////////////////////////////
 #define M_SINGLE_MANAGER_DIALOG_NEW2(name, parent)                      \
     MusicSingleManager *manager = M_SINGLE_MANAGER_PTR;                 \
     if(!manager->contains(#name))                                       \
     {                                                                   \
         manager->createObject(#name, new name(parent));                 \
     }                                                                   \
-    name *w = MStatic_cast(name*, manager->object(#name));
+    name *w = TTKStatic_cast(name*, manager->object(#name));
 
 #define M_SINGLE_MANAGER_DIALOG_NEW(name)                               \
     M_SINGLE_MANAGER_DIALOG_NEW2(name, MusicApplication::instance())
@@ -59,19 +62,21 @@
 #define M_SINGLE_MANAGER_DIALOG_CLASS2(name, parent)                    \
 {                                                                       \
     M_SINGLE_MANAGER_DIALOG_NEW2(name, parent)                          \
+    const QRect &r = MusicUtils::Widget::windowScreenGeometry();        \
+    w->move((r.width() - w->width())/2, (r.height() - w->height())/2);  \
     w->exec();                                                          \
 }
 
 #define M_SINGLE_MANAGER_DIALOG_CLASS(name)                             \
     M_SINGLE_MANAGER_DIALOG_CLASS2(name, MusicApplication::instance())
-//
+/////////////////////////////////////////////////////////////////////////
 #define M_SINGLE_MANAGER_CORE_NEW2(name, parent)                        \
     MusicSingleManager *manager = M_SINGLE_MANAGER_PTR;                 \
     if(!manager->contains(#name))                                       \
     {                                                                   \
         manager->createObject(#name, new name(parent));                 \
     }                                                                   \
-    name *w = MStatic_cast(name*, manager->object(#name));
+    name *w = TTKStatic_cast(name*, manager->object(#name));
 
 #define M_SINGLE_MANAGER_CORE_NEW(name)                                 \
     M_SINGLE_MANAGER_CORE_NEW2(name, nullptr)
@@ -84,7 +89,7 @@
 
 #define M_SINGLE_MANAGER_CORE_CLASS(name)                               \
     M_SINGLE_MANAGER_CORE_CLASS2(name, nullptr)
-//
+/////////////////////////////////////////////////////////////////////////
 
 
 /*! @brief The class of the single object manager.

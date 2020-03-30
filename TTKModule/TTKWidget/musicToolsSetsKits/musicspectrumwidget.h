@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2019 Greedysky Studio
+ * Copyright (C) 2015 - 2020 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 #include "musicabstractmovewidget.h"
 
 class Spek;
-class QCheckBox;
+class QAbstractButton;
 
 namespace Ui {
 class MusicSpectrumWidget;
@@ -62,15 +62,15 @@ public Q_SLOTS:
     /*!
      * Spectrum Type Changed.
      */
-    void spectrumTypeChanged(int index);
+    void spectrumTypeChanged(bool &state, const QString &name);
     /*!
      * Spectrum Plus Type Changed.
      */
-    void spectrumPlusTypeChanged(int index);
+    void spectrumPlusTypeChanged(bool &state, const QString &name);
     /*!
-     * Spectrum Dazzle Type Changed.
+     * Spectrum Florid Type Changed.
      */
-    void spectrumDazzleTypeChanged(int index);
+    void spectrumFloridTypeChanged(bool &state, const QString &name);
     /*!
      * Override show function.
      */
@@ -83,16 +83,24 @@ public Q_SLOTS:
      * Open file button clicked.
      */
     void openFileButtonClicked();
+    /*!
+     * Emitted when visual widget is show fullscreen by user.
+     */
+    void fullscreenByUser(QWidget *widget, bool state);
 
 protected:
     /*!
-     * New spectrum widget.
+     * Create spectrum widget.
      */
-    void newSpectrumWidget(QCheckBox *box, const QString &name, QLayout *layout);
+    void createSpectrumWidget(bool &state, const QString &name, QLayout *layout);
     /*!
-     * New spek widget.
+     * Create florid widget.
      */
-    void newSpekWidget(QCheckBox *box, const QString &name, QLayout *layout, const QString &url = QString());
+    void createFloridWidget(bool &state, const QString &name, QLayout *layout);
+    /*!
+     * Create light widget.
+     */
+    void createLightWidget(bool &state, const QString &name, QLayout *layout, const QString &url = QString());
     /*!
      * Adjust widget layout.
      */
@@ -104,8 +112,10 @@ protected:
     /*!
      * Show message box widget.
      */
-    void showMessageBoxWidget(QCheckBox *box);
+    void showMessageBoxWidget();
 
+    QLayout *m_spectrumLayout;
+    QString m_lastFloridName;
     MusicSpectrums m_types;
     Ui::MusicSpectrumWidget *m_ui;
 

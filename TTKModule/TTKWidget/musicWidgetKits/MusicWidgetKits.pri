@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2019 Greedysky Studio
+# * Copyright (C) 2015 - 2020 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,6 @@ HEADERS  += \
     $$PWD/musicplaylistfoundinfowidget.h \
     $$PWD/musicplaylistfoundtablewidget.h \
     $$PWD/musicsonglistenhancelosslesswidget.h \
-    $$PWD/musicpagingwidgetobject.h \
     $$PWD/musicenhancedpopwidget.h \
     $$PWD/musicplaybackmodepopwidget.h \
     $$PWD/musicqualitychoicepopwidget.h \
@@ -70,7 +69,9 @@ HEADERS  += \
     $$PWD/musicrecommendfoundwidget.h \
     $$PWD/musicartistlistfoundwidget.h \
     $$PWD/musicartistlistfoundcategorypopwidget.h \
-    $$PWD/musicripplespecturmobject.h
+    $$PWD/musicripplespecturmobject.h \
+    $$PWD/musicmessagefeedbackdialog.h \
+    $$PWD/musicpluginwidget.h
 
 }
 
@@ -111,7 +112,6 @@ SOURCES += \
     $$PWD/musicplaylistfoundinfowidget.cpp \
     $$PWD/musicplaylistfoundtablewidget.cpp \
     $$PWD/musicsonglistenhancelosslesswidget.cpp \
-    $$PWD/musicpagingwidgetobject.cpp \
     $$PWD/musicenhancedpopwidget.cpp \
     $$PWD/musicplaybackmodepopwidget.cpp \
     $$PWD/musicqualitychoicepopwidget.cpp \
@@ -126,6 +126,8 @@ SOURCES += \
     $$PWD/musicrecommendfoundwidget.cpp \
     $$PWD/musicartistlistfoundwidget.cpp \
     $$PWD/musicartistlistfoundcategorypopwidget.cpp \
-    $$PWD/musicripplespecturmobject.cpp
+    $$PWD/musicripplespecturmobject.cpp \
+    $$PWD/musicmessagefeedbackdialog.cpp \
+    $$PWD/musicpluginwidget.cpp
 
 }

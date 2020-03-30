@@ -113,12 +113,20 @@ public slots:
      * Stops visualization.
      */
     virtual void stop() = 0;
+    /*!
+     * Menu fullscreen changed.
+     */
+    void changeFullScreen(bool state);
 
 signals:
     /*!
      * Emitted when visual widget is closed by user.
      */
     void closedByUser();
+    /*!
+     * Emitted when visual widget is show fullscreen by user.
+     */
+    void fullscreenByUser(QWidget *widget, bool state);
 
 protected:
     /*!
@@ -135,9 +143,9 @@ protected:
      */
     bool takeData(float *left, float *right = 0);
     /*!
-     * Get visual maxed value range.
+     * Take visual maxed value range.
      */
-    float maxRange() const;
+    float takeMaxRange() const;
 
 private:
     static QList<VisualFactory*> *m_factories;

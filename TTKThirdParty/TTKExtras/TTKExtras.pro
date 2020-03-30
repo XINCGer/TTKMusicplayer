@@ -1,6 +1,6 @@
 # =================================================
 # * This file is part of the TTK Music Player project
-# * Copyright (C) 2015 - 2019 Greedysky Studio
+# * Copyright (C) 2015 - 2020 Greedysky Studio
 #
 # * This program is free software; you can redistribute it and/or modify
 # * it under the terms of the GNU General Public License as published by
@@ -22,34 +22,28 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 include(../../TTKVersion.pri)
 unix:VERSION += $$TTKMusicPlayer
 
-win32{
-    TARGET = ../../../bin/$$TTKMusicPlayer/TTKExtras
-    msvc{
-        LIBS += -luser32
-    }
-}
-unix:TARGET = ../../lib/$$TTKMusicPlayer/TTKExtras
+win32:DESTDIR = $$OUT_PWD/../../bin/$$TTKMusicPlayer
+unix:DESTDIR = $$OUT_PWD/../../lib/$$TTKMusicPlayer
+TARGET = TTKExtras
+
 TEMPLATE = lib
 
 win32:msvc{
+    LIBS += -luser32
     CONFIG +=c++11
 }else{
     QMAKE_CXXFLAGS += -std=c++11
 }
 
-win32{
-    LIBS += -L../../bin/$$TTKMusicPlayer -lTTKUi
-}
-unix:!mac{
-    LIBS += -L../../lib/$$TTKMusicPlayer -lTTKUi
-}
+LIBS += -L$$DESTDIR -lTTKUi
+INCLUDEPATH += $$PWD
 
 include(../TTKExtrasDefine.pri)
 
 include(qalg/QAlg.pri)
-include(qhz2py/QHz2Py.pri)
-include(qimage/QImage.pri)
-include(qiniu/QiNiu.pri)
+include(qdlna/QDlna.pri)
+include(qhttpserver/QHttpServer.pri)
+include(qoss/QOss.pri)
 include(qjson/QJson.pri)
 include(qkugou/QKuGou.pri)
 include(qrencode/QRencode.pri)
