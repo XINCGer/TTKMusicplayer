@@ -2,9 +2,6 @@
 #include "musicdownloadsourcethread.h"
 #include "musicdatadownloadthread.h"
 
-#///QJson import
-#include "qjson/parser.h"
-
 const QString BIG_ART_URL = "NUJnNFVlSHprVzdaMWxMdXRvbEp5a3lldU51Um9GeU5RKzRDWFNER2FHL3pSRE1uK1VNRzVhVk53Y1JBUTlMbnhjeFBvRFMySnpUSldlY21xQjBkWE5GTWVkVXFsa0lNa1RKSnE3VHEwMDFPdVRDbXhUSThhWkM4TFI4RUZqbHFzVFFnQkpOY2hUR2c2YWdzb3U2cjBKSUdMYnpnZktucEJpbDVBTDlzMGF0QVMwcEtLR2JWVnc9PQ==";
 
 MusicKWBackgroundThread::MusicKWBackgroundThread(const QString &name, const QString &save, QObject *parent)
@@ -17,11 +14,11 @@ void MusicKWBackgroundThread::startToDownload()
 {
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
     ///Set search image API
-    connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadDataFinished(QByteArray)));
+    connect(download, SIGNAL(downLoadRawDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
     download->startToDownload(MusicUtils::Algorithm::mdII(BIG_ART_URL, false).arg(m_artName));
 }
 
-void MusicKWBackgroundThread::downLoadDataFinished(const QByteArray &bytes)
+void MusicKWBackgroundThread::downLoadFinished(const QByteArray &bytes)
 {
     QJson::Parser parser;
     bool ok;

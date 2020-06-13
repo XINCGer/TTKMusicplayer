@@ -18,18 +18,15 @@
 
 TEMPLATE = lib
 
-include(../../../TTKVersion.pri)
+include($$PWD/../../../TTKVersion.pri)
 
-win32:DESTDIR = $$OUT_PWD/../../../bin/$$TTKMusicPlayer
-unix:DESTDIR = $$OUT_PWD/../../../lib/$$TTKMusicPlayer
+DESTDIR = $$OUT_PWD/../../../bin/$$TTKMusicPlayer
 TARGET = zlib
 
-CONFIG       += warn_off
-unix:VERSION += 1.2.11
+CONFIG += warn_off plugin lib
 
 DEFINES += \
-    ZLIB_DLL \
-    ZLIB_INTERNAL
+    ZLIB_DLL
 
 HEADERS  += \
     $$PWD/zconf.h \

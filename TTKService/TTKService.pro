@@ -18,35 +18,18 @@
 
 TEMPLATE = app
 
-contains(CONFIG, TTK_BUILD_LIB){
-    CONFIG -= TTK_BUILD_LIB
-}
-
-CONFIG += TTK_NO_MSVC_LINK_NEED
-win32{
-    msvc{
-        CONFIG -= TTK_NO_MSVC_LINK_NEED
-    }
-}
-include(../TTKMusicPlayer.pri)
-unix:VERSION += $$TTKMusicPlayer
+include($$PWD/../TTKMusicPlayer.pri)
 
 TARGET = TTKService
 
-LIBS += -L$$DESTDIR -lTTKCore -lTTKDumper
+LIBS += -L$$DESTDIR -lTTKCore -lTTKConfig
 
-INCLUDEPATH += ../TTKModule
-
-!contains(CONFIG, TTK_NO_MSVC_LINK_NEED){
-HEADERS  += \
-    ../TTKModule/musicapplication.h \
-    ../TTKModule/musicleftareawidget.h \
-    ../TTKModule/musictopareawidget.h \
-    ../TTKModule/musicrightareawidget.h \
-    ../TTKModule/musicbottomareawidget.h \
-    ../TTKModule/musicapplicationobject.h
-
-}
+INCLUDEPATH += \
+    $$PWD/../TTKModule \
+    $$PWD/../TTKModule/TTKCore/musicCoreKits \
+    $$PWD/../TTKModule/TTKWidget/musicCoreKits \
+    $$PWD/../TTKRun \
+    $$PWD/../TTKConfig
 
 SOURCES += \
     musicservicemain.cpp

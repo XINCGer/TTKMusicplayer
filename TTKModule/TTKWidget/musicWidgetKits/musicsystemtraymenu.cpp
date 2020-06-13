@@ -64,8 +64,8 @@ void MusicSystemTrayMenu::setLabelText(const QString &text) const
 
 void MusicSystemTrayMenu::showDesktopLrc(bool show) const
 {
-    m_showLrcAction->setText( show ? tr("hideDeskLrc") : tr("showDeskLrc"));
-    m_lockLrcAction->setEnabled( show );
+    m_showLrcAction->setText(show ? tr("hideDeskLrc") : tr("showDeskLrc"));
+    m_lockLrcAction->setEnabled(show);
 }
 
 void MusicSystemTrayMenu::lockDesktopLrc(bool lock)
@@ -78,7 +78,7 @@ void MusicSystemTrayMenu::setWindowLockedChanged()
     MusicRightAreaWidget::instance()->setWindowLockedChanged();
 }
 
-void MusicSystemTrayMenu::showPlayStatus(bool status) const
+void MusicSystemTrayMenu::setCurrentPlayStatus(bool status) const
 {
 #ifndef Q_OS_UNIX
     m_PlayOrStop->setStyleSheet(status ? MusicUIObject::MQSSContextPlay : MusicUIObject::MQSSContextPause);

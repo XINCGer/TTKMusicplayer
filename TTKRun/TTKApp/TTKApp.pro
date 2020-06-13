@@ -19,11 +19,8 @@
 QT       += core gui network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-include(../../TTKVersion.pri)
-unix:VERSION += $$TTKMusicPlayer
+include($$PWD/../../TTKVersion.pri)
 
-win32:DESTDIR = $$OUT_PWD/../../bin
-unix:DESTDIR = $$OUT_PWD/../../lib
 TARGET = TTKMusicPlayer
 
 TEMPLATE = app
@@ -34,11 +31,23 @@ win32:msvc{
     QMAKE_CXXFLAGS += -std=c++11
 }
 
+win32{
+    DESTDIR = $$OUT_PWD/../../bin/$$TTKMusicPlayer
+    LIBS += -L$$DESTDIR -lTTKConfig
+}
+else{
+    DESTDIR = $$OUT_PWD/../../bin
+    DEFINES += CONFIG_OUT_BUILD
+    SOURCES += $$PWD/../../TTKConfig/musicconfigobject.cpp
+    HEADERS += \
+        $$PWD/../../TTKConfig/musicconfigobject.h \
+        $$PWD/../../TTKConfig/musicconfigdefine.h
+}
+
 INCLUDEPATH += \
     $$PWD/../ \
-    $$PWD/../TTKInit \
     $$PWD/../../ \
-    $$PWD/../../TTKThirdParty \
+    $$PWD/../../TTKConfig \
     $$PWD/../../TTKThirdParty/TTKDumper \
     $$PWD/../../TTKModule/TTKCore/musicCoreKits
 
@@ -46,20 +55,15 @@ SOURCES += \
     ttkrunmain.cpp \
     ttklocalpeer.cpp \
     ttkrunapplication.cpp \
-    ttkrunobject.cpp \
-    ../TTKInit/musicinitobject.cpp
-
+    ttkrunobject.cpp
 
 HEADERS += \
-    ../musicrunglobaldefine.h \
     ttkrunobject.h \
     ttklocalpeer.h \
     ttkrunapplication.h \
-    ../TTKInit/musicinitobject.h
-
 
 RESOURCES += \
-    ../../TTKQrc/MusicApp.qrc
+    $$PWD/../../TTKQrc/MusicApp.qrc
 
 win32{
     RC_FILE = TTKApp.rc

@@ -516,10 +516,11 @@ namespace MusicUIObject
             QTableWidget{ background:rgba(0, 0, 0, 255); }";
 
 
-///TableWidget
+///TabWidget
     const QString MQSSTabWidgetStyle01 = " \
             QTabWidget{ border:none; } \
-            QTabBar::tab{ height:30px; width:125px; background-color:#BFBFBF; color:white; } \
+            QTabWidget::pane{ border:none; } \
+            QTabBar::tab{ height:30px; width:100px; background-color:#BFBFBF; color:white; margin-left:0; margin-right:0; } \
             QTabBar::tab:selected{ background-color:#158FE1; color:white}";
 
 
@@ -528,6 +529,11 @@ namespace MusicUIObject
             QTextEdit{ border:1px solid gray; color:#666666; } \
             QTextEdit::hover{ border:1px solid rgb(22, 154, 243); } \
             QTextEdit::disabled{ color:#BBBBBB; border: 1px solid #BBBBBB; }";
+
+
+///HeadView
+    const QString MQSSHeaderView01 = " \
+            QHeaderView{ background-color:white; color:black; }";
 
 
 ///Widget

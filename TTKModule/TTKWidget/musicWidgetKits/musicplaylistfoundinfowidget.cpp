@@ -6,7 +6,6 @@
 #include "musicuiobject.h"
 #include "musicstringutils.h"
 #include "musicwidgetutils.h"
-#include "musictime.h"
 
 #include "qrencode/qrcodewidget.h"
 
@@ -102,7 +101,7 @@ void MusicPlaylistFoundInfoWidget::setMusicResultsItem(const MusicResultsItem &i
     m_iconLabel->setFixedSize(210, 180);
 
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
-    connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
+    connect(download, SIGNAL(downLoadRawDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
     if(!item.m_coverUrl.isEmpty() && item.m_coverUrl != COVER_URL_NULL)
     {
         download->startToDownload(item.m_coverUrl);
@@ -172,7 +171,7 @@ void MusicPlaylistFoundInfoWidget::setMusicResultsItem(const MusicResultsItem &i
     for(int i=1; i<=5; ++i)
     {
         QLabel *label = new QLabel(topRightWidget);
-        label->setPixmap(QPixmap( (ceil(number/2.0) - i) >= 0 ? ":/tiny/lb_star" : ":/tiny/lb_unstar"));
+        label->setPixmap(QPixmap((ceil(number/2.0) - i) >= 0 ? ":/tiny/lb_star" : ":/tiny/lb_unstar"));
         topRightLayout->addWidget(label, 0, i);
     }
 

@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 2.8.11)
 
 add_definitions(-DTTK_LIBRARY)
+add_definitions(-DQMMP_LIBRARY)
 
-set(TTK_MAJOR_VERSION "2.11.1")
+set(TTK_MAJOR_VERSION "2.13.0")
 set(TTK_VERSION ${TTK_MAJOR_VERSION}.0)
 
 # Find includes in the build directories
@@ -95,13 +96,14 @@ include_directories(
     ${MUSIC_WIDGET_VIDEOKITS_DIR}
 )
 
-
-set(MUSIC_SCRIPT_DIR "${MUSIC_DIR}/TTKScript")
+set(MUSIC_CONFIG_DIR "${MUSIC_DIR}/TTKConfig")
 set(MUSIC_QRC_DIR "${MUSIC_DIR}/TTKQrc")
-set(MUSIC_LANGUAGE_DIR "${MUSIC_DIR}/TTKLanguage")
-set(MUSIC_RESOURCE_DIR "${MUSIC_DIR}/TTKResource")
 set(MUSIC_THIRDPARTY_DIR "${MUSIC_DIR}/TTKThirdParty")
 set(MUSIC_TTKSERVICE_DIR "${MUSIC_DIR}/TTKService")
+
+set(MUSIC_SCRIPT_DIR "${MUSIC_DIR}/TTKScript")
+set(MUSIC_LANGUAGE_DIR "${MUSIC_DIR}/TTKLanguage")
+set(MUSIC_RESOURCE_DIR "${MUSIC_DIR}/TTKResource")
 
 include_directories(
     ${MUSIC_THIRDPARTY_DIR}
@@ -202,10 +204,8 @@ find_library(QMMP_LIBRARY
 )
 
 # qmmp include
-if(TTK_QT_VERSION VERSION_GREATER "4")
-  include_directories(${MUSIC_DIR}/TTKExtra/Qt5)
-else()
-  include_directories(${MUSIC_DIR}/TTKExtra/Qt4)
+include_directories(${MUSIC_DIR}/TTKExtra)
+if(NOT (TTK_QT_VERSION VERSION_GREATER "4"))
   if(UNIX)
     include_directories(
         /usr/include/QtMultimediaKit
@@ -214,11 +214,11 @@ else()
   endif()
 endif()
 
+add_subdirectory(TTKConfig)
 add_subdirectory(TTKQrc)
 add_subdirectory(TTKThirdParty)
 add_subdirectory(TTKModule)
 add_subdirectory(TTKService)
 add_subdirectory(TTKRun)
-add_subdirectory(TTKTest)
 
 install(FILES "${MUSIC_SCRIPT_DIR}/deploy/ttkmusicplayer.appdata.xml" DESTINATION "${MUSIC_INSTALL_DIR}/metainfo")

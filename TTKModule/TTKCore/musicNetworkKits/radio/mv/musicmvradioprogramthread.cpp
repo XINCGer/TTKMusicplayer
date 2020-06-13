@@ -3,9 +3,6 @@
 #include "musicsemaphoreloop.h"
 #include "musicnumberutils.h"
 #include "musiccoreutils.h"
-#include "musictime.h"
-#///QJson import
-#include "qjson/parser.h"
 
 MusicMVRadioProgramThread::MusicMVRadioProgramThread(QObject *parent)
     : MusicMVRadioThreadAbstract(parent)
@@ -92,9 +89,9 @@ void MusicMVRadioProgramThread::downLoadFinished()
                             musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["time"].toInt());
 
                             musicInfo.m_songId = value["mvhash"].toString();
-                            if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
+                            if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkQuery) return;
                             readFromMusicMVAttribute(&musicInfo);
-                            if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
+                            if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkQuery) return;
 
                             if(musicInfo.m_songAttrs.isEmpty())
                             {
@@ -186,7 +183,7 @@ void MusicMVRadioProgramThread::readFromMusicMVAttribute(MusicObject::MusicSongI
     attr.m_size = MusicUtils::Number::size2Label(key["filesize"].toInt());
     attr.m_format = MusicUtils::String::stringSplitToken(attr.m_url);
 
-    int bitRate = key["bitrate"].toInt()/1000;
+    int bitRate = key["bitrate"].toInt() / 1000;
     if(bitRate <= 375)
         attr.m_bitrate = MB_250;
     else if(bitRate > 375 && bitRate <= 625)

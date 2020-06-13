@@ -16,9 +16,8 @@ MusicPlayer::MusicPlayer(QObject *parent)
     m_music = new SoundCore(this);
     m_posOnCircle = 0;
     m_volumeMusic3D = 0;
-    m_balance = 0;
     m_duration = 0;
-    m_tryTimes = 0;
+    m_durationTimes = 0;
 
     setEnabledEffect(false);
 
@@ -62,6 +61,11 @@ qint64 MusicPlayer::position() const
     return m_music->elapsed();
 }
 
+void MusicPlayer::setPosition(qint64 position)
+{
+    m_music->seek(position);
+}
+
 void MusicPlayer::playNext()
 {
     int index = m_playlist->currentIndex();
@@ -71,7 +75,7 @@ void MusicPlayer::playNext()
 void MusicPlayer::playPrevious()
 {
     int index = m_playlist->currentIndex();
-    m_playlist->setCurrentIndex((--index < 0) ? 0 : index );
+    m_playlist->setCurrentIndex((--index < 0) ? 0 : index);
 }
 
 int MusicPlayer::volume() const
@@ -96,11 +100,6 @@ void MusicPlayer::setMuted(bool muted)
     m_music->setMuted(muted);
 }
 
-void MusicPlayer::setPosition(qint64 position)
-{
-    m_music->seek(position);
-}
-
 void MusicPlayer::setMusicEnhanced(Enhanced type)
 {
     m_musicEnhanced = type;
@@ -113,7 +112,6 @@ void MusicPlayer::setMusicEnhanced(Enhanced type)
     {
         m_music->setBalance(0);
         m_music->setVolume(m_volumeMusic3D, m_volumeMusic3D);
-        m_music->setBalance(m_balance);
         setMusicEnhancedCase();
     }
 }
@@ -134,14 +132,14 @@ void MusicPlayer::play()
     m_state = MusicObject::PS_PlayingState;
     const Qmmp::State state = m_music->state(); ///Get the current state of play
 
-    if(m_currentMedia == m_playlist->currentMediaString() && state == Qmmp::Paused)
+    if(m_currentMedia == m_playlist->currentMediaPath() && state == Qmmp::Paused)
     {
         m_music->pause(); ///When the pause time for recovery
         m_timer.start(MT_S2MS);
         return;
     }
 
-    m_currentMedia = m_playlist->currentMediaString();
+    m_currentMedia = m_playlist->currentMediaPath();
     ///The current playback path
     if(!m_music->play(m_currentMedia))
     {
@@ -149,19 +147,12 @@ void MusicPlayer::play()
         return;
     }
 
-    m_tryTimes = 0;
+    m_durationTimes = 0;
     m_timer.start(MT_S2MS);
+
+    queryCurrentDuration();
     ///Every second Q_EMITs a signal change information
     Q_EMIT positionChanged(0);
-    getCurrentDuration();
-
-    ///Read the configuration settings for the sound
-    const int volume = M_SETTING_PTR->value(MusicSettingManager::Volume).toInt();
-    if(volume != -1)
-    {
-        setVolume(volume);
-    }
-    setSoundEffectVolume(M_SETTING_PTR->value(MusicSettingManager::EnhancedBalance).toInt());
 }
 
 void MusicPlayer::pause()
@@ -226,12 +217,6 @@ void MusicPlayer::setEqInformation()
     }
 }
 
-void MusicPlayer::setSoundEffectVolume(int value)
-{
-    m_balance = value;
-    m_music->setBalance(value);
-}
-
 void MusicPlayer::removeCurrentMedia()
 {
     m_timer.stop();
@@ -240,9 +225,9 @@ void MusicPlayer::removeCurrentMedia()
 
 void MusicPlayer::update()
 {
-    Q_EMIT positionChanged( position() );
+    Q_EMIT positionChanged(position());
 
-    if(m_musicEnhanced == Enhanced3D && !m_music->isMuted())
+    if(m_musicEnhanced == Enhanced3D && !isMuted())
     {
         ///3D music settings
         setEnabledEffect(false);
@@ -261,9 +246,9 @@ void MusicPlayer::update()
             Q_EMIT stateChanged(MusicObject::PS_StoppedState);
             return;
         }
+
         m_playlist->setCurrentIndex();
-        if(m_playlist->playbackMode() == MusicObject::PM_PlayOrder &&
-           m_playlist->currentIndex() == -1)
+        if(m_playlist->playbackMode() == MusicObject::PM_PlayOrder && m_playlist->currentIndex() == -1)
         {
             m_music->stop();
             Q_EMIT positionChanged(0);
@@ -274,16 +259,16 @@ void MusicPlayer::update()
     }
 }
 
-void MusicPlayer::getCurrentDuration()
+void MusicPlayer::queryCurrentDuration()
 {
     const qint64 dur = duration();
-    if((dur == 0 || m_duration == dur) && m_tryTimes++ < 10)
+    if((dur == 0 || m_duration == dur) && m_durationTimes++ < 10)
     {
-        QTimer::singleShot(50 * MT_MS, this, SLOT(getCurrentDuration()));
+        QTimer::singleShot(50 * MT_MS, this, SLOT(queryCurrentDuration()));
     }
     else
     {
-        Q_EMIT durationChanged( m_duration = dur );
+        Q_EMIT durationChanged(m_duration = dur);
     }
 }
 

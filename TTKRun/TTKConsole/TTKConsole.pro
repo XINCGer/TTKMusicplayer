@@ -17,25 +17,18 @@
 # =================================================
 
 QT       += core
-include(../../TTKVersion.pri)
-unix:VERSION += 1.0.0.0
+include($$PWD/../../TTKVersion.pri)
 
 TEMPLATE = app
 CONFIG += console
 
-UI_DIR = ./.build/ui
-MOC_DIR = ./.build/moc
-OBJECTS_DIR = ./.build/obj
-RCC_DIR = ./.build/rcc
-
 DEFINES += TTK_LIBRARY
 
-win32:DESTDIR = $$OUT_PWD/../../bin/$$TTKMusicPlayer
-unix:DESTDIR = $$OUT_PWD/../../lib/$$TTKMusicPlayer
+DESTDIR = $$OUT_PWD/../../bin/$$TTKMusicPlayer
 TARGET = TTKConsole
 
-win32:LIBS += -L$$DESTDIR -lTTKCore
-unix:LIBS += -L$$DESTDIR -lTTKCore -lqmmp -lTTKUi -lTTKExtras -lTTKWatcher -lzlib -lTTKZip
+LIBS += -L$$DESTDIR -lTTKCore
+unix:LIBS += -L$$DESTDIR -lqmmp -lTTKUi -lTTKExtras -lTTKWatcher -lzlib -lTTKZip
 
 win32:msvc{
     CONFIG +=c++11
@@ -46,7 +39,6 @@ win32:msvc{
 INCLUDEPATH += \
     $$PWD/../ \
     $$PWD/../../ \
-    $$PWD/../../TTKThirdParty \
     $$PWD/../../TTKThirdParty/TTKDumper \
     $$PWD/../../TTKModule/TTKCore/musicCoreKits \
     $$PWD/../../TTKModule/TTKCore/musicPlaylistKits \
@@ -57,7 +49,6 @@ SOURCES += \
     musicconsoleobject.cpp
 
 HEADERS += \
-    ../musicrunglobaldefine.h \
     musicconsoleobject.h
 
 win32{

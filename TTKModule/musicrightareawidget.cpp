@@ -18,7 +18,7 @@
 #include "musicfunctionuiobject.h"
 #include "musictinyuiobject.h"
 #include "musicfunctionlistuiobject.h"
-#include "musicwindowsmanager.h"
+#include "musicplatformmanager.h"
 #include "musictopareawidget.h"
 #include "musicadvancedsearchedwidget.h"
 #include "musicrecommendfoundwidget.h"
@@ -124,9 +124,9 @@ void MusicRightAreaWidget::startTimerClock() const
     }
 }
 
-void MusicRightAreaWidget::showPlayStatus(bool status) const
+void MusicRightAreaWidget::setCurrentPlayStatus(bool status) const
 {
-    m_musicLrcForDesktop->showPlayStatus(status);
+    m_musicLrcForDesktop->setCurrentPlayStatus(status);
 }
 
 bool MusicRightAreaWidget::getDestopLrcVisible() const
@@ -146,7 +146,7 @@ bool MusicRightAreaWidget::getInteriorLrcVisible() const
 
 bool MusicRightAreaWidget::checkSettingParameterValue() const
 {
-    return ( M_SETTING_PTR->value(MusicSettingManager::ShowInteriorLrc).toBool() || M_SETTING_PTR->value(MusicSettingManager::ShowDesktopLrc).toBool() );
+    return (M_SETTING_PTR->value(MusicSettingManager::ShowInteriorLrc).toBool() || M_SETTING_PTR->value(MusicSettingManager::ShowDesktopLrc).toBool());
 }
 
 void MusicRightAreaWidget::updateCurrentLrc(qint64 current, qint64 total, bool playStatus) const
@@ -182,17 +182,17 @@ void MusicRightAreaWidget::loadCurrentSongLrc(const QString &name, const QString
     if(checkSettingParameterValue())
     {
         m_musicLrcForInterior->stopLrcMask();
-        m_musicLrcForInterior->setCurrentSongName( name );
+        m_musicLrcForInterior->setCurrentSongName(name);
 
         MusicLrcAnalysis::State state;
         if(QFileInfo(path).suffix().toLower() == KRC_FILE_PREFIX)
         {
-            TTK_LOGGER_INFO("use krc parser!");
+            TTK_LOGGER_INFO("Current in krc parser mode");
             state = m_lrcAnalysis->transKrcFileToTime(path);
         }
         else
         {
-            TTK_LOGGER_INFO("use lrc parser!");
+            TTK_LOGGER_INFO("Current in lrc parser mode");
             state = m_lrcAnalysis->transLrcFileToTime(path);
         }
 
@@ -224,9 +224,9 @@ void MusicRightAreaWidget::setSongSpeedAndSlow(qint64 time) const
     m_musicLrcForInterior->setSongSpeedChanged(time);
 }
 
-void MusicRightAreaWidget::musicCheckLrcValid() const
+void MusicRightAreaWidget::checkLrcValid() const
 {
-    m_downloadStatusObject->musicCheckLrcValid();
+    m_downloadStatusObject->checkLrcValid();
 }
 
 void MusicRightAreaWidget::showSettingWidget() const
@@ -718,8 +718,8 @@ void MusicRightAreaWidget::setWindowLrcTypeChanged()
 
     if(deskLrc)
     {
-        m_musicLrcForDesktop->setCurrentSongName( deskLrc->getCurrentSongName() );
-        m_musicLrcForDesktop->showPlayStatus( deskLrc->getPlayStatus() );
+        m_musicLrcForDesktop->setCurrentSongName(deskLrc->getCurrentSongName());
+        m_musicLrcForDesktop->setCurrentPlayStatus(deskLrc->getPlayStatus());
     }
     m_musicLrcForDesktop->applySettingParameter();
     m_musicLrcForDesktop->initCurrentLrc();
@@ -774,8 +774,10 @@ void MusicRightAreaWidget::musicVideoSetPopup(bool popup)
     {
         m_ui->functionsContainer->addWidget(m_stackedFuncWidget);
         m_ui->functionsContainer->setCurrentWidget(m_stackedFuncWidget);
-
-        MusicWindowsManager().setLeftWinEnabled();
+#ifdef Q_OS_WIN
+        MusicPlatformManager platform;
+        platform.setLeftWinEnabled();
+#endif
         QTimer::singleShot(10 * MT_MS, this, SLOT(musicVideoActiveWindow()));
     }
     else
@@ -838,8 +840,10 @@ void MusicRightAreaWidget::musicContainerForWallpaperClicked()
     }
     else
     {
-        MusicWindowsManager().setLeftWinEnabled();
-
+#ifdef Q_OS_WIN
+        MusicPlatformManager platform;
+        platform.setLeftWinEnabled();
+#endif
         m_musicLrcForWallpaper = new MusicLrcContainerForWallpaper;
         m_musicLrcForWallpaper->setLrcAnalysisModel(m_lrcAnalysis);
         m_musicLrcForWallpaper->applySettingParameter();

@@ -42,23 +42,41 @@
  *
  *  MPEG File(*.mp1 *.mp2 *.mp3 *.wav)
  *
- *  Game File(*.ay *.gms *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz)
+ *  Game Audio File(*.ay *.gms *.gym *.hes *.kss *.nsf *.nsfe *.sap *.spc *.vgm *.vgz)
  *
  *  FLAC File(*.flac *.oga)
  *
  *  Monkey's Audio File(*.ape)
  *
- *  OptimFrog File(*.ofr *.ofs)
- *
- *  AdPlug File(*.adl *.hsc *.ksm *.lds)
- *
- *  YM File(*.ym)
- *
- *  ALAC File(*.alac)
- *
- *  FFmpeg File(*.wma *.ape *.tta *.m4a *.ra *.shn *.vqf *.ac3)
+ *  FFmpeg File(*.wma *.ape *.tta *.m4a *.ra *.shn *.vqf *.ac3 *.tak *.dsf *.dsdiff)
  *
  *  ModPlug File(*.mod *.s3m *.xm *.it *.669 *.amf *.ams *.dbm *.dmf *.dsm *.far,mdl *.med *.mtm *.okt *.ptm *.stm *.ult *.umx *.mt2 *.psm *.mdz *.s3z *.xmz *.itz *.mdr *.s3r *.xmr *.itr *.dgz *.s3gz *.xmgz *.itgz)
+ *
+ *  AdLib Sound File(*.adl *.hsc *.ksm *.lds)
+ *
+ *  Apple Lossless Audio File(*.alac)
+ *
+ *  Another Slight Atari File(*.sap *.cm3 *.cmc *.cmr *.cms *.dmc *.dlt *.mpd *.mpt *.rmt *.tm2 *.tm8 *.tmc *.fc)
+ *
+ *  DTS Coherent Acoustics File(*.wav *.dts *.cpt)
+ *
+ *  Dynamic Universal File(*.mod *.mdz *.stk *.m15 *.fst *.oct *.nt *.s3m *.s3z *.stm *.stz *.it *.itz *.xm *.xmz *ptm *.ptz *mtm *.mtz *669 *psm *umx *am *.j2b *dsm *amf *okt *.okta *mo3)
+ *
+ *  Future Composer File(*.fc *.fc13 *.fc14 *.smod)
+ *
+ *  OptimFrog File(*.ofr *.ofs)
+ *
+ *  Audio Overload File(*.psf *.psf2 *.spu *.ssf *.qsf *.dsf *.minipsf *.minipsf2 *.minissf *.miniqsf *.minidsf)
+ *
+ *  Atari ST(E) And Amiga File(*.sndh *.snd *.sc68)
+ *
+ *  Speex Audio File(*.spx)
+ *
+ *  V2 Module Audio File(*.v2m)
+ *
+ *  AY/YM Audio File(*.vtx *.asc *.sqt *psg *.stc *.stp *.pt1 *.pt2 *.pt3 *.psc *.ay *.ym)
+ *
+ *  ST-Sound File(*.ym)
  *
  *  Playlist formats(tkpl, m3u, m3u8, pls, wpl, xspf, asx, kwl, kgl, fpl, csv, txt, nfn)
  *
@@ -70,9 +88,7 @@
  *
  *  User-friendly design. Attention to detail design, personalize, simple operation, found music more convenient.
  *
- *  Personalized cell phone ringtones. Ringtones DIY, so you have personalized ringtones Yang Hyun.
- *
- *  Audio format I choose. I made my songs, I decided to sound quality.
+ *  Personalized cell phone ringtones. Ringtones DIY, so you have personalized ringtone.
  *
  *  Personalized skin. DIY your own personalized skin, creating a only part of your skin.
  *
@@ -80,7 +96,7 @@
  *
  *  Colorful custom skin. You can select skin color, set the transparency of freedom, and support transparent frosted glass (Windows Aero effects), music from becoming a type, colored.
  *
- *  Search Download Manager. Search Results tab merger - all of the search results tab concentrated under one label, make operation easier. Speed flip - drop-down slider, you can auto-flip, no longer need to click the "Next" a one roll.
+ *  Search Download Manager. Search Results tab merger - all of the search results tab concentrated under one label, make operation easier. 
  *
  *  Local music search, and cloud music library and interactive, custom ringtone.
  *
@@ -90,9 +106,15 @@
  *
  *  Local music and the human voice humming recognition.
  *
- *  Music song, artist, album and playlist searcg supported.
+ *  Music song, artist, album and playlist search supported.
  *
- *  Music song spectrum and test supported.
+ *  Music DSP effects and Visual effects supported.
+ *
+ *  Music song spectrum(projectm, goom, sonique, florid, wavebar) and test supported.
+ *
+ *  Music replay gain scan and write supported.
+ *
+ *  Music screen saver supported.
  *
  */
  
@@ -114,17 +136,17 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-//update time 2020.02.08
-#define TTKMUSIC_VERSION_STR    "2.11.1.0"
-#define TTKMUSIC_VERSION_WSTR   L"2.11.1.0"
-#define TTKMUSIC_VER_TIME_STR   "(2020/02/08)"
+//update time 2020.06.06
+#define TTKMUSIC_VERSION_STR    "2.13.0.0"
+#define TTKMUSIC_VERSION_WSTR   L"2.13.0.0"
+#define TTKMUSIC_VER_TIME_STR   "(2020/06/06)"
 
 #define TTKMUSIC_MAJOR_VERSION 2
-#define TTKMUSIC_MIDLE_VERSION 11
-#define TTKMUSIC_MINOR_VERSION 1
+#define TTKMUSIC_MIDLE_VERSION 13
+#define TTKMUSIC_MINOR_VERSION 0
 #define TTKMUSIC_PATCH_VERSION 0
 
-#define TTKMUSIC_VERSION 0x02B10
+#define TTKMUSIC_VERSION 0x02D00
 
 #define TTKMUSIC_VERSION_CHECK(major, middle, minor, patch) ((major<<12)|(middle<<8)|(minor<<4)|(patch))
 

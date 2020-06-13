@@ -21,11 +21,10 @@ msvc{
     CONFIG += staticlib
 }
 
-include(../TTKVersion.pri)
-unix:VERSION += $$TTKMusicPlayer
+include($$PWD/../TTKVersion.pri)
+CONFIG += warn_off plugin lib
 
-win32:DESTDIR = $$OUT_PWD/../bin/$$TTKMusicPlayer
-unix:DESTDIR = $$OUT_PWD/../lib/$$TTKMusicPlayer
+DESTDIR = $$OUT_PWD/../bin/$$TTKMusicPlayer
 TARGET = TTKUi
 
 RESOURCES += \

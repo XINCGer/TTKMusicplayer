@@ -3,10 +3,7 @@
 #include "musicsemaphoreloop.h"
 #include "musicalgorithmutils.h"
 #include "musicnetworkabstract.h"
-#include "musictime.h"
 
-#///QJson import
-#include "qjson/parser.h"
 #include "qalg/qdeswrap.h"
 
 #include <QNetworkReply>

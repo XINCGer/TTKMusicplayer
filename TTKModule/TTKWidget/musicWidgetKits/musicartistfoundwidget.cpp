@@ -8,7 +8,6 @@
 #include "musictinyuiobject.h"
 #include "musicstringutils.h"
 #include "musicuiobject.h"
-#include "musictime.h"
 #include "musicimageutils.h"
 #include "qrencode/qrcodewidget.h"
 
@@ -62,7 +61,7 @@ void MusicArtistAlbumsItemWidget::setMusicResultsItem(const MusicResultsItem &it
     m_updateLabel->setText(MusicUtils::Widget::elidedText(m_updateLabel->font(), m_updateLabel->toolTip(), Qt::ElideRight, WIDTH_LABEL_SIZE));
 
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
-    connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
+    connect(download, SIGNAL(downLoadRawDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
     if(!item.m_coverUrl.isEmpty() && item.m_coverUrl != COVER_URL_NULL)
     {
         download->startToDownload(item.m_coverUrl);
@@ -447,7 +446,7 @@ void MusicArtistFoundWidget::createArtistInfoItem(const MusicResultsItem &item)
         label->setText(tr("<font color=#158FE1> Artist > %1 </font>").arg(item.m_name));
 
         MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
-        connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
+        connect(download, SIGNAL(downLoadRawDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
         if(!item.m_coverUrl.isEmpty() && item.m_coverUrl != COVER_URL_NULL)
         {
             download->startToDownload(item.m_coverUrl);
@@ -602,7 +601,7 @@ void MusicArtistFoundWidget::createLabels()
     for(int i=1; i<=5; ++i)
     {
         QLabel *label = new QLabel(topRightWidget);
-        label->setPixmap(QPixmap( (ceil(number/2.0) - i) >= 0 ? ":/tiny/lb_star" : ":/tiny/lb_unstar"));
+        label->setPixmap(QPixmap((ceil(number/2.0) - i) >= 0 ? ":/tiny/lb_star" : ":/tiny/lb_unstar"));
         topRightLayout->addWidget(label, 0, i);
     }
 

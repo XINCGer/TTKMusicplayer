@@ -5,7 +5,6 @@
 #include "musicdownloadwidget.h"
 #include "musicitemdelegate.h"
 #include "musicgiflabelwidget.h"
-#include "musictime.h"
 
 MusicVideoSearchTableWidget::MusicVideoSearchTableWidget(QWidget *parent)
     : MusicQueryItemTableWidget(parent)
@@ -18,7 +17,7 @@ MusicVideoSearchTableWidget::MusicVideoSearchTableWidget(QWidget *parent)
     m_defaultBkColor = Qt::black;
     m_singleRadioMode = false;
 
-    MusicTime::InitSRand();
+    MusicTime::initRandom();
     M_CONNECTION_PTR->setValue(getClassName(), this);
 }
 
@@ -39,7 +38,7 @@ void MusicVideoSearchTableWidget::startSearchQuery(const QString &text)
     //
     MusicDownLoadQueryThreadAbstract *d = M_DOWNLOAD_QUERY_PTR->getMovieThread(this);
     connect(d, SIGNAL(downLoadDataChanged(QString)), SLOT(createFinishedItem()));
-    setQueryInput( d );
+    setQueryInput(d);
     //
     m_singleRadioMode = false;
     m_loadingLabel->run(true);
@@ -57,7 +56,7 @@ void MusicVideoSearchTableWidget::startSearchSingleQuery(const QString &text)
     //
     MusicDownLoadQueryThreadAbstract *d = M_DOWNLOAD_QUERY_PTR->getMovieThread(this);
     connect(d, SIGNAL(downLoadDataChanged(QString)), SLOT(createFinishedItem()));
-    setQueryInput( d );
+    setQueryInput(d);
     //
     m_singleRadioMode = false;
     m_loadingLabel->run(true);
@@ -76,7 +75,7 @@ void MusicVideoSearchTableWidget::startSearchSingleQuery(const QVariant &data)
     //
     MusicDownLoadQueryThreadAbstract *d = M_DOWNLOAD_QUERY_PTR->getMovieThread(this);
     connect(d, SIGNAL(downLoadDataChanged(QString)), SLOT(createFinishedItem()));
-    setQueryInput( d );
+    setQueryInput(d);
     //
     m_singleRadioMode = true;
     d->setMusicSongInfos(MusicObject::MusicSongInformations() << data.value<MusicObject::MusicSongInformation>());

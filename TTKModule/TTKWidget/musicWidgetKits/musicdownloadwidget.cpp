@@ -140,9 +140,9 @@ MusicDownloadWidget::MusicDownloadWidget(QWidget *parent)
     m_ui->loadingLabel->setType(MusicGifLabelWidget::Gif_Cicle_Blue);
 
     connect(m_ui->pathChangedButton, SIGNAL(clicked()), SLOT(downloadDirSelected()));
-    connect(m_downloadThread, SIGNAL(downLoadDataChanged(QString)), SLOT(queryAllFinished()));
     connect(m_ui->topTitleCloseButton, SIGNAL(clicked()), SLOT(close()));
     connect(m_ui->downloadButton, SIGNAL(clicked()), SLOT(startToDownload()));
+    connect(m_downloadThread, SIGNAL(downLoadDataChanged(QString)), SLOT(queryAllFinished()));
 }
 
 MusicDownloadWidget::~MusicDownloadWidget()
@@ -469,14 +469,14 @@ void MusicDownloadWidget::startToDownloadMusic(const MusicObject::MusicSongInfor
                 return;
             }
 
-            down.readDownloadData( records );
+            down.readDownloadData(records);
             MusicSong record;
             record.setMusicName(musicSong);
             record.setMusicPath(QFileInfo(downloadName).absoluteFilePath());
             record.setMusicSizeStr(musicAttr.m_size);
             record.setMusicAddTimeStr("-1");
             records << record;
-            down.writeDownloadData( records );
+            down.writeDownloadData(records);
             //
             if(QFile::exists(downloadName))
             {

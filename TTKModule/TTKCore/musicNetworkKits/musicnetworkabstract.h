@@ -21,9 +21,13 @@
 
 #include <QNetworkReply>
 #include <QSslConfiguration>
+
+#include "musictime.h"
 #include "musicnetworkthread.h"
 #include "musicnetworkdefines.h"
 #include "musicalgorithmutils.h"
+#///QJson import
+#include "qjson/parser.h"
 
 /*! @brief The class of abstract downloading data.
  * @author Greedysky <greedysky@163.com>
@@ -74,9 +78,9 @@ public:
 
 Q_SIGNALS:
     /*!
-     * Send raw data changed.
+     * Send download raw data changed.
      */
-    void rawDataChanged(const QVariantMap &data);
+    void downLoadRawDataChanged(const QByteArray &data);
     /*!
      * Send download data from net.
      */

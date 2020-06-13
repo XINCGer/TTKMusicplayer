@@ -16,13 +16,13 @@
 # * with this program; If not, see <http://www.gnu.org/licenses/>.
 # =================================================
 
-include(TTKVersion.pri)
+include($$PWD/TTKVersion.pri)
 
 TEMPLATE = subdirs
-SUBDIRS = TTKQrc TTKThirdParty TTKModule TTKService TTKRun TTKTest
+SUBDIRS = TTKConfig TTKQrc TTKThirdParty TTKModule TTKService TTKRun
 
 TRANSLATIONS += TTKLanguage/cn.ts \
-                TTKLanguage/cn_c.ts \
+                TTKLanguage/tc.ts \
                 TTKLanguage/en.ts
 
 ##find translation
@@ -47,7 +47,7 @@ else{
 
 ##update translation
 unix:{
-    output = $$OUT_PWD/lib/$$TTKMusicPlayer/MLanguage
+    output = $$OUT_PWD/bin/$$TTKMusicPlayer/MLanguage
     !exists($$output):system(mkdir $$output)
 
     system(find TTKLanguage -name *.ts | xargs $$LRELEASE_EXECUTABLE)

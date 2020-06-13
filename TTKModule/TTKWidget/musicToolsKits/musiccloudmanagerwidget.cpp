@@ -12,18 +12,15 @@
 #include "musicfileutils.h"
 #include "musicstringutils.h"
 #include "musicformats.h"
-#include "musictime.h"
 #include "musicmessagebox.h"
 #include "musicconnectionpool.h"
 #include "musiccloudtablewidget.h"
-#///Oss import
-#include "qoss/qossconf.h"
-#include "qoss/qosslistdata.h"
-#include "qoss/qossuploaddata.h"
-#include "qoss/qossdeletedata.h"
-#include "qoss/qossdownloaddata.h"
-#///QJson import
-#include "qjson/parser.h"
+
+#include "qsync/qsyncconf.h"
+#include "qsync/qsynclistdata.h"
+#include "qsync/qsyncuploaddata.h"
+#include "qsync/qsyncdeletedata.h"
+#include "qsync/qsyncdownloaddata.h"
 
 #define OS_CLOUD_URL        "cloud"
 
@@ -56,23 +53,23 @@ MusicCloudManagerTableWidget::MusicCloudManagerTableWidget(QWidget *parent)
     setItemDelegateForColumn(2, m_progressBarDelegate);
 
     m_manager = new QNetworkAccessManager(this);
-    m_ossListData = new QOSSListData(m_manager, this);
-    m_ossDeleteData = new QOSSDeleteData(m_manager, this);
-    m_ossUploadData = new QOSSUploadData(m_manager, this);
-    m_ossDownloadData = new QOSSDownloadData(m_manager, this);
+    m_syncListData = new QSyncListData(m_manager, this);
+    m_syncDeleteData = new QSyncDeleteData(m_manager, this);
+    m_syncUploadData = new QSyncUploadData(m_manager, this);
+    m_syncDownloadData = new QSyncDownloadData(m_manager, this);
 
-    connect(m_ossListData, SIGNAL(receiveFinshed(QOSSDataItems)), SLOT(receiveDataFinshed(QOSSDataItems)));
-    connect(m_ossDeleteData, SIGNAL(deleteFileFinished(bool)), SLOT(deleteFileFinished(bool)));
-    connect(m_ossUploadData, SIGNAL(uploadFileFinished(QString)), SLOT(uploadFileFinished(QString)));
+    connect(m_syncListData, SIGNAL(receiveFinshed(QSyncDataItems)), SLOT(receiveDataFinshed(QSyncDataItems)));
+    connect(m_syncDeleteData, SIGNAL(deleteFileFinished(bool)), SLOT(deleteFileFinished(bool)));
+    connect(m_syncUploadData, SIGNAL(uploadFileFinished(QString)), SLOT(uploadFileFinished(QString)));
 }
 
 MusicCloudManagerTableWidget::~MusicCloudManagerTableWidget()
 {
     M_CONNECTION_PTR->removeValue(getClassName());
-    delete m_ossListData;
-    delete m_ossDeleteData;
-    delete m_ossUploadData;
-    delete m_ossDownloadData;
+    delete m_syncListData;
+    delete m_syncDeleteData;
+    delete m_syncUploadData;
+    delete m_syncDownloadData;
     delete m_manager;
     delete m_openFileWidget;
     delete m_progressBarDelegate;
@@ -84,13 +81,13 @@ bool MusicCloudManagerTableWidget::getKey()
     connect(this, SIGNAL(getKeyFinished()), &loop, SLOT(quit()));
 
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
-    connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(keyDownLoadFinished(QByteArray)));
-    download->startToDownload(QOSSConf::generateDataBucketUrl() + OS_CLOUD_URL);
+    connect(download, SIGNAL(downLoadRawDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
+    download->startToDownload(QSyncUtils::generateDataBucketUrl() + OS_CLOUD_URL);
 
     loop.exec();
     updateListToServer();
 
-    return !QOSSConf::ACCESS_KEY.isEmpty() && !QOSSConf::SECRET_KEY.isEmpty();
+    return !QSyncConf::NAME.isEmpty() && !QSyncConf::KEY.isEmpty();
 }
 
 void MusicCloudManagerTableWidget::resizeWindow()
@@ -117,7 +114,7 @@ void MusicCloudManagerTableWidget::itemCellClicked(int row, int column)
     Q_UNUSED(column);
 }
 
-void MusicCloudManagerTableWidget::keyDownLoadFinished(const QByteArray &data)
+void MusicCloudManagerTableWidget::downLoadFinished(const QByteArray &data)
 {
     QJson::Parser parser;
     bool ok;
@@ -125,13 +122,13 @@ void MusicCloudManagerTableWidget::keyDownLoadFinished(const QByteArray &data)
     if(ok)
     {
         QVariantMap value = dt.toMap();
-        QOSSConf::ACCESS_KEY = value["key"].toString();
-        QOSSConf::SECRET_KEY = value["secret"].toByteArray();
+        QSyncConf::NAME = value["key"].toString();
+        QSyncConf::KEY = value["secret"].toByteArray();
     }
     Q_EMIT getKeyFinished();
 }
 
-void MusicCloudManagerTableWidget::receiveDataFinshed(const QOSSDataItems &items)
+void MusicCloudManagerTableWidget::receiveDataFinshed(const QSyncDataItems &items)
 {
     clear();
     m_totalFileSzie = 0;
@@ -144,7 +141,7 @@ void MusicCloudManagerTableWidget::receiveDataFinshed(const QOSSDataItems &items
         return;
     }
 
-    foreach(const QOSSDataItem &item, items)
+    foreach(const QSyncDataItem &item, items)
     {
         MusicCloudDataItem data;
         data.m_id = QString::number(MusicTime::timestamp());
@@ -196,7 +193,7 @@ void MusicCloudManagerTableWidget::deleteFileFinished(bool state)
 void MusicCloudManagerTableWidget::updateListToServer()
 {
     Q_EMIT updateLabelMessage(tr("List Updating"));
-    m_ossListData->listDataOperator(MUSIC_BUCKET);
+    m_syncListData->listDataOperator(MUSIC_BUCKET);
 }
 
 void MusicCloudManagerTableWidget::deleteFileToServer()
@@ -217,7 +214,7 @@ void MusicCloudManagerTableWidget::deleteFileToServer()
 
     const MusicCloudDataItem &data = it->data(MUSIC_DATAS_ROLE).value<MusicCloudDataItem>();
     removeRow(currentRow());
-    m_ossDeleteData->deleteDataOperator(MUSIC_BUCKET, data.m_dataItem.m_name);
+    m_syncDeleteData->deleteDataOperator(MUSIC_BUCKET, data.m_dataItem.m_name);
     m_totalFileSzie -= data.m_dataItem.m_size;
     Q_EMIT updataSizeLabel(m_totalFileSzie);
 
@@ -245,7 +242,7 @@ void MusicCloudManagerTableWidget::deleteFilesToServer()
 
         const MusicCloudDataItem &data = it->data(MUSIC_DATAS_ROLE).value<MusicCloudDataItem>();
         removeRow(index); //Delete the current row
-        m_ossDeleteData->deleteDataOperator(MUSIC_BUCKET, data.m_dataItem.m_name);
+        m_syncDeleteData->deleteDataOperator(MUSIC_BUCKET, data.m_dataItem.m_name);
 
         m_totalFileSzie -= data.m_dataItem.m_size;
         Q_EMIT updataSizeLabel(m_totalFileSzie);
@@ -269,7 +266,7 @@ void MusicCloudManagerTableWidget::downloadFileToServer()
     }
 
     const MusicCloudDataItem &data = it->data(MUSIC_DATAS_ROLE).value<MusicCloudDataItem>();
-    const QString &url = m_ossDownloadData->getDownloadUrl(MUSIC_BUCKET, data.m_dataItem.m_name);
+    const QString &url = m_syncDownloadData->getDownloadUrl(MUSIC_BUCKET, data.m_dataItem.m_name);
 
     MusicDataDownloadThread *download = new MusicDataDownloadThread(url, MusicUtils::String::musicPrefix() + data.m_dataItem.m_name, MusicObject::DownloadMusic, this);
     download->setRecordType(MusicObject::RecordCloudDownload);
@@ -463,7 +460,7 @@ void MusicCloudManagerTableWidget::startToUploadFile()
         return;
     }
 
-    m_ossUploadData->uploadDataOperator(m_currentDataItem.m_id, MUSIC_BUCKET,
+    m_syncUploadData->uploadDataOperator(m_currentDataItem.m_id, MUSIC_BUCKET,
                                        m_currentDataItem.m_dataItem.m_name,
                                        m_currentDataItem.m_path);
 }

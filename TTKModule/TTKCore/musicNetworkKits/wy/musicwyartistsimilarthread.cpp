@@ -1,6 +1,4 @@
 #include "musicwyartistsimilarthread.h"
-#///QJson import
-#include "qjson/parser.h"
 
 MusicWYArtistSimilarThread::MusicWYArtistSimilarThread(QObject *parent)
     : MusicDownLoadSimilarThread(parent)
@@ -21,11 +19,11 @@ void MusicWYArtistSimilarThread::startToSearch(const QString &text)
     m_interrupt = true;
 
     QNetworkRequest request;
-    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkQuery) return;
     const QByteArray &parameter = makeTokenQueryUrl(&request,
                       MusicUtils::Algorithm::mdII(WY_AR_SIM_N_URL, false),
                       MusicUtils::Algorithm::mdII(WY_AR_SIM_DATA_N_URL, false).arg(text));
-    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkQuery) return;
     MusicObject::setSslConfiguration(&request);
 
     m_reply = m_manager->post(request, parameter);

@@ -14,14 +14,15 @@ add_definitions(-DQT_THREAD)
 set(MUSIC_HEADERS
     ../musicextrasglobaldefine.h
     minidumper.h
+    miniprocess.h
     ttkdumper.h
     ttklogger.h
-    mini.h
   )
 
 set(MUSIC_SOURCES
     ttkdumper.cpp
     minidumper.cpp
+    miniprocess.cpp
   )
   
 if(WIN32)
@@ -59,9 +60,4 @@ else()
   target_link_libraries(${PROJECT_NAME} ${QT4_LIBS})
 
 endif()
-
-set_target_properties(
-${PROJECT_NAME}
-PROPERTIES
-VERSION "1.0.0")
 

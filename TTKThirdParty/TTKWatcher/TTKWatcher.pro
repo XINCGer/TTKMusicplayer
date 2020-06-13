@@ -20,14 +20,12 @@ QT       += core
 
 TEMPLATE = lib
 
-include(../../TTKVersion.pri)
+include($$PWD/../../TTKVersion.pri)
 
-win32:DESTDIR = $$OUT_PWD/../../bin/$$TTKMusicPlayer
-unix:DESTDIR = $$OUT_PWD/../../lib/$$TTKMusicPlayer
+DESTDIR = $$OUT_PWD/../../bin/$$TTKMusicPlayer
 TARGET = TTKWatcher
 
-CONFIG       += warn_off
-unix:VERSION += 2.1.0
+CONFIG += warn_off plugin lib
 
 unix{
     macx{
@@ -58,7 +56,7 @@ HEADERS += \
     $$PWD/qdevicewatcher.h
 
 #load extra define
-include(../TTKExtrasDefine.pri)
+include($$PWD/../TTKExtrasDefine.pri)
 
 win32{
     RC_FILE = TTKWatcher.rc

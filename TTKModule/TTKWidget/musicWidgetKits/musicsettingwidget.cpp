@@ -11,7 +11,7 @@
 #include "musiclrccolorwidget.h"
 #include "musiclrcdefines.h"
 #include "musiclrcmanager.h"
-#include "musicwindowsmanager.h"
+#include "musicplatformmanager.h"
 #include "ttkversion.h"
 #include "musicsourceupdatewidget.h"
 #include "musicsinglemanager.h"
@@ -215,7 +215,8 @@ void MusicSettingWidget::initControllerParameter()
     m_ui->showInteriorCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::ShowInteriorLrc).toBool());
     m_ui->showInteriorCheckBox->setEnabled(false);
     m_ui->showCortanaCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::ShowCortanaLrc).toBool());
-    if(MusicWindowsManager::Windows_10 != MusicWindowsManager().getWindowSystemName())
+    MusicPlatformManager platform;
+    if(MusicPlatformManager::Windows_10 != platform.getWindowSystemName())
     {
         m_ui->showCortanaCheckBox->hide();
     }
@@ -280,7 +281,8 @@ void MusicSettingWidget::initControllerParameter()
     //
     m_ui->downloadServerComboBox->setCurrentIndex(M_SETTING_PTR->value(MusicSettingManager::DownloadServer).toInt());
     m_ui->closeNetWorkCheckBox->setChecked(M_SETTING_PTR->value(MusicSettingManager::CloseNetWork).toInt());
-    if(M_SETTING_PTR->value(MusicSettingManager::FileAssociation).toInt() && MusicWindowsManager().isFileAssociate())
+#ifdef Q_OS_WIN
+    if(M_SETTING_PTR->value(MusicSettingManager::FileAssociation).toInt() && platform.isFileAssociate())
     {
         m_ui->setDefaultPlayerCheckBox->setChecked(true);
         if(m_ui->setDefaultPlayerCheckBox->isChecked())
@@ -294,6 +296,11 @@ void MusicSettingWidget::initControllerParameter()
         m_ui->setDefaultPlayerCheckBox->setChecked(false);
         M_SETTING_PTR->setValue(MusicSettingManager::FileAssociation, false);
     }
+#else
+    m_ui->setDefaultPlayerCheckBox->setEnabled(false);
+    m_ui->setDefaultPlayerCheckBox->setChecked(false);
+    M_SETTING_PTR->setValue(MusicSettingManager::FileAssociation, false);
+#endif
 }
 
 void MusicSettingWidget::clearFunctionTableSelection()
@@ -486,7 +493,7 @@ void MusicSettingWidget::testNetworkProxy()
 void MusicSettingWidget::testProxyStateChanged(bool state)
 {
     MusicMessageBox message;
-    message.setText(state ? tr("Test Successed!") : tr("Test Failed!") );
+    message.setText(state ? tr("Test Successed!") : tr("Test Failed!"));
     message.exec();
 }
 
@@ -523,7 +530,7 @@ void MusicSettingWidget::saveResults()
     M_SETTING_PTR->setValue(MusicSettingManager::LastPlayIndex, list);
     M_SETTING_PTR->setValue(MusicSettingManager::CloseEvent, m_ui->quitRadioBox->isChecked());
     M_SETTING_PTR->setValue(MusicSettingManager::WindowQuitMode, m_ui->quitWindowRadioBox->isChecked());
-    M_NETWORK_PTR->setBlockNetWork( m_ui->closeNetWorkCheckBox->isChecked() );
+    M_NETWORK_PTR->setBlockNetWork(m_ui->closeNetWorkCheckBox->isChecked());
     M_SETTING_PTR->setValue(MusicSettingManager::FileAssociation, m_ui->setDefaultPlayerCheckBox->isChecked());
 
     if(m_ui->setDefaultPlayerCheckBox->isChecked())

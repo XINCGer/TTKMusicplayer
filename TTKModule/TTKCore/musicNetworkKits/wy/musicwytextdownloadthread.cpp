@@ -1,6 +1,4 @@
 #include "musicwytextdownloadthread.h"
-#///QJson import
-#include "qjson/parser.h"
 
 MusicWYTextDownLoadThread::MusicWYTextDownLoadThread(const QString &url, const QString &save, MusicObject::DownloadType type, QObject *parent)
     : MusicDownLoadThreadAbstract(url, save, type, parent)
@@ -14,7 +12,7 @@ void MusicWYTextDownLoadThread::startToDownload()
     {
         if(m_file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
         {
-            m_timer.start(MT_S2MS);
+            m_speedTimer.start();
             m_manager = new QNetworkAccessManager(this);
 
             QNetworkRequest request;
@@ -45,7 +43,7 @@ void MusicWYTextDownLoadThread::downLoadFinished()
         deleteAll();
         return;
     }
-    m_timer.stop();
+    m_speedTimer.stop();
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
@@ -64,7 +62,12 @@ void MusicWYTextDownLoadThread::downLoadFinished()
                     const QString &data = value["lyric"].toString();
                     QTextStream outstream(m_file);
                     outstream.setCodec("utf-8");
-                    outstream << data.toUtf8() << endl;
+                    outstream << data.toUtf8();
+#if TTK_QT_VERSION_CHECK(5,15,0)
+                    outstream << Qt::endl;
+#else
+                    outstream << endl;
+#endif
                     m_file->close();
                     TTK_LOGGER_INFO(QString("%1 download has finished!").arg(getClassName()));
                 }
@@ -78,6 +81,6 @@ void MusicWYTextDownLoadThread::downLoadFinished()
         }
     }
 
-    Q_EMIT downLoadDataChanged( transferData() );
+    Q_EMIT downLoadDataChanged(mapCurrentQueryData());
     deleteAll();
 }

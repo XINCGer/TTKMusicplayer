@@ -13,7 +13,6 @@
 #include "musicgiflabelwidget.h"
 #include "musicdownloadbatchwidget.h"
 #include "musictoastlabel.h"
-#include "musictime.h"
 #include "musicapplication.h"
 #include "musicwidgetheaders.h"
 
@@ -62,12 +61,12 @@ void MusicSongSearchTableWidget::startSearchQuery(const QString &text)
     {
         return;
     }
-    search.readSearchData( records );
+    search.readSearchData(records);
     MusicSearchRecord record;
     record.m_name = text;
     record.m_time = QString::number(MusicTime::timestamp());
     records.insert(0, record);
-    search.writeSearchData( records );
+    search.writeSearchData(records);
     //
     if(!m_downLoadManager)
     {
@@ -350,7 +349,7 @@ void MusicSongSearchTableWidget::actionGroupClick(QAction *action)
     const MusicObject::MusicSongInformations musicSongInfos(m_downLoadManager->getMusicSongInfos());
     const MusicObject::MusicSongInformation &info = musicSongInfos[row];
 
-    switch( action->data().toInt() )
+    switch(action->data().toInt())
     {
         case 0: musicDownloadLocal(row); break;
         case 1: Q_EMIT restartSearchQuery(info.m_songName); break;
@@ -534,7 +533,7 @@ void MusicSongSearchOnlineWidget::researchQueryByQuality(const QString &name, co
 
 void MusicSongSearchOnlineWidget::resizeWindow()
 {
-    setResizeLabelText( m_textLabel->toolTip() );
+    setResizeLabelText(m_textLabel->toolTip());
     m_searchTableWidget->resizeWindow();
 }
 
@@ -606,7 +605,7 @@ void MusicSongSearchOnlineWidget::auditionIsPlaying(bool play)
 void MusicSongSearchOnlineWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
-    setResizeLabelText( m_textLabel->toolTip() );
+    setResizeLabelText(m_textLabel->toolTip());
 }
 
 void MusicSongSearchOnlineWidget::createToolWidget(QWidget *widget)

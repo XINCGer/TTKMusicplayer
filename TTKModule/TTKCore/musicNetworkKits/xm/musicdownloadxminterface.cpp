@@ -1,11 +1,8 @@
 #include "musicdownloadxminterface.h"
 #include "musicnumberutils.h"
 #include "musicsemaphoreloop.h"
-#include "musictime.h"
 #include "musicalgorithmutils.h"
 #include "musicnetworkabstract.h"
-#///QJson import
-#include "qjson/parser.h"
 
 #include <QNetworkCookie>
 #include <QNetworkReply>

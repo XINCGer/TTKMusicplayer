@@ -18,11 +18,9 @@
 
 QT       += core
 
-include(../../TTKVersion.pri)
-unix:VERSION += 1.0.0.0
+include($$PWD/../../TTKVersion.pri)
 
-win32:DESTDIR = $$OUT_PWD/../../bin
-unix:DESTDIR = $$OUT_PWD/../../lib
+DESTDIR = $$OUT_PWD/../../bin/$$TTKMusicPlayer
 TARGET = TTKInit
 
 TEMPLATE = app
@@ -33,23 +31,17 @@ win32:msvc{
     QMAKE_CXXFLAGS += -std=c++11
 }
 
+LIBS += -L$$DESTDIR -lTTKConfig
+
 INCLUDEPATH += \
     $$PWD/../ \
     $$PWD/../../ \
-    $$PWD/../../TTKThirdParty \
+    $$PWD/../../TTKConfig \
     $$PWD/../../TTKThirdParty/TTKDumper \
     $$PWD/../../TTKModule/TTKCore/musicCoreKits
 
 SOURCES += \
-    musicinitmain.cpp \
-    musicinitobject.cpp
-
-HEADERS += \
-    ../musicrunglobaldefine.h \
-    musicinitobject.h
-
-RESOURCES += \
-    ../../TTKQrc/MusicApp.qrc
+    musicinitmain.cpp
 
 win32{
     RC_FILE = TTKInit.rc

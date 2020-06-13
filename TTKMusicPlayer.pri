@@ -21,16 +21,13 @@ QT       += core gui xml sql
 equals(QT_MAJOR_VERSION, 4){
 QT       += network
 CONFIG   += gcc
-include(TTKExtra/Qt4/qmmp.pri)
 }
 equals(QT_MAJOR_VERSION, 5){
 QT       += widgets multimediawidgets
-include(TTKExtra/Qt5/qmmp.pri)
 }
 
-include(TTKVersion.pri)
-win32:DESTDIR = $$OUT_PWD/../bin/$$TTKMusicPlayer
-unix:DESTDIR = $$OUT_PWD/../lib/$$TTKMusicPlayer
+include($$PWD/TTKVersion.pri)
+DESTDIR = $$OUT_PWD/../bin/$$TTKMusicPlayer
 
 ##openssl lib check
 win32:{
@@ -43,27 +40,12 @@ unix:!mac{
     exists($$SSL_DEPANDS):LIBS += -L$$DESTDIR -lssl
 }
 
-##qmmp lib check
-win32:{
-    QMMP_DEPANDS = $$DESTDIR
-    equals(QT_MAJOR_VERSION, 4){
-        QMMP_DEPANDS = $$QMMP_DEPANDS/qmmp0.dll
-    }else{
-        QMMP_DEPANDS = $$QMMP_DEPANDS/qmmp1.dll
-    }
-    QMMP_DEPANDS = $$replace(QMMP_DEPANDS, /, \\)
-}
-unix:!mac{
-    QMMP_DEPANDS = $$DESTDIR/libqmmp.so
-}
-!exists($$QMMP_DEPANDS): error("Could not find qmmp library, please download and put it to output dir")
-
 win32{
     LIBS += -lIphlpapi -lVersion -lole32 -luuid
     equals(QT_MAJOR_VERSION, 5){
         greaterThan(QT_MINOR_VERSION, 1):QT  += winextras
         msvc{
-            LIBS += -L$$DESTDIR -lqmmp1 -lTTKUi -lTTKExtras -lTTKWatcher -lzlib -lTTKZip -luser32
+            LIBS += -L$$DESTDIR -lqmmp1 -lTTKUi -lTTKExtras -lTTKWatcher -lTTKDumper -lzlib -lTTKZip -luser32
             CONFIG +=c++11
             !contains(QMAKE_TARGET.arch, x86_64){
                  #support on windows XP
@@ -74,7 +56,7 @@ win32{
 
         gcc{
             QMAKE_CXXFLAGS += -std=c++11 -Wunused-function -Wunused-result -Wswitch
-            LIBS += -L$$DESTDIR -lqmmp1 -lTTKUi -lTTKExtras -lTTKWatcher -lzlib -lTTKZip
+            LIBS += -L$$DESTDIR -lqmmp1 -lTTKUi -lTTKExtras -lTTKWatcher -lTTKDumper -lzlib -lTTKZip
         }
     }
 
@@ -82,7 +64,7 @@ win32{
         QT  += multimedia
         gcc{
             QMAKE_CXXFLAGS += -std=c++11 -Wunused-function -Wunused-result -Wswitch
-            LIBS += -L$$DESTDIR -lqmmp0 -lTTKUi -lTTKExtras -lTTKWatcher -lzlib -lTTKZip
+            LIBS += -L$$DESTDIR -lqmmp1 -lTTKUi -lTTKExtras -lTTKWatcher -lTTKDumper -lzlib -lTTKZip
         }
     }
 }
@@ -95,7 +77,7 @@ unix:!mac{
     }
 
     QMAKE_CXXFLAGS += -std=c++11 -Wunused-function -Wunused-result -Wswitch
-    LIBS += -L$$DESTDIR -lqmmp -lTTKUi -lTTKExtras -lTTKWatcher -lzlib -lTTKZip
+    LIBS += -L$$DESTDIR -lqmmp -lTTKUi -lTTKExtras -lTTKWatcher -lTTKDumper -lzlib -lTTKZip
 }
 
 DEFINES += TTK_LIBRARY QMMP_LIBRARY
@@ -104,6 +86,4 @@ DEFINES += TTK_LIBRARY QMMP_LIBRARY
 HEADERS += $$PWD/musicglobal.h
 INCLUDEPATH += $$PWD
 #########################################
-include(TTKThirdParty/TTKThirdParty.pri)
-#########################################
-include(TTKModule/TTKModule.pri)
+include($$PWD/TTKThirdParty/TTKThirdParty.pri)

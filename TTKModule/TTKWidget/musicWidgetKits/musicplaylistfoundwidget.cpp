@@ -72,7 +72,7 @@ void MusicPlaylistFoundItemWidget::setMusicResultsItem(const MusicResultsItem &i
     {
         if(count >= 10000)
         {
-            m_topListenButton->setText(tr("%1Thous").arg(count/10000));
+            m_topListenButton->setText(tr("%1Thous").arg(count / 10000));
         }
         else
         {
@@ -85,7 +85,7 @@ void MusicPlaylistFoundItemWidget::setMusicResultsItem(const MusicResultsItem &i
     }
 
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
-    connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
+    connect(download, SIGNAL(downLoadRawDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
     if(!item.m_coverUrl.isEmpty() && item.m_coverUrl != COVER_URL_NULL)
     {
         download->startToDownload(item.m_coverUrl);

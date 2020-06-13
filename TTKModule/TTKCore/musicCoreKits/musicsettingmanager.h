@@ -23,8 +23,6 @@
 #include "musicobject.h"
 #include "musicsingleton.h"
 
-#define M_SETTING_PTR (MusicSingleton<MusicSettingManager>::createInstance())
-
 /*! @brief The class of the paramater setting manager.
  * @author Greedysky <greedysky@163.com>
  */
@@ -105,7 +103,6 @@ public:
         EqualizerValue,                  /*!< Equalizer Value Parameter*/
         EqualizerIndex,                  /*!< Equalizer Index Parameter*/
         EnhancedMusic,                   /*!< Enhanced Music Parameter*/
-        EnhancedBalance,                 /*!< Enhanced Balance Parameter*/
         EnhancedFadeEnable,              /*!< Enhanced Fade Enable Parameter*/
         EnhancedFadeInValue,             /*!< Enhanced Fade In Value Parameter*/
         EnhancedFadeOutValue,            /*!< Enhanced Fade Out Value Parameter*/
@@ -228,6 +225,8 @@ protected:
     DECLARE_SINGLETON_CLASS(MusicSettingManager)
 };
 
+#define M_SETTING_PTR GetMusicSettingManager()
+MUSIC_CORE_EXPORT MusicSettingManager* GetMusicSettingManager();
 
 #endif // MUSICSETTINGMANAGER
 

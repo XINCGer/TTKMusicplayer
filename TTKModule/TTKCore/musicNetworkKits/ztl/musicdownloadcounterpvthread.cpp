@@ -1,6 +1,4 @@
 #include "musicdownloadcounterpvthread.h"
-#///QJson import
-#include "qjson/parser.h"
 
 MusicDownloadCounterPVThread::MusicDownloadCounterPVThread(QObject *parent)
     : MusicNetworkAbstract(parent)
@@ -27,7 +25,7 @@ void MusicDownloadCounterPVThread::startToDownload()
     MusicObject::setSslConfiguration(&request);
 #endif
 
-    m_reply = m_manager->get( request );
+    m_reply = m_manager->get(request);
     connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
 }
 

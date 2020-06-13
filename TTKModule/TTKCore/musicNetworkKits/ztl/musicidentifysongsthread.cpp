@@ -3,10 +3,8 @@
 #include "musicsemaphoreloop.h"
 #include "musicalgorithmutils.h"
 #include "musicsettingmanager.h"
-#///QJson import
-#include "qjson/parser.h"
-#///Oss import
-#include "qoss/qossconf.h"
+
+#include "qsync/qsyncutils.h"
 
 #include <QFile>
 
@@ -37,9 +35,8 @@ bool MusicIdentifySongsThread::getKey()
     connect(this, SIGNAL(getKeyFinished()), &loop, SLOT(quit()));
 
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
-    connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(keyDownLoadFinished(QByteArray)));
-    download->startToDownload(QOSSConf::generateDataBucketUrl() + OS_ACRUA_URL);
-
+    connect(download, SIGNAL(downLoadRawDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
+    download->startToDownload(QSyncUtils::generateDataBucketUrl() + OS_ACRUA_URL);
     loop.exec();
 
     return !m_accessKey.isEmpty() && !m_accessSecret.isEmpty();
@@ -125,11 +122,11 @@ void MusicIdentifySongsThread::downLoadFinished()
         }
     }
 
-    Q_EMIT downLoadDataChanged( QString() );
+    Q_EMIT downLoadDataChanged(QString());
     deleteAll();
 }
 
-void MusicIdentifySongsThread::keyDownLoadFinished(const QByteArray &data)
+void MusicIdentifySongsThread::downLoadFinished(const QByteArray &data)
 {
     QJson::Parser parser;
     bool ok;
@@ -137,7 +134,7 @@ void MusicIdentifySongsThread::keyDownLoadFinished(const QByteArray &data)
     if(ok)
     {
         const QVariantMap &value = dt.toMap();
-        if(QDateTime::fromString( value["time"].toString(), MUSIC_YEAR_STIME_FORMAT) > QDateTime::currentDateTime())
+        if(QDateTime::fromString(value["time"].toString(), MUSIC_YEAR_STIME_FORMAT) > QDateTime::currentDateTime())
         {
             m_accessKey = value["key"].toString();
             m_accessSecret = value["secret"].toString();

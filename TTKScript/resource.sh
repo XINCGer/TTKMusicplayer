@@ -7,7 +7,7 @@ OUTPUT="$2"
 `mkdir -p "$OUTPUT"`
 
 #copy
-`cp -rv "$SOURCE/TTKInit.sh" "$OUTPUT/../TTKInit.sh"`
+`cp -rv "$SOURCE/TTKInit.sh" "$OUTPUT/TTKInit.sh"`
 `cp -rv "$SOURCE/TTKMusicPlayer.sh" "$OUTPUT/../TTKMusicPlayer.sh"`
 `cp -rv "$SOURCE/TTKRoutine.sh" "$OUTPUT/../TTKRoutine.sh"`
 `cp -rv "$SOURCE/TTKConsole.sh" "$OUTPUT/TTKConsole.sh"`

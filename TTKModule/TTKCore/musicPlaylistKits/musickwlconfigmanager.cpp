@@ -10,7 +10,7 @@ MusicKWLConfigManager::MusicKWLConfigManager(QObject *parent)
 bool MusicKWLConfigManager::readConfig(const QString &name)
 {
     delete m_file;
-    m_file = new QFile( name );
+    m_file = new QFile(name);
     if(!m_file->open(QIODevice::ReadOnly | QIODevice::Text))
     {
         return false;
@@ -35,7 +35,7 @@ bool MusicKWLConfigManager::readPlaylistData(MusicSongItems &items)
     MusicSongItem item;
     item.m_itemName = QFileInfo(m_file->fileName()).baseName();
 
-    const QDomNodeList &nodes = m_document->elementsByTagName("so");
+    const QDomNodeList &nodes = m_document->elementsByTagName(m_nodeHelper->nodeName("so"));
     for(int i=0; i<nodes.count(); ++i)
     {
         if(i == 0) //Skip root node

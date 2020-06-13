@@ -1,6 +1,4 @@
 #include "musictextdownloadthread.h"
-#///QJson import
-#include "qjson/parser.h"
 
 MusicTextDownLoadThread::MusicTextDownLoadThread(const QString &url, const QString &save, MusicObject::DownloadType type, QObject *parent)
     : MusicDownLoadThreadAbstract(url, save, type, parent)
@@ -14,7 +12,7 @@ void MusicTextDownLoadThread::startToDownload()
     {
         if(m_file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
         {
-            m_timer.start(MT_S2MS);
+            m_speedTimer.start();
             m_manager = new QNetworkAccessManager(this);
 
             QNetworkRequest request;
@@ -25,7 +23,7 @@ void MusicTextDownLoadThread::startToDownload()
 #endif
             m_reply = m_manager->get(request);
             connect(m_reply, SIGNAL(finished()), SLOT(downLoadFinished()));
-            connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)) );
+            connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(replyError(QNetworkReply::NetworkError)));
             connect(m_reply, SIGNAL(downloadProgress(qint64, qint64)), SLOT(downloadProgress(qint64, qint64)));
         }
         else
@@ -44,7 +42,7 @@ void MusicTextDownLoadThread::downLoadFinished()
         deleteAll();
         return;
     }
-    m_timer.stop();
+    m_speedTimer.stop();
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
@@ -54,7 +52,12 @@ void MusicTextDownLoadThread::downLoadFinished()
         {
             QTextStream outstream(m_file);
             outstream.setCodec("utf-8");
-            outstream << QString(bytes).remove("\r").toUtf8() << endl;
+            outstream << QString(bytes).remove("\r").toUtf8();
+#if TTK_QT_VERSION_CHECK(5,15,0)
+            outstream << Qt::endl;
+#else
+            outstream << endl;
+#endif
             m_file->close();
             TTK_LOGGER_INFO("text download has finished!");
         }
@@ -66,6 +69,6 @@ void MusicTextDownLoadThread::downLoadFinished()
         }
     }
 
-    Q_EMIT downLoadDataChanged( transferData() );
+    Q_EMIT downLoadDataChanged(mapCurrentQueryData());
     deleteAll();
 }

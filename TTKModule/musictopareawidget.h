@@ -92,7 +92,7 @@ public:
     /*!
      * Set current play state button.
      */
-    void showPlayStatus(bool status);
+    void setCurrentPlayStatus(bool status);
     /*!
      * Set current song text.
      */
@@ -111,6 +111,10 @@ Q_SIGNALS:
      * Search current music song from net.
      */
     void musicSearchButtonClicked();
+    /*!
+     * Background pixmap data changed.
+     */
+    void backgroundPixmapChanged(const QPixmap &pix);
 
 public Q_SLOTS:
     /*!
@@ -166,10 +170,6 @@ public Q_SLOTS:
      */
     void musicPlaylistTransparent(int index);
     /*!
-     * Changed current remote to diamond mode.
-     */
-    void musicDiamondRemote();
-    /*!
      * Changed current remote to square mode.
      */
     void musicSquareRemote();
@@ -193,10 +193,6 @@ public Q_SLOTS:
      * Changed current remote to ripple mode.
      */
     void musicRippleRemote();
-    /*!
-     * Changed current remote to rayswave mode.
-     */
-    void musicRaysWaveRemote();
     /*!
      * Delete current remote.
      */

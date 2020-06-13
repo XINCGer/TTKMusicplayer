@@ -3,9 +3,6 @@
 #include "musicsemaphoreloop.h"
 #include "musicnumberutils.h"
 #include "musiccoreutils.h"
-#include "musictime.h"
-#///QJson import
-#include "qjson/parser.h"
 
 MusicDownLoadQueryKGMovieThread::MusicDownLoadQueryKGMovieThread(QObject *parent)
     : MusicDownLoadQueryMovieThread(parent)
@@ -120,9 +117,9 @@ void MusicDownLoadQueryKGMovieThread::downLoadFinished()
                     musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["duration"].toInt()*1000);
 
                     musicInfo.m_songId = value["mvhash"].toString();
-                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkQuery) return;
                     readFromMusicMVAttribute(&musicInfo, false);
-                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
+                    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkQuery) return;
 
                     if(musicInfo.m_songAttrs.isEmpty())
                     {
@@ -219,11 +216,11 @@ void MusicDownLoadQueryKGMovieThread::singleDownLoadFinished()
 
     MusicObject::MusicSongInformation musicInfo;
     musicInfo.m_songId = m_searchText;
-    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkQuery) return;
     readFromMusicMVInfo(&musicInfo);
-    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkQuery) return;
     readFromMusicMVAttribute(&musicInfo, true);
-    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkQuery) return;
 
     if(!musicInfo.m_songAttrs.isEmpty())
     {
@@ -346,7 +343,7 @@ void MusicDownLoadQueryKGMovieThread::readFromMusicMVAttribute(MusicObject::Musi
     attr.m_size = MusicUtils::Number::size2Label(key["filesize"].toInt());
     attr.m_format = MusicUtils::String::stringSplitToken(attr.m_url);
 
-    int bitRate = key["bitrate"].toInt()/1000;
+    int bitRate = key["bitrate"].toInt() / 1000;
     if(bitRate <= 375)
         attr.m_bitrate = MB_250;
     else if(bitRate > 375 && bitRate <= 625)

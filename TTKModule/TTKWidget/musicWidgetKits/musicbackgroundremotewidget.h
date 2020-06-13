@@ -56,11 +56,11 @@ public Q_SLOTS:
     /*!
      * Send download data from net.
      */
-    void downLoadDataChanged(const QString &data);
+    void downLoadFinished(const QString &data);
     /*!
      * Send download data from net.
      */
-    virtual void downLoadDataChanged(const MusicSkinRemoteGroups &data);
+    virtual void downLoadFinished(const MusicSkinRemoteGroups &data);
 
 protected:
     /*!
@@ -93,7 +93,7 @@ public:
     virtual ~MusicBackgroundThunderWidget();
 
     /*!
-     * Init the current download object.
+     * Init parameters.
      */
     void initialize();
 
@@ -114,7 +114,7 @@ public Q_SLOTS:
     /*!
      * Send download data from net.
      */
-    virtual void downLoadDataChanged(const MusicSkinRemoteGroups &data) override;
+    virtual void downLoadFinished(const MusicSkinRemoteGroups &data) override;
 
 protected:
     /*!
@@ -147,7 +147,7 @@ public:
     explicit MusicBackgroundDailyWidget(QWidget *parent = nullptr);
 
     /*!
-     * Init the current download object.
+     * Init parameters.
      */
     void initialize();
 
@@ -160,7 +160,7 @@ public Q_SLOTS:
     /*!
      * Send download data from net.
      */
-    virtual void downLoadDataChanged(const MusicSkinRemoteGroups &data) override;
+    virtual void downLoadFinished(const MusicSkinRemoteGroups &data) override;
 
 };
 

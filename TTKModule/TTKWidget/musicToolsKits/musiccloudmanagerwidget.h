@@ -23,10 +23,10 @@
 #include "musicclouddataitem.h"
 #include "musicabstracttablewidget.h"
 
-class QOSSListData;
-class QOSSDeleteData;
-class QOSSUploadData;
-class QOSSDownloadData;
+class QSyncListData;
+class QSyncDeleteData;
+class QSyncUploadData;
+class QSyncDownloadData;
 class MusicOpenFileWidget;
 class MusicProgressBarDelegate;
 class QNetworkAccessManager;
@@ -79,19 +79,19 @@ public Q_SLOTS:
      */
     virtual void itemCellClicked(int row, int column) override;
     /*!
-     * Download key data from net finished.
+     * Send recieved data from net.
      */
-    void keyDownLoadFinished(const QByteArray &data);
+    void downLoadFinished(const QByteArray &data);
     /*!
-     * Receive data from alioss finshed.
+     * Receive data from sync finshed.
      */
-    void receiveDataFinshed(const QOSSDataItems &items);
+    void receiveDataFinshed(const QSyncDataItems &items);
     /*!
-     * Upload data to alioss finshed.
+     * Upload data to sync finshed.
      */
     void uploadFileFinished(const QString &time);
     /*!
-     * Delete data to alioss finshed.
+     * Delete data to sync finshed.
      */
     void deleteFileFinished(bool state);
 
@@ -175,10 +175,10 @@ protected:
     bool m_uploading;
     bool m_cancel;
     qint64 m_totalFileSzie;
-    QOSSListData *m_ossListData;
-    QOSSDeleteData *m_ossDeleteData;
-    QOSSUploadData *m_ossUploadData;
-    QOSSDownloadData *m_ossDownloadData;
+    QSyncListData *m_syncListData;
+    QSyncDeleteData *m_syncDeleteData;
+    QSyncUploadData *m_syncUploadData;
+    QSyncDownloadData *m_syncDownloadData;
     QNetworkAccessManager *m_manager;
     MusicOpenFileWidget *m_openFileWidget;
     MusicCloudDataItem m_currentDataItem;

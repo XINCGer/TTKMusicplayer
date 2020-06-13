@@ -72,7 +72,7 @@ public Q_SLOTS:
     /*!
      * Send recieved data from net.
      */
-    void downLoadFinished(const QByteArray &data, const QVariantMap &ext);
+    void downLoadFinished(const QByteArray &data);
 
 protected:
     MusicDJRadioProgramThread *m_programThread;
@@ -96,7 +96,7 @@ public:
     virtual ~MusicWebDJRadioProgramWidget();
 
     /*!
-     * Init widget.
+     * Init parameters.
      */
     void initialize();
     /*!
@@ -127,7 +127,7 @@ public:
     virtual ~MusicWebDJRadioWidget();
 
     /*!
-     * Init widget.
+     * Init parameters.
      */
     void initialize();
     /*!

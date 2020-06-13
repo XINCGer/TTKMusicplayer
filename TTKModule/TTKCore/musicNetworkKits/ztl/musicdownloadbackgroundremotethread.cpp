@@ -1,7 +1,5 @@
 #include "musicdownloadbackgroundremotethread.h"
 #include "musicdownloadsourcethread.h"
-#///QJson import
-#include "qjson/parser.h"
 
 #define THUD_URL   "eC9KOTYxbVhvVDJNcGEwckhyMVZRdVRhOHhFRHQ2eFVNdWJxaURFSzA1ZWVmZm5HOFlzS1VCY2ZKOFRlYStBL2Y3SjNEK2gzY2QwPQ=="
 #define BIGU_URL   "UEQvb1lxVXFnV0dqRmxzNkY0alFJUHZUSUhyZUVNY0Y2OGZ1L255cS9CMklCakk4Q1dNQkF3PT0="
@@ -78,11 +76,11 @@ MusicDownloadBackgroundThunderThread::MusicDownloadBackgroundThunderThread(QObje
 void MusicDownloadBackgroundThunderThread::startToDownload()
 {
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
-    connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadDataFinished(QByteArray)));
+    connect(download, SIGNAL(downLoadRawDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
     download->startToDownload(MusicUtils::Algorithm::mdII(THUD_URL, false));
 }
 
-void MusicDownloadBackgroundThunderThread::downLoadDataFinished(const QByteArray &bytes)
+void MusicDownloadBackgroundThunderThread::downLoadFinished(const QByteArray &bytes)
 {
     MusicSkinRemoteGroups items;
 
@@ -106,11 +104,11 @@ MusicDownloadBackgroundBingThread::MusicDownloadBackgroundBingThread(QObject *pa
 void MusicDownloadBackgroundBingThread::startToDownload()
 {
     MusicDownloadSourceThread *download = new MusicDownloadSourceThread(this);
-    connect(download, SIGNAL(downLoadByteDataChanged(QByteArray)), SLOT(downLoadDataFinished(QByteArray)));
+    connect(download, SIGNAL(downLoadRawDataChanged(QByteArray)), SLOT(downLoadFinished(QByteArray)));
     download->startToDownload(MusicUtils::Algorithm::mdII(BING_URL, false));
 }
 
-void MusicDownloadBackgroundBingThread::downLoadDataFinished(const QByteArray &bytes)
+void MusicDownloadBackgroundBingThread::downLoadFinished(const QByteArray &bytes)
 {
     MusicSkinRemoteGroups items;
 

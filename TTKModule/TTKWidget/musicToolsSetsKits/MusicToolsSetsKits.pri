@@ -18,17 +18,15 @@
 
 INCLUDEPATH += $$PWD
 
-!contains(CONFIG, TTK_NO_MSVC_LINK_NEED){
 HEADERS  += \
     $$PWD/musicmobiledeviceswidget.h \
-    $$PWD/musicaudiorecorderwidget.h \
     $$PWD/musictimerwidget.h \
     $$PWD/musiclocalsongsmanagerwidget.h \
     $$PWD/musictransformwidget.h \
     $$PWD/musicfileinformationwidget.h \
     $$PWD/musicdesktopwallpaperwidget.h \
     $$PWD/musiclocalsongstablewidget.h \
-    $$PWD/musicvolumegainwidget.h \
+    $$PWD/musicreplaygainwidget.h \
     $$PWD/musicsongringtonemakerwidget.h \
     $$PWD/musicidentifysongswidget.h \
     $$PWD/musicnetworkconnectiontestwidget.h \
@@ -42,19 +40,16 @@ HEADERS  += \
     $$PWD/musicsongdlnatransferwidget.h \
     $$PWD/musicscreensaverwidget.h
 
-}
 
-contains(CONFIG, TTK_BUILD_LIB){
 SOURCES += \
     $$PWD/musicmobiledeviceswidget.cpp \
-    $$PWD/musicaudiorecorderwidget.cpp \
     $$PWD/musictimerwidget.cpp \
     $$PWD/musiclocalsongsmanagerwidget.cpp \
     $$PWD/musictransformwidget.cpp \
     $$PWD/musicfileinformationwidget.cpp \
     $$PWD/musicdesktopwallpaperwidget.cpp \
     $$PWD/musiclocalsongstablewidget.cpp \
-    $$PWD/musicvolumegainwidget.cpp \
+    $$PWD/musicreplaygainwidget.cpp \
     $$PWD/musicsongringtonemakerwidget.cpp \
     $$PWD/musicidentifysongswidget.cpp \
     $$PWD/musicnetworkconnectiontestwidget.cpp \
@@ -67,5 +62,3 @@ SOURCES += \
     $$PWD/musicspectrumlayoutwidget.cpp \
     $$PWD/musicsongdlnatransferwidget.cpp \
     $$PWD/musicscreensaverwidget.cpp
-
-}

@@ -46,23 +46,29 @@ MusicSpectrumWidget::MusicSpectrumWidget(QWidget *parent)
     m_ui->openFileButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
     m_ui->openFileButton->setCursor(QCursor(Qt::PointingHandCursor));
 
-    m_ui->normalLayoutButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle06);
-    m_ui->plusLayoutButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle06);
-    m_ui->floridLayoutButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle06);
+    m_ui->spectrumNormalLayoutButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle06);
+    m_ui->spectrumPlusLayoutButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle06);
+    m_ui->spectrumWaveLayoutButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle06);
+    m_ui->spectrumFlowLayoutButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle06);
+    m_ui->spectrumFloridLayoutButton->setStyleSheet(MusicUIObject::MQSSToolButtonStyle06);
 
 #ifdef Q_OS_UNIX
-    m_ui->normalLayoutButton->setFocusPolicy(Qt::NoFocus);
-    m_ui->plusLayoutButton->setFocusPolicy(Qt::NoFocus);
-    m_ui->floridLayoutButton->setFocusPolicy(Qt::NoFocus);
+    m_ui->spectrumNormalLayoutButton->setFocusPolicy(Qt::NoFocus);
+    m_ui->spectrumPlusLayoutButton->setFocusPolicy(Qt::NoFocus);
+    m_ui->spectrumWaveLayoutButton->setFocusPolicy(Qt::NoFocus);
+    m_ui->spectrumFlowLayoutButton->setFocusPolicy(Qt::NoFocus);
+    m_ui->spectrumFloridLayoutButton->setFocusPolicy(Qt::NoFocus);
     m_ui->localFileButton->setFocusPolicy(Qt::NoFocus);
     m_ui->openFileButton->setFocusPolicy(Qt::NoFocus);
 #endif
 
     connect(m_ui->localFileButton, SIGNAL(clicked()), SLOT(localFileButtonClicked()));
     connect(m_ui->openFileButton, SIGNAL(clicked()), SLOT(openFileButtonClicked()));
-    connect(m_ui->normalLayoutButton, SIGNAL(stateChanged(bool&,QString)), SLOT(spectrumTypeChanged(bool&,QString)));
-    connect(m_ui->plusLayoutButton, SIGNAL(stateChanged(bool&,QString)), SLOT(spectrumPlusTypeChanged(bool&,QString)));
-    connect(m_ui->floridLayoutButton, SIGNAL(stateChanged(bool&,QString)), SLOT(spectrumFloridTypeChanged(bool&,QString)));
+    connect(m_ui->spectrumNormalLayoutButton, SIGNAL(stateChanged(bool&,QString)), SLOT(spectrumNormalTypeChanged(bool&,QString)));
+    connect(m_ui->spectrumPlusLayoutButton, SIGNAL(stateChanged(bool&,QString)), SLOT(spectrumPlusTypeChanged(bool&,QString)));
+    connect(m_ui->spectrumWaveLayoutButton, SIGNAL(stateChanged(bool&,QString)), SLOT(spectrumWaveTypeChanged(bool&,QString)));
+    connect(m_ui->spectrumFlowLayoutButton, SIGNAL(stateChanged(bool&,QString)), SLOT(spectrumFlowTypeChanged(bool&,QString)));
+    connect(m_ui->spectrumFloridLayoutButton, SIGNAL(stateChanged(bool&,QString)), SLOT(spectrumFloridTypeChanged(bool&,QString)));
     connect(m_ui->mainViewWidget, SIGNAL(currentChanged(int)), SLOT(tabIndexChanged(int)));
 }
 
@@ -81,44 +87,61 @@ void MusicSpectrumWidget::tabIndexChanged(int index)
     switch(index)
     {
         case 0:
-            adjustWidgetLayout(m_ui->spectrumAreaLayout->count() - ITEM_DEFAULT_COUNT);
+            adjustWidgetLayout(m_ui->spectrumNormalAreaLayout->count() - ITEM_DEFAULT_COUNT);
             break;
         case 1:
             adjustWidgetLayout(m_ui->spectrumPlusAreaLayout->count() - ITEM_DEFAULT_COUNT);
             break;
         case 2:
-            adjustWidgetLayout(m_ui->floridLayout->count() - ITEM_DEFAULT_COUNT);
+            adjustWidgetLayout(m_ui->spectrumWaveLayout->count() - ITEM_DEFAULT_COUNT);
             break;
         case 3:
-            adjustWidgetLayout(m_ui->lightLayout->count() - ITEM_DEFAULT_COUNT);
+            adjustWidgetLayout(m_ui->spectrumFlowLayout->count() - ITEM_DEFAULT_COUNT);
+            break;
+        case 4:
+            adjustWidgetLayout(m_ui->spectrumFloridLayout->count() - ITEM_DEFAULT_COUNT);
+            break;
+        case 5:
+            adjustWidgetLayout(m_ui->spectrumLightLayout->count() - ITEM_DEFAULT_COUNT);
             break;
         default:
             break;
     }
 }
 
-void MusicSpectrumWidget::spectrumTypeChanged(bool &state, const QString &name)
+void MusicSpectrumWidget::spectrumNormalTypeChanged(bool &state, const QString &name)
 {
-    createSpectrumWidget(state, name, m_ui->spectrumAreaLayout);
-    adjustWidgetLayout(m_ui->spectrumAreaLayout->count() - ITEM_DEFAULT_COUNT);
+    createSpectrumWidget(state, name, m_ui->spectrumNormalAreaLayout);
+    adjustWidgetLayout(m_ui->spectrumNormalAreaLayout->count() - ITEM_DEFAULT_COUNT);
 }
 
 void MusicSpectrumWidget::spectrumPlusTypeChanged(bool &state, const QString &name)
 {
+    createSpectrumWidget(state, name, m_ui->spectrumPlusAreaLayout);
+    adjustWidgetLayout(m_ui->spectrumPlusAreaLayout->count() - ITEM_DEFAULT_COUNT);
+}
+
+void MusicSpectrumWidget::spectrumWaveTypeChanged(bool &state, const QString &name)
+{
     if(name == "lightenvelope")
     {
-        createLightWidget(state, name, m_ui->spectrumPlusAreaLayout);
+        createLightWidget(state, name, m_ui->spectrumWaveAreaLayout);
     }
     else
     {
-        createSpectrumWidget(state, name, m_ui->spectrumPlusAreaLayout);
+        createSpectrumWidget(state, name, m_ui->spectrumWaveAreaLayout);
     }
-    adjustWidgetLayout(m_ui->spectrumPlusAreaLayout->count() - ITEM_DEFAULT_COUNT);
+    adjustWidgetLayout(m_ui->spectrumWaveAreaLayout->count() - ITEM_DEFAULT_COUNT);
+}
+
+void MusicSpectrumWidget::spectrumFlowTypeChanged(bool &state, const QString &name)
+{
+    createFlowWidget(state, name, m_ui->spectrumFlowAreaLayout);
 }
 
 void MusicSpectrumWidget::spectrumFloridTypeChanged(bool &state, const QString &name)
 {
-    createFloridWidget(state, name, m_ui->floridAreaLayout);
+    createFloridWidget(state, name, m_ui->spectrumFloridAreaLayout);
 }
 
 void MusicSpectrumWidget::show()
@@ -130,7 +153,7 @@ void MusicSpectrumWidget::show()
 void MusicSpectrumWidget::localFileButtonClicked()
 {
     bool state = true;
-    createLightWidget(state, "lightspectrum", m_ui->lightAreaLayout);
+    createLightWidget(state, "lightspectrum", m_ui->spectrumLightAreaLayout);
 }
 
 void MusicSpectrumWidget::openFileButtonClicked()
@@ -143,7 +166,7 @@ void MusicSpectrumWidget::openFileButtonClicked()
     {
         const QString &path = dialog.selectedFiles().last();
         bool state = true;
-        createLightWidget(state, "lightspectrum", m_ui->lightAreaLayout, path);
+        createLightWidget(state, "lightspectrum", m_ui->spectrumLightAreaLayout, path);
     }
 }
 
@@ -213,19 +236,29 @@ void MusicSpectrumWidget::createSpectrumWidget(bool &state, const QString &name,
     }
 }
 
+void MusicSpectrumWidget::createFlowWidget(bool &state, const QString &name, QLayout *layout)
+{
+    createModuleWidget(state, name, layout, m_lastFlowName);
+}
+
 void MusicSpectrumWidget::createFloridWidget(bool &state, const QString &name, QLayout *layout)
 {
-    const int index = findSpectrumWidget(m_lastFloridName);
+    createModuleWidget(state, name, layout, m_lastFloridName);
+}
+
+void MusicSpectrumWidget::createModuleWidget(bool &state, const QString &name, QLayout *layout, QString &module)
+{
+    const int index = findSpectrumWidget(module);
     if(index != -1)
     {
         MusicSpectrum t = m_types.takeAt(index);
         layout->removeWidget(t.m_obj);
-        MusicUtils::QMMP::enabledVisualPlugin(m_lastFloridName, false);
+        MusicUtils::QMMP::enabledVisualPlugin(module, false);
     }
 
     if(!state)
     {
-        m_lastFloridName.clear();
+        module.clear();
         return;
     }
 
@@ -241,15 +274,18 @@ void MusicSpectrumWidget::createFloridWidget(bool &state, const QString &name, Q
 
     if(!vs->isEmpty())
     {
-        m_lastFloridName = name;
+        module = name;
         MusicSpectrum sp;
         sp.m_name = name;
         sp.m_obj = vs->last();
-        TTKStatic_cast(Florid*, sp.m_obj)->setPixmap(MusicTopAreaWidget::instance()->getRendererPixmap());
+
         layout->addWidget(sp.m_obj);
         m_types << sp;
         sp.m_obj->setStyleSheet(MusicUIObject::MQSSMenuStyle02);
+
+        TTKStatic_cast(Florid*, sp.m_obj)->setPixmap(MusicTopAreaWidget::instance()->getRendererPixmap());
         connect(sp.m_obj, SIGNAL(fullscreenByUser(QWidget*,bool)), SLOT(fullscreenByUser(QWidget*,bool)));
+        connect(MusicTopAreaWidget::instance(), SIGNAL(backgroundPixmapChanged(QPixmap)), sp.m_obj, SLOT(setPixmap(QPixmap)));
     }
     else
     {
@@ -267,10 +303,10 @@ void MusicSpectrumWidget::createLightWidget(bool &state, const QString &name, QL
             QPluginLoader loader;
             loader.setFileName(MusicUtils::QMMP::pluginPath("Light", name));
             const QObject *obj = loader.instance();
-            LightFactory *decoderfac = nullptr;
-            if(obj && (decoderfac = TTKObject_cast(LightFactory*, obj)))
+            LightFactory *factory = nullptr;
+            if(obj && (factory = TTKObject_cast(LightFactory*, obj)))
             {
-                Light *lightWidget = decoderfac->create(this);
+                Light *lightWidget = factory->create(this);
                 MusicSpectrum sp;
                 sp.m_name = name;
                 sp.m_obj = lightWidget;
@@ -281,7 +317,7 @@ void MusicSpectrumWidget::createLightWidget(bool &state, const QString &name, QL
 
         const int index = findSpectrumWidget(name);
         Light *light = TTKStatic_cast(Light*, m_types[index].m_obj);
-        light->open(url.isEmpty() ? SoundCore::instance()->path() : url );
+        light->open(url.isEmpty() ? SoundCore::instance()->path() : url);
     }
     else
     {

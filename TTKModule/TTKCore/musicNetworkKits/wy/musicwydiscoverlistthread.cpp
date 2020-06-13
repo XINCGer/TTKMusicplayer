@@ -1,7 +1,5 @@
 #include "musicwydiscoverlistthread.h"
 #include "musicdownloadwyinterface.h"
-#///QJson import
-#include "qjson/parser.h"
 
 MusicWYDiscoverListThread::MusicWYDiscoverListThread(QObject *parent)
     : MusicDownLoadDiscoverListThread(parent)
@@ -22,11 +20,11 @@ void MusicWYDiscoverListThread::startToSearch()
     m_interrupt = true;
 
     QNetworkRequest request;
-    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkQuery) return;
     const QByteArray &parameter = makeTokenQueryUrl(&request,
                       MusicUtils::Algorithm::mdII(WY_SG_TOPLIST_N_URL, false),
                       MusicUtils::Algorithm::mdII(WY_SG_TOPLIST_NDT_URL, false).arg(19723756));
-    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkQuery) return;
     MusicObject::setSslConfiguration(&request);
 
     m_reply = m_manager->post(request, parameter);
@@ -60,7 +58,7 @@ void MusicWYDiscoverListThread::downLoadFinished()
                 value = value["playlist"].toMap();
                 const QVariantList &datas = value["tracks"].toList();
                 int where = datas.count();
-                where = (where > 0) ? qrand()%where : 0;
+                where = (where > 0) ? MusicTime::random(where) : 0;
 
                 int counter = 0;
                 foreach(const QVariant &var, datas)

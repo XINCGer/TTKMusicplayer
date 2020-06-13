@@ -1,7 +1,5 @@
 #include "musicbddiscoverlistthread.h"
 #include "musicdownloadbdinterface.h"
-#///QJson import
-#include "qjson/parser.h"
 
 MusicBDDiscoverListThread::MusicBDDiscoverListThread(QObject *parent)
     : MusicDownLoadDiscoverListThread(parent)
@@ -58,7 +56,7 @@ void MusicBDDiscoverListThread::downLoadFinished()
             {
                 const QVariantList &datas = value["song_list"].toList();
                 int where = datas.count();
-                where = (where > 0) ? qrand()%where : 0;
+                where = (where > 0) ? MusicTime::random(where) : 0;
 
                 int counter = 0;
                 foreach(const QVariant &var, datas)

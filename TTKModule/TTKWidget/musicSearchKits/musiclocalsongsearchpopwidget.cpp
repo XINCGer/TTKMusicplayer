@@ -1,6 +1,5 @@
 #include "musiclocalsongsearchpopwidget.h"
 #include "musiclocalsongsearchrecordconfigmanager.h"
-#include "musictime.h"
 #include "musicwidgetheaders.h"
 
 #include <QPainter>
@@ -53,7 +52,7 @@ void MusicLocalSongSearchPopTableWidget::createItems(int index, const QString &n
 
 void MusicLocalSongSearchPopTableWidget::itemCellClicked(int row, int)
 {
-    Q_EMIT setText( item(row, 0)->toolTip().trimmed() );
+    Q_EMIT setText(item(row, 0)->toolTip().trimmed());
 
     QWidget *widget = TTKStatic_cast(QWidget*, parent());
     widget->lower();
@@ -112,12 +111,12 @@ void MusicLocalSongSearchPopWidget::createItems()
     }
 
     MusicSearchRecords records;
-    search.readSearchData( records );
+    search.readSearchData(records);
 
     const int count = records.count();
-    resize(m_popTableWidget->width() + 2, count == 0 ? 0 : (count < 6 ? count*ITEM_ROW_HEIGHT_M + 45 : 7*ITEM_ROW_HEIGHT_M + 8) );
+    resize(m_popTableWidget->width() + 2, count == 0 ? 0 : (count < 6 ? count*ITEM_ROW_HEIGHT_M + 45 : 7*ITEM_ROW_HEIGHT_M + 8));
 
-    m_popTableWidget->setRowCount( count );
+    m_popTableWidget->setRowCount(count);
     for(int i=0; i<count; ++i)
     {
         m_popTableWidget->createItems(i, records[i].m_name, utcTimeToLocal(records[i].m_time));
@@ -130,9 +129,9 @@ void MusicLocalSongSearchPopWidget::createSuggestItems(const QStringList &names)
     m_popTableWidget->clearAllItems();
 
     const int count = names.count();
-    resize(m_popTableWidget->width() + 2, count == 0 ? 0 : (count < 6 ? count*ITEM_ROW_HEIGHT_M + 8 : 6*ITEM_ROW_HEIGHT_M + 8) );
+    resize(m_popTableWidget->width() + 2, count == 0 ? 0 : (count < 6 ? count*ITEM_ROW_HEIGHT_M + 8 : 6*ITEM_ROW_HEIGHT_M + 8));
 
-    m_popTableWidget->setRowCount( count );
+    m_popTableWidget->setRowCount(count);
     for(int i=0; i<count; ++i)
     {
         m_popTableWidget->createItems(i, names[i], QString());
@@ -152,7 +151,7 @@ void MusicLocalSongSearchPopWidget::clearButtonClicked()
     {
         return;
     }
-    search.writeSearchData( MusicSearchRecords() );
+    search.writeSearchData(MusicSearchRecords());
     close();
 }
 

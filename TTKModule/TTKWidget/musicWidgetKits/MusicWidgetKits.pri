@@ -18,7 +18,6 @@
 
 INCLUDEPATH += $$PWD
 
-!contains(CONFIG, TTK_NO_MSVC_LINK_NEED){
 HEADERS  += \
     $$PWD/musicsettingwidget.h \
     $$PWD/musicbackgroundskindialog.h \
@@ -41,7 +40,6 @@ HEADERS  += \
     $$PWD/musicdownloadmgmtwidget.h \
     $$PWD/musicdownloadstatusobject.h \
     $$PWD/musicsongsharingwidget.h \
-    $$PWD/musicsonglistsharingwidget.h \
     $$PWD/musicsourceupdatewidget.h \
     $$PWD/musicglobalhotkeyedit.h \
     $$PWD/musicsimilarfoundwidget.h \
@@ -54,7 +52,6 @@ HEADERS  += \
     $$PWD/musicplaylistfoundwidget.h \
     $$PWD/musicplaylistfoundinfowidget.h \
     $$PWD/musicplaylistfoundtablewidget.h \
-    $$PWD/musicsonglistenhancelosslesswidget.h \
     $$PWD/musicenhancedpopwidget.h \
     $$PWD/musicplaybackmodepopwidget.h \
     $$PWD/musicqualitychoicepopwidget.h \
@@ -70,12 +67,9 @@ HEADERS  += \
     $$PWD/musicartistlistfoundwidget.h \
     $$PWD/musicartistlistfoundcategorypopwidget.h \
     $$PWD/musicripplespecturmobject.h \
-    $$PWD/musicmessagefeedbackdialog.h \
     $$PWD/musicpluginwidget.h
 
-}
 
-contains(CONFIG, TTK_BUILD_LIB){
 SOURCES += \
     $$PWD/musicsettingwidget.cpp \
     $$PWD/musicbackgroundskindialog.cpp \
@@ -98,7 +92,6 @@ SOURCES += \
     $$PWD/musicdownloadmgmtwidget.cpp \
     $$PWD/musicdownloadstatusobject.cpp \
     $$PWD/musicsongsharingwidget.cpp \
-    $$PWD/musicsonglistsharingwidget.cpp \
     $$PWD/musicsourceupdatewidget.cpp \
     $$PWD/musicglobalhotkeyedit.cpp \
     $$PWD/musicsimilarfoundwidget.cpp \
@@ -111,7 +104,6 @@ SOURCES += \
     $$PWD/musicplaylistfoundwidget.cpp \
     $$PWD/musicplaylistfoundinfowidget.cpp \
     $$PWD/musicplaylistfoundtablewidget.cpp \
-    $$PWD/musicsonglistenhancelosslesswidget.cpp \
     $$PWD/musicenhancedpopwidget.cpp \
     $$PWD/musicplaybackmodepopwidget.cpp \
     $$PWD/musicqualitychoicepopwidget.cpp \
@@ -127,7 +119,4 @@ SOURCES += \
     $$PWD/musicartistlistfoundwidget.cpp \
     $$PWD/musicartistlistfoundcategorypopwidget.cpp \
     $$PWD/musicripplespecturmobject.cpp \
-    $$PWD/musicmessagefeedbackdialog.cpp \
     $$PWD/musicpluginwidget.cpp
-
-}

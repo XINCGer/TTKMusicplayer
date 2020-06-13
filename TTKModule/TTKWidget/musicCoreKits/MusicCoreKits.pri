@@ -18,7 +18,6 @@
 
 INCLUDEPATH += $$PWD
 
-!contains(CONFIG, TTK_NO_MSVC_LINK_NEED){
 HEADERS  += \
     $$PWD/musicabstracttablewidget.h \
     $$PWD/musicabstractmovedialog.h \
@@ -60,13 +59,11 @@ HEADERS  += \
     $$PWD/musiccommentswidget.h \
     $$PWD/musicdownloadabstracttablewidget.h \
     $$PWD/musicfunctiontoolboxwidget.h \
-    $$PWD/musicsongitemselecteddialog.h \
+    $$PWD/musicsongitemselectedareawidget.h \
     $$PWD/musictimesliderwidget.h \
     $$PWD/musicpagingwidgetobject.h
 
-}
 
-contains(CONFIG, TTK_BUILD_LIB){
 SOURCES += \
     $$PWD/musicabstracttablewidget.cpp \
     $$PWD/musicabstractmovedialog.cpp \
@@ -108,8 +105,6 @@ SOURCES += \
     $$PWD/musiccommentswidget.cpp \
     $$PWD/musicdownloadabstracttablewidget.cpp \
     $$PWD/musicfunctiontoolboxwidget.cpp \
-    $$PWD/musicsongitemselecteddialog.cpp \
+    $$PWD/musicsongitemselectedareawidget.cpp \
     $$PWD/musictimesliderwidget.cpp \
     $$PWD/musicpagingwidgetobject.cpp
-
-}

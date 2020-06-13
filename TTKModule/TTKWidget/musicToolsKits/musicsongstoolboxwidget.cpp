@@ -1,7 +1,5 @@
 #include "musicsongstoolboxwidget.h"
 #include "musicsongstoolitemrenamedwidget.h"
-#include "musicsonglistsharingwidget.h"
-#include "musicsonglistenhancelosslesswidget.h"
 #include "musicsettingmanager.h"
 #include "musicuiobject.h"
 #include "musictinyuiobject.h"
@@ -23,14 +21,12 @@ MusicSongsToolBoxTopWidget::MusicSongsToolBoxTopWidget(int index, const QString 
     enhanceButton->setStyleSheet(MusicUIObject::MQSSTinyBtnEnhanceLossless);
     enhanceButton->setCursor(QCursor(Qt::PointingHandCursor));
     enhanceButton->setGeometry(240, 12, 16, 16);
-    connect(enhanceButton, SIGNAL(clicked()), SLOT(showEnhanceLosslessDialog()));
 
     QPushButton *shareListButton = new QPushButton(this);
     shareListButton->setToolTip(tr("shareList"));
     shareListButton->setStyleSheet(MusicUIObject::MQSSTinyBtnShare);
     shareListButton->setCursor(QCursor(Qt::PointingHandCursor));
     shareListButton->setGeometry(265, 12, 16, 16);
-    connect(shareListButton, SIGNAL(clicked()), SLOT(showShareListDialog()));
 
     QPushButton *menuButton = new QPushButton(this);
     menuButton->setToolTip(tr("listMenu"));
@@ -162,16 +158,6 @@ void MusicSongsToolBoxTopWidget::musicListSongSortBy(QAction *action)
         }
         Q_EMIT musicListSongSortBy(m_index);
     }
-}
-
-void MusicSongsToolBoxTopWidget::showShareListDialog()
-{
-    MusicSongListSharingWidget(this).exec();
-}
-
-void MusicSongsToolBoxTopWidget::showEnhanceLosslessDialog()
-{
-    MusicSongListEnhanceLosslessWidget(this).exec();
 }
 
 void MusicSongsToolBoxTopWidget::addToPlayLater()

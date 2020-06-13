@@ -20,14 +20,12 @@ QT       += core
 
 TEMPLATE = lib
 
-include(../../TTKVersion.pri)
+include($$PWD/../../TTKVersion.pri)
 
-win32:DESTDIR = $$OUT_PWD/../../bin/$$TTKMusicPlayer
-unix:DESTDIR = $$OUT_PWD/../../lib/$$TTKMusicPlayer
+DESTDIR = $$OUT_PWD/../../bin/$$TTKMusicPlayer
 TARGET = TTKDumper
 
-CONFIG       += warn_off
-unix:VERSION += 1.0.0
+CONFIG += plugin lib
 
 INCLUDEPATH += $$PWD/../../TTKModule/TTKCore/musicCoreKits
 
@@ -42,17 +40,18 @@ win32:msvc{
 }
 
 SOURCES += \
+    $$PWD/miniprocess.cpp \
     $$PWD/minidumper.cpp \
     $$PWD/ttkdumper.cpp
     
 HEADERS += \
-    $$PWD/mini.h \
+    $$PWD/miniprocess.h \
     $$PWD/minidumper.h \
     $$PWD/ttkdumper.h \
     $$PWD/ttklogger.h
 
 #load extra define
-include(../TTKExtrasDefine.pri)
+include($$PWD/../TTKExtrasDefine.pri)
 
 win32{
     RC_FILE = TTKDumper.rc

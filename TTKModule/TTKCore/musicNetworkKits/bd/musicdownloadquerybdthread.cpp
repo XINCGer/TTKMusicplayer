@@ -1,6 +1,4 @@
 #include "musicdownloadquerybdthread.h"
-#///QJson import
-#include "qjson/parser.h"
 
 MusicDownLoadQueryBDThread::MusicDownLoadQueryBDThread(QObject *parent)
     : MusicDownLoadQueryThreadAbstract(parent)
@@ -123,9 +121,9 @@ void MusicDownLoadQueryBDThread::downLoadFinished()
                         musicInfo.m_smallPicUrl = value["pic_small"].toString().replace("_90", "_500");
                         musicInfo.m_albumName = MusicUtils::String::illegalCharactersReplaced(value["album_title"].toString());
 
-                        if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
+                        if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkQuery) return;
                         readFromMusicSongAttribute(&musicInfo, value["all_rate"].toString(), m_searchQuality, m_queryAllRecords);
-                        if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
+                        if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkQuery) return;
 
                         if(musicInfo.m_songAttrs.isEmpty())
                         {
@@ -190,9 +188,9 @@ void MusicDownLoadQueryBDThread::singleDownLoadFinished()
                 musicInfo.m_discNumber = "1";
                 musicInfo.m_trackNumber = value["album_no"].toString();
 
-                if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
+                if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkQuery) return;
                 readFromMusicSongAttribute(&musicInfo, value["all_rate"].toString(), m_searchQuality, true);
-                if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkInit) return;
+                if(m_interrupt || !m_manager || m_stateCode != MusicObject::NetworkQuery) return;
 
                 if(!musicInfo.m_songAttrs.isEmpty())
                 {

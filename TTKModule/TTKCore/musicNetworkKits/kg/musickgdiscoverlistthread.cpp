@@ -1,7 +1,5 @@
 #include "musickgdiscoverlistthread.h"
 #include "musicdownloadkginterface.h"
-#///QJson import
-#include "qjson/parser.h"
 
 MusicKGDiscoverListThread::MusicKGDiscoverListThread(QObject *parent)
     : MusicDownLoadDiscoverListThread(parent)
@@ -59,7 +57,7 @@ void MusicKGDiscoverListThread::downLoadFinished()
                 value = value["songs"].toMap();
                 const QVariantList &datas = value["list"].toList();
                 int where = datas.count();
-                where = (where > 0) ? qrand()%where : 0;
+                where = (where > 0) ? MusicTime::random(where) : 0;
 
                 int counter = 0;
                 foreach(const QVariant &var, datas)

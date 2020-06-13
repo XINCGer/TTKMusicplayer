@@ -16,8 +16,7 @@
 # * with this program; If not, see <http://www.gnu.org/licenses/>.
 # =================================================
 
-include(../../../TTKVersion.pri)
-unix:VERSION += 1.0.0.0
+include($$PWD/../../../TTKVersion.pri)
 
 QT       += core gui
 equals(QT_MAJOR_VERSION, 5){
@@ -42,8 +41,8 @@ INCLUDEPATH += \
     $$PWD/../../../TTKModule/TTKCore/musicUtilsKits \
     $$PWD/../../../TTKModule/TTKWidget/musicCoreKits \
 
-win32:LIBS += -L$$OUT_PWD/../../../bin/$$TTKMusicPlayer -lTTKCore
-unix:LIBS += -L$$OUT_PWD/../../../lib/$$TTKMusicPlayer -lTTKCore -lqmmp -lTTKUi -lTTKExtras -lTTKWatcher -lzlib -lTTKZip
+LIBS += -L$$OUT_PWD/../../../bin/$$TTKMusicPlayer -lTTKCore
+unix:LIBS += -L$$OUT_PWD/../../../bin/$$TTKMusicPlayer -lqmmp -lTTKUi -lTTKExtras -lTTKWatcher -lzlib -lTTKZip
 
 SOURCES += \
     mainskin.cpp \

@@ -4,7 +4,7 @@
 MusicPlaylist::MusicPlaylist(QObject *parent)
     : QObject(parent)
 {
-    MusicTime::InitSRand();
+    MusicTime::initRandom();
     m_currentIndex = -1;
     m_playbackMode = MusicObject::PM_PlayOrder;
 }
@@ -49,7 +49,7 @@ MusicPlayItem MusicPlaylist::currentItem() const
     return m_mediaList.isEmpty() ? MusicPlayItem() : m_mediaList[m_currentIndex];
 }
 
-QString MusicPlaylist::currentMediaString() const
+QString MusicPlaylist::currentMediaPath() const
 {
     return currentItem().m_path;
 }

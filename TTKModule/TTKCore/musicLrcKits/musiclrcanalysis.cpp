@@ -3,7 +3,6 @@
 #include "musiclrcfromkrc.h"
 #endif
 #include <qmath.h>
-#include "musictime.h"
 #include "musicstringutils.h"
 #include "musicapplication.h"
 #include "musicdownloadqueryfactory.h"
@@ -410,7 +409,7 @@ qint64 MusicLrcAnalysis::setSongSpeedChanged(qint64 time)
 //    {
 //        if(m_currentShowLrcContainer[i] == m_lrcContainer.value(time))
 //        {
-//            if((m_currentLrcIndex = i - getMiddle() - 1) < 0 )
+//            if((m_currentLrcIndex = i - getMiddle() - 1) < 0)
 //            {
 //                m_currentLrcIndex = 0;
 //            }
@@ -452,7 +451,12 @@ void MusicLrcAnalysis::saveLrcTimeChanged()
 
     QTextStream outstream(&file);
     outstream.setCodec("utf-8");
-    outstream << data << endl;
+    outstream << data;
+#if TTK_QT_VERSION_CHECK(5,15,0)
+    outstream << Qt::endl;
+#else
+    outstream << endl;
+#endif
     file.close();
 }
 

@@ -1,7 +1,5 @@
 #include "musicxmdiscoverlistthread.h"
 #include "musicdownloadxminterface.h"
-#///QJson import
-#include "qjson/parser.h"
 
 MusicXMDiscoverListThread::MusicXMDiscoverListThread(QObject *parent)
     : MusicDownLoadDiscoverListThread(parent)
@@ -23,11 +21,11 @@ void MusicXMDiscoverListThread::startToSearch()
     m_interrupt = true;
 
     QNetworkRequest request;
-    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkQuery) return;
     makeTokenQueryUrl(&request,
                       MusicUtils::Algorithm::mdII(XM_SONG_TOPLIST_DATA_URL, false).arg(103),
                       MusicUtils::Algorithm::mdII(XM_SONG_TOPLIST_URL, false));
-    if(!m_manager || m_stateCode != MusicObject::NetworkInit) return;
+    if(!m_manager || m_stateCode != MusicObject::NetworkQuery) return;
     MusicObject::setSslConfiguration(&request);
 
     m_reply = m_manager->get(request);
@@ -63,7 +61,7 @@ void MusicXMDiscoverListThread::downLoadFinished()
                 value = value["billboard"].toMap();
                 const QVariantList &datas = value["items"].toList();
                 int where = datas.count();
-                where = (where > 0) ? qrand()%where : 0;
+                where = (where > 0) ? MusicTime::random(where) : 0;
 
                 int counter = 0;
                 foreach(const QVariant &var, datas)
