@@ -9,7 +9,6 @@
 #include "musicbackgroundmanager.h"
 #include "musicsettingmanager.h"
 #include "ttkversion.h"
-#include "musicmessagebox.h"
 #include "musicbottomareawidget.h"
 #include "musictopareawidget.h"
 #include "musicrightareawidget.h"
@@ -218,13 +217,6 @@ void MusicApplication::musicImportSongsSettingPath(const QStringList &items)
     if(!files.isEmpty())
     {
         m_musicSongTreeWidget->importOtherMusicSongs(files);
-    }
-
-    if(!failedFiles.isEmpty())
-    {
-        MusicMessageBox message;
-        message.setText(tr("not supported count %1").arg(failedFiles.count()));
-        message.exec();
     }
 }
 
@@ -753,8 +745,7 @@ void MusicApplication::musicAddSongToLovestListAt(bool state)
         m_leftAreaWidget->musictLoveStateClicked(false);
     }
 
-    MusicToastLabel *toast = new MusicToastLabel(this);
-    toast->defaultLabel(this, !contains ? tr("add music to lovest list done!") : tr("remove music to lovest list done!"));
+    MusicToastLabel::popup(!contains ? tr("add music to lovest list done!") : tr("remove music to lovest list done!"));
 }
 
 void MusicApplication::musicWindowConciseChanged()

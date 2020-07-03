@@ -102,7 +102,12 @@ void MusicScreenSaverHoverItem::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
     QPainter painter(this);
     MusicUtils::Widget::setBorderShadow(this, &painter);
-    painter.drawPixmap(QRect(QPoint(4, 4), ITEM_SIZE), pixmap()->scaled(ITEM_SIZE));
+#if TTK_QT_VERSION_CHECK(5,15,0)
+    const QPixmap &pix = pixmap(Qt::ReturnByValue);
+#else
+    const QPixmap &pix = *pixmap();
+#endif
+    painter.drawPixmap(QRect(QPoint(4, 4), ITEM_SIZE), pix.scaled(ITEM_SIZE));
 }
 
 
@@ -373,7 +378,7 @@ void MusicScreenSaverWidget::itemHasClicked(int index, bool status)
 void MusicScreenSaverWidget::initialize()
 {
     m_downloadQueue = new MusicDownloadQueueCache(MusicObject::DownloadBigBackground, this);
-    connect(m_downloadQueue, SIGNAL(downLoadDataChanged(QString)), SLOT(downLoadDataChanged(QString)));
+    connect(m_downloadQueue, SIGNAL(downLoadDataChanged(QString)), SLOT(downLoadFinished(QString)));
 
     MusicDownloadQueueDatas datas;
     for(int i=0; i<OS_COUNT; i++)

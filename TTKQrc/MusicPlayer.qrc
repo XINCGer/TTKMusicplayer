@@ -113,7 +113,6 @@
         <file alias="lb_timer">../TTKResource/tools/lb_timer.png</file>
         <file alias="lb_transform">../TTKResource/tools/lb_transform.png</file>
         <file alias="lb_spectrum">../TTKResource/tools/lb_spectrum.png</file>
-        <file alias="lb_wallpaper">../TTKResource/tools/lb_wallpaper.png</file>
         <file alias="lb_phone">../TTKResource/tools/lb_phone.png</file>
         <file alias="lb_gain">../TTKResource/tools/lb_gain.png</file>
         <file alias="lb_soundtouch">../TTKResource/tools/lb_soundtouch.png</file>
@@ -828,10 +827,10 @@
         <file alias="plus_2">../TTKResource/spectrum/plus_2.png</file>
         <file alias="plus_3">../TTKResource/spectrum/plus_3.png</file>
         <file alias="plus_4">../TTKResource/spectrum/plus_4.png</file>
-        <file alias="plus_5">../TTKResource/spectrum/plus_5.png</file>
         <file alias="wave_1">../TTKResource/spectrum/wave_1.png</file>
         <file alias="wave_2">../TTKResource/spectrum/wave_2.png</file>
         <file alias="wave_3">../TTKResource/spectrum/wave_3.png</file>
+        <file alias="wave_4">../TTKResource/spectrum/wave_4.png</file>
         <file alias="florid_1">../TTKResource/spectrum/florid_1.png</file>
         <file alias="florid_2">../TTKResource/spectrum/florid_2.png</file>
         <file alias="florid_3">../TTKResource/spectrum/florid_3.png</file>

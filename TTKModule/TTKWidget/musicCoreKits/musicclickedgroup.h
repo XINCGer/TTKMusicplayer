@@ -1,5 +1,5 @@
-#ifndef MUSICDOWNLOADSOURCETHREAD_H
-#define MUSICDOWNLOADSOURCETHREAD_H
+#ifndef MUSICCLICKEDGROUP_H
+#define MUSICCLICKEDGROUP_H
 
 /* =================================================
  * This file is part of the TTK Music Player project
@@ -19,44 +19,42 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include "musicnetworkabstract.h"
+#include <QWidget>
+#include "musicglobaldefine.h"
 
-/*! @brief The class of source data download thread.
+/*! @brief The class of the label widget click group mapper.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_NETWORK_EXPORT MusicDownloadSourceThread : public MusicNetworkAbstract
+class MUSIC_WIDGET_EXPORT MusicClickedGroup : public QObject
 {
     Q_OBJECT
-    TTK_DECLARE_MODULE(MusicDownloadSourceThread)
+    TTK_DECLARE_MODULE(MusicClickedGroup)
 public:
     /*!
      * Object contsructor.
      */
-    explicit MusicDownloadSourceThread(QObject *parent = nullptr);
-
-    ~MusicDownloadSourceThread();
+    explicit MusicClickedGroup(QObject *parent = nullptr);
 
     /*!
-     * Start to download data.
+     * Map the clicked widget.
      */
-    void startToDownload(const QString &url);
+    void mapped(QWidget *widget);
 
-public Q_SLOTS:
+Q_SIGNALS:
     /*!
-     * Download data from net finished.
+     * Index widget click emit.
      */
-    virtual void downLoadFinished() override;
+    void clicked(int index);
+
+private Q_SLOTS:
     /*!
-     * Download reply error.
+     * Update the current clicked state.
      */
-    virtual void replyError(QNetworkReply::NetworkError error) override;
-#ifndef QT_NO_SSL
-    /*!
-     * Download ssl reply error.
-     */
-    virtual void sslErrors(QNetworkReply *reply, const QList<QSslError> &errors) override;
-#endif
+    void update();
+
+private:
+    QList<QWidget*> m_container;
 
 };
 
-#endif // MUSICDOWNLOADSOURCETHREAD_H
+#endif // MUSICCLICKEDGROUP_H

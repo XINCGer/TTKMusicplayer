@@ -63,7 +63,7 @@ Q_SIGNALS:
     /*!
      * Mapped the clicked page index.
      */
-    void mapped(int index);
+    void clicked(int index);
 
 protected:
     int m_currentPage;
