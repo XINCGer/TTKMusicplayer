@@ -22,7 +22,7 @@
 #include <QObject>
 #include "musicextrasglobaldefine.h"
 
-/*! @brief The namespace of the kugou url.
+/*! @brief The class of the kugou url.
  * @author Greedysky <greedysky@163.com>
  */
 class MUSIC_EXTRAS_EXPORT QKugouUrl
@@ -53,14 +53,6 @@ public:
      * Get Song Category Url.
      */
     static QString getSongCategoryUrl();
-    /*!
-     * Get Song Show Url.
-     */
-    static QString getSongShowUrl();
-    /*!
-     * Get Song Heroes Url.
-     */
-    static QString getSongHeroesUrl();
 
 
 
@@ -76,10 +68,6 @@ public:
      * Get Radio Fx Url.
      */
     static QString getRadioFxUrl();
-    /*!
-     * Get Radio Home Url.
-     */
-    static QString getRadioHomeUrl();
 
 
 
