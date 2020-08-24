@@ -60,17 +60,15 @@ void MusicWebMVRadioQueryItemWidget::setMusicResultsItem(const MusicResultsItem 
 
 void MusicWebMVRadioQueryItemWidget::downLoadFinished(const QByteArray &data)
 {
-    QPixmap pix;
-    pix.loadFromData(data);
-    if(!pix.isNull())
-    {
-        QPixmap cv(":/image/lb_album_cover");
-        cv = cv.scaled(m_iconLabel->size());
-        pix = pix.scaled(m_iconLabel->size());
-        MusicUtils::Image::fusionPixmap(pix, cv, QPoint(0, 0));
-        m_iconLabel->setPixmap(pix);
-    }
+    MusicImageRenderer *render = new MusicImageRenderer(this);
+    connect(render, SIGNAL(renderFinished(QImage)), SLOT(renderFinished(QImage)));
+    render->setInputData(data, m_iconLabel->size());
+    render->start();
+}
 
+void MusicWebMVRadioQueryItemWidget::renderFinished(const QImage &data)
+{
+    m_iconLabel->setPixmap(QPixmap::fromImage(data));
     m_playButton->raise();
 }
 

@@ -1,5 +1,5 @@
-#ifndef MUSICXMARTISTSIMILARREQUEST_H
-#define MUSICXMARTISTSIMILARREQUEST_H
+#ifndef MUSICIMAGERENDERER_H
+#define MUSICIMAGERENDERER_H
 
 /* =================================================
  * This file is part of the TTK Music Player project
@@ -19,34 +19,45 @@
  * with this program; If not, see <http://www.gnu.org/licenses/>.
  ================================================= */
 
-#include "musicsimilarrequest.h"
-#include "musicxmqueryinterface.h"
+#include <QSize>
+#include "musicabstractthread.h"
 
-/*! @brief The class to query xiami artist similar download data from net.
+/*! @brief The class of the image render thread.
  * @author Greedysky <greedysky@163.com>
  */
-class MUSIC_NETWORK_EXPORT MusicXMArtistSimilarRequest : public MusicSimilarRequest,
-                                                         private MusicXMQueryInterface
+class MUSIC_TOOLSET_EXPORT MusicImageRenderer : public MusicAbstractThread
 {
     Q_OBJECT
-    TTK_DECLARE_MODULE(MusicXMArtistSimilarRequest)
+    TTK_DECLARE_MODULE(MusicImageRenderer)
 public:
     /*!
      * Object contsructor.
      */
-    explicit MusicXMArtistSimilarRequest(QObject *parent = nullptr);
+    explicit MusicImageRenderer(QObject *parent = nullptr);
+
+    ~MusicImageRenderer();
 
     /*!
-     * Start to Search data from name.
+     * Set input data array.
      */
-    virtual void startToSearch(const QString &text) override;
+    void setInputData(const QByteArray &data, const QSize &size);
 
-public Q_SLOTS:
+Q_SIGNALS:
     /*!
-     * Download data from net finished.
+     * Image render finished.
      */
-    virtual void downLoadFinished() override;
+    void renderFinished(const QImage &data);
+
+protected:
+    /*!
+     * Thread run now.
+     */
+    virtual void run() override;
+
+private:
+    QSize m_size;
+    QByteArray m_buffer;
 
 };
 
-#endif // MUSICXMARTISTSIMILARREQUEST_H
+#endif // MUSICIMAGERENDERER_H
