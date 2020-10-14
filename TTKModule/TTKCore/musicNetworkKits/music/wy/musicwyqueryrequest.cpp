@@ -90,7 +90,7 @@ void MusicWYQueryRequest::downLoadFinished()
     {
         QJson::Parser parser;
         bool ok;
-        const QVariant &data = parser.parse(m_reply->readAll(), &ok); 
+        const QVariant &data = parser.parse(m_reply->readAll(), &ok);
         if(ok)
         {
             QVariantMap value = data.toMap();
@@ -174,7 +174,7 @@ void MusicWYQueryRequest::singleDownLoadFinished()
 
     if(reply && m_manager &&reply->error() == QNetworkReply::NoError)
     {
-        const QByteArray &bytes = reply->readAll();///Get all the data obtained by request
+        const QByteArray &bytes = reply->readAll();
 
         QJson::Parser parser;
         bool ok;

@@ -846,7 +846,7 @@ void MusicSettingWidget::initDownloadWidget()
     m_ui->uploadLimitSpeedComboBox->view()->setStyleSheet(MusicUIObject::MQSSScrollBarStyle01);
 
     m_ui->downloadSpinBox->setStyleSheet(MusicUIObject::MQSSSpinBoxStyle01);
-    m_ui->downloadSpinBox->setRange(1024, 5*1024);
+    m_ui->downloadSpinBox->setRange(1024, 5 * 1024);
     m_ui->downloadDirEdit->setText(MUSIC_DIR_FULL);
     m_ui->downloadLrcDirEdit->setText(LRC_DIR_FULL);
     QStringList downloadSpeed;
@@ -858,7 +858,6 @@ void MusicSettingWidget::initDownloadWidget()
     m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_wangyiyun"), tr("wangyiMusic"));
     m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_qq"), tr("qqMusic"));
     m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_xiami"), tr("xiamiMusic"));
-    m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_baidu"), tr("baiduMusic"));
     m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_kuwo"), tr("kuwoMusic"));
     m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_kugou"), tr("kugouMusic"));
 
@@ -1125,13 +1124,13 @@ void MusicSettingWidget::lrcTransparentValue(Type key, int value) const
     if(key == Interior)
     {
         label = m_ui->showLabel;
-        label->setTransparent(2.55*value);
+        label->setTransparent(2.55 * value);
         label->setLinearGradient(m_ui->playedPushButton->getColors(), m_ui->noPlayedPushButton->getColors());
     }
     else
     {
         label = m_ui->DshowLabel;
-        label->setTransparent(2.55*value);
+        label->setTransparent(2.55 * value);
         label->setLinearGradient(m_ui->DplayedPushButton->getColors(), m_ui->DnoPlayedPushButton->getColors());
     }
     label->update();

@@ -27,6 +27,10 @@
 namespace MusicUIObject
 {
 ///Color
+    const QString MQSSColor01 = "#404040";
+
+
+///Color
     const QString MQSSColorStyle01 = " \
             color:white;";
 
@@ -58,19 +62,19 @@ namespace MusicUIObject
             color:#444444;";
 
     const QString MQSSColorStyle11 = " \
-            color:#0172BF;";
+            color:#169AF3;";
 
     const QString MQSSColorStyle12 = " \
             color:#323232;";
-
-    const QString MQSSColorStyle12_S = " \
-            #323232";
 
     const QString MQSSColorStyle13 = " \
             color:black;";
 
     const QString MQSSColorStyle14 = " \
             color:#CCCCCC;";
+
+    const QString MQSSColorStyle15 = " \
+            color:#404040;";
 
 
 ///Background

@@ -98,9 +98,9 @@ void MusicSongsListTableWidget::updateSongsFileName(const MusicSongs &songs)
                           item = new QTableWidgetItem;
         item->setText(MusicUtils::Widget::elidedText(font(), songs[i].getMusicName(), Qt::ElideRight, headerview->sectionSize(1) - 10));
 #if TTK_QT_VERSION_CHECK(5,13,0)
-        item->setForeground(QColor(MusicUIObject::MQSSColorStyle12_S));
+        item->setForeground(QColor(MusicUIObject::MQSSColor01));
 #else
-        item->setTextColor(QColor(MusicUIObject::MQSSColorStyle12_S));
+        item->setTextColor(QColor(MusicUIObject::MQSSColor01));
 #endif
         item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         setItem(i, 1, item);
@@ -116,9 +116,9 @@ void MusicSongsListTableWidget::updateSongsFileName(const MusicSongs &songs)
 
                           item = new QTableWidgetItem(songs[i].getMusicPlayTime());
 #if TTK_QT_VERSION_CHECK(5,13,0)
-        item->setForeground(QColor(MusicUIObject::MQSSColorStyle12_S));
+        item->setForeground(QColor(MusicUIObject::MQSSColor01));
 #else
-        item->setTextColor(QColor(MusicUIObject::MQSSColorStyle12_S));
+        item->setTextColor(QColor(MusicUIObject::MQSSColor01));
 #endif
         item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         setItem(i, 5, item);
@@ -254,9 +254,9 @@ void MusicSongsListTableWidget::replacePlayWidgetRow()
 
     item = new QTableWidgetItem(MusicUtils::Widget::elidedText(font(), name, Qt::ElideRight, headerview->sectionSize(1) - 10));
 #if TTK_QT_VERSION_CHECK(5,13,0)
-    item->setForeground(QColor(MusicUIObject::MQSSColorStyle12_S));
+    item->setForeground(QColor(MusicUIObject::MQSSColor01));
 #else
-    item->setTextColor(QColor(MusicUIObject::MQSSColorStyle12_S));
+    item->setTextColor(QColor(MusicUIObject::MQSSColor01));
 #endif
     item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
@@ -267,9 +267,9 @@ void MusicSongsListTableWidget::replacePlayWidgetRow()
 
     item = new QTableWidgetItem((*m_musicSongs)[m_playRowIndex].getMusicPlayTime());
 #if TTK_QT_VERSION_CHECK(5,13,0)
-    item->setForeground(QColor(MusicUIObject::MQSSColorStyle12_S));
+    item->setForeground(QColor(MusicUIObject::MQSSColor01));
 #else
-    item->setTextColor(QColor(MusicUIObject::MQSSColorStyle12_S));
+    item->setTextColor(QColor(MusicUIObject::MQSSColor01));
 #endif
     item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     setItem(m_playRowIndex, 5, item);
@@ -285,7 +285,7 @@ bool MusicSongsListTableWidget::createUploadFileWidget()
 {
     if(m_musicSongs->isEmpty() && m_parentToolIndex != MUSIC_LOVEST_LIST && m_parentToolIndex != MUSIC_NETWORK_LIST && m_parentToolIndex != MUSIC_RECENT_LIST)
     {
-        setFixedSize(320, 100);
+        setFixedSize(LEFT_SIDE_WIDTH_MIN, 100);
         if(m_openFileWidget == nullptr)
         {
             m_openFileWidget = new MusicOpenFileWidget(this);
@@ -485,7 +485,7 @@ void MusicSongsListTableWidget::setDeleteItemAt()
     {
         const int index = deleteList[i];
         removeRow(index);           //Delete the current row
-        progress.setValue(deleteList.count()*2 - i);
+        progress.setValue(deleteList.count() * 2 - i);
     }
 
     //just fix table widget size hint

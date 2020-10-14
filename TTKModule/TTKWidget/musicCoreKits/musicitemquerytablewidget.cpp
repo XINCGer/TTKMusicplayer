@@ -119,8 +119,8 @@ void MusicItemQueryTableWidget::resizeWindow()
 {
     const int width = M_SETTING_PTR->value(MusicSettingManager::WidgetSize).toSize().width();
     QHeaderView *headerview = horizontalHeader();
-    headerview->resizeSection(1, (width - WINDOW_WIDTH_MIN)*0.5 + 342);
-    headerview->resizeSection(2, (width - WINDOW_WIDTH_MIN)*0.5 + 110);
+    headerview->resizeSection(1, (width - WINDOW_WIDTH_MIN) * 0.5 + 342);
+    headerview->resizeSection(2, (width - WINDOW_WIDTH_MIN) * 0.5 + 110);
 
     for(int i=0; i<rowCount(); ++i)
     {
@@ -291,7 +291,7 @@ void MusicItemQueryTableWidget::createSearchedItem(const MusicSearchedItem &song
     item->setIcon(QIcon(":/contextMenu/btn_download"));
     setItem(count, 7, item);
 
-    setFixedHeight(rowHeight(0)*rowCount());
+    setFixedHeight(rowHeight(0) * rowCount());
 }
 
 void MusicItemQueryTableWidget::createFinishedItem()
@@ -310,7 +310,7 @@ void MusicItemQueryTableWidget::createFinishedItem()
         it->setData(MUSIC_TEXTS_ROLE, tr("No More Data"));
         setItemDelegateForRow(count, m_labelDelegate);
 
-        setFixedHeight(rowHeight(0)*rowCount());
+        setFixedHeight(rowHeight(0) * rowCount());
     }
 }
 
@@ -345,7 +345,7 @@ bool MusicItemQueryTableWidget::downloadDataFrom(const MusicObject::MusicSongInf
     if(!attrs.isEmpty())
     {
         const MusicObject::MusicSongAttribute &attr = attrs.first();
-        const QString &musicEnSong = MusicUtils::Algorithm::mdII(downloadInfo.m_singerName + " - " + downloadInfo.m_songName, ALG_DOWNLOAD_KEY, true);
+        const QString &musicEnSong = MusicUtils::Algorithm::mdII(downloadInfo.m_singerName + " - " + downloadInfo.m_songName, ALG_ARC_KEY, true);
         const QString &downloadName = QString("%1%2.%3").arg(CACHE_DIR_FULL).arg(musicEnSong).arg(attr.m_format);
 
         MusicSemaphoreLoop loop(this);

@@ -35,6 +35,7 @@ void MusicQQQueryRequest::startToPage(int offset)
     deleteAll();
 
     const QUrl &musicUrl = MusicUtils::Algorithm::mdII(QQ_SONG_SEARCH_URL, false).arg(m_searchText).arg(offset + 1).arg(m_pageSize);
+
     m_interrupt = true;
     m_pageTotal = 0;
     m_pageIndex = offset;
@@ -84,7 +85,7 @@ void MusicQQQueryRequest::downLoadFinished()
 
     if(m_reply->error() == QNetworkReply::NoError)
     {
-        const QByteArray &bytes = m_reply->readAll();///Get all the data obtained by request
+        const QByteArray &bytes = m_reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -118,7 +119,7 @@ void MusicQQQueryRequest::downLoadFinished()
                         musicInfo.m_artistId = name["mid"].toString();
                     }
                     musicInfo.m_songName = MusicUtils::String::illegalCharactersReplaced(value["songname"].toString());
-                    musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["interval"].toInt()*1000);
+                    musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["interval"].toInt() * 1000);
 
                     m_rawData["songID"] = value["songid"].toString();
                     musicInfo.m_songId = value["songmid"].toString();
@@ -174,7 +175,7 @@ void MusicQQQueryRequest::singleDownLoadFinished()
 
     if(reply && m_manager &&reply->error() == QNetworkReply::NoError)
     {
-        const QByteArray &bytes = reply->readAll();///Get all the data obtained by request
+        const QByteArray &bytes = reply->readAll();
 
         QJson::Parser parser;
         bool ok;
@@ -205,7 +206,7 @@ void MusicQQQueryRequest::singleDownLoadFinished()
                         musicInfo.m_artistId = name["mid"].toString();
                     }
                     musicInfo.m_songName = MusicUtils::String::illegalCharactersReplaced(value["name"].toString());
-                    musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["interval"].toInt()*1000);
+                    musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["interval"].toInt() * 1000);
 
                     m_rawData["songID"] = QString::number(value["id"].toLongLong());
                     musicInfo.m_songId = value["mid"].toString();

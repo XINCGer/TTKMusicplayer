@@ -95,7 +95,7 @@ void MusicKGQueryAlbumRequest::downLoadFinished()
                     value = var.toMap();
                     MusicObject::MusicSongInformation musicInfo;
                     musicInfo.m_songName = MusicUtils::String::illegalCharactersReplaced(value["filename"].toString());
-                    musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["duration"].toInt()*1000);
+                    musicInfo.m_timeLength = MusicTime::msecTime2LabelJustified(value["duration"].toInt() * 1000);
 
                     if(musicInfo.m_songName.contains("-"))
                     {
@@ -161,7 +161,7 @@ void MusicKGQueryAlbumRequest::singleDownLoadFinished()
 
     if(reply && m_manager &&reply->error() == QNetworkReply::NoError)
     {
-        const QByteArray &bytes = reply->readAll();///Get all the data obtained by request
+        const QByteArray &bytes = reply->readAll();
 
         QJson::Parser parser;
         bool ok;
