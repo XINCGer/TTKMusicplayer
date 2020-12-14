@@ -2,7 +2,7 @@
 [简体中文 Chinese](./README_cn.md) | [繁体中文 Chinese](./README_tc.md)
 
 ![TTKMusicplayer](https://img.shields.io/badge/Greedysky-TTKMusicPlayer-green.svg?style=flat-square)
-![Version](https://img.shields.io/badge/Version-2.13.2.0-blue.svg?style=flat-square)
+![Version](https://img.shields.io/badge/Version-2.13.3.0-blue.svg?style=flat-square)
 ![License](https://img.shields.io/badge/License-GPL%20V3-yellowgreen.svg?style=flat-square)
 
 ![LOGO](https://github.com/Greedysky/Resource/blob/master/Screen/logo_pic.png?raw=true)
@@ -84,7 +84,7 @@ TTKMusicPlayer can meet your most demands
  * AdLib Sound File(*.adl *.hsc *.ksm *.lds)
  * Apple Lossless Audio File(*.alac)
  * Another Slight Atari File(*.sap *.cm3 *.cmc *.cmr *.cms *.dmc *.dlt *.mpd *.mpt *.rmt *.tm2 *.tm8 *.tmc *.fc)
- * DTS Coherent Acoustics File(*.wav *.dts *.cpt)
+ * DTS Coherent Acoustics File(*.dts *.cpt)
  * Dynamic Universal File(*.mod *.mdz *.stk *.m15 *.fst *.oct *.nt *.s3m *.s3z *.stm *.stz *.it *.itz *.xm *.xmz *ptm *.ptz *mtm *.mtz *669 *psm *umx *am *.j2b *dsm *amf *okt *.okta *mo3)
  * Future Composer File(*.fc *.fc13 *.fc14 *.smod)
  * OptimFrog File(*.ofr *.ofs)
