@@ -48,9 +48,9 @@ void MusicLocalSongSearchInteriorEdit::suggestDataChanged()
     for(const MusicResultsItem &item : m_suggestThread->getSearchedItems())
     {
         QString value = item.m_name;
-        if(!item.m_nickName.isEmpty() && item.m_nickName != "-")
+        if(!item.m_nickName.isEmpty() && item.m_nickName != STRING_NULL)
         {
-            value = item.m_nickName + " - " + value;
+            value = QString("%1 - %2").arg(item.m_nickName).arg(value);
         }
         names << value;
     }

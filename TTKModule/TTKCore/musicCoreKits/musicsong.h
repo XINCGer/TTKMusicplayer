@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2020 Greedysky Studio
+ * Copyright (C) 2015 - 2021 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -179,7 +179,7 @@ protected:
 };
 TTK_DECLARE_LISTS(MusicSong)
 
-//
+
 class MusicAbstractSongsListTableWidget;
 
 /*! @brief The class of the music song sort tag.
@@ -196,6 +196,7 @@ typedef struct MUSIC_CORE_EXPORT MusicSongSort
         m_sortType = Qt::AscendingOrder;
     }
 }MusicSongSort;
+
 
 /*! @brief The class of the music song item.
  * @author Greedysky <greedysky@163.com>
@@ -220,5 +221,15 @@ typedef struct MUSIC_CORE_EXPORT MusicSongItem
     }
 }MusicSongItem;
 TTK_DECLARE_LISTS(MusicSongItem)
+
+
+namespace MusicObject
+{
+    /*!
+     * Generate music song plyalist.
+     */
+    MUSIC_CORE_EXPORT MusicSongs generateMusicSongList(const QString &path);
+
+}
 
 #endif // MUSICSONG_H

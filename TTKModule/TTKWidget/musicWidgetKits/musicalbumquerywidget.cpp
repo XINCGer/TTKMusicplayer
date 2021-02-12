@@ -65,20 +65,20 @@ void MusicAlbumQueryWidget::resizeWindow()
         int width = M_SETTING_PTR->value(MusicSettingManager::WidgetSize).toSize().width();
             width = width - WINDOW_WIDTH_MIN;
 
-        QLabel *label = m_resizeWidgets[1];
-        label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220 + width));
+        TTKResizeWidget *data = &m_resizeWidgets[1];
+        data->m_label->setText(MusicUtils::Widget::elidedText(data->m_font, data->m_label->toolTip(), Qt::ElideRight, 210 + width));
 
-        label = m_resizeWidgets[2];
-        label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220 + width));
+        data = &m_resizeWidgets[2];
+        data->m_label->setText(MusicUtils::Widget::elidedText(data->m_font, data->m_label->toolTip(), Qt::ElideRight, 180 + width));
 
-        label = m_resizeWidgets[3];
-        label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220 + width));
+        data = &m_resizeWidgets[3];
+        data->m_label->setText(MusicUtils::Widget::elidedText(data->m_font, data->m_label->toolTip(), Qt::ElideRight, 180 + width));
 
-        label = m_resizeWidgets[4];
-        label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220 + width));
+        data = &m_resizeWidgets[4];
+        data->m_label->setText(MusicUtils::Widget::elidedText(data->m_font, data->m_label->toolTip(), Qt::ElideRight, 180 + width));
 
-        label = m_resizeWidgets[5];
-        label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220 + width));
+        data = &m_resizeWidgets[5];
+        data->m_label->setText(MusicUtils::Widget::elidedText(data->m_font, data->m_label->toolTip(), Qt::ElideRight, 180 + width));
     }
 }
 
@@ -153,32 +153,32 @@ void MusicAlbumQueryWidget::createAlbumInfoItem(const MusicResultsItem &item)
         {
             if(lists[i].isEmpty())
             {
-                lists[i] = "-";
+                lists[i] = STRING_NULL;
             }
         }
 
-        QLabel *label = m_resizeWidgets[0];
-        label->setText(tr("<font color=#158FE1> Alubm > %1 </font>").arg(lists[0]));
+        TTKResizeWidget *data = &m_resizeWidgets[0];
+        data->m_label->setText(tr("<font color=#158FE1> Alubm > %1 </font>").arg(lists[0]));
 
-        label = m_resizeWidgets[1];
-        label->setToolTip(lists[0]);
-        label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
+        data = &m_resizeWidgets[1];
+        data->m_label->setToolTip(lists[0]);
+        data->m_label->setText(MusicUtils::Widget::elidedText(data->m_font, data->m_label->toolTip(), Qt::ElideRight, 210));
 
-        label = m_resizeWidgets[2];
-        label->setToolTip(tr("Singer: %1").arg(item.m_name));
-        label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
+        data = &m_resizeWidgets[2];
+        data->m_label->setToolTip(tr("Singer: %1").arg(item.m_name));
+        data->m_label->setText(MusicUtils::Widget::elidedText(data->m_font, data->m_label->toolTip(), Qt::ElideRight, 180));
 
-        label = m_resizeWidgets[3];
-        label->setToolTip(tr("Language: %1").arg(lists[1]));
-        label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
+        data = &m_resizeWidgets[3];
+        data->m_label->setToolTip(tr("Language: %1").arg(lists[1]));
+        data->m_label->setText(MusicUtils::Widget::elidedText(data->m_font, data->m_label->toolTip(), Qt::ElideRight, 180));
 
-        label = m_resizeWidgets[4];
-        label->setToolTip(tr("Company: %1").arg(lists[2]));
-        label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
+        data = &m_resizeWidgets[4];
+        data->m_label->setToolTip(tr("Company: %1").arg(lists[2]));
+        data->m_label->setText(MusicUtils::Widget::elidedText(data->m_font, data->m_label->toolTip(), Qt::ElideRight, 180));
 
-        label = m_resizeWidgets[5];
-        label->setToolTip(tr("Year: %1").arg(lists[3]));
-        label->setText(MusicUtils::Widget::elidedText(label->font(), label->toolTip(), Qt::ElideRight, 220));
+        data = &m_resizeWidgets[5];
+        data->m_label->setToolTip(tr("Year: %1").arg(lists[3]));
+        data->m_label->setText(MusicUtils::Widget::elidedText(data->m_font, data->m_label->toolTip(), Qt::ElideRight, 180));
     }
 }
 
@@ -222,19 +222,19 @@ void MusicAlbumQueryWidget::createLabels()
     albumFont.setPixelSize(20);
     albumLabel->setFont(albumFont);
     albumLabel->setStyleSheet(MusicUIObject::MQSSFontStyle01);
-    albumLabel->setText("-");
+    albumLabel->setText(STRING_NULL);
     QLabel *singerLabel = new QLabel(topLineWidget);
     singerLabel->setStyleSheet(MusicUIObject::MQSSColorStyle04 + MusicUIObject::MQSSFontStyle03);
-    singerLabel->setText("-");
+    singerLabel->setText(STRING_NULL);
     QLabel *languageLabel = new QLabel(topLineWidget);
     languageLabel->setStyleSheet(MusicUIObject::MQSSColorStyle04 + MusicUIObject::MQSSFontStyle03);
-    languageLabel->setText("-");
+    languageLabel->setText(STRING_NULL);
     QLabel *companyLabel = new QLabel(topLineWidget);
     companyLabel->setStyleSheet(MusicUIObject::MQSSColorStyle04 + MusicUIObject::MQSSFontStyle03);
-    companyLabel->setText("-");
+    companyLabel->setText(STRING_NULL);
     QLabel *yearLabel = new QLabel(topLineWidget);
     yearLabel->setStyleSheet(MusicUIObject::MQSSColorStyle04 + MusicUIObject::MQSSFontStyle03);
-    yearLabel->setText("-");
+    yearLabel->setText(STRING_NULL);
 
     topLineLayout->addWidget(albumLabel);
     topLineLayout->addWidget(singerLabel);
@@ -334,5 +334,10 @@ void MusicAlbumQueryWidget::createLabels()
     function->setLayout(grid);
     m_mainWindow->layout()->addWidget(function);
 
-    m_resizeWidgets << firstLabel << albumLabel << singerLabel << languageLabel << companyLabel << yearLabel;
+    m_resizeWidgets.push_back({firstLabel, firstLabel->font()});
+    m_resizeWidgets.push_back({albumLabel, albumLabel->font()});
+    m_resizeWidgets.push_back({singerLabel, singerLabel->font()});
+    m_resizeWidgets.push_back({languageLabel, languageLabel->font()});
+    m_resizeWidgets.push_back({companyLabel, companyLabel->font()});
+    m_resizeWidgets.push_back({yearLabel, yearLabel->font()});
 }

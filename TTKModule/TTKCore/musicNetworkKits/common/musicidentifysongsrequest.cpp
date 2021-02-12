@@ -80,7 +80,7 @@ void MusicIdentifySongsRequest::startToDownload(const QString &path)
     content.append(endBoundary.toUtf8());
 
     QNetworkRequest request;
-    request.setUrl(QUrl(MusicUtils::Algorithm::mdII(QUERY_URL, false)));
+    request.setUrl(MusicUtils::Algorithm::mdII(QUERY_URL, false));
     request.setHeader(QNetworkRequest::ContentTypeHeader, contentType);
     MusicObject::setSslConfiguration(&request);
 
@@ -102,8 +102,8 @@ void MusicIdentifySongsRequest::downLoadFinished()
             if(value.contains("metadata"))
             {
                 value = value["metadata"].toMap();
-                const QVariantList &list = value["music"].toList();
-                for(const QVariant &var : qAsConst(list))
+                const QVariantList &datas = value["music"].toList();
+                for(const QVariant &var : qAsConst(datas))
                 {
                     value = var.toMap();
 
@@ -140,5 +140,6 @@ void MusicIdentifySongsRequest::downLoadFinished(const QByteArray &data)
             m_accessSecret = value["secret"].toString();
         }
     }
+
     Q_EMIT getKeyFinished();
 }

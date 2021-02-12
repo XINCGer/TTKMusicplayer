@@ -18,6 +18,8 @@
 #include "musiccolordialog.h"
 #include "musicalgorithmutils.h"
 #include "musicpluginwidget.h"
+#include "musicfileutils.h"
+#include "musicmessagebox.h"
 ///qmmp incldue
 #include "qmmpsettings.h"
 
@@ -104,11 +106,13 @@ MusicSettingWidget::MusicSettingWidget(QWidget *parent)
           << MusicFunctionItem(":/tiny/btn_more_normal", tr("Other"));
     m_ui->normalFunTableWidget->setRowCount(items.count());
     m_ui->normalFunTableWidget->addFunctionItems(0, items);
+
     items.clear();
     items << MusicFunctionItem(":/contextMenu/btn_desktopLrc", tr("Desktop"))
           << MusicFunctionItem(":/contextMenu/btn_lrc", tr("Interior"));
     m_ui->lrcFunTableWidget->setRowCount(items.count());
     m_ui->lrcFunTableWidget->addFunctionItems(m_ui->normalFunTableWidget->rowCount(), items);
+
     items.clear();
     items << MusicFunctionItem(":/contextMenu/btn_equalizer", tr("Equalizer"))
           << MusicFunctionItem(":/contextMenu/btn_kmicro", tr("Audio"))
@@ -320,6 +324,20 @@ void MusicSettingWidget::globalHotkeyBoxChanged(bool state)
     m_ui->item_S12->setHotKeyEnabled(state);
     m_ui->item_S14->setHotKeyEnabled(state);
     m_ui->item_S16->setHotKeyEnabled(state);
+}
+
+void MusicSettingWidget::downloadCachedClean()
+{
+    MusicMessageBox message;
+    message.setText(tr("Are you sure to clean?"));
+    if(!message.exec())
+    {
+        return;
+    }
+
+    MusicUtils::File::removeRecursively(CACHE_DIR_FULL, false);
+    MusicUtils::File::removeRecursively(ART_DIR_FULL, false);
+    MusicUtils::File::removeRecursively(BACKGROUND_DIR_FULL, false);
 }
 
 void MusicSettingWidget::downloadGroupCached(int index)
@@ -820,8 +838,10 @@ void MusicSettingWidget::initDownloadWidget()
 
     m_ui->downloadDirButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
     m_ui->downloadLrcDirButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
+    m_ui->downloadCacheCleanButton->setStyleSheet(MusicUIObject::MQSSPushButtonStyle04);
     m_ui->downloadDirButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_ui->downloadLrcDirButton->setCursor(QCursor(Qt::PointingHandCursor));
+    m_ui->downloadCacheCleanButton->setCursor(QCursor(Qt::PointingHandCursor));
     m_ui->downloadCacheAutoRadioBox->setStyleSheet(MusicUIObject::MQSSRadioButtonStyle01);
     m_ui->downloadCacheManRadioBox->setStyleSheet(MusicUIObject::MQSSRadioButtonStyle01);
     m_ui->downloadFullRadioBox->setStyleSheet(MusicUIObject::MQSSRadioButtonStyle01);
@@ -829,6 +849,7 @@ void MusicSettingWidget::initDownloadWidget()
 #ifdef Q_OS_UNIX
     m_ui->downloadDirButton->setFocusPolicy(Qt::NoFocus);
     m_ui->downloadLrcDirButton->setFocusPolicy(Qt::NoFocus);
+    m_ui->downloadCacheCleanButton->setFocusPolicy(Qt::NoFocus);
     m_ui->downloadCacheAutoRadioBox->setFocusPolicy(Qt::NoFocus);
     m_ui->downloadCacheManRadioBox->setFocusPolicy(Qt::NoFocus);
     m_ui->downloadFullRadioBox->setFocusPolicy(Qt::NoFocus);
@@ -860,7 +881,9 @@ void MusicSettingWidget::initDownloadWidget()
     m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_xiami"), tr("xiamiMusic"));
     m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_kuwo"), tr("kuwoMusic"));
     m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_kugou"), tr("kugouMusic"));
+    m_ui->downloadServerComboBox->addItem(QIcon(":/server/lb_migu"), tr("miguMusic"));
 
+    connect(m_ui->downloadCacheCleanButton, SIGNAL(clicked()), SLOT(downloadCachedClean()));
     //
     QButtonGroup *buttonGroup = new QButtonGroup(this);
     buttonGroup->addButton(m_ui->downloadCacheAutoRadioBox, 0);

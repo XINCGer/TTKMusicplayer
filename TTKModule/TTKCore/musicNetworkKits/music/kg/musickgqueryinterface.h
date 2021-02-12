@@ -3,7 +3,7 @@
 
 /* =================================================
  * This file is part of the TTK Music Player project
- * Copyright (C) 2015 - 2020 Greedysky Studio
+ * Copyright (C) 2015 - 2021 Greedysky Studio
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ public:
     /*!
      * Read tags(lrc\smallpic) from query results.
      */
-    void readFromMusicSongLrcAndPic(MusicObject::MusicSongInformation *info);
+    void readFromMusicSongLrcAndPicture(MusicObject::MusicSongInformation *info);
     /*!
      * Read tags(album info) from query results.
      */

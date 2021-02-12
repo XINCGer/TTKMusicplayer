@@ -184,10 +184,8 @@ void MusicQQQueryInterface::readFromMusicSongAttributePlus(MusicObject::MusicSon
 
 QString MusicQQQueryInterface::getMusicPath(const QString &file, const QString &mid)
 {
-    const QUrl &musicUrl = MusicUtils::Algorithm::mdII(QQ_SONG_KEY_URL, false).arg(file).arg(mid);
-
     QNetworkRequest request;
-    request.setUrl(musicUrl);
+    request.setUrl(MusicUtils::Algorithm::mdII(QQ_SONG_KEY_URL, false).arg(file).arg(mid));
     request.setRawHeader("Referer", MusicUtils::Algorithm::mdII(REFER_URL, false).toUtf8());
     request.setRawHeader("User-Agent", MusicUtils::Algorithm::mdII(QQ_UA_URL, ALG_UA_KEY, false).toUtf8());
     MusicObject::setSslConfiguration(&request);
@@ -204,28 +202,42 @@ QString MusicQQQueryInterface::getMusicPath(const QString &file, const QString &
         return QString();
     }
 
-    const QByteArray &bytes = reply->readAll();
-
     QJson::Parser parser;
     bool ok;
-    const QVariant &data = parser.parse(bytes, &ok);
+    const QVariant &data = parser.parse(reply->readAll(), &ok);
     if(ok)
     {
         QVariantMap value = data.toMap();
-        if(value.contains("code") && value["code"].toInt() == 0 && value.contains("req_0"))
+        if(value.contains("code") && value["code"].toInt() == 0)
         {
-            value = value["req_0"].toMap();
-            value = value["data"].toMap();
-            const QVariantList &datas = value["midurlinfo"].toList();
-            for(const QVariant &var : qAsConst(datas))
+            QString url;
+            if(value.contains("req_0"))
             {
-                value = var.toMap();
-                if(value.contains("purl"))
+                QVariantMap req_0 = value["req_0"].toMap();
+                req_0 = req_0["data"].toMap();
+                const QVariantList &datas = req_0["midurlinfo"].toList();
+                for(const QVariant &var : qAsConst(datas))
                 {
-                    const QString &purl = value["purl"].toString();
-                    return purl.isEmpty() ? purl : MusicUtils::Algorithm::mdII(QQ_SONG_PREFIX_URL, false) + purl;
+                    req_0 = var.toMap();
+                    if(req_0.contains("purl"))
+                    {
+                        url = req_0["purl"].toString();
+                        break;
+                    }
                 }
             }
+
+            if(value.contains("req") && file.startsWith("M500"))
+            {
+                QVariantMap req = value["req"].toMap();
+                req = req["data"].toMap();
+                if(req.contains("keepalivefile"))
+                {
+                    url = req["keepalivefile"].toString();
+                }
+            }
+
+            return url.isEmpty() ? url : MusicUtils::Algorithm::mdII(QQ_SONG_PREFIX_URL, false) + url;
         }
     }
 

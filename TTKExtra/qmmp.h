@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2020 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2021 by Ilya Kotov                                 *
  *   forkotov02@ya.ru                                                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -37,6 +37,14 @@
 #define QStringToFileName(s) TagLib::FileName(reinterpret_cast<const wchar_t *>(s.utf16()))
 #else
 #define QStringToFileName(s) s.toLocal8Bit().constData()
+#endif
+
+#ifndef qPrintable
+#define qPrintable(s) QString(s).toLocal8Bit().constData()
+#endif
+
+#ifndef qUtf8Printable
+#define qUtf8Printable(s) QString(s).toUtf8().constData()
 #endif
 
 #ifndef TTK_AS_CONST

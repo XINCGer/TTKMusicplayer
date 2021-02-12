@@ -3,7 +3,7 @@
 #include "musicuiobject.h"
 #include "musicsettingmanager.h"
 #include "musicdownloadrecordconfigmanager.h"
-#include "musicdownloaddatatagrequest.h"
+#include "musicdownloadtagdatarequest.h"
 
 #include <QTimer>
 #include <QScrollBar>
@@ -201,18 +201,19 @@ void MusicDownloadBatchTableItem::startToDownloadMusic()
         }
     }
     //
-    MusicDownloadDataTagRequest *downSong = new MusicDownloadDataTagRequest(musicAttr.m_url, downloadName, MusicObject::DownloadMusic, this);
+    MusicDownloadTagDataRequest *downSong = new MusicDownloadTagDataRequest(musicAttr.m_url, downloadName, MusicObject::DownloadMusic, this);
     downSong->setRecordType(MusicObject::RecordNormalDownload);
     connect(downSong, SIGNAL(downLoadDataChanged(QString)), m_supperClass, SLOT(dataDownloadFinished()));
 
-    MusicSongTag tag;
-    tag.setComment(m_songInfo.m_smallPicUrl);
-    tag.setTitle(m_songInfo.m_songName);
-    tag.setArtist(m_songInfo.m_singerName);
-    tag.setAlbum(m_songInfo.m_albumName);
-    tag.setTrackNum(m_songInfo.m_trackNumber);
-    tag.setYear(m_songInfo.m_year);
-    downSong->setSongTag(tag);
+    MusicSongMeta meta;
+    meta.setComment(m_songInfo.m_smallPicUrl);
+    meta.setTitle(m_songInfo.m_songName);
+    meta.setArtist(m_songInfo.m_singerName);
+    meta.setAlbum(m_songInfo.m_albumName);
+    meta.setTrackNum(m_songInfo.m_trackNumber);
+    meta.setYear(m_songInfo.m_year);
+
+    downSong->setSongMeta(meta);
     downSong->startToDownload();
 }
 
@@ -222,32 +223,26 @@ void MusicDownloadBatchTableItem::startToDownloadMovie()
     const QString &downloadPrefix = MOVIE_DIR_FULL;
     QString musicSong = m_singer->toolTip() + " - " + m_songName->toolTip();
     //
-    const QStringList &urls = musicAttr.m_multiPart ? musicAttr.m_url.split(TTK_STR_SPLITER) : QStringList(musicAttr.m_url);
-    for(int ul=0; ul<urls.count(); ++ul)
+    QString downloadName = QString("%1%2.%3").arg(downloadPrefix).arg(musicSong).arg(musicAttr.m_format);
+    if(QFile::exists(downloadName))
     {
-        QString downloadName = (urls.count() == 1) ? QString("%1%2.%3").arg(downloadPrefix).arg(musicSong).arg(musicAttr.m_format)
-                                                   : QString("%1%2.part%3.%4").arg(downloadPrefix).arg(musicSong).arg(ul+1).arg(musicAttr.m_format);
-        if(QFile::exists(downloadName))
+        for(int i=1; i<99; ++i)
         {
-            for(int i=1; i<99; ++i)
+            if(!QFile::exists(downloadName))
             {
-                if(!QFile::exists(downloadName))
-                {
-                    break;
-                }
-                if(i != 1)
-                {
-                    musicSong.chop(3);
-                }
-                musicSong += QString("(%1)").arg(i);
-                downloadName = (urls.count() == 1) ? QString("%1%2.%3").arg(downloadPrefix).arg(musicSong).arg(musicAttr.m_format)
-                                                   : QString("%1%2.part%3.%4").arg(downloadPrefix).arg(musicSong).arg(ul+1).arg(musicAttr.m_format);
+                break;
             }
+            if(i != 1)
+            {
+                musicSong.chop(3);
+            }
+            musicSong += QString("(%1)").arg(i);
+            downloadName = QString("%1%2.%3").arg(downloadPrefix).arg(musicSong).arg(musicAttr.m_format);
         }
-        //
-        MusicDownloadDataRequest *download = new MusicDownloadDataRequest(urls[ul], downloadName, MusicObject::DownloadVideo, this);
-        download->startToDownload();
     }
+    //
+    MusicDownloadDataRequest *download = new MusicDownloadDataRequest(musicAttr.m_url, downloadName, MusicObject::DownloadVideo, this);
+    download->startToDownload();
 }
 
 

@@ -193,11 +193,11 @@ void MusicAdvancedSearchedWidget::updateServerPlaceholderText()
             }
         case QQQueryServer:
             {
-                m_songEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(QQ_SG_SHARE, ALG_UNIMP_KEY, false).arg("003fOZMP0ep9Fh"));
+                m_songEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(QQ_SG_SHARE, ALG_UNIMP_KEY, false).arg("004TXEXY2G2c7C"));
                 m_artistEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(QQ_AR_SHARE, ALG_UNIMP_KEY, false).arg("0029gk1t3wpGWU"));
                 m_albumEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(QQ_AL_SHARE, ALG_UNIMP_KEY, false).arg("003fk65m1ZaCG2"));
                 m_playlistEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(QQ_PL_SHARE, ALG_UNIMP_KEY, false).arg("889413740"));
-                m_movieEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(QQ_MOVIE_SHARE, ALG_UNIMP_KEY, false).arg("b0013k1imsl"));
+                m_movieEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(QQ_MV_SHARE, ALG_UNIMP_KEY, false).arg("o0032ayz7c2"));
                 break;
             }
         case XMQueryServer:
@@ -215,16 +215,25 @@ void MusicAdvancedSearchedWidget::updateServerPlaceholderText()
                 m_artistEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KW_AR_SHARE, ALG_UNIMP_KEY, false).arg("373"));
                 m_albumEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KW_AL_SHARE, ALG_UNIMP_KEY, false).arg("2698608"));
                 m_playlistEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KW_PL_SHARE, ALG_UNIMP_KEY, false).arg("236350390"));
-                m_movieEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KW_MOVIE_SHARE, ALG_UNIMP_KEY, false).arg("9812716"));
+                m_movieEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KW_MV_SHARE, ALG_UNIMP_KEY, false).arg("9812716"));
                 break;
             }
         case KGQueryServer:
             {
                 m_songEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KG_SG_SHARE, ALG_UNIMP_KEY, false).arg("b2bc0eb8553b0eb70b66b950fc3ad287"));
                 m_artistEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KG_AR_SHARE, ALG_UNIMP_KEY, false).arg("832532"));
-                m_albumEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KG_AL_SHARE, ALG_UNIMP_KEY, false).arg("39503213"));
+                m_albumEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KG_AL_SHARE, ALG_UNIMP_KEY, false).arg("41169925"));
                 m_playlistEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KG_PL_SHARE, ALG_UNIMP_KEY, false).arg("155318"));
                 m_movieEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(KG_MV_SHARE, ALG_UNIMP_KEY, false).arg("630600"));
+                break;
+            }
+        case MGQueryServer:
+            {
+                m_songEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(MG_SG_SHARE, ALG_UNIMP_KEY, false).arg("69535600809"));
+                m_artistEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(MG_AR_SHARE, ALG_UNIMP_KEY, false).arg("112"));
+                m_albumEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(MG_AL_SHARE, ALG_UNIMP_KEY, false).arg("1136534807"));
+                m_playlistEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(MG_PL_SHARE, ALG_UNIMP_KEY, false).arg("179730639"));
+                m_movieEdit->setPlaceholderText(MusicUtils::Algorithm::mdII(MG_MV_SHARE, ALG_UNIMP_KEY, false).arg("699119Y9AS9"));
                 break;
             }
         default: break;
@@ -286,6 +295,32 @@ QString MusicAdvancedSearchedWidget::getSearchedKeyWork(int type, const QString 
                 else
                 {
                     regx.setPattern("/(\\d+)");
+                }
+                key = (url.indexOf(regx) != -1) ? regx.cap(1) : url;
+                break;
+            }
+        case MGQueryServer:
+            {
+                QRegExp regx;
+                if(type == 0)
+                {
+                    regx.setPattern("/song/(\\w+)");
+                }
+                else if(type == 1)
+                {
+                    regx.setPattern("/artist/(\\w+)");
+                }
+                else if(type == 2)
+                {
+                    regx.setPattern("/album/(\\w+)");
+                }
+                else if(type == 3)
+                {
+                    regx.setPattern("/playlist/(\\w+)");
+                }
+                else if(type == 4)
+                {
+                    regx.setPattern("/mv/(\\w+)");
                 }
                 key = (url.indexOf(regx) != -1) ? regx.cap(1) : url;
                 break;
