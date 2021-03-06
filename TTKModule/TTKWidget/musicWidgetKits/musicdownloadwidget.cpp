@@ -132,7 +132,7 @@ MusicDownloadWidget::MusicDownloadWidget(QWidget *parent)
 #endif
 
     m_querySingleInfo = false;
-    m_downloadRequest = M_DOWNLOAD_QUERY_PTR->getQueryRequest(this);
+    m_downloadRequest = G_DOWNLOAD_QUERY_PTR->getQueryRequest(this);
 
     m_queryType = MusicAbstractQueryRequest::MusicQuery;
     m_ui->loadingLabel->setType(MusicGifLabelWidget::Gif_Cicle_Blue);
@@ -161,7 +161,7 @@ void MusicDownloadWidget::initWidget()
     }
     else
     {
-        m_ui->downloadPathEdit->setText(M_SETTING_PTR->value(MusicSettingManager::DownloadMusicPathDir).toString());
+        m_ui->downloadPathEdit->setText(G_SETTING_PTR->value(MusicSettingManager::DownloadMusicPathDir).toString());
     }
 }
 
@@ -210,7 +210,7 @@ void MusicDownloadWidget::show()
 
 void MusicDownloadWidget::queryAllFinished()
 {
-    if(!M_NETWORK_PTR->isOnline())
+    if(!G_NETWORK_PTR->isOnline())
     {
         return;
     }
@@ -272,11 +272,7 @@ void MusicDownloadWidget::queryAllFinishedMusic(const MusicObject::MusicSongAttr
 
     for(const MusicObject::MusicSongAttribute &attr : qAsConst(attributes))
     {
-        if(attr.m_bitrate < MB_128)         ///st
-        {
-            m_ui->viewArea->createItem(attr, tr("ST"), QString(":/quality/lb_st_quality"));
-        }
-        else if(attr.m_bitrate == MB_128)   ///sd
+        if(attr.m_bitrate == MB_128)        ///sd
         {
             m_ui->viewArea->createItem(attr, tr("SD"), QString(":/quality/lb_sd_quality"));
         }
@@ -288,7 +284,7 @@ void MusicDownloadWidget::queryAllFinishedMusic(const MusicObject::MusicSongAttr
         {
             m_ui->viewArea->createItem(attr, tr("SQ"), QString(":/quality/lb_sq_quality"));
         }
-        else if(attr.m_bitrate > MB_320)   ///cd
+        else if(attr.m_bitrate > MB_320)    ///cd
         {
             m_ui->viewArea->createItem(attr, tr("CD"), QString(":/quality/lb_cd_quality"));
         }
@@ -323,21 +319,21 @@ void MusicDownloadWidget::queryAllFinishedMovie(const MusicObject::MusicSongAttr
 
     for(const MusicObject::MusicSongAttribute &attr : qAsConst(attributes))
     {
-        if(attr.m_bitrate <= MB_250)       ///st
-        {
-            m_ui->viewArea->createItem(attr, tr("ST"), QString(":/quality/lb_st_quality"));
-        }
-        else if(attr.m_bitrate == MB_500)  ///sd
+        if(attr.m_bitrate <= MB_250)       ///sd
         {
             m_ui->viewArea->createItem(attr, tr("SD"), QString(":/quality/lb_sd_quality"));
         }
-        else if(attr.m_bitrate == MB_750)  ///hd
+        else if(attr.m_bitrate == MB_500)  ///hd
         {
             m_ui->viewArea->createItem(attr, tr("HD"), QString(":/quality/lb_hd_quality"));
         }
-        else if(attr.m_bitrate >= MB_1000) ///sq
+        else if(attr.m_bitrate == MB_750)  ///sq
         {
             m_ui->viewArea->createItem(attr, tr("SQ"), QString(":/quality/lb_sq_quality"));
+        }
+        else if(attr.m_bitrate >= MB_1000) ///cd
+        {
+            m_ui->viewArea->createItem(attr, tr("CD"), QString(":/quality/lb_cd_quality"));
         }
         else
         {
@@ -392,7 +388,7 @@ void MusicDownloadWidget::downloadDirSelected()
         {
             if(m_queryType == MusicAbstractQueryRequest::MusicQuery)
             {
-                M_SETTING_PTR->setValue(MusicSettingManager::DownloadMusicPathDir, path + "/");
+                G_SETTING_PTR->setValue(MusicSettingManager::DownloadMusicPathDir, path + "/");
             }
             m_ui->downloadPathEdit->setText(path + "/");
         }
@@ -442,7 +438,7 @@ void MusicDownloadWidget::startToDownloadMusic(const MusicObject::MusicSongInfor
     {
         if(role.isEqual(MusicDownloadTableItemRole(musicAttr.m_bitrate, musicAttr.m_format, musicAttr.m_size)))
         {
-            if(!M_NETWORK_PTR->isOnline())
+            if(!G_NETWORK_PTR->isOnline())
             {
                 return;
             }
@@ -520,7 +516,7 @@ void MusicDownloadWidget::startToDownloadMovie(const MusicObject::MusicSongInfor
     {
         if(role.isEqual(MusicDownloadTableItemRole(musicAttr.m_bitrate, musicAttr.m_format, musicAttr.m_size)))
         {
-            if(!M_NETWORK_PTR->isOnline())
+            if(!G_NETWORK_PTR->isOnline())
             {
                 return;
             }

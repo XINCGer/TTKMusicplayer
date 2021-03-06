@@ -112,7 +112,7 @@ public:
         EnhancedLADSPA,                  /*!< Enhanced LADSPA Parameter*/
         EnhancedSOX,                     /*!< Enhanced SOX Parameter*/
         EnhancedSRC,                     /*!< Enhanced SRC Parameter*/
-        EnhancedMonoStereo,              /*!< Enhanced Mono Stereo Parameter*/
+        EnhancedMonoToStereo,            /*!< Enhanced Mono To Stereo Parameter*/
         EnhancedMono,                    /*!< Enhanced Mono Parameter*/
 
         TimerAutoIndex,                  /*!< Timer Auto Index Parameter*/
@@ -225,7 +225,7 @@ protected:
     DECLARE_SINGLETON_CLASS(MusicSettingManager)
 };
 
-#define M_SETTING_PTR GetMusicSettingManager()
+#define G_SETTING_PTR GetMusicSettingManager()
 MUSIC_CORE_EXPORT MusicSettingManager* GetMusicSettingManager();
 
 #endif // MUSICSETTINGMANAGER

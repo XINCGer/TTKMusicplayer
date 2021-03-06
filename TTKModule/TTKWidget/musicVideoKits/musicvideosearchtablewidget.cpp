@@ -12,31 +12,28 @@ MusicVideoSearchTableWidget::MusicVideoSearchTableWidget(QWidget *parent)
     setColumnCount(9);
     resizeWindow(0);
 
-    viewport()->setStyleSheet(MusicUIObject::MQSSBackgroundStyle02);
-
-    m_defaultBkColor = Qt::black;
     m_singleRadioMode = false;
 
     MusicTime::initRandom();
-    M_CONNECTION_PTR->setValue(getClassName(), this);
+    G_CONNECTION_PTR->setValue(getClassName(), this);
 }
 
 MusicVideoSearchTableWidget::~MusicVideoSearchTableWidget()
 {
-    M_CONNECTION_PTR->removeValue(getClassName());
+    G_CONNECTION_PTR->removeValue(getClassName());
     clearAllItems();
 }
 
 void MusicVideoSearchTableWidget::startSearchQuery(const QString &text)
 {
-    if(!M_NETWORK_PTR->isOnline())   //no network connection
+    if(!G_NETWORK_PTR->isOnline())   //no network connection
     {
         clearAllItems();
         Q_EMIT showDownLoadInfoFor(MusicObject::DW_DisConnection);
         return;
     }
     //
-    MusicAbstractQueryRequest *d = M_DOWNLOAD_QUERY_PTR->getMovieRequest(this);
+    MusicAbstractQueryRequest *d = G_DOWNLOAD_QUERY_PTR->getMovieRequest(this);
     connect(d, SIGNAL(downLoadDataChanged(QString)), SLOT(createFinishedItem()));
     setQueryInput(d);
     //
@@ -47,14 +44,14 @@ void MusicVideoSearchTableWidget::startSearchQuery(const QString &text)
 
 void MusicVideoSearchTableWidget::startSearchSingleQuery(const QString &text)
 {
-    if(!M_NETWORK_PTR->isOnline())   //no network connection
+    if(!G_NETWORK_PTR->isOnline())   //no network connection
     {
         clearAllItems();
         Q_EMIT showDownLoadInfoFor(MusicObject::DW_DisConnection);
         return;
     }
     //
-    MusicAbstractQueryRequest *d = M_DOWNLOAD_QUERY_PTR->getMovieRequest(this);
+    MusicAbstractQueryRequest *d = G_DOWNLOAD_QUERY_PTR->getMovieRequest(this);
     connect(d, SIGNAL(downLoadDataChanged(QString)), SLOT(createFinishedItem()));
     setQueryInput(d);
     //
@@ -66,14 +63,14 @@ void MusicVideoSearchTableWidget::startSearchSingleQuery(const QString &text)
 
 void MusicVideoSearchTableWidget::startSearchSingleQuery(const QVariant &data)
 {
-    if(!M_NETWORK_PTR->isOnline())   //no network connection
+    if(!G_NETWORK_PTR->isOnline())   //no network connection
     {
         clearAllItems();
         Q_EMIT showDownLoadInfoFor(MusicObject::DW_DisConnection);
         return;
     }
     //
-    MusicAbstractQueryRequest *d = M_DOWNLOAD_QUERY_PTR->getMovieRequest(this);
+    MusicAbstractQueryRequest *d = G_DOWNLOAD_QUERY_PTR->getMovieRequest(this);
     connect(d, SIGNAL(downLoadDataChanged(QString)), SLOT(createFinishedItem()));
     setQueryInput(d);
     //
@@ -132,16 +129,6 @@ void MusicVideoSearchTableWidget::itemCellEntered(int row, int column)
     else
     {
        unsetCursor();
-    }
-
-    QTableWidgetItem *it = item(row, 0);
-    if(it)
-    {
-#if TTK_QT_VERSION_CHECK(5,13,0)
-        it->setBackground(m_defaultBkColor);
-#else
-        it->setBackgroundColor(m_defaultBkColor);
-#endif
     }
 }
 

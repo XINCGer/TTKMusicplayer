@@ -33,15 +33,15 @@ MusicSongMeta::~MusicSongMeta()
 
 bool MusicSongMeta::read(const QString &file)
 {
-    bool cue = false;
+    bool track = false;
     QString path(file);
-    if(path.startsWith(MUSIC_CUE_FILE "://") || path.startsWith(MUSIC_GME_FILE "://"))
+    if(SongTrackValid(file))
     {
         path = path.section("://", -1);
         if(path.contains("#"))
         {
             path = path.section("#", 0, 0);
-            cue = true;
+            track = true;
         }
     }
 
@@ -53,7 +53,7 @@ bool MusicSongMeta::read(const QString &file)
 
     m_filePath = path;
     const bool status = readInformation();
-    if(status && cue)
+    if(status && track)
     {
         setSongMetaIndex(file.section("#", -1).toInt() - 1);
     }
@@ -287,6 +287,43 @@ MusicSongMeta& MusicSongMeta::operator= (MusicSongMeta &&other)
     return *this;
 }
 
+bool MusicSongMeta::SongTrackValid(const QString &file)
+{
+    QStringList list;
+    list << MUSIC_CUE_FILE "://";
+    list << MUSIC_APE_FILE "://";
+    list << MUSIC_FFMPEG_FILE "://";
+    list << MUSIC_M4B_FILE "://";
+    list << MUSIC_FLAC_FILE "://";
+    list << MUSIC_GME_FILE "://";
+    list << MUSIC_SID_FILE "://";
+    list << MUSIC_WVPACK_FILE "://";
+
+    for(const QString &path : qAsConst(list))
+    {
+        if(file.startsWith(path))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool MusicSongMeta::SongTrackTpyeContains(const QString &file)
+{
+    QStringList list;
+    list << MUSIC_CUE_FILE;
+    list << MUSIC_APE_FILE;
+    list << MUSIC_FFMPEG_FILE;
+    list << MUSIC_M4B_FILE;
+    list << MUSIC_FLAC_FILE;
+    list << MUSIC_GME_FILE;
+    list << MUSIC_SID_FILE;
+    list << MUSIC_WVPACK_FILE;
+
+    return list.contains(file);
+}
+
 void MusicSongMeta::setSongMetaIndex(int index)
 {
     if(index < 0 || index >= m_songMetas.size())
@@ -373,15 +410,20 @@ bool MusicSongMeta::readInformation()
         }
         qDeleteAll(infos);
 
-        if(length == 0 && !m_songMetas.isEmpty())
+        if(!m_songMetas.isEmpty())
         {
-            TagWrapper wrapper;
-            if(wrapper.readFile(m_filePath))
+            getSongMeta()->m_cover = cover;
+
+            if(length == 0)
             {
-                const QMap<TagWrapper::Type, QString> &data = wrapper.getMusicTags();
-                length = data[TagWrapper::TAG_LENGTH].toLongLong();
+                TagWrapper wrapper;
+                if(wrapper.readFile(m_filePath))
+                {
+                    const QMap<TagWrapper::Type, QString> &data = wrapper.getMusicTags();
+                    length = data[TagWrapper::TAG_LENGTH].toLongLong();
+                }
+                getSongMeta()->m_metaData[TagWrapper::TAG_LENGTH] = MusicTime::msecTime2LabelJustified(length);
             }
-            getSongMeta()->m_metaData[TagWrapper::TAG_LENGTH] = MusicTime::msecTime2LabelJustified(length);
         }
     }
 
@@ -425,6 +467,7 @@ bool MusicSongMeta::saveInformation()
                 model->removeCover();
             }
         }
+
         delete model;
         return true;
     }
